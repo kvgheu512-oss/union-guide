@@ -554,5 +554,22 @@ document.getElementById('faq-toggle-btn').addEventListener('click',function(){
   this.textContent=faqList.classList.contains('show')?'🔼 收合所有問答':'📖 展開所有問答一次看完';
 });
 </script>
+<script>
+/* ⚠待核對：滑鼠停留顯示「需向官方核對」說明（含 FAQ 聊天泡泡等動態內容） */
+(function(){
+  var TIP='涉及法條／數字／期限（如工會法條號、30 日、30 人連署等）；正式引用前請以高雄市政府勞工局或官方法規再核對一次。本網頁僅供參考，非正式法律意見。';
+  function tag(root){
+    if(!root.querySelectorAll) return;
+    root.querySelectorAll('span').forEach(function(s){
+      var x=s.textContent.trim();
+      if(!s.title && x.length<=5 && x.indexOf('待核對')>=0){ s.title=TIP; s.style.cursor='help'; }
+    });
+  }
+  tag(document);
+  new MutationObserver(function(muts){
+    muts.forEach(function(m){ Array.prototype.forEach.call(m.addedNodes,function(n){ if(n.nodeType===1) tag(n); }); });
+  }).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
 </body>
 </html>
