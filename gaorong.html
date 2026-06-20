@@ -408,7 +408,7 @@ const PW_HASH = "1621267407177439";
 
 // ② 連署／加入的去處（靜態網站沒有後端，留資料要靠 Line 或 Google 表單）。
 //    把下面其中一個填上你的連結即可（兩個都填會優先用表單）。
-const FORM_URL = "";   // 例：Google 表單 "https://forms.gle/xxxx"
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc_3AXMx_BdIXTZ-e_iNNIlWn-MgLGNL4MpnZDX63UFreFZvA/viewform";   // 連署表單（發起人填寫，後台收件）
 const LINE_URL = "https://line.me/ti/g/yBNcV4Y8GU";   // 高榮企業工會 Line 群組
 
 /* ============================================================
@@ -434,9 +434,27 @@ document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='E
 
 /* ---------- 連署／加入按鈕 ---------- */
 function goJoin(){
-  const url=FORM_URL||LINE_URL;
-  if(url){ window.open(url,'_blank','noopener'); }
+  if(FORM_URL && LINE_URL){ openJoinModal(); }
+  else if(FORM_URL || LINE_URL){ window.open(FORM_URL||LINE_URL,'_blank','noopener'); }
   else { alert('連署／加入連結還沒設定。\n請工會幹部在程式碼設定區填入 Google 表單或 Line 連結（FORM_URL / LINE_URL）。'); }
+}
+// 連署：先請填表單（後台收件），再附上 LINE，兩個都給、不擋 LINE
+function openJoinModal(){
+  let m=document.getElementById('joinModal');
+  if(!m){
+    m=document.createElement('div'); m.id='joinModal';
+    m.style.cssText='position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1.2rem;';
+    m.innerHTML='<div style="background:#fff;border-radius:16px;max-width:360px;width:100%;padding:1.5rem 1.3rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);">'
+      +'<div style="font-family:\'Noto Serif TC\',serif;font-size:19px;font-weight:700;color:#7B1818;margin-bottom:10px;">想連署／加入？兩步都做最好 🙌</div>'
+      +'<p style="font-size:13.5px;color:#444;line-height:1.85;margin-bottom:1.1rem;">① 先填<b>連署表單</b>，幹部才收得到你的資料、後續才能聯繫你簽連署書。<br>② 再加 <b>LINE 群</b>掌握最新進度。</p>'
+      +'<a href="'+FORM_URL+'" target="_blank" rel="noopener" style="display:block;background:#C0392B;color:#fff;font-weight:600;text-decoration:none;padding:13px;border-radius:10px;margin-bottom:10px;">📝 ① 填連署表單（重要）</a>'
+      +'<a href="'+LINE_URL+'" target="_blank" rel="noopener" style="display:block;background:#06C755;color:#fff;font-weight:600;text-decoration:none;padding:13px;border-radius:10px;margin-bottom:14px;">💬 ② 加入 LINE 群</a>'
+      +'<button type="button" onclick="document.getElementById(\'joinModal\').style.display=\'none\'" style="background:none;border:none;color:#777;font-size:14px;cursor:pointer;">稍後再說</button>'
+      +'</div>';
+    m.addEventListener('click',function(e){ if(e.target===m) m.style.display='none'; });
+    document.body.appendChild(m);
+  }
+  m.style.display='flex';
 }
 ['cta-join','cta-join2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',goJoin); });
 // Line 聯絡連結
