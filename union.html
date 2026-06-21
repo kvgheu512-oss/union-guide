@@ -105,13 +105,24 @@
     <div class="header-label">高榮企業工會</div>
     <h1>幹部功能表</h1>
     <div class="header-sub">依「五理一監」分工 · 點一下就用</div>
-    <div class="prep">🏗 籌備中</div>
+    <div class="prep" id="prepBadge">🏗 籌備中</div>
   </div>
 
   <main>
     <p style="font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--border);border-radius:12px;padding:.7rem .85rem;margin-bottom:.4rem;line-height:1.75;">
       依章程第16條，本會置<b>理事五人（含理事長）、監事一人</b>。分工：理事長、法規（小巫）、文宣（妍妍）、總務（瑋聆）、組訓（柏宏）、監事。找自己的區塊辦事；標「建置中」的工具陸續加入。
     </p>
+
+    <a class="tile" href="founding.html" style="border-left-color:var(--red);background:linear-gradient(180deg,#fff,#FDF6F5)">
+      <div class="row">
+        <span class="ico">🏗</span>
+        <div>
+          <div class="t" style="color:var(--red-deep)">籌備進度與成立大會書表流程</div>
+          <div class="d">照官方流程<b>逐步勾選</b>（連署→成立大會→登記）、每步附官方書表。走完並收到核可文件後，可<b>一鍵解鎖「籌備中→正式運營」</b>。</div>
+        </div>
+        <span class="go" style="color:var(--red)">→</span>
+      </div>
+    </a>
 
     <a class="tile" href="official-forms.html" style="border-left-color:var(--navy)">
       <div class="row">
@@ -324,6 +335,9 @@ else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
 document.getElementById('gate-go').addEventListener('click',tryUnlock);
 document.getElementById('gate-pw').addEventListener('keydown',function(e){ if(e.key==='Enter') tryUnlock(); });
+// 工會狀態：籌備中 ↔ 正式運營（讀 founding.html 設定的本機狀態）
+(function(){ try{ var s=JSON.parse(localStorage.getItem("union_status_v1")); var b=document.getElementById("prepBadge");
+  if(b && s && s.status==="official"){ b.textContent="🎖 正式運營"; b.style.background="#FFF6D6"; b.style.color="#7A5800"; b.style.borderColor="#E8C84A"; } }catch(_){}})();
 </script>
 <script src="law-tips.js" defer></script>
 </body>

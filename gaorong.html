@@ -209,7 +209,7 @@
 
   <div class="header">
     <img class="header-logo" src="assets/union-logo.png" alt="高榮企業工會會徽">
-    <span class="badge-prep">🛠 籌備中 · 招募發起人</span>
+    <span class="badge-prep" id="prepBadge">🛠 籌備中 · 招募發起人</span>
     <h1>高榮企業工會</h1>
     <div class="header-sub">由高雄榮總「勞工身分」同仁發起，依《工會法》籌組的企業工會。團結，是為了讓我們的勞動條件被認真對待。</div>
   </div>
@@ -625,6 +625,9 @@ document.getElementById('faq-toggle-btn').addEventListener('click',function(){
   function toast(t){ var e=document.getElementById('share-toast'); if(e){ e.textContent=t; setTimeout(function(){ e.textContent=''; },2600); } }
   var sBtn=document.getElementById('share-btn'); if(sBtn) sBtn.addEventListener('click',function(){ var text=msg(); if(navigator.share){ navigator.share({title:'高榮企業工會 連署',text:text,url:url}).catch(function(){}); } else if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){toast('✅ 已複製，貼到 LINE 群組即可');},function(){toast('請長按訊息複製');}); } else { toast('請長按訊息複製'); } });
   var cBtn=document.getElementById('copy-btn'); if(cBtn) cBtn.addEventListener('click',function(){ if(navigator.clipboard){ navigator.clipboard.writeText(msg()).then(function(){toast('✅ 連署訊息已複製');},function(){toast('請長按複製');}); } else { toast('請長按複製'); } });
+  // 工會狀態：籌備中 → 正式運營（由幹部在 founding.html 解鎖後，本機顯示更新）
+  try{ var st=JSON.parse(localStorage.getItem("union_status_v1")); var pb=document.getElementById("prepBadge");
+    if(pb && st && st.status==="official"){ pb.textContent="🎖 正式運營 · 歡迎加入"; pb.style.background="#FFF6D6"; pb.style.color="#7A5800"; } }catch(_){}
 })();
 </script>
 </body>

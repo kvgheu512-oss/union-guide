@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#C0392B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="籌備進度">
+<title>籌備進度與成立大會書表流程 · 高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#C0392B; --red-deep:#7B1818; --red-light:#FDECEA;
+    --gold:#B7860B; --gold-light:#FEF9E7;
+    --ink:#1A1A1A; --ink-mid:#444; --ink-soft:#777; --bg:#FAFAF8;
+    --card:#FFFFFF; --border:#E8E4DE;
+    --green:#1A7A4A; --green-mid:#2D9D6E; --green-deep:#0F5C36;
+    --navy:#1A3A6B; --navy-mid:#2E5C8A; --navy-deep:#122A4F;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%;}
+  img{max-width:100%;}
+  a{color:var(--navy);}
+
+  .back{position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;background:#fff;color:#7B1818;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);}
+
+  .header{background:var(--red);color:#fff;padding:1.9rem 1.25rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:21px;font-weight:700;position:relative;}
+  .header .sub{font-size:12.5px;opacity:.92;margin-top:7px;position:relative;}
+  .statusbadge{display:inline-block;margin-top:12px;border-radius:20px;padding:4px 16px;font-size:13px;font-weight:700;position:relative;}
+  .statusbadge.prep{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);}
+  .statusbadge.official{background:#FFF6D6;color:#7A5800;border:1px solid #E8C84A;box-shadow:0 2px 10px rgba(0,0,0,.18);}
+
+  main{max-width:600px;margin:0 auto;padding:1.3rem 1.05rem 4rem;}
+  .lead{background:#fff;border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;font-size:12.8px;color:var(--ink-mid);line-height:1.8;margin-bottom:1rem;}
+  .lead b{color:var(--red-deep);}
+
+  /* 進度條 */
+  .prog{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1.2rem;}
+  .prog .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.55rem;}
+  .prog .lab{font-family:'Noto Serif TC',serif;font-weight:700;font-size:15px;color:var(--navy-deep);}
+  .prog .num{font-size:13px;color:var(--ink-soft);} .prog .num b{color:var(--red);font-size:18px;}
+  .bar{height:12px;border-radius:8px;background:#EAE6E0;overflow:hidden;}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2D9D6E,#1A7A4A);transition:width .4s;}
+
+  h2{font-family:'Noto Serif TC',serif;color:var(--navy-deep);font-size:16px;margin:1.6rem 2px .7rem;display:flex;align-items:center;gap:8px;}
+
+  /* 步驟卡 */
+  .step{background:#fff;border:1px solid var(--border);border-left:5px solid var(--navy);border-radius:14px;padding:.95rem 1rem;margin-bottom:.7rem;}
+  .step.done{border-left-color:var(--green);background:#F4FBF7;}
+  .step .head{display:flex;align-items:flex-start;gap:12px;}
+  .step .chk{flex-shrink:0;width:26px;height:26px;border:2px solid #C9C3BA;border-radius:7px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;margin-top:2px;user-select:none;}
+  .step.done .chk{background:var(--green);border-color:var(--green);}
+  .step .no{font-size:11px;color:var(--ink-soft);font-weight:700;letter-spacing:.05em;}
+  .step .t{font-family:'Noto Serif TC',serif;font-weight:700;font-size:15.5px;color:var(--navy-deep);margin-top:1px;}
+  .step.done .t{color:var(--green-deep);}
+  .step .d{font-size:12.7px;color:var(--ink-mid);margin-top:5px;line-height:1.75;}
+  .step .links{margin-top:.6rem;display:flex;flex-wrap:wrap;gap:7px;}
+  .step .links a{font-size:12px;text-decoration:none;background:#EEF3FA;color:var(--navy-deep);border:1px solid #D5E0EF;border-radius:16px;padding:4px 11px;font-weight:600;}
+  .step .links a.law{background:#FBF6E5;color:#7A5800;border-color:#E8DBA8;}
+  .step .links a.tool{background:#FDECEA;color:#7B1818;border-color:#F3C9C4;}
+
+  .note{background:var(--gold-light);border:1px solid #EAD67A;border-radius:12px;padding:.8rem 1rem;font-size:12.5px;color:#5C4000;line-height:1.8;margin:.4rem 0 1rem;}
+
+  /* 解鎖區 */
+  .unlock-wrap{margin-top:2rem;border:2px solid #E8C84A;border-radius:18px;overflow:hidden;background:#fff;}
+  .unlock-wrap .uh{background:linear-gradient(160deg,#1A3A6B,#122A4F);color:#fff;padding:1.1rem 1.1rem;}
+  .unlock-wrap .uh .ut{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;}
+  .unlock-wrap .uh .us{font-size:12px;opacity:.9;margin-top:5px;line-height:1.7;}
+  .unlock-body{padding:1.1rem 1.1rem 1.3rem;}
+
+  .lockmsg{background:#FDECEA;border:1px solid #F3C9C4;border-radius:12px;padding:.85rem 1rem;font-size:13px;color:#7B1818;line-height:1.8;text-align:center;}
+  .lockmsg b{font-weight:700;}
+
+  .gateform{display:none;}
+  .gateform.show{display:block;}
+  .att{display:flex;align-items:flex-start;gap:11px;background:#FAFAF8;border:1px solid var(--border);border-radius:11px;padding:.75rem .85rem;margin-bottom:.6rem;cursor:pointer;}
+  .att input{width:22px;height:22px;flex-shrink:0;margin-top:2px;accent-color:var(--green);}
+  .att span{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+  .fld{margin-bottom:.8rem;}
+  .fld label{display:block;font-size:12.5px;font-weight:700;color:var(--navy-deep);margin-bottom:5px;}
+  .fld label .req{color:var(--red);}
+  .fld input{width:100%;padding:.7rem .85rem;font-size:15px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;}
+  .fld input:focus{outline:none;border-color:var(--navy);}
+  .fld .hint{font-size:11.5px;color:var(--ink-soft);margin-top:4px;line-height:1.6;}
+
+  .ubtn{width:100%;padding:.95rem;font-size:16px;font-weight:700;color:#fff;background:#B0AAA2;border:none;border-radius:12px;cursor:not-allowed;font-family:'Noto Serif TC',serif;letter-spacing:.05em;}
+  .ubtn.ready{background:linear-gradient(135deg,#C0392B,#7B1818);cursor:pointer;box-shadow:0 6px 18px rgba(123,24,24,.3);}
+  .ubtn.ready:active{transform:scale(.99);}
+  .uerr{color:var(--red);font-size:12.5px;min-height:18px;margin-top:8px;text-align:center;line-height:1.6;}
+
+  .doneblock{text-align:center;padding:.5rem 0;}
+  .doneblock .seal{font-size:54px;}
+  .doneblock .dt{font-family:'Noto Serif TC',serif;font-size:19px;font-weight:700;color:var(--green-deep);margin:.3rem 0;}
+  .doneblock .dmeta{font-size:13px;color:var(--ink-mid);line-height:1.9;background:#F4FBF7;border:1px solid #CDEBD9;border-radius:12px;padding:.8rem 1rem;margin:.7rem 0;text-align:left;}
+  .doneblock .dmeta b{color:var(--green-deep);}
+  .revert{margin-top:.8rem;font-size:12px;color:var(--ink-soft);background:none;border:none;text-decoration:underline;cursor:pointer;}
+
+  .foot{text-align:center;font-size:11px;color:var(--ink-soft);margin-top:1.8rem;line-height:1.9;}
+</style>
+</head>
+<body>
+<a class="back" href="union.html" onclick="if(history.length>1){history.back();return false;}">‹ 功能表</a>
+
+<div class="header">
+  <h1>🏗 工會籌備進度</h1>
+  <div class="sub">成立大會書表流程 · 走完才能解鎖正式運營</div>
+  <div id="hbadge" class="statusbadge prep">🏗 籌備中</div>
+</div>
+
+<main>
+  <div class="lead">
+    本頁照<b>勞動部／高雄市勞工局</b>官方籌組流程逐步勾選。每完成一步就打勾、進度自動記在<b>本機</b>（不上傳）。
+    <b>全部走完、且收到主管機關核發的「工會登記證書／立案核可文件」後</b>，最下方的解鎖按鈕才會啟用——把工會從「籌備中」改為「正式運營」。
+  </div>
+
+  <div class="prog">
+    <div class="top">
+      <span class="lab">籌組進度</span>
+      <span class="num"><b id="pnum">0</b> / <span id="ptot">8</span> 步</span>
+    </div>
+    <div class="bar"><i id="pbar"></i></div>
+  </div>
+
+  <h2>📋 籌組流程（逐步勾選）</h2>
+  <div id="steps"></div>
+
+  <div class="note">
+    📌 各步驟連結均直連<b>官方「活的」頁面</b>（主管機關更新你就拿到最新版）。送件在地窗口：<b>高雄市政府勞工局</b>，輔導工會組織諮詢 ☎️ 07-8124613 轉 #122～#125。
+  </div>
+
+  <!-- ===== 解鎖：籌備中 → 正式運營 ===== -->
+  <div class="unlock-wrap">
+    <div class="uh">
+      <div class="ut">🔓 解鎖：籌備中 → 正式運營</div>
+      <div class="us">這個按鈕只能在<b>真實走完全部流程、並收到勞動部／勞工局核可文件</b>後使用。為防手殘誤觸，需通過多道確認（勾選＋填入正式文號＋手動輸入確認字）。</div>
+    </div>
+    <div class="unlock-body" id="ubody"></div>
+  </div>
+
+  <div class="foot">
+    流程與書表以主管機關公告為準 · 高雄榮民總醫院企業工會（籌備中）<br>
+    進度與解鎖狀態只存在你這支裝置的瀏覽器，換裝置／清除資料需重設。
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var STEP_KEY = "union_prep_steps_v1";
+  var STATUS_KEY = "union_status_v1";
+
+  // 官方籌組流程（依勞動部「如何籌組工會」與高雄市勞工局作業流程）
+  var STEPS = [
+    { t:"30 人以上連署發起", d:"同一廠場／事業單位內年滿 16 歲勞工 30 人以上連署，推派發起人。連署書、發起人名冊備齊。",
+      links:[ {l:"勞動部·如何籌組工會", u:"https://www.mol.gov.tw/topic/3073/19159/"}, {l:"連署進度", u:"gaorong.html", c:"tool"} ] },
+    { t:"召開發起人會議", d:"發起人會議推選籌備委員、組成籌備會，訂定籌備工作計畫與時程，並決定公開徵求會員方式。",
+      links:[ {l:"開會通知（公文工具）", u:"gongwen.html", c:"tool"}, {l:"會議記錄工具", u:"meeting.html", c:"tool"} ] },
+    { t:"公開徵求會員", d:"以公告對外公開徵求會員、受理入會申請，建立會員名冊。會員入會申請書用官方範例。",
+      links:[ {l:"入會申請書（官方·odt）", u:"https://socbu.kcg.gov.tw/download_file.php?file_dir=wf_content_file&file_link=WFC_00312_20160115_3Mi.odt"}, {l:"名冊工具", u:"roster.html", c:"tool"} ] },
+    { t:"召開籌備會議", d:"審查會員入會資格、擬訂章程草案、編列成立大會議程與各項書表，並排定成立大會日期。",
+      links:[ {l:"章程範本", u:"charter.html", c:"tool"}, {l:"工會法施行細則", u:"https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=N0020002", c:"law"} ] },
+    { t:"召開成立大會", d:"由會員（或會員代表）出席，通過章程、選舉理事與監事、議決會務與經費。製作簽到簿、會議記錄、選舉票數紀錄。",
+      links:[ {l:"成立大會議程範本", u:"meeting.html", c:"tool"}, {l:"工會法", u:"https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020001", c:"law"} ] },
+    { t:"理監事會·互選理事長", d:"成立大會後召開第一次理事會，由理事互選常務理事及理事長；監事互選常務監事（依章程）。",
+      links:[ {l:"幹部分工", u:"union.html", c:"tool"} ] },
+    { t:"報請主管機關登記", d:"自成立之日起 30 日內，檢具章程、會員名冊、理監事名冊、成立大會記錄等，函報高雄市政府勞工局登記。",
+      links:[ {l:"勞工局·表單下載", u:"https://labor.kcg.gov.tw/Content_List.aspx?n=85EE91CDA73D6665"}, {l:"函報公文（工具）", u:"gongwen.html", c:"tool"} ] },
+    { t:"領取登記證書／核可文件", d:"主管機關審查通過後核發「工會登記證書／立案核可文件」。收到此文件＝正式成立。請保存正本與文號。",
+      links:[ {l:"官方書表與法令", u:"official-forms.html", c:"tool"} ] }
+  ];
+
+  function loadSteps(){
+    try{ var a = JSON.parse(localStorage.getItem(STEP_KEY)); if(Array.isArray(a)) return a; }catch(e){}
+    return STEPS.map(function(){return false;});
+  }
+  function saveSteps(a){ try{ localStorage.setItem(STEP_KEY, JSON.stringify(a)); }catch(e){} }
+  function getStatus(){
+    try{ var s = JSON.parse(localStorage.getItem(STATUS_KEY)); if(s && s.status==="official") return s; }catch(e){}
+    return null;
+  }
+
+  var state = loadSteps();
+  if(state.length !== STEPS.length){ var n=STEPS.map(function(){return false;}); for(var i=0;i<Math.min(state.length,n.length);i++)n[i]=!!state[i]; state=n; }
+
+  var stepsEl = document.getElementById("steps");
+  var pnum = document.getElementById("pnum"), pbar = document.getElementById("pbar"), ptot=document.getElementById("ptot");
+  ptot.textContent = STEPS.length;
+
+  function linkHtml(l){
+    var cls = l.c==="law" ? "law" : l.c==="tool" ? "tool" : "";
+    var ext = (l.u.indexOf("http")===0) ? ' target="_blank" rel="noopener"' : '';
+    var arrow = (l.u.indexOf("http")===0) ? " ↗" : " ›";
+    return '<a class="'+cls+'" href="'+l.u+'"'+ext+'>'+l.l+arrow+'</a>';
+  }
+
+  function renderSteps(){
+    stepsEl.innerHTML = "";
+    STEPS.forEach(function(s, idx){
+      var done = state[idx];
+      var div = document.createElement("div");
+      div.className = "step" + (done?" done":"");
+      var links = (s.links||[]).map(linkHtml).join("");
+      div.innerHTML =
+        '<div class="head">'+
+          '<div class="chk" data-i="'+idx+'" role="checkbox" aria-checked="'+done+'">'+(done?"✓":"")+'</div>'+
+          '<div style="flex:1">'+
+            '<div class="no">步驟 '+(idx+1)+'</div>'+
+            '<div class="t">'+s.t+'</div>'+
+            '<div class="d">'+s.d+'</div>'+
+            (links?'<div class="links">'+links+'</div>':'')+
+          '</div>'+
+        '</div>';
+      stepsEl.appendChild(div);
+    });
+    stepsEl.querySelectorAll(".chk").forEach(function(c){
+      c.addEventListener("click", function(){
+        var i = +this.getAttribute("data-i");
+        state[i] = !state[i];
+        saveSteps(state);
+        renderSteps();
+        updateProgress();
+        renderUnlock();
+      });
+    });
+  }
+
+  function allDone(){ return state.every(Boolean); }
+  function updateProgress(){
+    var n = state.filter(Boolean).length;
+    pnum.textContent = n;
+    pbar.style.width = (n/STEPS.length*100)+"%";
+  }
+
+  // ===== 解鎖區 =====
+  var ubody = document.getElementById("ubody");
+  var CONFIRM_WORD = "正式運營";
+
+  function renderUnlock(){
+    var st = getStatus();
+    if(st){ renderDone(st); return; }
+    if(!allDone()){
+      ubody.innerHTML =
+        '<div class="lockmsg">🔒 流程<b>尚未全部完成</b>（'+state.filter(Boolean).length+'／'+STEPS.length+'）。<br>請先逐步走完上方流程、收到主管機關核可文件後，本區才會開放解鎖。</div>';
+      return;
+    }
+    // 全部勾完 → 顯示多道確認表單
+    ubody.innerHTML =
+      '<div class="lockmsg" style="background:#FFF6D6;border-color:#E8C84A;color:#7A5800">✅ 流程已全部勾選完成。<b>請務必確認你「真的」已收到核可文件</b>，再逐項通過下列確認。</div>'+
+      '<div class="gateform show" id="gform" style="margin-top:1rem">'+
+        '<label class="att"><input type="checkbox" class="a"> <span>成立大會已實際召開完畢，<b>章程已通過、理監事已選出</b>。</span></label>'+
+        '<label class="att"><input type="checkbox" class="a"> <span>已於成立日起 30 日內向<b>高雄市政府勞工局</b>完成函報登記。</span></label>'+
+        '<label class="att"><input type="checkbox" class="a"> <span>已<b>實際收到</b>主管機關核發的「工會登記證書／立案核可文件」（正本在手）。</span></label>'+
+        '<div class="fld" style="margin-top:.9rem">'+
+          '<label>登記證書字號／核可文號 <span class="req">＊必填</span></label>'+
+          '<input id="docno" type="text" inputmode="text" autocomplete="off" placeholder="例：高市勞○字第○○○○○○○號">'+
+          '<div class="hint">請照核可公文上的文號逐字填入（至少 6 個字元）。此欄留空或亂填無法解鎖。</div>'+
+        '</div>'+
+        '<div class="fld">'+
+          '<label>核可／登記日期 <span class="req">＊必填</span></label>'+
+          '<input id="docdate" type="date">'+
+        '</div>'+
+        '<div class="fld">'+
+          '<label>手動輸入確認字：請輸入「<b>'+CONFIRM_WORD+'</b>」 <span class="req">＊必填</span></label>'+
+          '<input id="cword" type="text" autocomplete="off" placeholder="在此手動輸入四個字">'+
+          '<div class="hint">這一步是防手殘誤觸的最後一關，必須親手輸入。</div>'+
+        '</div>'+
+        '<button class="ubtn" id="ubtn">🔓 確認解鎖為「正式運營」</button>'+
+        '<div class="uerr" id="uerr"></div>'+
+      '</div>';
+
+    var gform = document.getElementById("gform");
+    var ubtn = document.getElementById("ubtn");
+    var uerr = document.getElementById("uerr");
+    var atts = gform.querySelectorAll(".a");
+    var docno = document.getElementById("docno");
+    var docdate = document.getElementById("docdate");
+    var cword = document.getElementById("cword");
+
+    function ready(){
+      var allAtt = Array.prototype.every.call(atts, function(c){return c.checked;});
+      var noOk = docno.value.trim().length >= 6;
+      var dateOk = !!docdate.value;
+      var wordOk = cword.value.trim() === CONFIRM_WORD;
+      return allAtt && noOk && dateOk && wordOk;
+    }
+    function refresh(){
+      if(ready()){ ubtn.classList.add("ready"); uerr.textContent=""; }
+      else ubtn.classList.remove("ready");
+    }
+    gform.addEventListener("input", refresh);
+    gform.addEventListener("change", refresh);
+
+    ubtn.addEventListener("click", function(){
+      if(!ready()){
+        var msgs=[];
+        if(!Array.prototype.every.call(atts,function(c){return c.checked;})) msgs.push("三項確認尚未全勾");
+        if(docno.value.trim().length<6) msgs.push("文號未填或太短");
+        if(!docdate.value) msgs.push("日期未填");
+        if(cword.value.trim()!==CONFIRM_WORD) msgs.push("確認字不符");
+        uerr.textContent = "尚未通過：" + msgs.join("、");
+        return;
+      }
+      // 最後一道：原生雙重確認
+      var ok = window.confirm("最後確認：\n\n你即將把工會狀態從「籌備中」永久改為「正式運營」。\n文號：" + docno.value.trim() + "\n\n這代表流程已真實走完、核可文件已在手。確定解鎖嗎？");
+      if(!ok){ uerr.textContent="已取消，未解鎖。"; return; }
+      var rec = { status:"official", docNo:docno.value.trim(), date:docdate.value, unlockedAt:new Date().toISOString() };
+      try{ localStorage.setItem(STATUS_KEY, JSON.stringify(rec)); }catch(e){}
+      renderUnlock();
+      updateBadge();
+      window.scrollTo({top:document.querySelector(".unlock-wrap").offsetTop-60, behavior:"smooth"});
+    });
+    refresh();
+  }
+
+  function renderDone(st){
+    var d = st.date ? st.date.replace(/-/g,"/") : "—";
+    ubody.innerHTML =
+      '<div class="doneblock">'+
+        '<div class="seal">🎉</div>'+
+        '<div class="dt">已正式運營</div>'+
+        '<div class="dmeta">'+
+          '工會狀態：<b>正式運營</b><br>'+
+          '登記證書／核可文號：<b>'+escapeHtml(st.docNo)+'</b><br>'+
+          '核可／登記日期：<b>'+d+'</b><br>'+
+          '解鎖時間：'+(st.unlockedAt?new Date(st.unlockedAt).toLocaleString("zh-TW"):"—")+
+        '</div>'+
+        '<div style="font-size:12px;color:#777;line-height:1.8">全站「籌備中」標記將更新為「正式運營」。<br>恭喜——這條路是大家一步一步走出來的。</div>'+
+        '<button class="revert" id="revertBtn">（如為誤設，點此還原為籌備中）</button>'+
+      '</div>';
+    var rb = document.getElementById("revertBtn");
+    if(rb) rb.addEventListener("click", function(){
+      if(window.confirm("確定要把狀態還原為「籌備中」嗎？\n（不影響上方各步驟的勾選紀錄）")){
+        try{ localStorage.removeItem(STATUS_KEY); }catch(e){}
+        renderUnlock(); updateBadge();
+      }
+    });
+  }
+
+  function escapeHtml(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+  function updateBadge(){
+    var b = document.getElementById("hbadge");
+    var st = getStatus();
+    if(st){ b.className="statusbadge official"; b.textContent="🎖 正式運營"; }
+    else { b.className="statusbadge prep"; b.textContent="🏗 籌備中"; }
+  }
+
+  renderSteps();
+  updateProgress();
+  renderUnlock();
+  updateBadge();
+})();
+</script>
+<script src="law-tips.js" defer></script>
+</body>
+</html>
