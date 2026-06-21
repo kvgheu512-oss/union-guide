@@ -279,7 +279,7 @@ document.querySelector('[data-doc="sign"]').addEventListener('click',()=>{
    <h1>高雄榮民總醫院企業工會</h1>
    <div class="sub">${esc(cur.name)}（${esc(cur.type)}）簽到表<br>📅 ${cur.date||'＿＿'}　📍 ${esc(cur.place||'＿＿')}　報名 ${cur.regs.length} 人／共 ${headcount(cur)} 人</div>
    <table><thead><tr><th style="width:3em">編號</th><th>姓名</th><th>單位</th><th style="width:4em">攜伴</th><th style="width:28%">簽到</th></tr></thead><tbody>${rows}</tbody></table>
-   <div style="text-align:center"><button onclick="window.print()">🖨 列印／存 PDF</button><button onclick="window.close()">關閉</button></div><div id="verBadge" style="position:fixed;right:7px;bottom:5px;z-index:99999;font:10px/1 system-ui,sans-serif;color:rgba(120,120,120,.5);letter-spacing:.05em;pointer-events:none">v2026062127</div>
+   <div style="text-align:center"><button onclick="window.print()">🖨 列印／存 PDF</button><button onclick="window.close()">關閉</button></div><div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026062128</div>
 </body></html>`);
   w.document.close();
 });

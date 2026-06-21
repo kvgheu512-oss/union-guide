@@ -1138,7 +1138,7 @@ function exportWord(){
     +"table{border-collapse:collapse}td{border:1px solid #999;padding:3pt 8pt}td.k{font-weight:bold;background:#eee;width:48pt}"
     +".wm{color:#888;font-size:9pt;margin-top:24pt}";
   const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-    +'<head><meta charset="utf-8"><title>'+e(d.title||"實證報告")+'</title><style>'+css+'</style></head><body>'+b+'<div id="verBadge" style="position:fixed;right:7px;bottom:5px;z-index:99999;font:10px/1 system-ui,sans-serif;color:rgba(120,120,120,.5);letter-spacing:.05em;pointer-events:none">v2026062127</div>
+    +'<head><meta charset="utf-8"><title>'+e(d.title||"實證報告")+'</title><style>'+css+'</style></head><body>'+b+'<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026062128</div>
 </body></html>';
   const blob=new Blob(['﻿'+html],{type:"application/msword"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
