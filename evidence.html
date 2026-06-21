@@ -1153,9 +1153,7 @@ function exportWord(){
     +"table{border-collapse:collapse}td{border:1px solid #999;padding:3pt 8pt}td.k{font-weight:bold;background:#eee;width:48pt}"
     +".wm{color:#888;font-size:9pt;margin-top:24pt}";
   const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-    +'<head><meta charset="utf-8"><title>'+e(d.title||"實證報告")+'</title><style>'+css+'</style></head><body>'+b+'<div id="verBadge">v2026.06.21.66</div>
-<script src="common.js" defer></script>
-</body></html>';
+    +'<head><meta charset="utf-8"><title>'+e(d.title||"實證報告")+'</title><style>'+css+'</style></head><body>'+b+'</body></html>';
   const blob=new Blob(['﻿'+html],{type:"application/msword"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(d.group?d.group+"_":"")+"實證報告.doc";
