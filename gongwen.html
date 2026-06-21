@@ -42,11 +42,11 @@
   .gate-err{color:var(--red);font-size:13px;min-height:18px;margin-top:8px;}
 
   .header{background:linear-gradient(160deg,#1B7536 0%,#0E5023 100%);color:#fff;padding:1.5rem 1.25rem 1.2rem;text-align:center;position:relative;overflow:hidden;}
-  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.07);}
+  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none;}
   .header-label{font-size:11px;letter-spacing:.18em;opacity:.9;margin-bottom:4px;}
   .header h1{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;}
   .header-sub{font-size:12.5px;opacity:.95;margin-top:6px;}
-  .back{position:absolute;left:12px;top:14px;color:#fff;text-decoration:none;font-size:13px;opacity:.95;background:rgba(255,255,255,.18);padding:4px 10px;border-radius:20px;}
+  .back{position:absolute;left:12px;top:14px;color:#fff;text-decoration:none;font-size:13px;opacity:.95;background:rgba(255,255,255,.18);padding:4px 10px;border-radius:20px;z-index:30;pointer-events:auto;}
 
   main{max-width:640px;margin:0 auto;padding:1rem 1rem 4rem;}
 
@@ -241,7 +241,7 @@ $('gen-btn').addEventListener('click',()=>{
    @media print{button{display:none;}} button{margin:1rem .3rem;padding:.5rem 1.2rem;font-size:14px;cursor:pointer;}</style>
    </head><body>${buildDoc()}
    <div style="text-align:center"><button onclick="window.print()">🖨 列印／存 PDF</button><button onclick="window.close()">關閉</button></div>
-   <div id="verBadge" style="position:fixed;top:48px;right:8px;z-index:99999;font:11px/1 system-ui,sans-serif;color:#fff;background:rgba(14,80,35,.82);padding:3px 8px;border-radius:10px;letter-spacing:.04em;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">v2026062126</div>
+   <div id="verBadge" style="position:fixed;right:7px;bottom:5px;z-index:99999;font:10px/1 system-ui,sans-serif;color:rgba(120,120,120,.5);letter-spacing:.05em;pointer-events:none">v2026062127</div>
 </body></html>`);
   w.document.close();
 });

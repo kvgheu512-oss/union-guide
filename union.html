@@ -40,7 +40,7 @@
 
   /* ===== 頁首 ===== */
   .header{background:linear-gradient(160deg,#1B7536 0%,#0E5023 100%);color:#fff;padding:1.8rem 1.25rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
-  .header::before{content:'';display:none;}
+  .header::before{content:'';display:none;pointer-events:none;}
   .header-logo{display:block;width:78px;height:78px;object-fit:contain;margin:0 auto 12px;background:#fff;border-radius:16px;padding:7px;box-shadow:0 4px 14px rgba(0,0,0,.22);position:relative;}
   .header-label{font-size:11px;letter-spacing:.15em;opacity:.88;margin-bottom:4px;}
   .header h1{font-family:'Noto Serif TC',serif;font-size:23px;font-weight:700;}
@@ -271,6 +271,6 @@ else { showGate(); }
 document.getElementById('gate-go').addEventListener('click',tryUnlock);
 document.getElementById('gate-pw').addEventListener('keydown',function(e){ if(e.key==='Enter') tryUnlock(); });
 </script>
-<div id="verBadge" style="position:fixed;top:48px;right:8px;z-index:99999;font:11px/1 system-ui,sans-serif;color:#fff;background:rgba(14,80,35,.82);padding:3px 8px;border-radius:10px;letter-spacing:.04em;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">v2026062126</div>
+<div id="verBadge" style="position:fixed;right:7px;bottom:5px;z-index:99999;font:10px/1 system-ui,sans-serif;color:rgba(120,120,120,.5);letter-spacing:.05em;pointer-events:none">v2026062127</div>
 </body>
 </html>
