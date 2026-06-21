@@ -8,6 +8,7 @@
   作者印記（浮水印）：WJR-UNIONGUIDE-66952b6d877c48cdaa2adfea21380134-lawyer.html
   未經著作人巫佳容授權，不得重製、改作、公開傳輸、散布或為營利使用。
   完整存證與各檔 SHA-256 指紋見同目錄之 OWNERSHIP.md。
+  授權範圍（無償、非專屬、得隨時撤回）見同目錄之 LICENSE-巫佳容.md。
   （移除或竄改本聲明，不影響著作權之歸屬與既存之存證事證。）
   ============================================================
 -->
@@ -449,8 +450,13 @@
    🚨 趕人／重設名單：把 ACCESS_VERSION +1、並換下面 PW_HASH，舊密碼全失效。 */
 const ACCESS_VERSION="1";
 const PW_HASH="2716985802763051", PW_KEY="law_pw_v"+ACCESS_VERSION, UNLOCK_KEY="law_unlocked_v"+ACCESS_VERSION;
+const OWNER_HASH="2913474171027568", OWNER_KEY="law_owner_v"+ACCESS_VERSION, DIS_KEY="law_cadre_dis_v"+ACCESS_VERSION;
 function cyrb53(s,seed=0){ s=s||""; let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed; for(let i=0,c;i<s.length;i++){c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909); return ""+(4294967296*(2097151&h2)+(h1>>>0)); }
-function pwOk(v){ return cyrb53(v)===(localStorage.getItem(PW_KEY)||PW_HASH); }
+function ownerOk(v){ return cyrb53(v)===(localStorage.getItem(OWNER_KEY)||OWNER_HASH); }
+function cadreDisabled(){ return localStorage.getItem(DIS_KEY)==="1"; }
+function pwOk(v){ return !cadreDisabled() && cyrb53(v)===(localStorage.getItem(PW_KEY)||PW_HASH); }
+function masterMenu(){ var o=prompt("🛠 主控台（輸入號碼）\n1 = 停用幹部碼（本機即時）\n2 = 恢復幹部碼\n3 = 變更幹部碼\n4 = 變更主控碼"); if(o==="1"){ localStorage.setItem(DIS_KEY,"1"); alert("已停用幹部碼（本裝置即時生效）。\n永久、全裝置收回：請改 ACCESS_VERSION 版號。"); } else if(o==="2"){ localStorage.removeItem(DIS_KEY); alert("已恢復幹部碼。"); } else if(o==="3"){ var a=prompt("新幹部碼（至少 4 字）"); if(a&&a.trim().length>=4){ localStorage.setItem(PW_KEY,cyrb53(a.trim())); alert("幹部碼已更新（本裝置）。"); } } else if(o==="4"){ var b=prompt("新主控碼（至少 4 字）"); if(b&&b.trim().length>=4){ localStorage.setItem(OWNER_KEY,cyrb53(b.trim())); alert("主控碼已更新（本裝置）。"); } } }
+function showMasterBtn(){ if(document.getElementById("law-master"))return; var b=document.createElement("button"); b.id="law-master"; b.textContent="🛠 主控台"; b.style.cssText="position:fixed;bottom:14px;left:14px;z-index:9000;background:#7B1818;color:#fff;border:0;border-radius:18px;padding:8px 14px;font-size:13px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.4);cursor:pointer"; b.addEventListener("click",masterMenu); document.body.appendChild(b); }
 function unlock(){ document.body.classList.remove("locked"); document.body.classList.add("unlocked"); if(!localStorage.getItem("law_seen_manual")) setTimeout(()=>document.getElementById("welcome").classList.add("show"),350); }
 function closeManual(){ document.getElementById("manual").classList.remove("show"); localStorage.setItem("law_seen_manual","1"); }
 document.getElementById("wel-go").addEventListener("click",()=>{ document.getElementById("welcome").classList.remove("show"); localStorage.setItem("law_seen_manual","1"); });
@@ -476,10 +482,11 @@ document.getElementById("tour-next").addEventListener("click",()=>{ if(_ti<TOUR.
 document.getElementById("tour-skip").addEventListener("click",endTour);
 document.getElementById("wel-tour").addEventListener("click",startTour);
 document.getElementById("man-tour").addEventListener("click",startTour);
-if(sessionStorage.getItem(UNLOCK_KEY)==="1") unlock();
+if(sessionStorage.getItem(UNLOCK_KEY)==="1"){ unlock(); if(localStorage.getItem("law_is_owner")==="1") showMasterBtn(); }
 function tryUnlock(){ const v=document.getElementById("gate-pw").value;
-  if(pwOk(v)){ sessionStorage.setItem(UNLOCK_KEY,"1"); unlock(); }
-  else{ document.getElementById("gate-err").textContent="密碼不對"; document.getElementById("gate-pw").value=""; } }
+  if(ownerOk(v)){ sessionStorage.setItem(UNLOCK_KEY,"1"); localStorage.setItem("law_is_owner","1"); unlock(); showMasterBtn(); }
+  else if(pwOk(v)){ sessionStorage.setItem(UNLOCK_KEY,"1"); localStorage.removeItem("law_is_owner"); unlock(); }
+  else{ document.getElementById("gate-err").textContent=cadreDisabled()?"幹部碼已停用，請洽法規幹部":"密碼不對"; document.getElementById("gate-pw").value=""; } }
 document.getElementById("gate-go").addEventListener("click",tryUnlock);
 document.getElementById("gate-pw").addEventListener("keydown",e=>{ if(e.key==="Enter") tryUnlock(); });
 document.getElementById("chpw-btn").addEventListener("click",()=>{
@@ -508,7 +515,7 @@ function showAppBanner(){ if(sessionStorage.getItem("hideAppBanner"))return; con
   if(/FBAN|FBAV|FBIOS|Instagram|Line\/|MicroMessenger|Twitter|TikTok|GSA\//i.test(navigator.userAgent||"")) showAppBanner(); })();
 
 /* 🔄 自動偵測新版本 */
-const BUILD="2026062151";
+const BUILD="2026062152";
 const CHANGELOG=[
   "新增互動導覽（首頁『▶ 帶我走一遍』）：6 步驟，特別講清楚『免費 vs 付費』怎麼用",
   "法規庫改可摺疊＋預設不全攤（手機不再被上千條洗很長）；搜尋或點分類才列出、超過60條提示縮小範圍",
