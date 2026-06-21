@@ -85,6 +85,7 @@
   .mrow .k{color:var(--ink-soft);}
   .footer-note{text-align:center;font-size:11px;color:var(--ink-soft);margin-top:1.2rem;line-height:1.7;}
 </style>
+<link rel="stylesheet" href="common.css">
 </head>
 <body>
 
@@ -352,8 +353,9 @@ function exportCSV(){
   document.getElementById('fDate').value=new Date().toISOString().slice(0,10);
   renderChips(); refresh();
 })();
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
 </script>
 <script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
 </body>
 </html>

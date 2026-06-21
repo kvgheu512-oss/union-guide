@@ -140,6 +140,7 @@
   }
   .print-only{display:none;}
 </style>
+<link rel="stylesheet" href="common.css">
 </head>
 <body>
 
@@ -428,8 +429,9 @@ function init(){ load(); $('year').value=D.year; renderWork(); renderBudget(); }
 if(!LOCK){ showApp(); }
 else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
 </script>
 <script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
 </body>
 </html>

@@ -280,8 +280,9 @@
   #updbanner .x{position:absolute;top:4px;right:9px;font-size:20px;line-height:1;cursor:pointer;font-weight:700;color:#062b25}
   @media (max-width:430px){.type-grid,.fld-grid{grid-template-columns:1fr}}
 </style>
-<style>@media print{#verBadge{display:none!important}}</style>
+
 <script src="version.js"></script>
+<link rel="stylesheet" href="common.css">
 </head>
 <body class="locked">
 <div id="appbanner"><span class="x" id="appbanner-x">✕</span>⚠️ 你好像是從 App（如 LINE）內建瀏覽器開的，這種視窗常<b>不能複製、按鈕卡卡</b>。建議用真瀏覽器開：<b>iPhone</b> 點下方分享/羅盤圖示→「用 Safari 開啟」；<b>Android</b> 點右上「⋮」→「用瀏覽器開啟」。</div>
@@ -1152,8 +1153,8 @@ function exportWord(){
     +"table{border-collapse:collapse}td{border:1px solid #999;padding:3pt 8pt}td.k{font-weight:bold;background:#eee;width:48pt}"
     +".wm{color:#888;font-size:9pt;margin-top:24pt}";
   const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-    +'<head><meta charset="utf-8"><title>'+e(d.title||"實證報告")+'</title><style>'+css+'</style></head><body>'+b+'<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026.06.21.66</div>
-<script src="ver-badge.js" defer></script>
+    +'<head><meta charset="utf-8"><title>'+e(d.title||"實證報告")+'</title><style>'+css+'</style></head><body>'+b+'<div id="verBadge">v2026.06.21.66</div>
+<script src="common.js" defer></script>
 </body></html>';
   const blob=new Blob(['﻿'+html],{type:"application/msword"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
@@ -1280,7 +1281,7 @@ function checkUpdate(manual){
   const ux=document.getElementById("updbanner-x"); if(ux)ux.addEventListener("click",()=>{ const b=document.getElementById("updbanner"); if(b)b.classList.remove("show"); });
 })();
 // 🛜 離線支援：註冊 service worker（沒網路也能打開工具畫面）
-if("serviceWorker" in navigator){ window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); }); }
+
 function fb(text,ok){ const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy");toast(ok);}catch(e){toast("複製失敗，請手動選取");} document.body.removeChild(ta); }
 
 /* ===================== ⚡ 一鍵自動生成（直接呼叫 Claude API） ===================== */

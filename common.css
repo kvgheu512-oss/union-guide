@@ -1,0 +1,7 @@
+/* 全站共用「與主題色無關」的通用樣式。各頁專屬配色／版面仍在各自 <style>，不受影響。 */
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{-webkit-text-size-adjust:100%;}
+img{max-width:100%;}
+/* 角落淡色版本徽章（文字由 common.js 依 ver.txt 帶入點分隔格式） */
+#verBadge{position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none;}
+@media print{.noprint,#verBadge{display:none!important;}}

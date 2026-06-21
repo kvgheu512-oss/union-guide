@@ -136,7 +136,8 @@
     .page + .page{page-break-before:always;}   /* ⑤ 只在頁與頁之間分頁，最後不留空白頁 */
   }
 </style>
-<style>@media print{#verBadge{display:none!important}}</style>
+
+<link rel="stylesheet" href="common.css">
 </head>
 <body>
   <a class="noprint" href="gaorong.html" onclick="if(history.length>1){history.back();return false;}" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:50;background:#fff;color:#7B1818;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">← 上一頁</a><a class="noprint" href="gaorong.html" style="position:fixed;top:max(10px,env(safe-area-inset-top));right:10px;z-index:50;background:#1A3A6B;color:#fff;font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">🏠 工會首頁</a>
@@ -821,8 +822,8 @@
       tip.innerHTML='📡 <strong>Android 列印：</strong>按「列印」後上方下拉選你的<strong>無線／藍牙印表機</strong>或「儲存成 PDF」。';
   })();
 </script>
-<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026.06.21.66</div>
+<div id="verBadge">v2026.06.21.66</div>
 <script src="law-tips.js" defer></script>
-<script src="ver-badge.js" defer></script>
+<script src="common.js" defer></script>
 </body>
 </html>

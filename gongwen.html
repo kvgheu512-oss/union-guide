@@ -80,6 +80,7 @@
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:13.5px;padding:.6rem 1.1rem;border-radius:30px;opacity:0;pointer-events:none;transition:.25s;z-index:300;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
+<link rel="stylesheet" href="common.css">
 </head>
 <body>
 
@@ -284,8 +285,9 @@ function init(){ $('f-date').value=today(); applyTpl('blank'); renderDrafts(); }
 if(!LOCK){ showApp(); }
 else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
 </script>
 <script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
 </body>
 </html>

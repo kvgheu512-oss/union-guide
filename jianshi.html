@@ -162,6 +162,7 @@
     body{background:#fff;}
   }
 </style>
+<link rel="stylesheet" href="common.css">
 </head>
 <body>
 
@@ -671,8 +672,9 @@ else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
 
 /* Service worker（離線） */
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
 </script>
 <script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
 </body>
 </html>

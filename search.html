@@ -155,8 +155,9 @@
   #updbtn{background:#062b25;color:#fff;border:0;border-radius:7px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
   #updbanner .x{position:absolute;top:4px;right:9px;font-size:20px;line-height:1;cursor:pointer;font-weight:700;color:#062b25}
 </style>
-<style>@media print{#verBadge{display:none!important}}</style>
+
 <script src="version.js"></script>
+<link rel="stylesheet" href="common.css">
 </head>
 <body class="locked">
 <div id="appbanner"><span class="x" id="appbanner-x">✕</span>⚠️ 你好像是從 App（如 LINE）內建瀏覽器開的，這種視窗常<b>不能複製、按鈕卡卡</b>。建議用真瀏覽器開：<b>iPhone</b> 點下方分享/羅盤圖示→「用 Safari 開啟」；<b>Android</b> 點右上「⋮」→「用瀏覽器開啟」。</div>
@@ -453,7 +454,7 @@ function checkUpdate(manual){
   const ux=document.getElementById("updbanner-x"); if(ux)ux.addEventListener("click",()=>{ const b=document.getElementById("updbanner"); if(b)b.classList.remove("show"); });
 })();
 // 🛜 離線支援：註冊 service worker（沒網路也能打開工具畫面）
-if("serviceWorker" in navigator){ window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); }); }
+
 
 /* ===================== 一鍵清除（換下一題） ===================== */
 function clearSearch(){
@@ -712,8 +713,8 @@ document.getElementById("relay-apply").addEventListener("click",()=>{
   applyState(s); toast("✅ 進度已接力過來");
 });
 </script>
-<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026.06.21.66</div>
+<div id="verBadge">v2026.06.21.66</div>
 <script src="law-tips.js" defer></script>
-<script src="ver-badge.js" defer></script>
+<script src="common.js" defer></script>
 </body>
 </html>

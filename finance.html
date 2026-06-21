@@ -117,6 +117,7 @@
   .badge-q{display:inline-block;font-size:11px;background:var(--gray-bg);color:var(--ink-mid);border-radius:6px;padding:1px 7px;margin-left:6px;}
   @media print{.tabs,.no-print,.lawbar{display:none!important;} .panel{display:block!important;} body{background:#fff;}}
 </style>
+<link rel="stylesheet" href="common.css">
 </head>
 <body>
 
@@ -1287,8 +1288,9 @@ function wipe(){ if(prompt('將清空本機所有帳目（明細、財產、預�
   fillAssetCat();
   setType('out'); fillSettings(); renderEntries(); refreshKPI(); renderLaw(); renderReceipts(); renderHome();
 })();
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
 </script>
 <script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
 </body>
 </html>
