@@ -1214,7 +1214,7 @@ function showAppBanner(){ if(sessionStorage.getItem("hideAppBanner"))return; con
 (function(){ const x=document.getElementById("appbanner-x"); if(x)x.addEventListener("click",()=>{ document.getElementById("appbanner").classList.remove("show"); sessionStorage.setItem("hideAppBanner","1"); });
   if(/FBAN|FBAV|FBIOS|Instagram|Line\/|MicroMessenger|Twitter|TikTok|GSA\//i.test(navigator.userAgent||"")) showAppBanner(); })();
 // 🔄 自動偵測新版本：跟伺服器上的 ver.txt 比對，有新版就跳橫幅（使用者完全不用管 ?數字、不用刪圖示）
-const BUILD="2026062014";
+const BUILD="2026062130";
 const CASP_VERSION="CASP 2024";
 const CHANGELOG=[
   "類型預設改為「🤖 我不確定→AI 判斷」，避免忘記改、套錯檢核表",
