@@ -18,7 +18,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--ink); font-size: 15px; line-height: 1.7; }
-  .header { background: var(--red); color: #fff; padding: 2rem 1.25rem 1.5rem; text-align: center; position: relative; overflow: hidden; }
+  .header { background: linear-gradient(160deg,#1B7536 0%,#0E5023 100%); color: #fff; padding: 2rem 1.25rem 1.5rem; text-align: center; position: relative; overflow: hidden; }
   .header::before { content: ''; position: absolute; top: -40px; right: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.06); }
   .header::after { content: ''; position: absolute; bottom: -60px; left: -30px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.04); }
   .header-label { font-size: 11px; letter-spacing: 0.15em; opacity: 0.75; margin-bottom: 8px; }
@@ -154,6 +154,7 @@
     .cd-num { font-size: 26px; }
   }
 </style>
+<style>@media print{#verBadge{display:none!important}}</style>
 </head>
 <body>
 
@@ -591,5 +592,6 @@ document.querySelectorAll('.faq-q').forEach(q => {
   });
 });
 </script>
+<div id="verBadge" style="position:fixed;right:6px;bottom:6px;z-index:99999;font:11px/1 system-ui,sans-serif;color:#fff;background:rgba(14,80,35,.82);padding:3px 8px;border-radius:10px;letter-spacing:.04em;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">v2026062124</div>
 </body>
 </html>

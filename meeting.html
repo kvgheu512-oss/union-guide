@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>會議文件 · 高榮企業工會</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#B7860B">
+<meta name="theme-color" content="#1B7536">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -43,7 +43,7 @@
   .gate-box button{width:100%;padding:.8rem;font-size:15px;color:#fff;background:var(--gold);border:none;border-radius:10px;cursor:pointer;}
   .gate-err{color:var(--red);font-size:13px;min-height:18px;margin-top:8px;}
 
-  .header{background:var(--gold);color:#fff;padding:1.5rem 1.25rem 1.2rem;text-align:center;position:relative;overflow:hidden;}
+  .header{background:linear-gradient(160deg,#1B7536 0%,#0E5023 100%);color:#fff;padding:1.5rem 1.25rem 1.2rem;text-align:center;position:relative;overflow:hidden;}
   .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.08);}
   .header-label{font-size:11px;letter-spacing:.18em;opacity:.9;margin-bottom:4px;}
   .header h1{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;}
@@ -96,6 +96,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .view{display:none;} .view.on{display:block;}
 </style>
+<style>@media print{#verBadge{display:none!important}}</style>
 </head>
 <body>
 
@@ -310,7 +311,8 @@ function openDoc(title,bodyHTML){
     button{margin:1rem .3rem;padding:.5rem 1.2rem;font-size:14px;cursor:pointer;}
     </style></head><body>${bodyHTML}
     <div style="text-align:center"><button onclick="window.print()">🖨 列印 / 存 PDF</button><button onclick="window.close()">關閉</button></div>
-    </body></html>`);
+    <div id="verBadge" style="position:fixed;right:6px;bottom:6px;z-index:99999;font:11px/1 system-ui,sans-serif;color:#fff;background:rgba(14,80,35,.82);padding:3px 8px;border-radius:10px;letter-spacing:.04em;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">v2026062124</div>
+</body></html>`);
   w.document.close();
 }
 function header(){ return `<h1>高雄榮民總醫院企業工會</h1>`; }

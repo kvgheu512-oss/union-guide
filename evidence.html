@@ -6,7 +6,7 @@
 <title>實證評讀工作台</title>
 <!-- PWA：加到主畫面變正式 App（圖示＋名稱＋全螢幕） -->
 <link rel="manifest" href="evidence.webmanifest">
-<meta name="theme-color" content="#0E1626">
+<meta name="theme-color" content="#1B7536">
 <link rel="apple-touch-icon" href="icon-evidence.png">
 <link rel="icon" type="image/png" href="icon-evidence.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -267,6 +267,7 @@
   #updbanner .x{position:absolute;top:4px;right:9px;font-size:20px;line-height:1;cursor:pointer;font-weight:700;color:#062b25}
   @media (max-width:430px){.type-grid,.fld-grid{grid-template-columns:1fr}}
 </style>
+<style>@media print{#verBadge{display:none!important}}</style>
 </head>
 <body class="locked">
 <div id="appbanner"><span class="x" id="appbanner-x">✕</span>⚠️ 你好像是從 App（如 LINE）內建瀏覽器開的，這種視窗常<b>不能複製、按鈕卡卡</b>。建議用真瀏覽器開：<b>iPhone</b> 點下方分享/羅盤圖示→「用 Safari 開啟」；<b>Android</b> 點右上「⋮」→「用瀏覽器開啟」。</div>
@@ -1137,7 +1138,8 @@ function exportWord(){
     +"table{border-collapse:collapse}td{border:1px solid #999;padding:3pt 8pt}td.k{font-weight:bold;background:#eee;width:48pt}"
     +".wm{color:#888;font-size:9pt;margin-top:24pt}";
   const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-    +'<head><meta charset="utf-8"><title>'+e(d.title||"實證報告")+'</title><style>'+css+'</style></head><body>'+b+'</body></html>';
+    +'<head><meta charset="utf-8"><title>'+e(d.title||"實證報告")+'</title><style>'+css+'</style></head><body>'+b+'<div id="verBadge" style="position:fixed;right:6px;bottom:6px;z-index:99999;font:11px/1 system-ui,sans-serif;color:#fff;background:rgba(14,80,35,.82);padding:3px 8px;border-radius:10px;letter-spacing:.04em;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">v2026062124</div>
+</body></html>';
   const blob=new Blob(['﻿'+html],{type:"application/msword"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=(d.group?d.group+"_":"")+"實證報告.doc";
