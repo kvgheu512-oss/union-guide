@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#C0392B">
+<title>入會划算嗎？1 分鐘算給你看｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--red:#C0392B;--red-deep:#7B1818;--gold:#B7860B;--gold-light:#FEF9E7;--green:#1A7A4A;--green-deep:#0F5C36;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#FAF7F4;--card:#fff;--border:#EAE2DA;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;}
+  .header{background:linear-gradient(160deg,#C0392B,#7B1818);color:#fff;padding:1.8rem 1.25rem 1.5rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:21px;}
+  .header p{font-size:12.5px;opacity:.92;margin-top:6px;}
+  main{max-width:600px;margin:0 auto;padding:1.2rem 1.05rem 4rem;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.15rem;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  label{display:block;font-size:13.5px;font-weight:600;color:var(--ink-mid);margin:.7rem 0 .3rem;}
+  label .hint{font-weight:400;color:var(--ink-soft);font-size:12px;}
+  input[type=number]{width:100%;padding:.7rem .8rem;font-size:17px;border:1.5px solid var(--border);border-radius:10px;font-variant-numeric:tabular-nums;}
+  input[type=number]:focus{outline:none;border-color:var(--red);}
+  .out{background:var(--gold-light);border:1px solid #EAD67A;border-radius:14px;padding:1rem 1.1rem;margin-top:1rem;}
+  .row{display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px dashed #E6D9A8;}
+  .row:last-child{border-bottom:none;}
+  .row .k{font-size:13.5px;color:var(--ink-mid);}
+  .row .v{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--red-deep);}
+  .row.fee .v{color:var(--ink);}
+  .big{background:var(--green-deep);color:#fff;border-radius:14px;padding:1rem 1.1rem;margin-top:1rem;text-align:center;}
+  .big .n{font-size:30px;font-weight:800;font-family:'Noto Serif TC',serif;}
+  .big .s{font-size:13px;opacity:.92;margin-top:4px;}
+  .law{font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin-top:.6rem;}
+  .law b{color:var(--green-deep);}
+  .note{background:#FDECEA;border:1px solid #F5C6C0;border-radius:12px;padding:.8rem .95rem;font-size:12.5px;color:#7B1818;line-height:1.7;margin-top:1rem;}
+  .cta{display:block;text-align:center;background:var(--red);color:#fff;font-weight:700;font-size:16px;text-decoration:none;padding:.9rem;border-radius:12px;margin-top:1rem;}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.4rem;line-height:1.8;}
+</style>
+<style>@media print{.noprint{display:none!important}}</style>
+</head>
+<body>
+<a class="noprint" href="gaorong.html" onclick="if(history.length>1){history.back();return false;}" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;background:#fff;color:#7B1818;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">← 上一頁</a>
+<a class="noprint" href="gaorong.html" style="position:fixed;top:max(10px,env(safe-area-inset-top));right:10px;z-index:9999;background:#1A3A6B;color:#fff;font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">🏠 工會首頁</a>
+<div class="header">
+  <h1>💰 入會划算嗎？</h1>
+  <p>1 分鐘算給你看：會費 vs 你可能拿回的錢</p>
+</div>
+<main>
+  <div class="card">
+    <label>你的月薪（新臺幣元）</label>
+    <input type="number" id="salary" inputmode="numeric" value="40000" min="0" step="1000">
+    <label>每週平均「沒拿到加班費」的時數 <span class="hint">沒把握就抓 2–5</span></label>
+    <input type="number" id="otHr" inputmode="decimal" value="3" min="0" step="0.5">
+    <label>今年沒休完的特別休假（天）</label>
+    <input type="number" id="annual" inputmode="numeric" value="3" min="0" step="1">
+
+    <div class="out" id="out"></div>
+
+    <div class="big">
+      <div class="n" id="ratio">—</div>
+      <div class="s">你可能拿回的錢，相當於這麼多年的會費</div>
+    </div>
+
+    <div class="law">
+      📖 依據：企業工會經常會費<b>不低於月薪 0.5%</b>（工會法 §28）；平日加班費<b>前 2 小時加給 1/3</b>（勞基法 §24）；加班時數有爭議時<b>由雇主舉證</b>（勞動事件法 §38）；特休未休<b>應折發工資</b>（勞基法 §38）。
+    </div>
+    <div class="note">⚠️ 這是<b>粗略估算、僅供參考</b>，不是承諾金額。實際可追回多少，要看出勤紀錄、班表與個案事實，並依勞檢或法院認定。加班費以保守的「平日前 2 小時費率」概算、追溯以 5 年計。</div>
+
+    <a class="cta" href="gaorong.html#join">✋ 我想加入／連署</a>
+  </div>
+
+  <div class="card" style="font-size:13.5px;color:var(--ink-mid)">
+    <b>入會還換到什麼？</b>（會費之外的價值）
+    <ul style="margin:.5rem 0 0 1.2rem;line-height:1.9">
+      <li>免費勞動法諮詢與文件協助（外面律師諮詢一次約 2,000–5,000 元）</li>
+      <li>被資遣／職災／申訴時，<b>工會幹部陪你走</b></li>
+      <li>集體議價：加薪、加給、排班、人力配比一起談</li>
+      <li>職場霸凌（7/1 新制）、考績、不當處分的申訴協助</li>
+    </ul>
+  </div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 估算工具僅供參考</div>
+</main>
+<script>
+  function nt(n){ return "NT$ "+Math.round(n).toLocaleString("en-US"); }
+  function calc(){
+    var sal=+document.getElementById("salary").value||0;
+    var ot=+document.getElementById("otHr").value||0;
+    var ann=+document.getElementById("annual").value||0;
+    var hourly=sal/240, daily=sal/30;
+    var feeYear=sal*0.005*12;
+    var otYear=ot*52*hourly*(4/3);
+    var otClaim=otYear*5;            // 5 年時效概算
+    var unused=ann*daily;
+    var potential=otClaim+unused;
+    var ratio=feeYear>0?potential/feeYear:0;
+    document.getElementById("out").innerHTML=
+      '<div class="row fee"><span class="k">一年會費（月薪 0.5%×12）</span><span class="v">'+nt(feeYear)+'</span></div>'+
+      '<div class="row"><span class="k">加班費可追回（估·5 年）</span><span class="v">'+nt(otClaim)+'</span></div>'+
+      '<div class="row"><span class="k">特休未休折發工資</span><span class="v">'+nt(unused)+'</span></div>'+
+      '<div class="row"><span class="k"><b>可能拿回合計</b></span><span class="v">'+nt(potential)+'</span></div>';
+    document.getElementById("ratio").textContent=feeYear>0?("約 "+Math.round(ratio)+" 年"):"—";
+  }
+  ["salary","otHr","annual"].forEach(function(id){ document.getElementById(id).addEventListener("input",calc); });
+  calc();
+</script>
+<script src="law-tips.js" defer></script>
+</body>
+</html>
