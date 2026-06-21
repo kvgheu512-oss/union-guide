@@ -1,11 +1,12 @@
 /* 🛜 離線支援：把工具外殼存進瀏覽器快取，沒網路也能打開畫面（免費複製貼上那條路照常用）。
    策略：HTML 走「網路優先」——有網路永遠拿最新（自動更新偵測照常運作），沒網路才退回快取。
         圖示/設定/CDN 走「快取優先」。ver.txt 完全不攔，保持每次連線即時比對版本。
-   ⚠️ 每次部署若想讓離線快取也更新，把下面 CACHE 後面的版本號改成跟 ver.txt 一樣。 */
-const CACHE = "ebn-2026062167";
+   ⚠️ 版本號改在 version.js（單一真相源）；本檔用 importScripts 讀它自動換快取，不必手改。 */
+importScripts("./version.js");
+const CACHE = "ebn-" + self.__BUILD;
 const SHELL = [
   "./evidence.html", "./search.html", "./lawyer.html", "./share.html",
-  "./finance.html", "./finance-law.js", "./law-tips.js", "./ver-badge.js", "./gongwu.html", "./qingjia.html", "./joinroi.html", "./official-forms.html", "./founding.html", "./zhizai.html", "./charter.html", "./workplan.html", "./budget-draft.html", "./receipt.html", "./union.html", "./jianshi.html", "./plan.html", "./roster.html", "./meeting.html", "./gongwen.html", "./activity.html",
+  "./finance.html", "./finance-law.js", "./law-tips.js", "./ver-badge.js", "./version.js", "./gongwu.html", "./qingjia.html", "./joinroi.html", "./official-forms.html", "./founding.html", "./zhizai.html", "./charter.html", "./workplan.html", "./budget-draft.html", "./receipt.html", "./union.html", "./jianshi.html", "./plan.html", "./roster.html", "./meeting.html", "./gongwen.html", "./activity.html",
   "./icon-evidence.png", "./icon-search.png", "./icon-lawyer.png",
   "./evidence.webmanifest", "./search.webmanifest", "./lawyer.webmanifest", "./finance.webmanifest", "./receipt.webmanifest", "./jianshi.webmanifest", "./plan.webmanifest", "./roster.webmanifest", "./meeting.webmanifest", "./gongwen.webmanifest", "./activity.webmanifest",
   "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js",
