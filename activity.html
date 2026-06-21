@@ -93,6 +93,9 @@
   .view{display:none;} .view.on{display:block;}
 </style>
 <link rel="stylesheet" href="common.css">
+<!-- 已解鎖就讓內容第一畫面就顯示，消除返回/進入時的空白閃爍 -->
+<script>try{if(sessionStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
+<style>html.u #app{display:block!important}html.u #gate{display:none!important}</style>
 </head>
 <body>
 

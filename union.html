@@ -85,6 +85,10 @@
   .pub:active{background:#F8D7D3;}
   .foot{text-align:center;font-size:11px;color:var(--ink-soft);margin-top:1.5rem;line-height:1.8;}
 </style>
+<link rel="stylesheet" href="common.css">
+<!-- 已解鎖（同一 session）就讓功能表「第一畫面就顯示」，消除每次返回的空白閃爍 -->
+<script>try{if(sessionStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
+<style>html.u #app{display:block!important}html.u #gate{display:none!important}</style>
 </head>
 <body>
 

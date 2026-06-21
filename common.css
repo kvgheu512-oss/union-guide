@@ -5,3 +5,7 @@ img{max-width:100%;}
 /* 角落淡色版本徽章（文字由 common.js 依 ver.txt 帶入點分隔格式） */
 #verBadge{position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none;}
 @media print{.noprint,#verBadge{display:none!important;}}
+/* 換頁平滑轉場：用快速淡入淡出取代生硬的「白閃」，手機上尤其明顯。
+   瀏覽器不支援會自動忽略，無副作用。 */
+@view-transition{navigation:auto;}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.16s;}
