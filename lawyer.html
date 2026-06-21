@@ -6,7 +6,7 @@
 <title>AI 律師</title>
 <!-- PWA：加到主畫面變正式 App（圖示＋名稱＋全螢幕） -->
 <link rel="manifest" href="lawyer.webmanifest">
-<meta name="theme-color" content="#1B7536">
+<meta name="theme-color" content="#0E1626">
 <link rel="apple-touch-icon" href="icon-lawyer.png">
 <link rel="icon" type="image/png" href="icon-lawyer.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -158,7 +158,6 @@
   #updbtn{background:#062b25;color:#fff;border:0;border-radius:7px;padding:8px 15px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
   #updbanner .x{position:absolute;top:4px;right:9px;font-size:20px;line-height:1;cursor:pointer;font-weight:700;color:#062b25}
 </style>
-<style>@media print{#verBadge{display:none!important}}</style>
 </head>
 <body class="locked">
 <div id="appbanner"><span class="x" id="appbanner-x">✕</span>⚠️ 你好像是從 App（如 LINE）內建瀏覽器開的，這種視窗常<b>不能複製、按鈕卡卡</b>。建議用真瀏覽器開：<b>iPhone</b> 點下方分享圖示→「用 Safari 開啟」；<b>Android</b> 點右上「⋮」→「用瀏覽器開啟」。</div>
@@ -495,7 +494,7 @@ function showAppBanner(){ if(sessionStorage.getItem("hideAppBanner"))return; con
   if(/FBAN|FBAV|FBIOS|Instagram|Line\/|MicroMessenger|Twitter|TikTok|GSA\//i.test(navigator.userAgent||"")) showAppBanner(); })();
 
 /* 🔄 自動偵測新版本 */
-const BUILD="2026062130";
+const BUILD="2026062131";
 const CHANGELOG=[
   "新增互動導覽（首頁『▶ 帶我走一遍』）：6 步驟，特別講清楚『免費 vs 付費』怎麼用",
   "法規庫改可摺疊＋預設不全攤（手機不再被上千條洗很長）；搜尋或點分類才列出、超過60條提示縮小範圍",
@@ -1066,6 +1065,5 @@ document.getElementById("relay-apply").addEventListener("click",()=>{
   applyState(s); toast("✅ 進度已接力過來");
 });
 </script>
-<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026062128</div>
 </body>
 </html>

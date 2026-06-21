@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
 <title>工會透明帳本 — 高榮企業工會</title>
-<meta name="theme-color" content="#1B7536">
+<meta name="theme-color" content="#1A7A4A">
 <link rel="manifest" href="finance.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -24,8 +23,8 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%;}
-  .header{background:linear-gradient(160deg,#1B7536 0%,#0E5023 100%);color:#fff;padding:1.5rem 1.25rem 1.25rem;text-align:center;position:relative;overflow:hidden;}
-  .header::before{content:'';display:none;pointer-events:none;}
+  .header{background:var(--green);color:#fff;padding:1.5rem 1.25rem 1.25rem;text-align:center;position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);}
   .header-label{font-size:11px;letter-spacing:.15em;opacity:.8;margin-bottom:6px;}
   .header h1{font-family:'Noto Serif TC',serif;font-size:21px;font-weight:700;line-height:1.4;}
   .header-sub{font-size:12.5px;opacity:.85;margin-top:6px;}
@@ -118,11 +117,8 @@
   .badge-q{display:inline-block;font-size:11px;background:var(--gray-bg);color:var(--ink-mid);border-radius:6px;padding:1px 7px;margin-left:6px;}
   @media print{.tabs,.no-print,.lawbar{display:none!important;} .panel{display:block!important;} body{background:#fff;}}
 </style>
-<style>@media print{#verBadge{display:none!important}}</style>
 </head>
 <body>
-<style>@media print{.noprint{display:none!important}}</style>
-<a class="noprint" href="gaorong.html" onclick="if(history.length>1){history.back();return false;}" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;background:#fff;color:#7B1818;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">← 上一頁</a><a class="noprint" href="gaorong.html" style="position:fixed;top:max(10px,env(safe-area-inset-top));right:10px;z-index:9999;background:#1A3A6B;color:#fff;font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">🏠 工會首頁</a>
 
 <!-- 進場輕量鎖（後台記帳用；真實數字只存本機） -->
 <div class="lock" id="lock">
@@ -541,8 +537,7 @@ async function viewReceipt(rcptId){
   if(!r){alert('找不到此單據影像（可能在另一台裝置）。');return;}
   const w=window.open('','_blank');
   const im=safeImg(r.img);
-  const html=`<!DOCTYPE html><meta charset=utf-8><title>單據 ${esc(r.date)}</title><body style="margin:0;background:#222;text-align:center;font-family:sans-serif"><div style="color:#ccc;padding:8px;font-size:13px">${esc(r.sum||r.cat)} · ${fmt(r.amt)} · ${esc(r.date)} · 憑證保存至 ${(+(''+(r.date||'2026')).slice(0,4))+5} 年（§27）${r.hash?'<br>數位指紋 '+esc((''+r.hash).slice(0,32))+'…':''}</div>${im?`<img src="${im}" style="max-width:100%">`:'<p style="color:#ccc">（此單據無照片）</p>'}<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026062128</div>
-</body>`;
+  const html=`<!DOCTYPE html><meta charset=utf-8><title>單據 ${esc(r.date)}</title><body style="margin:0;background:#222;text-align:center;font-family:sans-serif"><div style="color:#ccc;padding:8px;font-size:13px">${esc(r.sum||r.cat)} · ${fmt(r.amt)} · ${esc(r.date)} · 憑證保存至 ${(+(''+(r.date||'2026')).slice(0,4))+5} 年（§27）${r.hash?'<br>數位指紋 '+esc((''+r.hash).slice(0,32))+'…':''}</div>${im?`<img src="${im}" style="max-width:100%">`:'<p style="color:#ccc">（此單據無照片）</p>'}</body>`;
   if(w){w.document.write(html);w.document.close();}
 }
 async function verifyReceipt(rcptId){

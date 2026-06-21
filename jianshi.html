@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>監事秘書 · 高榮企業工會</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#1B7536">
+<meta name="theme-color" content="#1A3A6B">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -52,12 +52,12 @@
   .gate-err{color:var(--red);font-size:13px;min-height:18px;margin-top:8px;}
 
   /* ===== 頁首 ===== */
-  .header{background:linear-gradient(160deg,#1B7536 0%,#0E5023 100%);color:#fff;padding:1.6rem 1.25rem 1.3rem;text-align:center;position:relative;overflow:hidden;}
-  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;}
+  .header{background:var(--navy);color:#fff;padding:1.6rem 1.25rem 1.3rem;text-align:center;position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);}
   .header-label{font-size:11px;letter-spacing:.18em;opacity:.85;margin-bottom:4px;}
   .header h1{font-family:'Noto Serif TC',serif;font-size:23px;font-weight:700;}
   .header-sub{font-size:12.5px;opacity:.9;margin-top:7px;line-height:1.6;}
-  .back{position:absolute;left:12px;top:14px;color:#fff;text-decoration:none;font-size:13px;opacity:.9;background:rgba(255,255,255,.14);padding:4px 10px;border-radius:20px;z-index:30;pointer-events:auto;}
+  .back{position:absolute;left:12px;top:14px;color:#fff;text-decoration:none;font-size:13px;opacity:.9;background:rgba(255,255,255,.14);padding:4px 10px;border-radius:20px;}
 
   main{max-width:620px;margin:0 auto;padding:1rem 1rem 4rem;}
 
@@ -162,7 +162,6 @@
     body{background:#fff;}
   }
 </style>
-<style>@media print{#verBadge{display:none!important}}</style>
 </head>
 <body>
 
@@ -275,6 +274,7 @@
     <!-- ===== 監察行事曆 ===== -->
     <section class="pane" id="pane-cal">
       <p class="law">下列為依監事會職權整理的「年度固定監察時程」。點各項的「＋ 帶入進度表」即會建立一筆待辦（自動帶入建議到期日）。</p>
+      <div class="note">📖 <b>法源重點（工會法）</b>：監事會每 3 個月至少開會 1 次（§25）；開會通知應載明事由、時間、地點（§22），定期會議 7 日前、臨時會議 1 日前送達；理事、監事應<b>親自出席、不得委託</b>（§24Ⅳ、Ⅴ）。本會章程為<b>監事一人</b>，依法未滿 3 人不設監事會、無召集人，由監事行使監察職權。</div>
       <div id="cal-list"></div>
     </section>
 
@@ -302,7 +302,7 @@
         <button class="btn ghost sm" id="tpl-print">🖨 列印</button>
       </div>
       <textarea class="out" id="tpl-out" style="margin-top:.8rem" readonly></textarea>
-      <div class="note">💡 章程明定「監察會得會同相關專業人士辦理前項事務」——必要時可在範本中載明委請<b>會計師／律師</b>協同稽核或出具意見。</div>
+      <div class="note">💡 章程明定「監察會得會同相關專業人士辦理前項事務」——必要時可在範本中載明委請<b>會計師／律師</b>協同稽核或出具意見。<br>⚖️ 本會監事為<b>一人</b>，依工會法未滿 3 人不設監事會；範本中「監事會／召集人」字樣可逕改為「<b>監事</b>」。</div>
     </section>
 
   </main>
@@ -355,6 +355,7 @@ const SEED=[
 
 /* 年度固定監察時程（行事曆） */
 const CAL=[
+ {cat:4,freq:'每季',title:'召開監事會議（每3個月至少1次）',pts:['工會法第25條：監事會每3個月至少開會一次','定期會議開會通知應於開會7日前送達；臨時會議1日前','監事應親自出席，不得委託（工會法第24條第4、5項）','※本會監事僅1人時不設監事會，由監事行使職權並留存查核紀錄'],days:90},
  {cat:2,freq:'每月',title:'審閱會計月報表、核對收支傳票與單據',pts:['理事會應每月編製會計月報表送監事稽核','核對傳票與發票金額、品名、核章是否齊備'],days:10},
  {cat:2,freq:'每月',title:'核對存摺、現金與帳冊餘額（對帳）',pts:['確認帳載餘額與銀行對帳單一致','留存對帳紀錄'],days:20},
  {cat:3,freq:'每季',title:'清查會員會費繳納與會員義務履行情形',pts:['列出欠費名單','對連續未繳達門檻者，提請理事會處理'],days:45},
@@ -528,6 +529,8 @@ function tpl_agenda(d){ return [
   `地　點：________________________`,
   `召集人：${d.chair||'監事召集人 ○○○'}`,
   ``,
+  `（依工會法第22、25條，本通知至遲於開會7日前送達；監事應親自出席，不得委託。）`,
+  ``,
   `一、報告事項`,
   `　（一）上次會議決議執行情形報告。`,
   `　（二）理事會執行會員（代表）大會決議之監察情形。`,
@@ -670,6 +673,5 @@ else { showGate(); }
 /* Service worker（離線） */
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
-<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026062128</div>
 </body>
 </html>

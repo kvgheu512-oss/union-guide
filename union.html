@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>幹部功能表 · 高榮企業工會</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#1B7536">
+<meta name="theme-color" content="#C0392B">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -39,8 +39,8 @@
   .gate-err{color:var(--red);font-size:13px;min-height:18px;margin-top:8px;}
 
   /* ===== 頁首 ===== */
-  .header{background:linear-gradient(160deg,#1B7536 0%,#0E5023 100%);color:#fff;padding:1.8rem 1.25rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
-  .header::before{content:'';display:none;pointer-events:none;}
+  .header{background:var(--red);color:#fff;padding:1.8rem 1.25rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);}
   .header-logo{display:block;width:78px;height:78px;object-fit:contain;margin:0 auto 12px;background:#fff;border-radius:16px;padding:7px;box-shadow:0 4px 14px rgba(0,0,0,.22);position:relative;}
   .header-label{font-size:11px;letter-spacing:.15em;opacity:.88;margin-bottom:4px;}
   .header h1{font-family:'Noto Serif TC',serif;font-size:23px;font-weight:700;}
@@ -85,11 +85,8 @@
   .pub:active{background:#F8D7D3;}
   .foot{text-align:center;font-size:11px;color:var(--ink-soft);margin-top:1.5rem;line-height:1.8;}
 </style>
-<style>@media print{#verBadge{display:none!important}}</style>
 </head>
 <body>
-<style>@media print{.noprint{display:none!important}}</style>
-<a class="noprint" href="gaorong.html" onclick="if(history.length>1){history.back();return false;}" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;background:#fff;color:#7B1818;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">← 上一頁</a><a class="noprint" href="gaorong.html" style="position:fixed;top:max(10px,env(safe-area-inset-top));right:10px;z-index:9999;background:#1A3A6B;color:#fff;font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">🏠 工會首頁</a>
 
 <!-- ============ 幹部密碼鎖 ============ -->
 <div id="gate">
@@ -107,13 +104,13 @@
     <img class="header-logo" src="assets/union-logo.png" alt="高榮企業工會 會徽">
     <div class="header-label">高榮企業工會</div>
     <h1>幹部功能表</h1>
-    <div class="header-sub">幹部辦事工具箱 · 點一下就用</div>
+    <div class="header-sub">依「五理一監」分工 · 點一下就用</div>
     <div class="prep">🏗 籌備中</div>
   </div>
 
   <main>
     <p style="font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--border);border-radius:12px;padding:.7rem .85rem;margin-bottom:.4rem;line-height:1.75;">
-      依章程第16條，本會置<b>理事五人（含理事長）、監事一人</b>。分工：理事長、總務（瑋聆）、組訓（淯涵）、法規（小巫、柏宏）、文宣（妍妍）、監事（依婷）。找自己的區塊辦事；標「建置中」的工具陸續加入。
+      依章程第16條，本會置<b>理事五人（含理事長）、監事一人</b>。分工：理事長、法規（小巫）、文宣（妍妍）、總務（瑋聆）、組訓（柏宏）、監事。找自己的區塊辦事；標「建置中」的工具陸續加入。
     </p>
 
     <!-- ① 理事長 -->
@@ -172,7 +169,7 @@
     </div>
 
     <!-- ③ 組訓 -->
-    <div class="role"><div class="rb r-org">組</div><div><div class="rt">組訓 · <span style="color:var(--navy-mid)">淯涵</span></div><div class="rd">會員招募 · 會員名冊 · 組織訓練</div></div></div>
+    <div class="role"><div class="rb r-org">組</div><div><div class="rt">組訓 · <span style="color:var(--navy-mid)">柏宏</span></div><div class="rd">會員招募 · 會員名冊 · 組織訓練</div></div></div>
     <a class="tile" href="roster.html" style="border-left-color:var(--navy)">
       <div class="row">
         <span class="ico">👥</span>
@@ -186,7 +183,7 @@
     <div class="soon">陸續加入：<b>連署／招募進度</b>。</div>
 
     <!-- ④ 法規 -->
-    <div class="role"><div class="rb r-doc">法</div><div><div class="rt">法規 · <span style="color:var(--gold)">小巫、柏宏</span></div><div class="rd">會議文件 · 行政紀錄 · 法規事務</div></div></div>
+    <div class="role"><div class="rb r-doc">法</div><div><div class="rt">法規 · <span style="color:var(--gold)">小巫</span></div><div class="rd">會議文件 · 行政紀錄 · 法規事務</div></div></div>
     <a class="tile" href="lawyer.html" style="border-left-color:#B7860B">
       <div class="row">
         <span class="ico">⚖️</span>
@@ -223,7 +220,7 @@
     </a>
 
     <!-- 監事 -->
-    <div class="role"><div class="rb r-sup">監</div><div><div class="rt">監事 · <span style="color:#8FB0D9">依婷</span></div><div class="rd">監察會務 · 財務稽核 · 監察意見書</div></div></div>
+    <div class="role"><div class="rb r-sup">監</div><div><div class="rt">監事</div><div class="rd">監察會務 · 財務稽核 · 監察意見書</div></div></div>
     <a class="tile id" href="jianshi.html">
       <div class="row">
         <span class="ico">🛡️</span>
@@ -271,6 +268,5 @@ else { showGate(); }
 document.getElementById('gate-go').addEventListener('click',tryUnlock);
 document.getElementById('gate-pw').addEventListener('keydown',function(e){ if(e.key==='Enter') tryUnlock(); });
 </script>
-<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026062130</div>
 </body>
 </html>
