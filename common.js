@@ -48,3 +48,82 @@
     }
   }).catch(function(){});
 })();
+
+/* ④ 草稿暫存：邊打字邊偷偷存；被來電、通知、切 App、分頁被回收打斷時，
+   在「切走的那一刻」立刻存好；回來自動還原。完全存在本機、不上傳。 */
+(function(){
+  var PREFIX = "dft:" + location.pathname + ":";
+  var MAXAGE = 8 * 3600 * 1000;          // 8 小時後過期，避免還原到很舊的東西
+  function eligible(el){
+    if(!el || !el.id) return false;
+    var tag = el.tagName;
+    if(tag!=="INPUT" && tag!=="TEXTAREA" && tag!=="SELECT") return false;
+    if(el.readOnly || el.disabled) return false;
+    var t = (el.type||"text").toLowerCase();
+    if(["password","hidden","file","submit","button","reset","checkbox","radio","range","color","search"].indexOf(t) >= 0) return false;
+    if(el.closest && el.closest("#gate")) return false;
+    if(el.hasAttribute && el.hasAttribute("data-nodraft")) return false;
+    if(/search|搜尋|gate|pw|passw|金鑰|apikey|api-key|\bkey\b/i.test(el.id)) return false;
+    return true;
+  }
+  function K(el){ return PREFIX + el.id; }
+  var suppressUntil = 0;                  // 存檔後短暫抑制，避免表單重置的 input 事件又把草稿寫回
+  function saveEl(el){
+    try{
+      if(Date.now() < suppressUntil) return;
+      var v = el.value;
+      if(v == null || v === ""){ localStorage.removeItem(K(el)); return; }
+      if(v.length > 200000) return;       // 太大不存，免得塞爆
+      localStorage.setItem(K(el), JSON.stringify({v:v, t:Date.now()}));
+    }catch(e){}
+  }
+  function saveAll(){ if(Date.now()<suppressUntil) return; try{ var ns=document.querySelectorAll("input,textarea,select"); for(var i=0;i<ns.length;i++){ if(eligible(ns[i])) saveEl(ns[i]); } }catch(e){} }
+  function clearPage(){ suppressUntil = Date.now() + 1500; try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i); if(k && k.indexOf(PREFIX)===0) localStorage.removeItem(k); } }catch(e){} }
+
+  var tmr;
+  document.addEventListener("input", function(e){ if(eligible(e.target)){ clearTimeout(tmr); tmr=setTimeout(function(){ saveEl(e.target); }, 500); } }, true);
+  // 被打斷的關鍵時刻（來電/通知/切 App/關閉）→ 分頁轉 hidden，立刻全部存起來
+  document.addEventListener("visibilitychange", function(){ if(document.visibilityState==="hidden") saveAll(); });
+  window.addEventListener("pagehide", saveAll);
+  window.addEventListener("blur", saveAll);
+  // 存檔成功的按鈕加 data-draft-clear，按下後清掉本頁草稿（避免下次又還原已存內容）
+  document.addEventListener("click", function(e){
+    var t = e.target && e.target.closest && e.target.closest("[data-draft-clear]");
+    if(t) setTimeout(clearPage, 300);
+  }, true);
+
+  function notice(){
+    if(document.getElementById("__draftbar") || !document.body) return;
+    var bar=document.createElement("div"); bar.id="__draftbar";
+    bar.style.cssText="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:99999;background:#0F5C36;color:#fff;font:600 13px/1.5 'Noto Sans TC',system-ui,sans-serif;padding:9px 13px;border-radius:24px;box-shadow:0 4px 16px rgba(0,0,0,.32);display:flex;gap:10px;align-items:center;max-width:94vw;";
+    bar.innerHTML="<span>🛟 已保留上次中斷前未儲存的內容</span>";
+    var clr=document.createElement("button"); clr.textContent="清除"; clr.style.cssText="background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:16px;padding:4px 12px;font:inherit;cursor:pointer;";
+    clr.onclick=function(){ clearPage(); var ns=document.querySelectorAll("input,textarea,select"); for(var i=0;i<ns.length;i++){ if(eligible(ns[i])) ns[i].value=""; } bar.remove(); };
+    var x=document.createElement("button"); x.textContent="✕"; x.style.cssText="background:none;color:#fff;border:0;font:inherit;cursor:pointer;opacity:.85;";
+    x.onclick=function(){ bar.remove(); };
+    bar.appendChild(clr); bar.appendChild(x); document.body.appendChild(bar);
+    setTimeout(function(){ if(bar.parentNode){ bar.style.transition="opacity .4s"; bar.style.opacity="0"; setTimeout(function(){ if(bar.parentNode) bar.remove(); },450); } }, 9000);
+  }
+  function restore(){
+    var n=0;
+    try{
+      for(var i=localStorage.length-1;i>=0;i--){      // 先清過期草稿
+        var k=localStorage.key(i);
+        if(k && k.indexOf(PREFIX)===0){ try{ var o=JSON.parse(localStorage.getItem(k)); if(!o||Date.now()-o.t>MAXAGE) localStorage.removeItem(k); }catch(_){ localStorage.removeItem(k); } }
+      }
+      var ns=document.querySelectorAll("input,textarea,select");
+      for(var j=0;j<ns.length;j++){
+        var el=ns[j];
+        if(!eligible(el) || el.value) continue;        // 已有值不覆蓋（尊重各頁自己的還原）
+        var raw=localStorage.getItem(K(el)); if(!raw) continue;
+        var d; try{ d=JSON.parse(raw); }catch(_){ continue; }
+        if(d && d.v){ el.value=d.v; n++;
+          try{ el.dispatchEvent(new Event("input",{bubbles:true})); el.dispatchEvent(new Event("change",{bubbles:true})); }catch(_){}
+        }
+      }
+    }catch(e){}
+    if(n) notice();
+  }
+  window.EBNDraft={ clearPage:clearPage, restore:restore, saveAll:saveAll };
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", restore); else restore();
+})();
