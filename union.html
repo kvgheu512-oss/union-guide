@@ -39,8 +39,8 @@
   .gate-err{color:var(--red);font-size:13px;min-height:18px;margin-top:8px;}
 
   /* ===== 頁首 ===== */
-  .header{background:var(--red);color:#fff;padding:1.8rem 1.25rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
-  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);}
+  .header{background:linear-gradient(160deg,#1B7536 0%,#0E5023 100%);color:#fff;padding:1.8rem 1.25rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
+  .header::before{content:'';display:none;}
   .header-logo{display:block;width:78px;height:78px;object-fit:contain;margin:0 auto 12px;background:#fff;border-radius:16px;padding:7px;box-shadow:0 4px 14px rgba(0,0,0,.22);position:relative;}
   .header-label{font-size:11px;letter-spacing:.15em;opacity:.88;margin-bottom:4px;}
   .header h1{font-family:'Noto Serif TC',serif;font-size:23px;font-weight:700;}
@@ -87,6 +87,8 @@
 </style>
 </head>
 <body>
+<style>@media print{.noprint{display:none!important}}</style>
+<a class="noprint" href="gaorong.html" onclick="if(history.length>1){history.back();return false;}" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;background:#fff;color:#7B1818;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">← 上一頁</a><a class="noprint" href="gaorong.html" style="position:fixed;top:max(10px,env(safe-area-inset-top));right:10px;z-index:9999;background:#1A3A6B;color:#fff;font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">🏠 工會首頁</a>
 
 <!-- ============ 幹部密碼鎖 ============ -->
 <div id="gate">
@@ -104,7 +106,7 @@
     <img class="header-logo" src="assets/union-logo.png" alt="高榮企業工會 會徽">
     <div class="header-label">高榮企業工會</div>
     <h1>幹部功能表</h1>
-    <div class="header-sub">依「五理一監」分工 · 點一下就用</div>
+    <div class="header-sub">幹部辦事工具箱 · 點一下就用</div>
     <div class="prep">🏗 籌備中</div>
   </div>
 
