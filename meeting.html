@@ -96,6 +96,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .view{display:none;} .view.on{display:block;}
 </style>
+<link rel="prefetch" href="union.html">
 </head>
 <body>
 
@@ -132,6 +133,7 @@
         <div class="grid2">
           <div><label>會議種類</label>
             <select id="m-type">
+              <option>籌備會議</option><option>成立大會</option>
               <option>會員大會</option><option>會員代表大會</option><option>理事會</option>
               <option>監事會</option><option>理監事聯席會議</option><option>臨時會議</option>
             </select></div>
@@ -151,7 +153,7 @@
       <div class="card">
         <h3>議程</h3>
         <div id="ag-list"></div>
-        <div class="btn-row"><button class="btn ghost sm" id="ag-add">＋ 議程項目</button><button class="btn ghost sm" id="ag-seed">範例議程</button></div>
+        <div class="btn-row"><button class="btn ghost sm" id="ag-add">＋ 議程項目</button><button class="btn ghost sm" id="ag-seed">📋 範本議程</button></div>
         <div class="note">提示：<b>修改章程、財產處分、合併分立解散、罷免、會員除名</b>等屬重大事項，須較高出席與同意門檻（章程第32條/第24條）。</div>
       </div>
 
@@ -205,12 +207,63 @@ function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>
 function rocDate(ds){ if(!ds) return '中華民國　年　月　日'; const p=ds.split('-'); return `中華民國${p[0]-1911}年${+p[1]}月${+p[2]}日`; }
 const $=id=>document.getElementById(id);
 const AG_KINDS=['報告事項','討論事項','選舉事項','臨時動議'];
-const AG_SEED=[
- {kind:'報告事項',title:'上次會議決議執行情形報告',decision:''},
- {kind:'報告事項',title:'會務及財務報告',decision:''},
- {kind:'討論事項',title:'',decision:''},
- {kind:'臨時動議',title:'',decision:''},
-];
+const SEEDS={
+ '籌備會議':[
+  {kind:'報告事項',title:'連署及籌備進度報告',decision:''},
+  {kind:'討論事項',title:'推選籌備委員、組織籌備會案',decision:''},
+  {kind:'討論事項',title:'推選籌備會主任委員案',decision:''},
+  {kind:'討論事項',title:'籌備工作分配案',decision:''},
+  {kind:'討論事項',title:'擬定章程草案（含入會費及經常會費）案',decision:''},
+  {kind:'討論事項',title:'製作入會申請書、公開徵求會員案',decision:''},
+  {kind:'討論事項',title:'成立大會日期、地點及分工案',decision:''},
+  {kind:'臨時動議',title:'',decision:''}],
+ '成立大會':[
+  {kind:'報告事項',title:'籌備經過報告',decision:''},
+  {kind:'報告事項',title:'連署及會員入會情形報告',decision:''},
+  {kind:'討論事項',title:'通過本會章程案',decision:''},
+  {kind:'討論事項',title:'選舉第一屆理事、監事案',decision:''},
+  {kind:'討論事項',title:'訂定入會費及經常會費案',decision:''},
+  {kind:'討論事項',title:'通過年度工作計畫及經費收支預算案',decision:''},
+  {kind:'討論事項',title:'是否加入上級工會聯合組織案',decision:''},
+  {kind:'臨時動議',title:'',decision:''}],
+ '會員大會':[
+  {kind:'報告事項',title:'上次會議決議執行情形報告',decision:''},
+  {kind:'報告事項',title:'會務報告',decision:''},
+  {kind:'報告事項',title:'財務報告（年度決算）',decision:''},
+  {kind:'報告事項',title:'監事監察（財務稽核）報告',decision:''},
+  {kind:'討論事項',title:'審議年度工作報告及決算案',decision:''},
+  {kind:'討論事項',title:'審議年度工作計畫及經費收支預算案',decision:''},
+  {kind:'討論事項',title:'章程修正案（如有）',decision:''},
+  {kind:'討論事項',title:'入會費／經常會費訂定或調整案（如有）',decision:''},
+  {kind:'臨時動議',title:'',decision:''}],
+ '理事會':[
+  {kind:'報告事項',title:'上次會議決議執行情形報告',decision:''},
+  {kind:'報告事項',title:'會務及財務收支報告',decision:''},
+  {kind:'討論事項',title:'年度工作計畫執行情形案',decision:''},
+  {kind:'討論事項',title:'會員入會、退會、除名審議案',decision:''},
+  {kind:'討論事項',title:'經費收支審議案',decision:''},
+  {kind:'討論事項',title:'提報會員大會事項案',decision:''},
+  {kind:'臨時動議',title:'',decision:''}],
+ '監事會':[
+  {kind:'報告事項',title:'上次會議決議執行情形報告',decision:''},
+  {kind:'討論事項',title:'年度（期）財務稽核案',decision:''},
+  {kind:'討論事項',title:'監察理事會執行會員大會決議情形案',decision:''},
+  {kind:'討論事項',title:'提出監察意見書案',decision:''},
+  {kind:'臨時動議',title:'',decision:''}],
+ '理監事聯席會議':[
+  {kind:'報告事項',title:'上次會議決議執行情形報告',decision:''},
+  {kind:'報告事項',title:'會務及財務報告',decision:''},
+  {kind:'討論事項',title:'年度工作計畫與經費收支審議案',decision:''},
+  {kind:'討論事項',title:'會員入會、退會、除名審議案',decision:''},
+  {kind:'討論事項',title:'財務稽核及監察意見案',decision:''},
+  {kind:'臨時動議',title:'',decision:''}],
+ '臨時會議':[
+  {kind:'報告事項',title:'召開事由說明',decision:''},
+  {kind:'討論事項',title:'',decision:''},
+  {kind:'臨時動議',title:'',decision:''}]
+};
+SEEDS['會員代表大會']=SEEDS['會員大會'];
+SEEDS._default=SEEDS['會員大會'];
 
 /* 列表 */
 function renderList(){
@@ -225,7 +278,7 @@ function renderList(){
 $('mtg-list').addEventListener('click',e=>{ const el=e.target.closest('[data-id]'); if(!el) return; openEdit(meetings.find(m=>m.id===el.dataset.id)); });
 
 /* 切換視圖 */
-function showView(v){ document.querySelectorAll('.view').forEach(x=>x.classList.remove('on')); $('view-'+v).classList.add('on'); window.scrollTo({top:0}); }
+function showView(v){ document.querySelectorAll('.view').forEach(x=>x.classList.remove('on')); $('view-'+v).classList.add('on'); window.scrollTo({top:0}); var bk=$('back'); if(bk) bk.textContent=(v==='edit')?'‹ 返回清單':'‹ 功能表'; }
 $('new-btn').addEventListener('click',()=>{
   cur={id:uid(),type:'會員大會',no:'',date:'',time:'',place:'',chair:'',rec:'',guest:'',agenda:[],present:{}};
   fillForm(); showView('edit');
@@ -262,7 +315,7 @@ function renderAgenda(){
 $('ag-list').addEventListener('input',e=>{ const inp=e.target.closest('[data-f]'); if(!inp) return; const i=+inp.closest('.ag').dataset.i; cur.agenda[i][inp.dataset.f]=inp.value; });
 $('ag-list').addEventListener('click',e=>{ const b=e.target.closest('[data-rm]'); if(!b) return; cur.agenda.splice(+b.dataset.rm,1); renderAgenda(); });
 $('ag-add').addEventListener('click',()=>{ cur.agenda.push({kind:'討論事項',title:'',decision:''}); renderAgenda(); });
-$('ag-seed').addEventListener('click',()=>{ AG_SEED.forEach(s=>cur.agenda.push(Object.assign({},s))); renderAgenda(); });
+$('ag-seed').addEventListener('click',()=>{ const t=$('m-type').value; const tpl=SEEDS[t]||SEEDS._default; if(cur.agenda.length && !confirm('以「'+t+'」官方範本取代目前議程？')) return; cur.agenda=tpl.map(x=>Object.assign({},x)); renderAgenda(); });
 
 /* 簽到 */
 function renderSign(){
