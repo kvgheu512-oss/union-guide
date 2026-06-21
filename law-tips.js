@@ -1,14 +1,13 @@
 /* ===================================================================
-   law-tips.js · 漫畫風「遊戲讀取小提醒」
-   用法：頁面底部加一行 <script src="law-tips.js" defer></script>
-   行為：每個瀏覽工作階段(session)只跳一次，隨機風格(A/B/E)＋隨機法律小知識，
-        約 2.4 秒自動淡出，點任意處可跳過。國小三年級看得懂的白話。
-   Demo 覆寫：?ltstyle=a|b|e  ?lttip=0..  ?ltkeep=1(不自動關)  ?ltforce=1(忽略session)
+   law-tips.js · 漫畫風「遊戲讀取小提醒」（10 種隨機風格）
+   用法：頁面底部 <script src="law-tips.js" defer></script>
+   行為：每瀏覽階段只跳一次，隨機風格＋隨機法律小知識，約 2.4 秒自動淡出，點任意處跳過。
+   Demo 覆寫：?ltstyle=a..j  ?lttip=0..  ?ltkeep=1(不自動關)  ?ltforce=1(忽略session)
 =================================================================== */
 (function(){
   "use strict";
   var SESSION_KEY="lawtip_seen_v1";
-  var STYLES=["a","b","e"];
+  var STYLES=["a","b","c","d","e","f","g","h","i","j"];
   var TIPS=[
    {emo:"💪",q:'老闆說你沒加班？<br>出勤紀錄就<i>算上班</i>！',law:"勞動事件法 §38"},
    {emo:"⚖️",q:'薪水有爭議？<br>法律<i>推定</i>對你有利！',law:"勞動事件法 §37"},
@@ -128,74 +127,140 @@
 
   function qp(k){ try{return new URLSearchParams(location.search).get(k);}catch(e){return null;} }
   var pStyle=qp("ltstyle"), pTip=qp("lttip"), pKeep=qp("ltkeep")==="1", pForce=qp("ltforce")==="1";
+  if(!pForce){ try{ if(sessionStorage.getItem(SESSION_KEY)) return; sessionStorage.setItem(SESSION_KEY,"1"); }catch(e){} }
 
-  if(!pForce){
-    try{ if(sessionStorage.getItem(SESSION_KEY)) return; sessionStorage.setItem(SESSION_KEY,"1"); }catch(e){}
-  }
-
-  var CSS=''
-  +'#lawtip{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;opacity:0;transition:opacity .25s ease;font-family:"Baloo 2","Noto Sans TC",system-ui,sans-serif}'
-  +'#lawtip.show{opacity:1}'
-  +'#lawtip .lw{position:relative;z-index:3;width:min(420px,92vw);text-align:center;padding:0 16px}'
-  +'#lawtip .emo{filter:drop-shadow(3px 4px 0 rgba(0,0,0,.22));animation:ltbob 1.6s ease-in-out infinite}'
-  +'#lawtip .q i{font-style:normal}'
-  +'@keyframes ltbob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}'
-  +'@keyframes ltspin{to{transform:rotate(360deg)}}'
-  /* A */
-  +'#lawtip.s-a{background:radial-gradient(circle at 50% 30%,#4DA3FF,#2E6BE6 55%,#1B3D9E)}'
-  +'#lawtip.s-a:before{content:"";position:absolute;inset:0;opacity:.18;background-image:radial-gradient(#fff 1.6px,transparent 1.7px);background-size:14px 14px}'
-  +'#lawtip.s-a .badge{display:inline-block;background:#FFE13D;color:#C0392B;font-weight:800;font-size:18px;padding:8px 22px;border:3px solid #1A1A1A;border-radius:40px;transform:rotate(-3deg);box-shadow:4px 4px 0 #1A1A1A;margin-bottom:6px}'
-  +'#lawtip.s-a .sub{color:#fff;font-weight:700;font-size:13px;opacity:.9;margin-bottom:16px}'
-  +'#lawtip.s-a .emo{font-size:74px}'
-  +'#lawtip.s-a .bubble{position:relative;background:#fff;border:4px solid #1A1A1A;border-radius:22px;padding:22px 20px;box-shadow:7px 7px 0 #1A1A1A;margin-top:14px}'
-  +'#lawtip.s-a .bubble:before{content:"";position:absolute;top:-22px;left:50%;transform:translateX(-50%);border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:22px solid #1A1A1A}'
-  +'#lawtip.s-a .q{font-size:25px;font-weight:900;color:#1A2740;line-height:1.45}'
-  +'#lawtip.s-a .q i{background:linear-gradient(transparent 55%,#FFE13D 55%)}'
-  +'#lawtip.s-a .law{display:inline-block;margin-top:14px;background:#1A2740;color:#fff;font-size:12.5px;font-weight:700;padding:5px 14px;border-radius:30px}'
-  /* B */
-  +'#lawtip.s-b{background:radial-gradient(circle at 50% 32%,#7C4DFF,#5B27D6 55%,#3A148F)}'
-  +'#lawtip.s-b:before{content:"";position:absolute;inset:0;opacity:.16;background-image:radial-gradient(#fff 1.6px,transparent 1.7px);background-size:14px 14px}'
-  +'#lawtip.s-b .badge{display:inline-block;background:#FFE13D;color:#6A2BD6;font-weight:800;font-size:17px;padding:7px 20px;border:3px solid #1A1A1A;border-radius:40px;transform:rotate(-3deg);box-shadow:4px 4px 0 #1A1A1A;margin-bottom:22px}'
-  +'#lawtip.s-b .coin{position:relative;width:min(320px,82vw);margin:0 auto;aspect-ratio:1/1}'
-  +'#lawtip.s-b .ring{position:absolute;inset:-10px;border-radius:50%;background:conic-gradient(#FFE13D 0 90deg,transparent 90deg);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 11px));mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 11px));animation:ltspin 1.4s linear infinite}'
-  +'#lawtip.s-b .disc{position:absolute;inset:0;border-radius:50%;background:#fff;border:5px solid #1A1A1A;box-shadow:0 10px 0 rgba(0,0,0,.25),inset 0 0 0 7px #fff,inset 0 0 0 10px #F0EBFF;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14%}'
-  +'#lawtip.s-b .emo{font-size:56px}'
-  +'#lawtip.s-b .q{font-size:20px;font-weight:900;color:#241A40;line-height:1.4;margin-top:2px}'
-  +'#lawtip.s-b .q i{background:linear-gradient(transparent 55%,#FFE13D 55%)}'
-  +'#lawtip.s-b .law{display:inline-block;margin-top:10px;background:#5B27D6;color:#fff;font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:30px}'
-  /* E */
-  +'#lawtip.s-e{background:#58CC02}'
-  +'#lawtip.s-e .badge{display:inline-block;background:#fff;color:#58A700;font-weight:800;font-size:16px;padding:7px 20px;border-radius:30px;box-shadow:0 4px 0 #46A302;margin-bottom:20px}'
-  +'#lawtip.s-e .card{background:#fff;border-radius:24px;padding:26px 22px 24px;box-shadow:0 8px 0 rgba(0,0,0,.12)}'
-  +'#lawtip.s-e .av{width:96px;height:96px;border-radius:50%;background:#E8F8D8;display:flex;align-items:center;justify-content:center;font-size:52px;margin:0 auto 12px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.06)}'
-  +'#lawtip.s-e .q{font-size:23px;font-weight:900;color:#3C3C3C;line-height:1.5}'
-  +'#lawtip.s-e .q i{background:linear-gradient(transparent 58%,#FFD900 58%)}'
-  +'#lawtip.s-e .law{display:inline-block;margin-top:14px;background:#DDF4FF;color:#1899D6;font-size:12.5px;font-weight:800;padding:5px 14px;border-radius:20px}'
-  +'#lawtip.s-e .prog{margin-top:20px;height:14px;background:rgba(255,255,255,.45);border-radius:20px;overflow:hidden}'
-  +'#lawtip.s-e .prog i{display:block;height:100%;width:62%;background:#FFD900;border-radius:20px}'
-  +'#lawtip .skip{margin-top:16px;color:#fff;font-size:12px;font-weight:700;opacity:.85;text-decoration:underline}'
-  +'#lawtip.s-e .skip{color:#2b6b00;opacity:.7}';
+  var CSS=`
+#lawtip{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;opacity:0;transition:opacity .25s ease;font-family:"Baloo 2","Noto Sans TC",system-ui,sans-serif}
+#lawtip.show{opacity:1}
+#lawtip .lw{position:relative;z-index:3;width:min(420px,92vw);text-align:center;padding:0 16px}
+#lawtip .emo{filter:drop-shadow(3px 4px 0 rgba(0,0,0,.22));animation:ltbob 1.6s ease-in-out infinite}
+#lawtip .q i{font-style:normal}
+#lawtip .skip{margin-top:16px;color:#fff;font-size:12px;font-weight:700;opacity:.85;text-decoration:underline}
+@keyframes ltbob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+@keyframes ltspin{to{transform:rotate(360deg)}}
+@keyframes ltblink{50%{opacity:0}}
+/* A 漫畫藍 */
+#lawtip.s-a{background:radial-gradient(circle at 50% 30%,#4DA3FF,#2E6BE6 55%,#1B3D9E)}
+#lawtip.s-a:before{content:"";position:absolute;inset:0;opacity:.18;background-image:radial-gradient(#fff 1.6px,transparent 1.7px);background-size:14px 14px}
+#lawtip.s-a .badge{display:inline-block;background:#FFE13D;color:#C0392B;font-weight:800;font-size:18px;padding:8px 22px;border:3px solid #1A1A1A;border-radius:40px;transform:rotate(-3deg);box-shadow:4px 4px 0 #1A1A1A;margin-bottom:6px}
+#lawtip.s-a .sub{color:#fff;font-weight:700;font-size:13px;opacity:.9;margin-bottom:16px}
+#lawtip.s-a .emo{font-size:74px}
+#lawtip.s-a .bubble{position:relative;background:#fff;border:4px solid #1A1A1A;border-radius:22px;padding:22px 20px;box-shadow:7px 7px 0 #1A1A1A;margin-top:14px}
+#lawtip.s-a .bubble:before{content:"";position:absolute;top:-22px;left:50%;transform:translateX(-50%);border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:22px solid #1A1A1A}
+#lawtip.s-a .q{font-size:25px;font-weight:900;color:#1A2740;line-height:1.45}
+#lawtip.s-a .q i{background:linear-gradient(transparent 55%,#FFE13D 55%)}
+#lawtip.s-a .law{display:inline-block;margin-top:14px;background:#1A2740;color:#fff;font-size:12.5px;font-weight:700;padding:5px 14px;border-radius:30px}
+/* B 圓徽章 */
+#lawtip.s-b{background:radial-gradient(circle at 50% 32%,#7C4DFF,#5B27D6 55%,#3A148F)}
+#lawtip.s-b:before{content:"";position:absolute;inset:0;opacity:.16;background-image:radial-gradient(#fff 1.6px,transparent 1.7px);background-size:14px 14px}
+#lawtip.s-b .badge{display:inline-block;background:#FFE13D;color:#6A2BD6;font-weight:800;font-size:17px;padding:7px 20px;border:3px solid #1A1A1A;border-radius:40px;transform:rotate(-3deg);box-shadow:4px 4px 0 #1A1A1A;margin-bottom:22px}
+#lawtip.s-b .coin{position:relative;width:min(320px,82vw);margin:0 auto;aspect-ratio:1/1}
+#lawtip.s-b .ring{position:absolute;inset:-10px;border-radius:50%;background:conic-gradient(#FFE13D 0 90deg,transparent 90deg);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 11px));mask:radial-gradient(farthest-side,transparent calc(100% - 12px),#000 calc(100% - 11px));animation:ltspin 1.4s linear infinite}
+#lawtip.s-b .disc{position:absolute;inset:0;border-radius:50%;background:#fff;border:5px solid #1A1A1A;box-shadow:0 10px 0 rgba(0,0,0,.25),inset 0 0 0 7px #fff,inset 0 0 0 10px #F0EBFF;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14%}
+#lawtip.s-b .emo{font-size:56px}
+#lawtip.s-b .q{font-size:20px;font-weight:900;color:#241A40;line-height:1.4;margin-top:2px}
+#lawtip.s-b .q i{background:linear-gradient(transparent 55%,#FFE13D 55%)}
+#lawtip.s-b .law{display:inline-block;margin-top:10px;background:#5B27D6;color:#fff;font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:30px}
+/* C 便利貼手寫 */
+#lawtip.s-c{background:#2A2520;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px);background-size:100% 28px}
+#lawtip.s-c .note{position:relative;background:#FFE773;border-radius:4px;padding:34px 26px 30px;box-shadow:6px 10px 22px rgba(0,0,0,.45);transform:rotate(-2.5deg);border:1px solid #E7C94B}
+#lawtip.s-c .tape{position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(2deg);width:120px;height:28px;background:rgba(255,255,255,.5);border:1px dashed rgba(0,0,0,.25)}
+#lawtip.s-c .badge{font-family:'Ma Shan Zheng','Noto Sans TC',cursive;color:#B5432B;font-size:22px;margin-bottom:6px}
+#lawtip.s-c .emo{font-size:60px}
+#lawtip.s-c .q{font-family:'Ma Shan Zheng','Noto Sans TC',cursive;font-size:30px;color:#2A2418;line-height:1.5;margin-top:4px}
+#lawtip.s-c .q i{background:linear-gradient(transparent 60%,#FF8FA3 60%);border-radius:2px}
+#lawtip.s-c .law{display:inline-block;margin-top:14px;color:#7A5600;font-size:14px;font-weight:700;border-bottom:2px dashed #B5432B}
+/* D 像素電玩 */
+#lawtip.s-d{background:#0d0f17;background-image:linear-gradient(#1a1f2e 1px,transparent 1px),linear-gradient(90deg,#1a1f2e 1px,transparent 1px);background-size:22px 22px}
+#lawtip.s-d .frame{background:#11151f;border:4px solid #38E1B0;padding:26px 20px;box-shadow:0 0 0 4px #0d0f17,0 0 0 8px #2A6CF0,0 0 26px rgba(56,225,176,.4)}
+#lawtip.s-d .badge{font-family:'Press Start 2P',monospace;color:#FFE13D;font-size:13px;letter-spacing:1px;margin-bottom:18px;text-shadow:2px 2px 0 #C0392B}
+#lawtip.s-d .emo{font-size:54px;margin-bottom:8px}
+#lawtip.s-d .q{font-family:'Press Start 2P','Noto Sans TC',monospace;font-size:15px;color:#EAF6FF;line-height:1.9}
+#lawtip.s-d .q i{color:#38E1B0}
+#lawtip.s-d .law{display:inline-block;margin-top:18px;font-family:'Press Start 2P',monospace;font-size:9px;color:#0d0f17;background:#38E1B0;padding:7px 10px}
+#lawtip.s-d .blink{font-family:'Press Start 2P',monospace;font-size:9px;color:#FFE13D;margin-top:16px;animation:ltblink 1s steps(1) infinite}
+/* E 扁平可愛 */
+#lawtip.s-e{background:#58CC02}
+#lawtip.s-e .badge{display:inline-block;background:#fff;color:#58A700;font-weight:800;font-size:16px;padding:7px 20px;border-radius:30px;box-shadow:0 4px 0 #46A302;margin-bottom:20px}
+#lawtip.s-e .card{background:#fff;border-radius:24px;padding:26px 22px 24px;box-shadow:0 8px 0 rgba(0,0,0,.12)}
+#lawtip.s-e .av{width:96px;height:96px;border-radius:50%;background:#E8F8D8;display:flex;align-items:center;justify-content:center;font-size:52px;margin:0 auto 12px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.06)}
+#lawtip.s-e .q{font-size:23px;font-weight:900;color:#3C3C3C;line-height:1.5}
+#lawtip.s-e .q i{background:linear-gradient(transparent 58%,#FFD900 58%)}
+#lawtip.s-e .law{display:inline-block;margin-top:14px;background:#DDF4FF;color:#1899D6;font-size:12.5px;font-weight:800;padding:5px 14px;border-radius:20px}
+#lawtip.s-e .prog{margin-top:20px;height:14px;background:rgba(255,255,255,.45);border-radius:20px;overflow:hidden}
+#lawtip.s-e .prog i{display:block;height:100%;width:62%;background:#FFD900;border-radius:20px}
+#lawtip.s-e .skip{color:#2b6b00;opacity:.7}
+/* F 普普POW */
+#lawtip.s-f{background:#FFCE2E;background-image:radial-gradient(#E84B2A 14%,transparent 15%);background-size:26px 26px}
+#lawtip.s-f .pow{display:inline-block;background:#E8362D;color:#fff;font-weight:900;font-size:22px;padding:16px 26px;margin-bottom:14px;clip-path:polygon(50% 0,61% 12%,78% 5%,80% 24%,98% 28%,86% 43%,100% 55%,84% 64%,92% 84%,72% 80%,64% 99%,50% 86%,36% 99%,28% 80%,8% 84%,16% 64%,0 55%,14% 43%,2% 28%,20% 24%,22% 5%,39% 12%);transform:rotate(-4deg)}
+#lawtip.s-f .emo{font-size:70px}
+#lawtip.s-f .bubble{position:relative;background:#fff;border:4px solid #1A1A1A;border-radius:14px 14px 14px 4px;padding:20px 18px;box-shadow:8px 8px 0 #1A1A1A;margin-top:12px}
+#lawtip.s-f .q{font-size:25px;font-weight:900;color:#1A1A1A;line-height:1.45}
+#lawtip.s-f .q i{background:linear-gradient(transparent 55%,#FFCE2E 55%)}
+#lawtip.s-f .law{display:inline-block;margin-top:12px;background:#1A1A1A;color:#FFCE2E;font-size:12.5px;font-weight:800;padding:5px 14px;border-radius:4px}
+#lawtip.s-f .sub{margin-top:14px;color:#7A1B12;font-weight:800;font-size:13px}
+/* G 霓虹 */
+#lawtip.s-g{background:#0a0a12;background-image:radial-gradient(circle at 50% 40%,rgba(0,255,200,.12),transparent 60%)}
+#lawtip.s-g .badge{display:inline-block;color:#00E5FF;font-weight:800;font-size:15px;letter-spacing:3px;margin-bottom:18px;text-shadow:0 0 8px rgba(0,229,255,.8)}
+#lawtip.s-g .panel{background:rgba(20,20,35,.7);border:2px solid #00E5FF;border-radius:16px;padding:26px 22px;box-shadow:0 0 18px rgba(0,229,255,.5),inset 0 0 18px rgba(0,229,255,.12)}
+#lawtip.s-g .emo{font-size:64px;filter:drop-shadow(0 0 12px rgba(255,60,200,.6))}
+#lawtip.s-g .q{font-size:23px;font-weight:800;color:#fff;line-height:1.5;text-shadow:0 0 6px rgba(255,255,255,.25)}
+#lawtip.s-g .q i{color:#FF3CC8;text-shadow:0 0 10px rgba(255,60,200,.9)}
+#lawtip.s-g .law{display:inline-block;margin-top:14px;color:#00E5FF;border:1px solid #00E5FF;border-radius:30px;font-size:12px;font-weight:700;padding:4px 14px;box-shadow:0 0 10px rgba(0,229,255,.4)}
+/* H 黑板粉筆 */
+#lawtip.s-h{background:#2C3A33;background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px);background-size:6px 6px}
+#lawtip.s-h .lw{border:8px solid #6b4f2a;border-radius:6px;padding:24px 18px;background:rgba(0,0,0,.12)}
+#lawtip.s-h .badge{color:#FFE9A8;font-size:18px;font-weight:700;letter-spacing:2px;margin-bottom:12px;font-family:'Ma Shan Zheng','Noto Sans TC',cursive}
+#lawtip.s-h .emo{font-size:60px}
+#lawtip.s-h .q{font-family:'Ma Shan Zheng','Noto Sans TC',cursive;font-size:30px;color:#fff;line-height:1.55;margin-top:6px;text-shadow:0 1px 0 rgba(0,0,0,.3)}
+#lawtip.s-h .q i{color:#9BE6B0;border-bottom:3px solid #9BE6B0}
+#lawtip.s-h .law{display:inline-block;margin-top:14px;color:#FFE9A8;font-size:14px;font-weight:700}
+/* I 報紙快報 */
+#lawtip.s-i{background:#3a3631}
+#lawtip.s-i .masthead{font-family:'Noto Serif TC',serif;color:#fff;font-weight:700;font-size:14px;letter-spacing:4px;border-top:2px solid #fff;border-bottom:2px solid #fff;padding:6px 0;margin-bottom:14px}
+#lawtip.s-i .paper{background:#F5F0E6;border:1px solid #d8cfbb;padding:26px 22px;box-shadow:6px 8px 18px rgba(0,0,0,.4)}
+#lawtip.s-i .emo{font-size:56px}
+#lawtip.s-i .q{font-family:'Noto Serif TC',serif;font-size:26px;font-weight:700;color:#1a1a1a;line-height:1.5;margin-top:8px}
+#lawtip.s-i .q i{border-bottom:3px double #C0392B}
+#lawtip.s-i .stamp{display:inline-block;margin-top:14px;color:#C0392B;border:2px solid #C0392B;border-radius:4px;font-size:13px;font-weight:700;padding:3px 12px;transform:rotate(-6deg);font-family:'Noto Serif TC',serif}
+/* J 手機通知 */
+#lawtip.s-j{background:rgba(10,15,30,.55);justify-content:flex-start;padding-top:54px}
+#lawtip.s-j .notif{background:rgba(250,250,252,.97);border-radius:20px;padding:14px 16px;box-shadow:0 12px 30px rgba(0,0,0,.4);text-align:left}
+#lawtip.s-j .nhead{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+#lawtip.s-j .nhead .ico{width:30px;height:30px;border-radius:8px;background:#2E6BE6;display:inline-flex;align-items:center;justify-content:center;font-size:18px}
+#lawtip.s-j .nhead .app{font-weight:800;font-size:13px;color:#333;flex:1}
+#lawtip.s-j .nhead .time{font-size:11px;color:#999}
+#lawtip.s-j .q{font-size:19px;font-weight:800;color:#1a1a1a;line-height:1.5}
+#lawtip.s-j .q i{background:linear-gradient(transparent 58%,#FFE13D 58%)}
+#lawtip.s-j .law{display:inline-block;margin-top:8px;color:#2E6BE6;font-size:12.5px;font-weight:700}
+`;
 
   function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
-  var style = (pStyle && STYLES.indexOf(pStyle)>=0) ? pStyle : pick(STYLES);
-  var tip   = (pTip!==null && TIPS[+pTip]) ? TIPS[+pTip] : pick(TIPS);
-
-  var inner={
-   a:'<div class="badge">⚡ 法律小知識 ⚡</div><div class="sub">載入中…順便長知識！</div>'+
-     '<div class="emo">'+tip.emo+'</div><div class="bubble"><div class="q">'+tip.q+'</div>'+
-     '<div class="law">📖 '+tip.law+'</div></div><div class="skip">點任意處跳過 ▶</div>',
-   b:'<div class="badge">⚡ 法律小知識 ⚡</div><div class="coin"><div class="ring"></div>'+
-     '<div class="disc"><div class="emo">'+tip.emo+'</div><div class="q">'+tip.q+'</div>'+
-     '<div class="law">📖 '+tip.law+'</div></div></div><div class="skip">點任意處跳過 ▶</div>',
-   e:'<div class="badge">💡 你知道嗎？</div><div class="card"><div class="av">'+tip.emo+'</div>'+
-     '<div class="q">'+tip.q+'</div><div class="law">📖 '+tip.law+'</div>'+
-     '<div class="prog"><i></i></div></div><div class="skip">點任意處跳過 ▶</div>'
+  var style=(pStyle && STYLES.indexOf(pStyle)>=0)?pStyle:pick(STYLES);
+  var t=(pTip!==null && TIPS[+pTip])?TIPS[+pTip]:pick(TIPS);
+  var E=t.emo, Q=t.q, L=t.law, SK='<div class="skip">點任意處跳過 ▶</div>';
+  var M={
+   a:'<div class="badge">⚡ 法律小知識 ⚡</div><div class="sub">載入中…順便長知識！</div><div class="emo">'+E+'</div><div class="bubble"><div class="q">'+Q+'</div><div class="law">📖 '+L+'</div></div>'+SK,
+   b:'<div class="badge">⚡ 法律小知識 ⚡</div><div class="coin"><div class="ring"></div><div class="disc"><div class="emo">'+E+'</div><div class="q">'+Q+'</div><div class="law">📖 '+L+'</div></div></div>'+SK,
+   c:'<div class="note"><div class="tape"></div><div class="badge">✦ 法律小抄 ✦</div><div class="emo">'+E+'</div><div class="q">'+Q+'</div><div class="law">'+L+'</div></div>'+SK,
+   d:'<div class="frame"><div class="badge">★ LAW TIP ★</div><div class="emo">'+E+'</div><div class="q">'+Q+'</div><div class="law">'+L+'</div><div class="blink">▶ PRESS TO SKIP</div></div>',
+   e:'<div class="badge">💡 你知道嗎？</div><div class="card"><div class="av">'+E+'</div><div class="q">'+Q+'</div><div class="law">📖 '+L+'</div><div class="prog"><i></i></div></div>'+SK,
+   f:'<div class="pow">知道嗎?!</div><div class="emo">'+E+'</div><div class="bubble"><div class="q">'+Q+'</div><div class="law">📖 '+L+'</div></div><div class="sub">點任意處跳過 ▶</div>',
+   g:'<div class="badge">◢ 法律小知識 ◣</div><div class="panel"><div class="emo">'+E+'</div><div class="q">'+Q+'</div><div class="law">📖 '+L+'</div></div>'+SK,
+   h:'<div class="badge">✎ 今日小提醒</div><div class="emo">'+E+'</div><div class="q">'+Q+'</div><div class="law">— '+L+'</div>'+SK,
+   i:'<div class="masthead">法律快報　勞權版</div><div class="paper"><div class="emo">'+E+'</div><div class="q">'+Q+'</div><div class="stamp">'+L+'</div></div>'+SK,
+   j:'<div class="notif"><div class="nhead"><span class="ico">'+E+'</span><span class="app">法律小知識</span><span class="time">現在</span></div><div class="q">'+Q+'</div><div class="law">📖 '+L+'</div></div>'+SK
   };
 
   function boot(){
+    if(!document.getElementById("lawtip-fonts")){
+      var lk=document.createElement("link"); lk.id="lawtip-fonts"; lk.rel="stylesheet";
+      lk.href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Press+Start+2P&family=Ma+Shan+Zheng&display=swap";
+      document.head.appendChild(lk);
+    }
     var st=document.createElement("style"); st.textContent=CSS; document.head.appendChild(st);
     var ov=document.createElement("div"); ov.id="lawtip"; ov.className="s-"+style;
-    ov.innerHTML='<div class="lw">'+inner[style]+'</div>';
+    ov.innerHTML='<div class="lw">'+M[style]+'</div>';
     document.body.appendChild(ov);
     requestAnimationFrame(function(){ ov.classList.add("show"); });
     var done=false;
