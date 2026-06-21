@@ -453,9 +453,18 @@ document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='E
 
 /* ---------- 連署／加入按鈕 ---------- */
 function goJoin(){
-  const url=FORM_URL||LINE_URL;
-  if(url){ window.open(url,'_blank','noopener'); }
-  else { alert('連署／加入連結還沒設定。\n請工會幹部在程式碼設定區填入 Google 表單或 Line 連結（FORM_URL / LINE_URL）。'); }
+  if(!FORM_URL && !LINE_URL){ alert('連署／加入連結還沒設定（FORM_URL / LINE_URL）。'); return; }
+  var ex=document.getElementById('join-sheet'); if(ex) ex.remove();
+  var wrap=document.createElement('div'); wrap.id='join-sheet';
+  wrap.style.cssText='position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center';
+  var h='<div style="background:#fff;width:100%;max-width:430px;border-radius:18px 18px 0 0;padding:18px 18px 24px;box-shadow:0 -6px 24px rgba(0,0,0,.3)">'
+    +'<div style="text-align:center;font-weight:700;font-size:16px;color:#7B1818;margin-bottom:4px">✋ 我想連署／加入</div>'
+    +'<div style="text-align:center;font-size:12.5px;color:#777;margin-bottom:14px">選一個你方便的方式 · 約 1 分鐘</div>';
+  if(LINE_URL) h+='<a href="'+LINE_URL+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#06C755;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">💬 加入 Line 群組（最快）</a>';
+  if(FORM_URL) h+='<a href="'+FORM_URL+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#1A3A6B;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">📝 填連署表單</a>';
+  h+='<button id="join-cancel" style="display:block;width:100%;background:none;border:0;color:#999;font-size:14px;padding:.5rem;cursor:pointer">取消</button></div>';
+  wrap.innerHTML=h; document.body.appendChild(wrap);
+  wrap.addEventListener('click',function(e){ if(e.target===wrap||e.target.id==='join-cancel'||e.target.tagName==='A') wrap.remove(); });
 }
 ['cta-join','cta-join2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',goJoin); });
 // Line 聯絡連結
