@@ -225,7 +225,23 @@ const KEY="roster_members_v1";
 const STATUS={applicant:'入會申請中',active:'在會',suspended:'停權',left:'出會'};
 let members=[], filter='all', q='';
 function load(){ try{members=JSON.parse(localStorage.getItem(KEY))||[];}catch(_){members=[];} }
-function save(){ try{localStorage.setItem(KEY,JSON.stringify(members));}catch(_){} }
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(members));}catch(_){} try{ idbPut(members.slice()); }catch(_){} }
+
+/* 🛟 備援存放：IndexedDB 第二把鑰匙（比 localStorage 耐清）。localStorage 被清空時，
+   開頁會自動從這裡還原，降低「一鍵歸零」風險。完全本機、不上傳。 */
+const IDB_NAME="roster_db", IDB_STORE="kv", IDB_KEY="members";
+function idbOpen(){ return new Promise(function(res,rej){ try{ var r=indexedDB.open(IDB_NAME,1);
+  r.onupgradeneeded=function(){ r.result.createObjectStore(IDB_STORE); };
+  r.onsuccess=function(){ res(r.result); }; r.onerror=function(){ rej(r.error); };
+}catch(e){ rej(e); } }); }
+function idbPut(val){ return idbOpen().then(function(db){ return new Promise(function(res){
+  var tx=db.transaction(IDB_STORE,"readwrite"); tx.objectStore(IDB_STORE).put(val,IDB_KEY);
+  tx.oncomplete=function(){ res(true); }; tx.onerror=function(){ res(false); };
+}); }).catch(function(){}); }
+function idbGet(){ return idbOpen().then(function(db){ return new Promise(function(res){
+  var tx=db.transaction(IDB_STORE,"readonly"); var g=tx.objectStore(IDB_STORE).get(IDB_KEY);
+  g.onsuccess=function(){ res(g.result||null); }; g.onerror=function(){ res(null); };
+}); }).catch(function(){ return null; }); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function curMonth(){ return new Date().toISOString().slice(0,7); }
@@ -242,6 +258,20 @@ function renderStats(){
     <div class="stat owe"><div class="n">${owe.length}</div><div class="l">欠費</div></div>
     <div class="stat"><div class="n">${members.length}</div><div class="l">名冊總數</div></div>`;
   var wb=document.getElementById('warnbar'); if(wb) wb.style.display=members.length?'block':'none';
+  updateBackupHint();
+}
+
+/* 備份新鮮度提醒：沒備份過或超過 7 天就加重提醒 */
+function updateBackupHint(){
+  var wb=document.getElementById('warnbar'); if(!wb) return;
+  var info=document.getElementById('bkinfo');
+  if(!info){ info=document.createElement('div'); info.id='bkinfo'; info.style.cssText='margin-top:8px;font-size:12px;font-weight:700'; wb.appendChild(info); }
+  if(!members.length){ info.textContent=''; return; }
+  var last=null; try{ last=localStorage.getItem('roster_lastbackup_v1'); }catch(_){}
+  if(!last){ info.style.color='#7B1818'; info.textContent='❗ 尚未備份過——強烈建議現在按上面「立即備份」存一份 JSON。'; return; }
+  var days=Math.floor((Date.now()-new Date(last).getTime())/86400000);
+  if(days>=7){ info.style.color='#7B1818'; info.textContent='⏰ 上次備份已 '+days+' 天前，名冊有更動就該重新備份。'; }
+  else{ info.style.color='#0F5C36'; info.textContent='✓ 上次備份：'+new Date(last).toLocaleDateString('zh-TW')+'（'+(days===0?'今天':days+' 天前')+'）'; }
 }
 
 function visible(){
@@ -339,7 +369,19 @@ $('import-file').addEventListener('change',e=>{
 $('print-btn').addEventListener('click',()=>window.print());
 
 let toastT; function toast(m){ const e=$('toast'); e.textContent=m; e.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>e.classList.remove('show'),1900); }
-function init(){ load(); render(); }
+function init(){
+  load();
+  render();
+  // localStorage 是空的 → 試從 IndexedDB 備援還原（防「一鍵歸零」）
+  if(!members.length){
+    idbGet().then(function(bak){
+      if(Array.isArray(bak) && bak.length){
+        members=bak; try{localStorage.setItem(KEY,JSON.stringify(members));}catch(_){}
+        render(); toast('🛟 已從裝置備援還原 '+bak.length+' 筆名冊');
+      }
+    });
+  }
+}
 
 if(!LOCK){ showApp(); }
 else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
