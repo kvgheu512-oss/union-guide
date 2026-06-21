@@ -353,6 +353,8 @@
         <button class="btn btn-ghost" id="law-update-btn" style="flex:1">🔄 一鍵更新法規</button>
         <button class="btn btn-ghost" id="law-import-toggle" style="flex:1">➕ 匯入 / 貼上法條</button>
       </div>
+      <button class="btn btn-ghost" id="law-extra-btn" style="width:100%;margin-top:8px">📚 載入擴充法庫（房地產／稅務／農地…，平常不佔空間）</button>
+      <div class="hint" id="law-extra-hint" style="margin-top:6px">核心法庫專注勞動主場，<b>輕快</b>。房地產／稅務／農地等專題法<b>另存擴充庫</b>，需要查時點上面一鍵調入，不用時保持輕量。</div>
       <div id="law-update-box" style="display:none;margin-top:10px">
         <div class="note ok" style="margin-bottom:10px"><b>主要更新（官方真資料）：</b>本工具每週由 GitHub Action 從<b>全國法規資料庫官方 API</b> 自動抓最新法條（產生 <code>laws.json</code>），開頁就會自動載入並標「✅官方」。按下面「🔄 重新抓官方法規」可立刻重抓。<br><br><b>備援更新（AI 輔助）：</b>若官方檔還沒產生、或想加官方沒收錄的條文，按「📋 複製更新指令給 AI」→ 貼給 AI 拿法條 → 貼到下面「匯入」框套用。</div>
         <button class="btn btn-ghost" id="law-refresh-official" style="width:100%;margin-bottom:8px">🔄 重新抓官方法規（laws.json）</button>
@@ -515,7 +517,7 @@ function showAppBanner(){ if(sessionStorage.getItem("hideAppBanner"))return; con
   if(/FBAN|FBAV|FBIOS|Instagram|Line\/|MicroMessenger|Twitter|TikTok|GSA\//i.test(navigator.userAgent||"")) showAppBanner(); })();
 
 /* 🔄 自動偵測新版本 */
-const BUILD="2026062164";
+const BUILD="2026062165";
 const CHANGELOG=[
   "新增互動導覽（首頁『▶ 帶我走一遍』）：6 步驟，特別講清楚『免費 vs 付費』怎麼用",
   "法規庫改可摺疊＋預設不全攤（手機不再被上千條洗很長）；搜尋或點分類才列出、超過60條提示縮小範圍",
@@ -675,6 +677,7 @@ function applyOfficial(d,announce){
   if(LAW_META && d && LAW_META.updated && LAW_META.updated===d.updated && LAWS.filter(l=>l.official).length===arr.length){ if(announce) toast("✓ 已是最新官方法規"); return true; }
   LAW_META=(d&&d.updated)?{updated:d.updated,source:d.source}:{updated:"",source:""};
   LAWS=arr.map(x=>({law:String(x.law||"").trim(),art:String(x.art||"").trim(),title:String(x.title||"").trim(),text:String(x.text||"").trim(),cat:String(x.cat||"其他").trim(),official:true,modified:x.modified||""}));
+  mergeExtra(); // 若使用者已調入擴充庫，重抓官方後自動補回，不會被洗掉
   renderCats(); renderLaws(); showLawStatus();
   try{ localStorage.setItem(LAW_CACHE_KEY, JSON.stringify({updated:LAW_META.updated,laws:arr})); }catch(e){}
   if(announce) toast("✅ 已更新為官方法規（"+(LAW_META.updated||"")+"）");
@@ -685,11 +688,47 @@ function fetchOfficial(announce){
     if(!applyOfficial(d,announce)&&announce) toast("還沒有官方 laws.json（要等每週自動更新或手動跑一次 Action）");
   }).catch(()=>{ if(announce) toast("抓不到官方法規（可能沒網路）"); });
 }
+/* 擴充法庫（房地產／稅務／農地…）：另存 laws-extra.json，平常不載入；要查時一鍵調入。
+   屬法規幹部（小巫）的工具設計：核心輕快、擴充隨叫隨到、調入後仍可隨手移除回到輕量。 */
+let EXTRA_LAWS=[]; const EXTRA_FLAG="law_extra_on";
+function mergeExtra(){
+  if(!EXTRA_LAWS.length) return;
+  const have=new Set(LAWS.map(lawKey));
+  EXTRA_LAWS.forEach(l=>{ if(!have.has(lawKey(l))) LAWS.push(l); });
+}
+function markExtraBtn(){
+  const b=document.getElementById("law-extra-btn"), h=document.getElementById("law-extra-hint"); if(!b) return;
+  const on=LAWS.some(l=>l.extra);
+  b.textContent = on ? ("✅ 擴充法庫已載入（"+LAWS.filter(l=>l.extra).length+" 條）· 點此移除回到輕量核心")
+                     : "📚 載入擴充法庫（房地產／稅務／農地…，平常不佔空間）";
+  if(h) h.style.display = on ? "none" : "block";
+}
+function loadExtra(announce){
+  if(EXTRA_LAWS.length){ mergeExtra(); renderCats(); renderLaws(); markExtraBtn(); if(announce) toast("✅ 擴充法庫已調入"); try{localStorage.setItem(EXTRA_FLAG,"1");}catch(e){} return Promise.resolve(true); }
+  return fetch("laws-extra.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+    const a=Array.isArray(d)?d:(d&&d.laws);
+    if(!Array.isArray(a)||!a.length){ if(announce) toast("抓不到擴充法庫（laws-extra.json）"); return false; }
+    EXTRA_LAWS=a.map(x=>({law:String(x.law||"").trim(),art:String(x.art||"").trim(),title:String(x.title||"").trim(),text:String(x.text||"").trim(),cat:String(x.cat||"其他").trim(),official:true,extra:true,modified:x.modified||""}));
+    mergeExtra(); renderCats(); renderLaws(); markExtraBtn();
+    try{ localStorage.setItem(EXTRA_FLAG,"1"); }catch(e){}
+    if(announce) toast("✅ 已調入擴充法庫（"+EXTRA_LAWS.length+" 條）");
+    return true;
+  }).catch(()=>{ if(announce) toast("抓不到擴充法庫（可能沒網路）"); });
+}
+function unloadExtra(){
+  LAWS=LAWS.filter(l=>!l.extra);
+  try{ localStorage.removeItem(EXTRA_FLAG); }catch(e){}
+  renderCats(); renderLaws(); markExtraBtn(); toast("已移除擴充法庫，核心回到輕量");
+}
+document.getElementById("law-extra-btn").addEventListener("click",()=>{ if(LAWS.some(l=>l.extra)) unloadExtra(); else loadExtra(true); });
+
 /* 開頁：先用本機快取瞬間顯示（不必每次下載近 1MB），再背景抓最新、有變更才換。 */
 if(!localStorage.getItem("law_db")){
   try{ const c=JSON.parse(localStorage.getItem(LAW_CACHE_KEY)||"null"); if(c&&Array.isArray(c.laws)&&c.laws.length) applyOfficial(c,false); }catch(e){}
   fetchOfficial(false);
 }
+if(localStorage.getItem(EXTRA_FLAG)==="1"){ loadExtra(false); } // 上次調入過就自動補回
+markExtraBtn();
 
 /* 注入給 AI 的法條：不把整套法典塞進提示詞，只挑「與本案最相關」的數十條
    （條號明確提及＋中文 bigram 關鍵字比對＋核心勞動錨點），省 token、避免超長。 */
