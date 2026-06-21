@@ -541,7 +541,7 @@ async function viewReceipt(rcptId){
   if(!r){alert('找不到此單據影像（可能在另一台裝置）。');return;}
   const w=window.open('','_blank');
   const im=safeImg(r.img);
-  const html=`<!DOCTYPE html><meta charset=utf-8><title>單據 ${esc(r.date)}</title><body style="margin:0;background:#222;text-align:center;font-family:sans-serif"><div style="color:#ccc;padding:8px;font-size:13px">${esc(r.sum||r.cat)} · ${fmt(r.amt)} · ${esc(r.date)} · 憑證保存至 ${(+(''+(r.date||'2026')).slice(0,4))+5} 年（§27）${r.hash?'<br>數位指紋 '+esc((''+r.hash).slice(0,32))+'…':''}</div>${im?`<img src="${im}" style="max-width:100%">`:'<p style="color:#ccc">（此單據無照片）</p>'}<div id="verBadge" style="position:fixed;top:48px;right:8px;z-index:99999;font:11px/1 system-ui,sans-serif;color:#fff;background:rgba(14,80,35,.82);padding:3px 8px;border-radius:10px;letter-spacing:.04em;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">v2026062125</div>
+  const html=`<!DOCTYPE html><meta charset=utf-8><title>單據 ${esc(r.date)}</title><body style="margin:0;background:#222;text-align:center;font-family:sans-serif"><div style="color:#ccc;padding:8px;font-size:13px">${esc(r.sum||r.cat)} · ${fmt(r.amt)} · ${esc(r.date)} · 憑證保存至 ${(+(''+(r.date||'2026')).slice(0,4))+5} 年（§27）${r.hash?'<br>數位指紋 '+esc((''+r.hash).slice(0,32))+'…':''}</div>${im?`<img src="${im}" style="max-width:100%">`:'<p style="color:#ccc">（此單據無照片）</p>'}<div id="verBadge" style="position:fixed;top:48px;right:8px;z-index:99999;font:11px/1 system-ui,sans-serif;color:#fff;background:rgba(14,80,35,.82);padding:3px 8px;border-radius:10px;letter-spacing:.04em;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.25)">v2026062126</div>
 </body>`;
   if(w){w.document.write(html);w.document.close();}
 }
