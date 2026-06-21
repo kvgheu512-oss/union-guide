@@ -331,6 +331,7 @@
     <div class="card" id="law-card" style="display:none">
       <div id="law-status" class="note ok" style="display:none;margin-bottom:10px"></div>
       <div id="law-warn" class="note warn" style="margin-bottom:10px">📌 目前是<b>內建法條快照</b>（官方資料還沒抓到時的後備）。<b>法律會修</b>，正式引用前請核對<b>全國法規資料庫</b>。AI 對<b>沒載入</b>的條號會自動標 <span class="vflag">⚠ 待查</span>，不會憑空捏造條號。</div>
+      <div class="note" style="margin-bottom:10px">🧾 稅務／土地／農地專題：<a href="tax-lawbook.html" style="font-weight:600">稅務法源庫</a>（哪個議題該看哪部法＋實務重點索引）。</div>
       <input class="txt" id="law-search" placeholder="🔎 搜尋法條（輸入：加班費、第38條、勞動事件、誹謗…）">
       <div id="law-cats" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"></div>
       <div id="law-list" style="margin-top:12px"></div>
@@ -494,7 +495,7 @@ function showAppBanner(){ if(sessionStorage.getItem("hideAppBanner"))return; con
   if(/FBAN|FBAV|FBIOS|Instagram|Line\/|MicroMessenger|Twitter|TikTok|GSA\//i.test(navigator.userAgent||"")) showAppBanner(); })();
 
 /* 🔄 自動偵測新版本 */
-const BUILD="2026062131";
+const BUILD="2026062132";
 const CHANGELOG=[
   "新增互動導覽（首頁『▶ 帶我走一遍』）：6 步驟，特別講清楚『免費 vs 付費』怎麼用",
   "法規庫改可摺疊＋預設不全攤（手機不再被上千條洗很長）；搜尋或點分類才列出、超過60條提示縮小範圍",
