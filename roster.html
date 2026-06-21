@@ -137,6 +137,10 @@
 
   <main>
     <div class="stats" id="stats"></div>
+    <div id="warnbar" style="display:none;background:#FDECEA;border:1px solid #F5C6C0;border-radius:12px;padding:.7rem .9rem;font-size:13px;color:#7B1818;line-height:1.7;margin-bottom:12px">
+      ⚠️ <b>名冊只存在這台瀏覽器、不上傳</b>（保護個資）。<b>Brave／無痕可能在關閉視窗時清空</b>！請：① 在 Brave 把本站設成<b>關閉時不清除</b>的例外；② 每次更動後<b>備份</b>一份。
+      <button id="warn-bk" style="display:block;margin-top:8px;background:#C0392B;color:#fff;border:0;border-radius:8px;padding:.55rem .9rem;font-weight:700;cursor:pointer;width:100%">⬇ 立即備份(JSON)</button>
+    </div>
 
     <div class="btn-row" style="margin-bottom:.8rem">
       <button class="btn" id="add-btn">＋ 新增會員／申請</button>
@@ -198,7 +202,7 @@
       <button class="btn ghost sm" id="print-btn">🖨 列印</button>
     </div>
     <input type="file" id="import-file" accept="application/json" style="display:none">
-    <div class="note">🔐 名冊含<b>個人資料</b>。資料只存這台裝置、不上傳；請勿將整份匯出檔隨意外傳，並依個資法妥善保管。換裝置才用「備份→匯入」。</div>
+    <div class="note">🔐 名冊含<b>個人資料</b>，<b>只存這台瀏覽器、不上傳</b>（保護個資）。⚠️ Brave／無痕可能在關閉時清空——請把本站設為<b>不清除例外</b>，並<b>每次更動後備份</b>。換裝置／清資料前務必先「備份→匯入」。</div>
     <p class="law">章程：會員入會須填申請書、經理事會審查通過。新增時可先設「入會申請中（待審）」，理事會審過後按「✓ 核准入會」轉為在會。贊助會員不具表決、選舉、被選舉、罷免權。</p>
   </main>
 </div>
@@ -237,6 +241,7 @@ function renderStats(){
     <div class="stat apply"><div class="n">${app2.length}</div><div class="l">待審申請</div></div>
     <div class="stat owe"><div class="n">${owe.length}</div><div class="l">欠費</div></div>
     <div class="stat"><div class="n">${members.length}</div><div class="l">名冊總數</div></div>`;
+  var wb=document.getElementById('warnbar'); if(wb) wb.style.display=members.length?'block':'none';
 }
 
 function visible(){
@@ -315,10 +320,14 @@ $('csv-btn').addEventListener('click',()=>{
   const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='會員名冊_'+curMonth()+'.csv'; a.click(); toast('已匯出 CSV，可用 Excel 開');
 });
-$('export-btn').addEventListener('click',()=>{
+function exportJSON(){
   const blob=new Blob([JSON.stringify(members,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='會員名冊備份_'+curMonth()+'.json'; a.click(); toast('已匯出備份');
-});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='會員名冊備份_'+curMonth()+'.json'; a.click();
+  try{ localStorage.setItem('roster_lastbackup_v1', new Date().toISOString()); }catch(_){}
+  toast('已匯出備份，請妥善保管');
+}
+$('export-btn').addEventListener('click',exportJSON);
+var _wbk=document.getElementById('warn-bk'); if(_wbk) _wbk.addEventListener('click',exportJSON);
 $('import-btn').addEventListener('click',()=>$('import-file').click());
 $('import-file').addEventListener('change',e=>{
   const f=e.target.files[0]; if(!f) return; const r=new FileReader();
