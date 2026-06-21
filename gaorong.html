@@ -396,6 +396,20 @@
       </div>
     </section>
 
+    <section class="section" id="share">
+      <div class="section-header"><div class="section-num green">📣</div><div class="section-title">邀同事一起來</div></div>
+      <div class="card" style="text-align:center">
+        <p style="font-size:13.5px;color:var(--ink-mid);line-height:1.85;margin-bottom:12px">人越多，談判越有力。把連署轉給<b>信得過的同事</b>——掃 QR 或一鍵分享。</p>
+        <div id="union-qr" style="display:inline-block;padding:10px;background:#fff;border:1px solid var(--border);border-radius:12px;min-height:60px"></div>
+        <div style="font-size:12px;color:var(--ink-soft);margin-top:8px">掃我 → 開啟認識工會／連署頁</div>
+        <div style="display:flex;gap:10px;margin-top:14px">
+          <button id="share-btn" class="cta-btn" style="flex:1">📲 一鍵分享</button>
+          <button id="copy-btn" class="cta-btn" style="flex:1;background:#1A3A6B">📋 複製連署訊息</button>
+        </div>
+        <div id="share-toast" style="font-size:13px;color:var(--green-deep);font-weight:600;margin-top:10px;min-height:18px"></div>
+      </div>
+    </section>
+
   </main>
 
   <footer>
@@ -601,5 +615,17 @@ document.getElementById('faq-toggle-btn').addEventListener('click',function(){
 </script>
 <div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026062128</div>
 <script src="law-tips.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js"></script>
+<script>
+(function(){
+  var url=location.origin+location.pathname;
+  function drawQR(){ if(typeof QRCode==="undefined"){ drawQR._n=(drawQR._n||0)+1; if(drawQR._n<25) setTimeout(drawQR,300); return; } var el=document.getElementById('union-qr'); if(!el||el.dataset.done) return; el.innerHTML=''; new QRCode(el,{text:url,width:180,height:180,colorDark:'#0F5C36',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); el.dataset.done='1'; }
+  drawQR();
+  function msg(){ var sb=document.getElementById('signbar'); var now=sb?parseInt(sb.dataset.now||'0',10):0; var lead=now>0?('目前 '+now+'/30，再 '+(30-now)+' 人就成案！'):''; return '【高榮企業工會 連署中】加班費、排班、職場霸凌…一個人喊沒用，30 人連署就能成立工會、坐上談判桌。'+lead+' 1 分鐘了解＋連署 👉 '+url; }
+  function toast(t){ var e=document.getElementById('share-toast'); if(e){ e.textContent=t; setTimeout(function(){ e.textContent=''; },2600); } }
+  var sBtn=document.getElementById('share-btn'); if(sBtn) sBtn.addEventListener('click',function(){ var text=msg(); if(navigator.share){ navigator.share({title:'高榮企業工會 連署',text:text,url:url}).catch(function(){}); } else if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){toast('✅ 已複製，貼到 LINE 群組即可');},function(){toast('請長按訊息複製');}); } else { toast('請長按訊息複製'); } });
+  var cBtn=document.getElementById('copy-btn'); if(cBtn) cBtn.addEventListener('click',function(){ if(navigator.clipboard){ navigator.clipboard.writeText(msg()).then(function(){toast('✅ 連署訊息已複製');},function(){toast('請長按複製');}); } else { toast('請長按複製'); } });
+})();
+</script>
 </body>
 </html>
