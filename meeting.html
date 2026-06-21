@@ -285,7 +285,8 @@ $('new-btn').addEventListener('click',()=>{
   fillForm(); showView('edit');
 });
 $('back').addEventListener('click',e=>{
-  if($('view-edit').classList.contains('on')){ e.preventDefault(); load(); renderList(); showView('list'); }
+  if($('view-edit').classList.contains('on')){ e.preventDefault(); load(); renderList(); showView('list'); return; }
+  if(history.length>1){ e.preventDefault(); history.back(); } // 清單頁返回功能表：用 bfcache 秒回
 });
 
 /* 編輯填表 */

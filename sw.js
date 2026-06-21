@@ -33,13 +33,16 @@ self.addEventListener("fetch", e => {
   if (url.pathname.endsWith("/laws.json") || url.pathname.endsWith("laws.json")) return; // 法規檔不攔，永遠拿最新官方版
   if (url.pathname.endsWith("laws-extra.json")) return; // 擴充法庫不攔，永遠拿最新
 
-  // HTML / 導覽：網路優先，失敗退快取（離線也能開）
+  // HTML / 導覽：快取優先「秒開」(stale-while-revalidate)——立即用快取顯示、背景抓最新更新快取；
+  // 真正有新版時由 ver.txt 比對跳「立即更新」橫幅。沒快取才等網路（離線也能開）。
   if (req.mode === "navigate" || req.destination === "document") {
     e.respondWith(
-      fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return r; })
-        .catch(() => caches.match(req).then(m => m ||
-          caches.match(url.pathname.indexOf("lawyer") >= 0 ? "./lawyer.html"
-            : url.pathname.indexOf("search") >= 0 ? "./search.html" : "./evidence.html")))
+      caches.match(req).then(cached => {
+        const net = fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return r; })
+          .catch(() => cached || caches.match(url.pathname.indexOf("lawyer") >= 0 ? "./lawyer.html"
+            : url.pathname.indexOf("search") >= 0 ? "./search.html" : "./evidence.html"));
+        return cached || net;
+      })
     );
     return;
   }
