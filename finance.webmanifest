@@ -8,6 +8,6 @@
   "background_color": "#0F5C36",
   "theme_color": "#1A7A4A",
   "icons": [
-    { "src": "union-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "icon-evidence.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }
