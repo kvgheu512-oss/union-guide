@@ -432,7 +432,7 @@ const CHANGELOG=[
   "自動偵測新版本、跳「🔄 有新版」提醒",
   "搜尋自動清掉貼錯的標籤/網址、0 筆自動放寬"
 ];
-function verLabel(){ const b=BUILD,n=+b.slice(8); return b.slice(0,4)+"-"+b.slice(4,6)+"-"+b.slice(6,8)+"（版號 "+(n<10?"0"+n:n)+"）"; }
+function verLabel(){ const b=BUILD,n=+b.slice(8); return b.slice(0,4)+"."+b.slice(4,6)+"."+b.slice(6,8)+"."+(n<10?"0"+n:n); }
 function checkUpdate(manual){
   const vs=document.getElementById("ver-status");
   if(manual&&vs)vs.textContent=" · 檢查中…";
@@ -711,7 +711,8 @@ document.getElementById("relay-apply").addEventListener("click",()=>{
   applyState(s); toast("✅ 進度已接力過來");
 });
 </script>
-<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026062128</div>
+<div id="verBadge" style="position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none">v2026.06.21.66</div>
 <script src="law-tips.js" defer></script>
+<script src="ver-badge.js" defer></script>
 </body>
 </html>
