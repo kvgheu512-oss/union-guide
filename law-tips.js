@@ -1,7 +1,7 @@
 /* ===================================================================
    law-tips.js · 漫畫風「遊戲讀取小提醒」（10 種隨機風格）
    用法：頁面底部 <script src="law-tips.js" defer></script>
-   行為：每瀏覽階段只跳一次，隨機風格＋隨機法律小知識，約 2.4 秒自動淡出，點任意處跳過。
+   行為：每瀏覽階段只跳一次，隨機風格＋隨機法律小知識，約 4.4 秒自動淡出，點任意處跳過。
    Demo 覆寫：?ltstyle=a..j  ?lttip=0..  ?ltkeep=1(不自動關)  ?ltforce=1(忽略session)
 =================================================================== */
 (function(){
@@ -297,7 +297,7 @@
     var done=false;
     function close(){ if(done)return; done=true; ov.classList.remove("show"); setTimeout(function(){ ov.remove(); },300); }
     ov.addEventListener("click",close);
-    if(!pKeep) setTimeout(close,2400);
+    if(!pKeep) setTimeout(close,4400);
   }
   if(document.body) boot(); else document.addEventListener("DOMContentLoaded",boot);
 })();
