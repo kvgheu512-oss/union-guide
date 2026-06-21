@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#B23A1E">
+<title>職災・職傷・公傷 維權專區｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--brand:#B23A1E;--brand-deep:#7E2512;--navy:#1A3A6B;--navy-deep:#122A4F;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#FBF4F1;--card:#fff;--border:#ECDED9;--amber:#FEF4E2;--amber-line:#EAD08A;--green:#1A7A4A;--green-deep:#0F5C36;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#B23A1E,#7E2512);color:#fff;padding:1.9rem 1.25rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:-40px;right:-40px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.06);}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:20px;position:relative;}
+  .header p{font-size:12.5px;opacity:.93;margin-top:6px;position:relative;}
+  main{max-width:700px;margin:0 auto;padding:1.2rem 1.05rem 4rem;}
+  h2{font-family:'Noto Serif TC',serif;color:var(--brand-deep);font-size:17px;margin:1.7rem 0 .6rem;display:flex;align-items:center;gap:8px;}
+  .topnote{background:var(--amber);border:1px solid var(--amber-line);border-radius:10px;padding:.8rem .95rem;font-size:12.5px;color:#5C4000;margin-bottom:1rem;line-height:1.75;}
+
+  .first{background:#fff;border:2px solid var(--brand);border-radius:16px;padding:1rem 1.1rem;margin-bottom:1.1rem;}
+  .first .ft{font-family:'Noto Serif TC',serif;font-weight:700;color:var(--brand-deep);font-size:16px;margin-bottom:.5rem;}
+  .first ol{margin:0 0 0 1.1rem;padding:0;}
+  .first li{margin-bottom:.55rem;font-size:14px;line-height:1.75;}
+  .first li b{color:var(--brand-deep);}
+  .warnline{background:#FDECEA;border:1px solid #F3C9C4;border-radius:10px;padding:.7rem .9rem;font-size:13px;color:#7B1818;margin-top:.7rem;line-height:1.75;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:.5rem 0;}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top;}
+  th{background:#F6E7E1;color:var(--brand-deep);}
+  td.trick{color:#7B1818;font-weight:600;width:42%;}
+  td.fact b{color:var(--green-deep);}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.8rem 1rem;margin-bottom:.55rem;border-left:5px solid var(--navy);}
+  .card.cs{border-left-color:#6A4F9A;}
+  .ct{font-size:14.5px;line-height:1.75;}
+  .no{display:inline-block;background:var(--navy);color:#fff;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px;margin-right:7px;white-space:nowrap;}
+  .card.cs .no{background:#6A4F9A;}
+  details{margin-top:.5rem;} summary{cursor:pointer;color:var(--navy);font-size:13px;font-weight:600;} .card.cs summary{color:#6A4F9A;}
+  .law{margin-top:.5rem;background:var(--bg);border-radius:8px;padding:.6rem .75rem;font-size:13px;color:var(--ink-mid);line-height:1.85;}
+
+  .chk{background:#fff;border:1px solid var(--border);border-radius:12px;padding:.4rem .4rem;margin:.4rem 0 1rem;}
+  .chk label{display:flex;align-items:flex-start;gap:11px;padding:.55rem .7rem;border-bottom:1px solid #F2EAE6;cursor:pointer;font-size:13.5px;line-height:1.7;}
+  .chk label:last-child{border-bottom:none;}
+  .chk input{width:21px;height:21px;flex-shrink:0;margin-top:1px;accent-color:var(--brand);}
+
+  .amm{background:#0E1B2E;border-radius:12px;padding:.9rem 1rem;margin:.5rem 0 1rem;}
+  .amm .at{color:#9FD0FF;font-size:12.5px;font-weight:700;margin-bottom:.5rem;}
+  .amm textarea{width:100%;min-height:128px;background:#0A111C;border:1px solid #28384E;border-radius:9px;padding:.7rem;color:#D7E2EF;font-size:12.5px;line-height:1.7;font-family:inherit;resize:vertical;}
+  .amm .row{display:flex;gap:8px;margin-top:.6rem;flex-wrap:wrap;}
+  .amm button,.amm a{flex:1;min-width:130px;text-align:center;text-decoration:none;font-size:13px;font-weight:700;border-radius:9px;padding:.6rem;border:none;cursor:pointer;}
+  .amm .copy{background:#1E73C8;color:#fff;} .amm .toai{background:#13A36B;color:#fff;}
+  .amm .toast{color:#7CE3B0;font-size:12px;min-height:16px;margin-top:6px;text-align:center;}
+
+  a.reslink{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--border);border-left:5px solid var(--green);border-radius:11px;padding:.7rem .9rem;margin-bottom:.5rem;}
+  a.reslink .t{font-weight:700;color:var(--green-deep);font-size:13.5px;} a.reslink .d{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  a.reslink .go{margin-left:auto;color:var(--green);}
+  .tel{background:#EAF0F8;border-radius:11px;padding:.7rem 1rem;font-size:13px;color:var(--navy-deep);margin:.5rem 0;line-height:1.8;}
+  .ask{background:#fff;border:1px solid var(--border);border-left:5px solid var(--brand);border-radius:12px;padding:.85rem 1rem;font-size:13.5px;line-height:1.8;}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.6rem;line-height:1.9;}
+</style>
+<style>@media print{.noprint{display:none!important}}</style>
+</head>
+<body>
+<a class="noprint" href="gaorong.html" onclick="if(history.length>1){history.back();return false;}" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;background:#fff;color:#7E2512;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">← 返回</a>
+<a class="noprint" href="gaorong.html" style="position:fixed;top:max(10px,env(safe-area-inset-top));right:10px;z-index:9999;background:#B23A1E;color:#fff;font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">🏠 工會首頁</a>
+
+<div class="header">
+  <h1>🦺 職災・職傷・公傷 維權專區</h1>
+  <p>受傷不是你的錯，被擋更不該。勞工（職災）＋公務人員（公傷）都適用</p>
+</div>
+
+<main>
+  <div class="topnote">📖 本頁把法條整理成「<b>對方擋你時，你怎麼回</b>」。為整理參考、非正式法律意見；正式引用以全國法規資料庫最新版為準。個案請洽工會幹部、勞工局 <b>1955</b> 或下方官方管道。<br>⚠️ <b>身分不同、依據不同</b>：受僱勞工走「<b>職業災害</b>」（勞基法／職災保險法）；具公務員身分者走「<b>因公傷病</b>」（公務人員保障法／請假規則）。本頁兩套都備齊。</div>
+
+  <!-- 受傷當下三件事 -->
+  <div class="first">
+    <div class="ft">🚑 受傷的當下，先做這三件事</div>
+    <ol>
+      <li><b>先就醫，說清楚「在工作中／因工作受傷」</b>，請醫師把<b>致傷原因與經過</b>寫進診斷證明書（這張是日後認定的關鍵）。</li>
+      <li><b>先存證</b>：拍現場與傷勢、留當天<b>出勤／排班紀錄</b>、保存與主管和職安室的<b>對話（LINE／email／書面）</b>、記下<b>目擊同事</b>。</li>
+      <li><b>先別簽</b>任何「自願以個人普通病假處理」「與職災無關」「和解拋棄」的文件——<b>先問工會</b>。簽了再翻盤很難。</li>
+    </ol>
+    <div class="warnline">💡 高榮職安室如果以各種理由「不認定」職災／公傷，<b>那是程序上的拖延，不是法律上的定論</b>。認定有法定準則與專責醫院，<b>不是雇主說了算</b>。下面教你怎麼接招。</div>
+  </div>
+
+  <!-- 對付擋公傷 -->
+  <h2>🛡️ 對方常見擋法 × 你的法律回應</h2>
+  <table>
+    <tr><th>職安室／資方常見說法</th><th>法律事實（你的回應）</th></tr>
+    <tr><td class="trick">「先請普通病假，等認定再說」（拖到你假用完）</td><td class="fact"><b>職災保險法 §88</b>：未認定前可先請普通傷病假；<b>一旦認定為職災，再以「公傷病假」處理（追溯回去）</b>。普通傷病假期滿想留停，雇主應准。拖延不等於你輸。</td></tr>
+    <tr><td class="trick">「這不算職災／公傷，是你自己身體的問題」</td><td class="fact">職災認定有<b>法定審查準則</b>（職災保險法 §27 III），可逕向<b>職業傷病診治專責醫院</b>就診、由<b>職業醫學科</b>評估，並向<b>勞保局</b>申請給付——不必看雇主臉色。</td></tr>
+    <tr><td class="trick">「醫療期間我們要資遣／調職你」</td><td class="fact"><b>勞基法 §13</b>：職災<b>醫療期間，雇主不得終止契約</b>。趁你受傷把你弄走＝違法。</td></tr>
+    <tr><td class="trick">「醫藥費自己付」</td><td class="fact"><b>勞基法 §59</b>：必需醫療費、<b>醫療不能工作期間按原領工資補償</b>、失能、死亡，雇主應補償（可與勞保職災給付抵充）。</td></tr>
+    <tr><td class="trick">「養好了，但原本的位子沒了」</td><td class="fact"><b>職災保險法 §66、§67</b>：雇主應依<b>復工計畫</b>協助你恢復原工作；無法恢復應<b>協議安置適當工作</b>、提供必要輔助設施。</td></tr>
+    <tr><td class="trick">明明有立即危險，還叫你硬上</td><td class="fact"><b>職安法 §18</b>：有立即危險可<b>自行停工退避</b>並報主管；雇主<b>不得解僱、調職、扣薪</b>或不利處分。</td></tr>
+    <tr><td class="trick">出了事壓著不通報</td><td class="fact"><b>職安法 §37</b>：死亡／3 人以上／1 人以上住院，雇主應<b>8 小時內通報勞檢機構</b>，且<b>現場不得移動破壞</b>。沒通報是另一條違法。</td></tr>
+  </table>
+
+  <!-- 勞工 法條 -->
+  <h2>👷 受僱勞工：法條彈藥（點開看官方原文）</h2>
+  <div class="card"><div class="ct"><span class="no">職災保險法 §88</span><b>先普通病假、認定後改公傷病假（追溯）</b>——破解「拖到假用完」。</div><details><summary>看官方條文</summary><div class="law">職業災害未認定前，勞工得先請普通傷病假；普通傷病假期滿，申請留職停薪者，雇主應予留職停薪。經認定結果為職業災害者，再以公傷病假處理。</div></details></div>
+  <div class="card"><div class="ct"><span class="no">勞基法 §59</span>職災致死亡／失能／傷病，雇主應補償<b>醫療費、原領工資、失能、死亡</b>。</div><details><summary>看官方條文</summary><div class="law">勞工因遭遇職業災害而致死亡、失能、傷害或疾病時，雇主應依下列規定予以補償（同一事故已由勞保等支付者得抵充）：一、必需之醫療費用。二、醫療中不能工作時，按其原領工資數額予以補償（醫療屆滿二年未癒並經審定喪失原有工作能力者，雇主得一次給付四十個月平均工資後免除）。三、治療終止經審定遺存障害者，按平均工資及失能程度一次給予失能補償。四、死亡者，除五個月喪葬費外，並一次給與遺屬四十個月平均工資之死亡補償。</div></details></div>
+  <div class="card"><div class="ct"><span class="no">勞基法 §13</span><b>職災醫療期間，雇主不得終止契約</b>（不得趁傷資遣）。</div><details><summary>看官方條文</summary><div class="law">勞工在第五十條規定之停止工作期間或第五十九條規定之醫療期間，雇主不得終止契約。但雇主因天災、事變或其他不可抗力致事業不能繼續，經報主管機關核定者，不在此限。</div></details></div>
+  <div class="card"><div class="ct"><span class="no">請假規則 §6・§9</span>職災治療休養期間給<b>公傷病假</b>；且<b>不得視為缺勤影響全勤獎金</b>。</div><details><summary>看官方條文</summary><div class="law">§6　勞工因職業災害而致失能、傷害或疾病者，其治療、休養期間，給予公傷病假。<br>§9　勞工請婚假、喪假、公傷病假及公假，雇主不得視為缺勤而影響其全勤獎金……</div></details></div>
+  <div class="card"><div class="ct"><span class="no">職災保險法 §27</span>職業傷病可請領<b>醫療、傷病、失能、死亡</b>給付（向勞保局）。</div><details><summary>看官方條文</summary><div class="law">被保險人於保險效力開始後停止前，遭遇職業傷害或罹患職業病，而發生醫療、傷病、失能、死亡或失蹤保險事故者，被保險人、受益人或支出殯葬費之人得依本法規定請領保險給付……職業傷病之類型、種類、審查認定基準等準則，由中央主管機關定之。</div></details></div>
+  <div class="card"><div class="ct"><span class="no">職安法 §18・§37</span>立即危險可<b>停工退避不受處分</b>；重大職災雇主<b>8 小時內通報</b>、現場不得破壞。</div><details><summary>看官方條文</summary><div class="law">§18　工作場所有立即發生危險之虞時，雇主應即令停止作業並使勞工退避；勞工亦得自行停止作業退避並報主管，雇主不得解僱、調職、不給付停止作業期間工資或其他不利處分。<br>§37　工作場所發生職業災害，雇主應即急救搶救並會同勞工代表調查；發生死亡、罹災 3 人以上、或 1 人以上住院者，應於八小時內通報勞動檢查機構，且非經許可不得移動或破壞現場。</div></details></div>
+
+  <!-- 公務人員 公傷 -->
+  <h2>👔 具公務員身分：因公傷病（公傷）彈藥</h2>
+  <div class="card cs"><div class="ct"><span class="no">保障法 §21</span>執行職務發生意外致<b>受傷／失能／死亡，應發慰問金</b>；機關安全衛生防護有瑕疵致受損，得依<b>國家賠償法</b>請求。</div><details><summary>看官方條文</summary><div class="law">公務人員因機關未提供安全及衛生防護措施或提供之防護措施有瑕疵，致其生命、身心健康受損時，得依國家賠償法請求賠償。<br>公務人員執行職務時，發生意外致受傷、失能或死亡者，應發給慰問金。但該公務人員有故意或重大過失情事者，得不發或減發。</div></details></div>
+  <div class="card cs"><div class="ct"><span class="no">請假規則 §5・§11・§15</span><b>因公傷病請公假</b>：例假日不扣、期滿未癒可留停；<b>7 日以上</b>須附評鑑合格醫院診斷書。</div><details><summary>看官方條文</summary><div class="law">§5　公務人員請延長病假或因公傷病請公假已滿規定期限仍不能銷假者，應予留職停薪……但因執行職務且情況特殊者，得由機關長官審酌延長（以一年為限）。<br>§11　因疾病申請延長病假或因公傷病之公假七日以上，應檢具中央衛生主管機關評鑑合格醫院出具之診斷證明書……<br>§15　請延長病假或因公傷病請公假者，例假日均不予扣除。</div></details></div>
+  <div class="card cs"><div class="ct"><span class="no">保障法 §19</span>機關應提供<b>安全衛生防護</b>，並使你<b>免於職場霸凌</b>（含申訴期限）。</div><details><summary>看官方條文</summary><div class="law">公務人員執行職務之安全應予保障。各機關對於公務人員之執行職務，應提供安全及衛生之防護措施，並使公務人員免於遭受職場霸凌等行為……（霸凌定義、申訴期限見原條文）</div></details></div>
+  <div class="card cs"><div class="ct"><span class="no">保障法 §22</span>依法執行職務<b>涉訟</b>，服務機關<b>應輔助延聘律師</b>。</div><details><summary>看官方條文</summary><div class="law">公務人員依法執行職務涉訟時，服務機關應輔助其延聘律師為其辯護及提供法律上之協助……</div></details></div>
+  <div class="card cs"><div class="ct"><span class="no">救濟</span>機關處置不當影響權益→<b>申訴／再申訴</b>（§77）；違法不當處分致損權益→<b>復審</b>（§25），由保訓會審議。</div></div>
+
+  <!-- 證據清單 -->
+  <h2>📎 證據清單（邊存邊勾，存在本機）</h2>
+  <div class="chk" id="evchk">
+    <label><input type="checkbox" data-k="e1"> 事故當下／傷勢的<b>照片或影片</b>、現場狀況</label>
+    <label><input type="checkbox" data-k="e2"> <b>就醫紀錄與診斷證明書</b>（請醫師載明致傷原因與經過）</label>
+    <label><input type="checkbox" data-k="e3"> 當天的<b>出勤／排班／打卡紀錄</b>（證明在工作時間、因工作）</label>
+    <label><input type="checkbox" data-k="e4"> 與主管／職安室的<b>對話紀錄</b>（LINE、email、公文、簽呈）</label>
+    <label><input type="checkbox" data-k="e5"> <b>目擊同事</b>的姓名、聯絡方式（必要時請其作證）</label>
+    <label><input type="checkbox" data-k="e6"> 機關有無依職安法 §37<b>通報</b>的紀錄／有無破壞現場</label>
+    <label><input type="checkbox" data-k="e7"> 同類事故是否曾發生（<b>反覆性</b>＝防護不足的佐證）</label>
+  </div>
+
+  <!-- 一鍵帶進 AI 律師 -->
+  <h2>🧠 一鍵生成主張，丟給 AI 律師分析</h2>
+  <div class="amm">
+    <div class="at">📋 把這段（含上面法條）複製，貼到「AI 律師」的評讀框，或直接點右邊開啟：</div>
+    <textarea id="amm-text" readonly></textarea>
+    <div class="row">
+      <button class="copy" id="amm-copy">📋 複製主張</button>
+      <a class="toai" href="lawyer.html">⚖️ 開啟 AI 律師 →</a>
+    </div>
+    <div class="toast" id="amm-toast"></div>
+  </div>
+
+  <!-- 官方管道 -->
+  <h2>🏛 官方求助管道（直連·永遠最新）</h2>
+  <a class="reslink" href="https://www.osha.gov.tw/48110/48363/133456/133462/133511/" target="_blank" rel="noopener"><div><div class="t">職業傷病診治・專責醫院名單（職安署）</div><div class="d">由職業醫學科專責醫院認定職業傷病、開立證明。</div></div><span class="go">↗</span></a>
+  <a class="reslink" href="https://www.bli.gov.tw/0105426.html" target="_blank" rel="noopener"><div><div class="t">勞工職業災害保險・給付專區（勞保局）</div><div class="d">醫療／傷病／失能／死亡給付申請。</div></div><span class="go">↗</span></a>
+  <a class="reslink" href="https://www.bli.gov.tw/0106444.html" target="_blank" rel="noopener"><div><div class="t">職災保險相關書表下載（勞保局）</div><div class="d">各項給付申請書、自墊醫療費核退等。</div></div><span class="go">↗</span></a>
+  <a class="reslink" href="https://www.osha.gov.tw/48110/48363/133456/133468/133516/" target="_blank" rel="noopener"><div><div class="t">職業病鑑定（職安署）</div><div class="d">認定有爭議時的鑑定機制。</div></div><span class="go">↗</span></a>
+  <a class="reslink" href="https://labor.kcg.gov.tw/" target="_blank" rel="noopener"><div><div class="t">高雄市政府勞工局</div><div class="d">在地申訴、勞檢、勞資爭議調解。</div></div><span class="go">↗</span></a>
+  <div class="tel">☎️ 勞工諮詢專線 <b>1955</b>（全國·24 小時）｜ 公務人員救濟：公務人員保障暨培訓委員會（保訓會）</div>
+
+  <!-- 諮詢入口 -->
+  <h2>💬 不確定怎麼辦？讓工會陪你</h2>
+  <div class="ask">把你的狀況（<b>什麼時候、怎麼受傷、職安室／主管說了什麼、要你簽什麼</b>）<b>先告訴工會幹部</b>，由幹部協助你<b>對照法條、保全證據、判斷該走職災還是因公傷病</b>，必要時<b>陪你申請、申訴或協商</b>。<br><b>一個人面對職安室很難，工會站你這邊。</b></div>
+
+  <div class="foot">資料來源：全國法規資料庫（勞動基準法／勞工請假規則／勞工職業災害保險及保護法／職業安全衛生法／公務人員保障法／公務人員請假規則）· 官方連結以各機關公告為準<br>高雄榮民總醫院企業工會（籌備中）</div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  // 證據清單存本機
+  var EK="zhizai_evidence_v1";
+  var saved={}; try{saved=JSON.parse(localStorage.getItem(EK))||{};}catch(e){}
+  var boxes=document.querySelectorAll("#evchk input");
+  boxes.forEach(function(b){
+    if(saved[b.dataset.k]) b.checked=true;
+    b.addEventListener("change",function(){
+      saved[b.dataset.k]=b.checked;
+      try{localStorage.setItem(EK,JSON.stringify(saved));}catch(e){}
+    });
+  });
+
+  // 主張範本（含法條，貼給 AI 律師）
+  var AMM=[
+"【我的狀況】（請在此補充：什麼時候、在哪、做什麼工作時、怎麼受傷／發病、目前傷勢、職安室或主管說了什麼、要我簽什麼）：",
+"",
+"【我要主張的重點，請你以勞動法律師立場，引法條、判斷對方說法有無破綻、列出我該準備的證據與步驟】",
+"1. 這是否構成職業災害／因公傷病？認定有法定準則，非雇主說了算。",
+"2. 若雇主要我先請普通病假拖延：依〈勞工職業災害保險及保護法 §88〉，未認定前可先請普通傷病假，認定為職災後應改以公傷病假處理（追溯）。",
+"3. 醫療期間雇主可否資遣／調職我？〈勞動基準法 §13〉醫療期間不得終止契約。",
+"4. 雇主應負哪些補償？〈勞動基準法 §59〉醫療費、按原領工資補償、失能、死亡補償。",
+"5. 病假期間的全勤與考核保護：〈勞工請假規則 §6、§9〉公傷病假不得視為缺勤影響全勤。",
+"6. 復工與安置：〈勞工職業災害保險及保護法 §66、§67〉復工計畫、安置適當工作、輔助設施。",
+"7. 若我具公務員身分，請改以〈公務人員保障法 §21（慰問金／國賠）、§19、§22〉與〈公務人員請假規則 §5、§11、§15 因公傷病請公假〉分析。",
+"",
+"請逐點告訴我：對方哪句話站不住腳、我下一步該做什麼、要保全哪些證據、向哪個機關申請或救濟。"
+].join("\n");
+  var ta=document.getElementById("amm-text"); ta.value=AMM;
+  document.getElementById("amm-copy").addEventListener("click",function(){
+    var t=document.getElementById("amm-toast");
+    function ok(){t.textContent="✅ 已複製，貼到 AI 律師的評讀框即可";setTimeout(function(){t.textContent="";},2800);}
+    if(navigator.clipboard){navigator.clipboard.writeText(AMM).then(ok,function(){ta.select();document.execCommand("copy");ok();});}
+    else{ta.select();document.execCommand("copy");ok();}
+  });
+})();
+</script>
+<script src="law-tips.js" defer></script>
+</body>
+</html>
