@@ -146,6 +146,16 @@
       <button id="warn-bk" style="display:block;margin-top:8px;background:#C0392B;color:#fff;border:0;border-radius:8px;padding:.55rem .9rem;font-weight:700;cursor:pointer;width:100%">⬇ 立即備份(JSON)</button>
     </div>
 
+    <div id="autobk" style="background:#EAF4FF;border:1px solid #C7DEF5;border-radius:12px;padding:.7rem .9rem;font-size:12.5px;color:#143A66;line-height:1.7;margin-bottom:12px">
+      <b>🔐 自動備份</b>（防裝置清空／換機）<span id="bk-status" style="font-weight:700"></span>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn ghost sm" id="bk-bind" style="display:none">🔗 設定自動備份檔（電腦）</button>
+        <button class="btn ghost sm" id="bk-resume" style="display:none">▶ 恢復自動備份</button>
+        <button class="btn ghost sm" id="bk-share">☁️ 備份到雲端／檔案</button>
+      </div>
+      <div id="bk-hint" style="font-size:11.5px;color:#5A6E85;margin-top:6px"></div>
+    </div>
+
     <div class="btn-row" style="margin-bottom:.8rem">
       <button class="btn" id="add-btn">＋ 新增會員／申請</button>
     </div>
@@ -229,7 +239,7 @@ const KEY="roster_members_v1";
 const STATUS={applicant:'入會申請中',active:'在會',suspended:'停權',left:'出會'};
 let members=[], filter='all', q='';
 function load(){ try{members=JSON.parse(localStorage.getItem(KEY))||[];}catch(_){members=[];} }
-function save(){ try{localStorage.setItem(KEY,JSON.stringify(members));}catch(_){} try{ idbPut(members.slice()); }catch(_){} }
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(members));}catch(_){} try{ idbPut(members.slice()); }catch(_){} try{ scheduleFileBackup(); }catch(_){} }
 
 /* 🛟 備援存放：IndexedDB 第二把鑰匙（比 localStorage 耐清）。localStorage 被清空時，
    開頁會自動從這裡還原，降低「一鍵歸零」風險。完全本機、不上傳。 */
@@ -246,6 +256,67 @@ function idbGet(){ return idbOpen().then(function(db){ return new Promise(functi
   var tx=db.transaction(IDB_STORE,"readonly"); var g=tx.objectStore(IDB_STORE).get(IDB_KEY);
   g.onsuccess=function(){ res(g.result||null); }; g.onerror=function(){ res(null); };
 }); }).catch(function(){ return null; }); }
+/* 通用 IDB KV（存自動備份檔的 handle，可跨重開保存） */
+function idbSetK(k,v){ return idbOpen().then(function(db){ return new Promise(function(res){ var tx=db.transaction(IDB_STORE,"readwrite"); tx.objectStore(IDB_STORE).put(v,k); tx.oncomplete=function(){res(1);}; tx.onerror=function(){res(0);}; }); }).catch(function(){}); }
+function idbGetK(k){ return idbOpen().then(function(db){ return new Promise(function(res){ var tx=db.transaction(IDB_STORE,"readonly"); var g=tx.objectStore(IDB_STORE).get(k); g.onsuccess=function(){res(g.result||null);}; g.onerror=function(){res(null);}; }); }).catch(function(){ return null; }); }
+
+/* 🔐 自動備份：電腦端綁定一個檔當「儲存點」，之後每次更動自動寫入；手機端一鍵存到雲端／檔案。 */
+var fileHandle=null, _wtmr=null;
+function bkData(){ return JSON.stringify({_type:'高榮工會名冊備份',_at:new Date().toISOString(),count:members.length,members:members},null,2); }
+function writeFile(){
+  if(!fileHandle || !fileHandle.createWritable) return Promise.resolve(false);
+  return fileHandle.queryPermission({mode:'readwrite'}).then(function(p){
+    if(p!=='granted') return false;
+    return fileHandle.createWritable().then(function(w){ return w.write(bkData()).then(function(){ return w.close(); }); })
+      .then(function(){ try{ localStorage.setItem('roster_lastbackup_v1',new Date().toISOString()); }catch(_){} return true; });
+  }).catch(function(){ return false; });
+}
+function scheduleFileBackup(){ if(!fileHandle) return; clearTimeout(_wtmr); _wtmr=setTimeout(function(){ writeFile().then(function(ok){ if(ok) updateBkStatus(); }); },1200); }
+function bindFile(){
+  if(!('showSaveFilePicker' in window)) return;
+  window.showSaveFilePicker({suggestedName:'高榮工會名冊備份.json',types:[{description:'JSON 備份',accept:{'application/json':['.json']}}]})
+    .then(function(h){ fileHandle=h; return idbSetK('backupHandle',h); })
+    .then(function(){ return writeFile(); })
+    .then(function(ok){ toast(ok?'✅ 已設自動備份檔，之後每次更動自動寫入':'已選檔，稍後會自動寫入'); updateBkStatus(); })
+    .catch(function(){ /* 使用者取消選檔 */ });
+}
+function resumeBackup(){
+  (fileHandle?Promise.resolve(fileHandle):idbGetK('backupHandle')).then(function(h){
+    if(!h){ return; } fileHandle=h;
+    return h.requestPermission({mode:'readwrite'}).then(function(p){ if(p==='granted') return writeFile().then(function(){ toast('✅ 已恢復自動備份'); }); });
+  }).then(updateBkStatus).catch(function(){});
+}
+function shareBackup(){
+  var name='高榮工會名冊備份_'+curMonth()+'.json';
+  try{
+    var file=new File([bkData()],name,{type:'application/json'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      navigator.share({files:[file],title:'高榮工會名冊備份',text:'高榮工會名冊備份檔'})
+        .then(function(){ try{ localStorage.setItem('roster_lastbackup_v1',new Date().toISOString()); }catch(_){} updateBkStatus(); })
+        .catch(function(){});
+      return;
+    }
+  }catch(e){}
+  exportJSON(); // 後備：直接下載
+}
+function updateBkStatus(){
+  var st=document.getElementById('bk-status'), bind=document.getElementById('bk-bind'), resume=document.getElementById('bk-resume'), hint=document.getElementById('bk-hint');
+  var pc=('showSaveFilePicker' in window);
+  if(bind) bind.style.display = pc ? '' : 'none';
+  (fileHandle?Promise.resolve(fileHandle):idbGetK('backupHandle')).then(function(h){
+    fileHandle=fileHandle||h;
+    if(pc && fileHandle && fileHandle.queryPermission){
+      fileHandle.queryPermission({mode:'readwrite'}).then(function(p){
+        if(p==='granted'){ if(st)st.textContent=' · ✅ 自動備份中（'+(fileHandle.name||'檔案')+'）'; if(resume)resume.style.display='none'; if(bind)bind.textContent='🔁 換備份檔'; }
+        else { if(st)st.textContent=' · ⏸ 已綁定，待恢復'; if(resume){resume.style.display='';resume.textContent='▶ 恢復自動備份';} }
+      }).catch(function(){});
+    } else if(pc){ if(st)st.textContent=' · 尚未設定'; if(resume)resume.style.display='none'; }
+    else { if(st)st.textContent=' · 用「雲端／檔案」備份'; if(resume)resume.style.display='none'; }
+    if(hint) hint.textContent = pc
+      ? '電腦：選一個檔當「儲存點」，之後改名冊就自動寫入該檔。手機：用「雲端／檔案」存到 iCloud／雲端硬碟。'
+      : '手機系統不允許網頁自動寫檔；按「雲端／檔案」一鍵存到 iCloud／雲端硬碟／檔案 App（最durable）。';
+  });
+}
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function curMonth(){ return new Date().toISOString().slice(0,7); }
@@ -362,6 +433,10 @@ function exportJSON(){
 }
 $('export-btn').addEventListener('click',exportJSON);
 var _wbk=document.getElementById('warn-bk'); if(_wbk) _wbk.addEventListener('click',exportJSON);
+(function(){ var b=document.getElementById('bk-bind'); if(b) b.addEventListener('click',bindFile);
+  var r=document.getElementById('bk-resume'); if(r) r.addEventListener('click',resumeBackup);
+  var s=document.getElementById('bk-share'); if(s) s.addEventListener('click',shareBackup);
+  try{ updateBkStatus(); }catch(e){} })();
 $('import-btn').addEventListener('click',()=>$('import-file').click());
 $('import-file').addEventListener('change',e=>{
   const f=e.target.files[0]; if(!f) return; const r=new FileReader();
