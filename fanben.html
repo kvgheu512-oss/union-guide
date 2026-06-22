@@ -205,7 +205,7 @@ async function renderBacklog(){
   if(!pend.length){ box.style.display='none'; box.innerHTML=''; return; }
   box.style.display='block';
   box.innerHTML='📥 <b>目前待整理（積壓）：'+pend.length+' 筆</b>——這些投稿需要有人花時間建檔歸類。<br>'+
-    '<span style="font-size:11.5px;color:#7A5A9A">⚙️ 要全工會即時彙總、自動歸檔、長期保存，需要「網路後台維護」（雲端空間、網域、系統維護）——這是工會<b>必要的營運支出</b>，已列入經費預算供會員大會審議。</span><br>'+
+    '<span style="font-size:11.5px;color:#7A5A9A">💾 要讓全工會跨裝置即時看到、長期保存、自動備份，需要一點「雲端儲存空間」——就像手機買 iCloud（200GB 一年約 1,080 元）。工會一年約 1,200 元就夠，不是大錢，已列入經費預算。</span><br>'+
     '<button id="clearPend" style="margin-top:6px;background:#fff;border:1px solid #D9CBE8;color:#7A4F9D;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer">✅ 我已建檔，清除待整理</button>';
   var cp=$('clearPend'); if(cp) cp.addEventListener('click',async function(){
     if(!confirm('清除全部「待整理」紀錄？（請確認檔案都已歸檔）')) return;
