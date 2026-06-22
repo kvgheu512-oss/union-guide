@@ -24,3 +24,4 @@
 
 ## 測試（沙箱）
 CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http.server`＋Playwright：chrome=`/opt/pw-browsers/chromium-1194/chrome-linux/chrome`，playwright-core=`/opt/node22/lib/node_modules/playwright/node_modules/playwright-core`。
+**自動化測試：`bash tests/run.sh`**（自動開伺服器→跑端對端→收尾；全過 exit 0、有錯 exit 1）。改完程式想確認沒弄壞別頁就重跑它；新增測試在 `tests/e2e.cjs` 照 `await T(...)` 格式加。⚠️ 別用 `pkill`（會殺掉自己的 shell→exit 144）；要換埠用 `PORT=8170 bash tests/run.sh`。
