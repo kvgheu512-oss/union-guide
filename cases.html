@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<title>會員服務案件台 · 高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+ :root{--navy:#1A3A6B;--navy2:#2E5C8A;--red:#C0392B;--red-deep:#7B1818;--amber:#B7860B;--green:#0F5C36;--green2:#1A7A4A;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F5F6F8;--card:#fff;--border:#E3E6EC;}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7}
+ .header{background:linear-gradient(160deg,#1A3A6B,#0E2347);color:#fff;padding:1.5rem 1.1rem 1.2rem;text-align:center}
+ .header h1{font-family:'Noto Serif TC',serif;font-size:20px}
+ .header p{font-size:12px;opacity:.9;margin-top:5px}
+ main{max-width:720px;margin:0 auto;padding:1rem .9rem 4rem}
+ /* 統計列 */
+ .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+ .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .4rem;text-align:center;cursor:pointer}
+ .stat .n{font-family:'Noto Serif TC',serif;font-size:24px;font-weight:700;line-height:1}
+ .stat .l{font-size:11.5px;color:var(--ink-soft);margin-top:4px}
+ .stat.todo .n{color:var(--red)} .stat.doing .n{color:var(--amber)} .stat.done .n{color:var(--green2)} .stat.due .n{color:var(--red-deep)}
+ .stat.on{outline:2px solid var(--navy);outline-offset:-1px}
+ /* 工具列 */
+ .bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:.8rem;align-items:center}
+ .bar select,.bar input{padding:.5rem .6rem;font-size:14px;border:1.5px solid var(--border);border-radius:9px;background:#fff;font-family:inherit}
+ .bar input{flex:1;min-width:120px}
+ .addbtn{background:var(--navy);color:#fff;border:none;border-radius:9px;padding:.55rem .9rem;font-size:14px;font-weight:700;cursor:pointer}
+ /* 表單 */
+ .form{background:var(--card);border:1.5px solid var(--navy);border-radius:14px;padding:1rem;margin-bottom:1rem;display:none}
+ .form.show{display:block}
+ .form h3{font-size:15px;color:var(--navy);margin-bottom:.6rem;font-family:'Noto Serif TC',serif}
+ .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ label{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin:.5rem 0 .2rem}
+ .form input,.form select,.form textarea{width:100%;padding:.55rem .7rem;font-size:15px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;background:#fff}
+ .form textarea{min-height:54px;resize:vertical}
+ .hint{font-size:11.5px;color:var(--ink-soft);margin-top:3px;line-height:1.6}
+ .frow{display:flex;gap:8px;margin-top:.8rem}
+ .frow button{flex:1;border:none;border-radius:9px;padding:.65rem;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+ .save{background:var(--green2);color:#fff} .cancel{background:#fff;border:1.5px solid var(--border)!important;color:var(--ink-mid)}
+ /* 案件卡 */
+ .case{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:.8rem .9rem;margin-bottom:9px;border-left:5px solid var(--ink-soft)}
+ .case.todo{border-left-color:var(--red)} .case.doing{border-left-color:var(--amber)} .case.done{border-left-color:var(--green2);opacity:.72}
+ .case .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+ .case .nm{font-weight:700;font-size:15px}
+ .tag{font-size:11px;padding:2px 8px;border-radius:99px;background:#EEF2F8;color:var(--navy2);border:1px solid #D8E1EE}
+ .owner{font-size:11.5px;color:var(--ink-soft)}
+ .st{font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;cursor:pointer;border:1px solid}
+ .st.todo{background:#FDECEA;color:var(--red);border-color:#F0C5C2}
+ .st.doing{background:#FEF9E7;color:var(--amber);border-color:#EAD67A}
+ .st.done{background:#E9F6EF;color:var(--green2);border-color:#BFE3CF}
+ .case .desc{font-size:13px;color:var(--ink-mid);margin:.4rem 0;line-height:1.6;white-space:pre-wrap}
+ .case .meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:.4rem}
+ .due{font-size:12px;font-weight:700;padding:2px 9px;border-radius:8px}
+ .due.over{background:#7B1818;color:#fff} .due.soon{background:#FDECEA;color:var(--red)} .due.warn{background:#FEF9E7;color:var(--amber)} .due.ok{background:#EEF2F8;color:var(--navy2)}
+ .acts{margin-left:auto;display:flex;gap:6px}
+ .acts button{background:none;border:1px solid var(--border);border-radius:7px;padding:3px 9px;font-size:12px;cursor:pointer;color:var(--ink-mid)}
+ .empty{text-align:center;color:var(--ink-soft);font-size:13.5px;padding:2rem 1rem;background:var(--card);border:1px dashed var(--border);border-radius:13px}
+ .foot{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:1.3rem;line-height:1.8}
+ .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--green);color:#fff;padding:9px 16px;border-radius:22px;font-size:13px;font-weight:700;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none}
+ .toast.show{opacity:1}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="union.html">
+
+<div class="header">
+  <h1>📋 會員服務案件台</h1>
+  <p>會員的問題登記在這 · 一眼看出待辦與時效 · 資料只存本機，不上傳</p>
+</div>
+
+<main>
+  <div class="stats" id="stats"></div>
+
+  <div class="bar">
+    <button class="addbtn" id="newBtn">＋ 新增案件</button>
+    <select id="fCat"><option value="">全部分類</option></select>
+    <input id="fSearch" placeholder="🔍 搜尋姓名／內容">
+  </div>
+
+  <div class="form" id="form">
+    <h3 id="formTitle">新增案件</h3>
+    <input type="hidden" id="c-id">
+    <div class="grid2">
+      <div><label>會員姓名</label><input id="c-name" placeholder="王小明"></div>
+      <div><label>負責幹部</label>
+        <select id="c-owner"><option value="">未指定</option><option>楊淯涵</option><option>莊瑋聆</option><option>巫佳容</option><option>葉柏宏</option><option>黃淑姸</option><option>陳依婷</option></select></div>
+    </div>
+    <div class="grid2">
+      <div><label>分類</label><select id="c-cat"></select></div>
+      <div><label>狀態</label><select id="c-status"><option value="todo">待處理</option><option value="doing">處理中</option><option value="done">已結案</option></select></div>
+    </div>
+    <label>問題簡述</label>
+    <textarea id="c-desc" placeholder="例：113年國定假日出勤只給調休，未給加班費，想確認可否追討"></textarea>
+    <div class="grid2">
+      <div><label>時效／截止日 <span style="color:#999;font-weight:400">（選填）</span></label><input id="c-due" type="date"></div>
+      <div><label>聯絡方式 <span style="color:#999;font-weight:400">（選填）</span></label><input id="c-contact" placeholder="LINE／電話"></div>
+    </div>
+    <div class="hint" id="dueHint"></div>
+    <label>處理備註 <span style="color:#999;font-weight:400">（選填）</span></label>
+    <textarea id="c-note" placeholder="已請會員用「蒐證指南」收集必要證據；待補出勤紀錄…"></textarea>
+    <div class="frow"><button class="save" id="saveBtn">儲存</button><button class="cancel" id="cancelBtn">取消</button></div>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部案件管理<br>⚠ 含會員個資，僅存本機瀏覽器、不上傳；換手機請另行備份。</div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* 分類（對應蒐證指南），含建議時效提示 */
+var CATS=[
+ {v:'ot',t:'加班費／工時',due:'加班費追溯 5 年（民法§126）'},
+ {v:'holiday',t:'國定假日／特休',due:'工資請求權 5 年'},
+ {v:'injury',t:'職災／公傷',due:'⚠ 受傷務必用職傷身分就醫；勞保給付有時效'},
+ {v:'parental',t:'育嬰留停',due:'子女滿 3 歲前申請'},
+ {v:'publicleave',t:'公假／會務',due:''},
+ {v:'fire',t:'解僱／資遣／調職',due:'救濟有期限，宜儘速'},
+ {v:'bully',t:'霸凌／不當管理',due:''},
+ {v:'unfair',t:'工會報復(§35)',due:'⏰ 裁決自知悉起 90 日內！'},
+ {v:'fee',t:'會費／入會',due:''},
+ {v:'other',t:'其他',due:''},
+];
+var KEY='cases_v1';
+var data=[]; try{ data=JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){}
+function persist(){ try{ localStorage.setItem(KEY,JSON.stringify(data)); }catch(e){} }
+var $=function(id){return document.getElementById(id);};
+function esc(s){return (s||'').replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function uid(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function catName(v){var c=CATS.find(function(x){return x.v===v;});return c?c.t:'其他';}
+var ST={todo:'待處理',doing:'處理中',done:'已結案'};
+var filter={status:'',cat:'',q:''};
+
+/* 時效徽章 */
+function dueBadge(due){
+  if(!due) return '';
+  var d=new Date(due+'T00:00:00'), now=new Date(); now.setHours(0,0,0,0);
+  var days=Math.round((d-now)/86400000);
+  var cls,txt;
+  if(days<0){cls='over';txt='已逾期 '+(-days)+' 天';}
+  else if(days<=3){cls='soon';txt=(days===0?'今天到期':days+' 天後到期');}
+  else if(days<=7){cls='warn';txt=days+' 天後到期';}
+  else {cls='ok';txt=due.slice(5)+' 到期';}
+  return '<span class="due '+cls+'">⏰ '+txt+'</span>';
+}
+function dueSort(c){ if(!c.due) return 9e15; return new Date(c.due+'T00:00:00').getTime(); }
+
+function renderStats(){
+  var todo=data.filter(function(c){return c.status==='todo';}).length;
+  var doing=data.filter(function(c){return c.status==='doing';}).length;
+  var done=data.filter(function(c){return c.status==='done';}).length;
+  var now=new Date();now.setHours(0,0,0,0);
+  var due=data.filter(function(c){ if(c.status==='done'||!c.due)return false; var d=new Date(c.due+'T00:00:00'); return (d-now)/86400000<=7; }).length;
+  $('stats').innerHTML=
+    stat('todo','待處理',todo)+stat('doing','處理中',doing)+stat('done','已結案',done)+stat('due','7天內到期',due);
+  function stat(k,l,n){ return '<div class="stat '+k+(filter.status===k&&k!=='due'?' on':'')+'" data-k="'+k+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
+  Array.prototype.forEach.call($('stats').querySelectorAll('.stat'),function(s){
+    s.addEventListener('click',function(){
+      var k=s.dataset.k;
+      if(k==='due'){ filter.status='__due'; } else { filter.status=(filter.status===k?'':k); }
+      renderStats(); renderList();
+    });
+  });
+}
+function renderList(){
+  var arr=data.slice();
+  if(filter.status==='__due'){ var now=new Date();now.setHours(0,0,0,0);
+    arr=arr.filter(function(c){return c.status!=='done'&&c.due&&(new Date(c.due+'T00:00:00')-now)/86400000<=7;}); }
+  else if(filter.status){ arr=arr.filter(function(c){return c.status===filter.status;}); }
+  if(filter.cat) arr=arr.filter(function(c){return c.cat===filter.cat;});
+  if(filter.q){ var q=filter.q.toLowerCase(); arr=arr.filter(function(c){return (c.name+c.desc+(c.note||'')).toLowerCase().indexOf(q)>=0;}); }
+  // 未結案優先，依時效近者在前；其次新到舊
+  arr.sort(function(a,b){
+    var ad=a.status==='done'?1:0, bd=b.status==='done'?1:0; if(ad!==bd)return ad-bd;
+    var s=dueSort(a)-dueSort(b); if(s)return s; return (b.created||0)-(a.created||0);
+  });
+  if(!arr.length){ $('list').innerHTML='<div class="empty">目前沒有符合的案件。<br>點「＋ 新增案件」把會員的問題登記進來。</div>'; return; }
+  $('list').innerHTML=arr.map(function(c){
+    return '<div class="case '+c.status+'">'+
+      '<div class="top"><span class="nm">'+esc(c.name||'（未填姓名）')+'</span>'+
+        '<span class="tag">'+esc(catName(c.cat))+'</span>'+
+        (c.owner?'<span class="owner">👤'+esc(c.owner)+'</span>':'')+
+        '<span class="st '+c.status+'" data-id="'+c.id+'" data-act="cycle">'+ST[c.status]+' ⇄</span></div>'+
+      (c.desc?'<div class="desc">'+esc(c.desc)+'</div>':'')+
+      '<div class="meta">'+dueBadge(c.due)+
+        (c.note?'<span style="font-size:12px;color:var(--ink-soft)">📝 '+esc(c.note)+'</span>':'')+
+        '<span class="acts"><button data-id="'+c.id+'" data-act="edit">編輯</button>'+
+        '<button data-id="'+c.id+'" data-act="copy">複製</button>'+
+        '<button data-id="'+c.id+'" data-act="del">刪除</button></span></div>'+
+      '</div>';
+  }).join('');
+  Array.prototype.forEach.call($('list').querySelectorAll('[data-act]'),function(b){
+    b.addEventListener('click',function(){ act(b.dataset.act,b.dataset.id); });
+  });
+}
+function act(a,id){
+  var i=data.findIndex(function(c){return c.id===id;}); if(i<0)return; var c=data[i];
+  if(a==='cycle'){ c.status=c.status==='todo'?'doing':c.status==='doing'?'done':'todo'; c.updated=Date.now(); persist(); renderStats(); renderList(); }
+  else if(a==='edit'){ openForm(c); }
+  else if(a==='del'){ if(confirm('刪除「'+(c.name||'此案件')+'」？')){ data.splice(i,1); persist(); renderStats(); renderList(); toast('已刪除'); } }
+  else if(a==='copy'){ copyCase(c); }
+}
+function copyCase(c){
+  var t='【工會服務案件】\n會員：'+(c.name||'')+'\n分類：'+catName(c.cat)+'\n狀態：'+ST[c.status]+
+    (c.owner?'\n負責：'+c.owner:'')+(c.due?'\n時效：'+c.due:'')+'\n問題：'+(c.desc||'')+(c.note?'\n備註：'+c.note:'');
+  if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){toast('已複製案件摘要');},function(){toast('複製失敗');});
+  else toast('此瀏覽器不支援複製');
+}
+function fillCatSelects(){
+  var opts=CATS.map(function(c){return '<option value="'+c.v+'">'+c.t+'</option>';}).join('');
+  $('c-cat').innerHTML=opts;
+  $('fCat').innerHTML='<option value="">全部分類</option>'+opts;
+}
+function openForm(c){
+  $('form').classList.add('show'); $('formTitle').textContent=c?'編輯案件':'新增案件';
+  $('c-id').value=c?c.id:''; $('c-name').value=c?c.name||'':''; $('c-owner').value=c?c.owner||'':'';
+  $('c-cat').value=c?c.cat||'ot':'ot'; $('c-status').value=c?c.status||'todo':'todo';
+  $('c-desc').value=c?c.desc||'':''; $('c-due').value=c?c.due||'':''; $('c-contact').value=c?c.contact||'':''; $('c-note').value=c?c.note||'':'';
+  updateDueHint(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateDueHint(){
+  var c=CATS.find(function(x){return x.v===$('c-cat').value;});
+  $('dueHint').innerHTML=c&&c.due?('⏰ '+c.due):'';
+}
+function closeForm(){ $('form').classList.remove('show'); }
+$('newBtn').addEventListener('click',function(){ openForm(null); });
+$('cancelBtn').addEventListener('click',closeForm);
+$('c-cat').addEventListener('change',updateDueHint);
+$('saveBtn').addEventListener('click',function(){
+  var name=$('c-name').value.trim();
+  if(!name && !$('c-desc').value.trim()){ alert('請至少填會員姓名或問題簡述'); return; }
+  var id=$('c-id').value;
+  var obj={ id:id||uid(), name:name, owner:$('c-owner').value, cat:$('c-cat').value, status:$('c-status').value,
+    desc:$('c-desc').value.trim(), due:$('c-due').value, contact:$('c-contact').value.trim(), note:$('c-note').value.trim() };
+  if(id){ var i=data.findIndex(function(c){return c.id===id;}); if(i>=0){ obj.created=data[i].created; obj.updated=Date.now(); data[i]=obj; } }
+  else { obj.created=Date.now(); data.unshift(obj); }
+  persist(); closeForm(); renderStats(); renderList(); toast('已儲存');
+});
+$('fCat').addEventListener('change',function(){ filter.cat=this.value; renderList(); });
+$('fSearch').addEventListener('input',function(){ filter.q=this.value.trim(); renderList(); });
+var tt;
+function toast(m){ var t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(function(){t.classList.remove('show');},2200); }
+
+fillCatSelects(); renderStats(); renderList();
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
