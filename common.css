@@ -3,8 +3,15 @@
 html,body{-webkit-text-size-adjust:100%;}
 img{max-width:100%;}
 /* 角落淡色版本徽章（文字由 common.js 依 ver.txt 帶入點分隔格式） */
-#verBadge{position:fixed;top:46px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none;}
+#verBadge{position:fixed;top:54px;right:13px;z-index:90;font:10px/1 system-ui,sans-serif;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none;}
 @media print{.noprint,#verBadge{display:none!important;}}
+/* 全站統一「返回／首頁」列（由 common.js 注入＝單一真相源；取代各頁自寫的固定鈕，
+   避免有的頁漏掉、有的頁卡住。大點擊範圍＋避開瀏海安全區）。 */
+#ebnBack,#ebnHome{position:fixed;top:max(10px,env(safe-area-inset-top));z-index:1050;display:inline-flex;align-items:center;font:600 14px/1 'Noto Sans TC',system-ui,sans-serif;text-decoration:none;padding:10px 15px;border-radius:22px;box-shadow:0 2px 10px rgba(0,0,0,.3);-webkit-tap-highlight-color:transparent;cursor:pointer;}
+#ebnBack{left:max(10px,env(safe-area-inset-left));background:#fff;color:#1A3A6B;border:1px solid rgba(0,0,0,.12);}
+#ebnHome{right:max(10px,env(safe-area-inset-right));background:#1A3A6B;color:#fff;}
+#ebnBack:active,#ebnHome:active{transform:scale(.95);}
+@media print{#ebnBack,#ebnHome{display:none!important;}}
 /* 換頁平滑轉場：用快速淡入淡出取代生硬的「白閃」，手機上尤其明顯。
    瀏覽器不支援會自動忽略，無副作用。 */
 @view-transition{navigation:auto;}

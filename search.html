@@ -159,7 +159,7 @@
 <script src="version.js"></script>
 <link rel="stylesheet" href="common.css">
 </head>
-<body class="locked">
+<body data-home="union.html" class="locked">
 <div id="appbanner"><span class="x" id="appbanner-x">✕</span>⚠️ 你好像是從 App（如 LINE）內建瀏覽器開的，這種視窗常<b>不能複製、按鈕卡卡</b>。建議用真瀏覽器開：<b>iPhone</b> 點下方分享/羅盤圖示→「用 Safari 開啟」；<b>Android</b> 點右上「⋮」→「用瀏覽器開啟」。</div>
 <div id="updbanner"><span>🔄 有<b>新版本</b>了！點一下換到最新（不用刪圖示重加）</span><button id="updbtn">立即更新</button><span class="x" id="updbanner-x">✕</span></div>
 
@@ -450,11 +450,10 @@ function checkUpdate(manual){
 (function(){
   checkUpdate(false);
   const cb=document.getElementById("checkupd-btn"); if(cb)cb.addEventListener("click",e=>{e.preventDefault();checkUpdate(true);});
-  const ub=document.getElementById("updbtn"); if(ub)ub.addEventListener("click",async()=>{ ub.textContent="更新中…"; ub.disabled=true; try{ if(window.caches){ const ks=await caches.keys(); await Promise.all(ks.map(k=>caches.delete(k))); } }catch(_){} try{ if(navigator.serviceWorker){ const rs=await navigator.serviceWorker.getRegistrations(); for(const r of rs){ try{ if(r.waiting)r.waiting.postMessage("skipWaiting"); await r.update(); }catch(e){} } } }catch(_){} location.replace(location.pathname+"?v="+Date.now()); });
+  const ub=document.getElementById("updbtn"); if(ub)ub.addEventListener("click",()=>{ ub.textContent="更新中…"; ub.disabled=true; var done=false,go=function(){ if(done)return; done=true; location.replace(location.pathname+"?v="+Date.now()); }; try{ var p=(window.caches&&caches.keys)?caches.keys().then(ks=>Promise.all(ks.map(k=>caches.delete(k)))):Promise.resolve(); p.catch(()=>{}).then(go); }catch(_){} try{ if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations){ navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>{ try{if(r.waiting)r.waiting.postMessage("skipWaiting");}catch(e){} try{r.update();}catch(e){} })).catch(()=>{}); } }catch(_){} setTimeout(go,1500); });
   const ux=document.getElementById("updbanner-x"); if(ux)ux.addEventListener("click",()=>{ const b=document.getElementById("updbanner"); if(b)b.classList.remove("show"); });
 })();
 // 🛜 離線支援：註冊 service worker（沒網路也能打開工具畫面）
-
 
 /* ===================== 一鍵清除（換下一題） ===================== */
 function clearSearch(){

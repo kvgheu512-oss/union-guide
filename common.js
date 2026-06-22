@@ -110,3 +110,24 @@
   window.EBNDraft={ clearPage:clearPage, restore:restore, saveAll:saveAll };
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", restore); else restore();
 })();
+
+/* ⑤ 全站統一「返回／首頁」鈕（單一真相源）：取代各頁各自手寫的固定鈕——
+   以前有的頁漏掉、有的頁互相蓋掉、有的點了卡住。改成這裡統一注入，每頁都有、行為一致。
+   ・首頁目標：<body data-home="union.html"> 可覆寫，預設 index.html（對外首頁）。
+   ・不想要鈕的頁（例如對外首頁本身）：<body data-nonav>。 */
+(function(){
+  function build(){
+    var b=document.body; if(!b) return;
+    if(b.hasAttribute("data-nonav")) return;
+    if(document.getElementById("ebnBack")) return;            // 冪等，避免重複注入
+    var home=b.getAttribute("data-home")||"index.html";
+    var back=document.createElement("a");
+    back.id="ebnBack"; back.className="noprint"; back.href=home; back.textContent="← 返回";
+    // 有上一頁就回上一頁；直接開啟（無瀏覽紀錄）則退回首頁，永遠不會「按了沒反應」。
+    back.addEventListener("click",function(e){ if(history.length>1){ e.preventDefault(); history.back(); } });
+    var hm=document.createElement("a");
+    hm.id="ebnHome"; hm.className="noprint"; hm.href=home; hm.textContent="🏠 工會首頁";
+    b.appendChild(back); b.appendChild(hm);
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", build); else build();
+})();
