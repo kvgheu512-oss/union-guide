@@ -162,6 +162,8 @@
           <div><label>時間</label><input id="m-time" type="time"></div>
         </div>
         <label>地點</label><input id="m-place" placeholder="例：高榮第一會議室">
+        <button type="button" id="m-addr-toggle" style="margin-top:5px;background:none;border:none;color:#8A6D0B;font-size:12.5px;cursor:pointer;padding:2px 0;text-decoration:underline">📍 用地址選擇器填完整地址（縣市→區→路）</button>
+        <div id="m-addr-pick" style="display:none;margin-top:5px"></div>
         <div class="grid2">
           <div><label>主席</label><input id="m-chair" value="楊淯涵" placeholder="○○○"></div>
           <div><label>記錄</label><input id="m-rec" placeholder="○○○"></div>
@@ -313,13 +315,15 @@ const SEEDS={
   {kind:'討論事項',title:'決定成立大會日期、地點及議程案',decision:''},
   {kind:'臨時動議',title:'',decision:''}],
  '成立大會':[
-  {kind:'報告事項',title:'籌備經過報告',decision:''},
+  {kind:'報告事項',title:'主席宣布開會、籌備經過報告（確認出席達發起人過半數）',decision:''},
   {kind:'報告事項',title:'連署及會員入會情形報告',decision:''},
-  {kind:'討論事項',title:'通過本會章程案',decision:''},
-  {kind:'討論事項',title:'選舉第一屆理事、監事案',decision:''},
-  {kind:'討論事項',title:'訂定入會費及經常會費案',decision:''},
-  {kind:'討論事項',title:'通過年度工作計畫及經費收支預算案',decision:''},
+  {kind:'討論事項',title:'審議並通過本會章程案',decision:''},
+  {kind:'討論事項',title:'議決入會費及經常會費標準案',decision:''},
+  {kind:'討論事項',title:'審議本年度工作計畫及經費收支預算案',decision:''},
   {kind:'討論事項',title:'是否加入上級工會聯合組織案',decision:''},
+  {kind:'選舉事項',title:'選舉第一屆理事、監事及候補（決議欄填當選名單與得票數）案',decision:''},
+  {kind:'選舉事項',title:'第一屆第一次理事會：理事互選理事長（及常務理事）案',decision:''},
+  {kind:'選舉事項',title:'第一屆第一次監事會：監事互選常務監事（如設）案',decision:''},
   {kind:'臨時動議',title:'',decision:''}],
  '會員大會':[
   {kind:'報告事項',title:'上次會議決議執行情形報告',decision:''},
@@ -503,6 +507,25 @@ function aiMinutesPrompt(){
   return L.join('\n');
 }
 ['m-type','m-no','m-date','m-time','m-place','m-chair','m-rec','m-guest'].forEach(id=>$(id).addEventListener('input',pull));
+
+/* 📍 會議地點：可選的地址選擇器（縣市→區→路，自動帶郵遞區號可留） */
+(function(){
+  var tog=$('m-addr-toggle'), mnt=$('m-addr-pick'), ap=null;
+  if(!tog) return;
+  tog.addEventListener('click',function(){
+    if(mnt.style.display==='none'){
+      mnt.style.display='block';
+      tog.textContent='📍 收起地址選擇器';
+      if(!ap && typeof buildAddressPicker==='function'){
+        ap=buildAddressPicker({ mount:mnt, defaultCity:'高雄市', defaultDist:'仁武區',
+          onChange:function(full,p){
+            var addr=(p.city||'')+(p.dist||'')+p.road+p.rest;   // 會議地點不需郵碼前綴
+            $('m-place').value=addr; pull();
+          }});
+      }
+    } else { mnt.style.display='none'; tog.textContent='📍 用地址選擇器填完整地址（縣市→區→路）'; }
+  });
+})();
 
 /* 議程 */
 function renderAgenda(){
@@ -703,7 +726,18 @@ function renderJoinView(data){
   window.scrollTo({top:0});
 }
 
-function init(){ load(); renderList(); showView('list'); }
+function init(){
+  load(); renderList(); showView('list');
+  // 深連：?type=成立大會 等 → 直接開新會議並帶入該範本議程
+  try{
+    var qt=new URLSearchParams(location.search).get('type');
+    if(qt && SEEDS[qt]){
+      cur={id:uid(),type:qt,no:'',date:'',time:'',place:'',chair:'楊淯涵',rec:'',guest:'',
+           agenda:SEEDS[qt].map(function(x){return Object.assign({},x);}),present:{}};
+      fillForm(); renderAgenda(); showView('edit');
+    }
+  }catch(e){}
+}
 
 if(location.hash.indexOf('#join=')===0){
   try{ sessionStorage.setItem('lawtip_seen_v1','1'); }catch(_){}  /* 參加者頁不彈法律小知識 */
@@ -716,6 +750,8 @@ else { showGate(); }
 
 </script>
 <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js"></script>
+<script src="tw-zip5-renwu.js" defer></script>
+<script src="tw-area.js" defer></script>
 <script src="law-tips.js" defer></script>
 <script src="common.js" defer></script>
 </body>
