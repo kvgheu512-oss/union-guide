@@ -132,6 +132,9 @@
 
     <!-- 編輯 -->
     <section class="view" id="view-edit">
+      <div id="formal-reminder" style="display:none;background:#FFF4E2;border:1px solid #EAD08A;border-left:5px solid #C0392B;border-radius:11px;padding:.75rem .95rem;font-size:13px;color:#7B1818;line-height:1.75;margin-bottom:1rem">
+        🔔 <b>正式大會提醒</b>：這類會議的<b>簽到簿／會議紀錄要報主管機關存查</b>。請務必用下方「<b>✍ 簽到表</b>」<b>列印紙本、現場親筆簽名</b>留存；Google 掃碼簽到僅當「即時人數／名單」輔助，<b>不取代紙本親簽</b>。
+      </div>
       <div class="card">
         <h3>會議基本資料</h3>
         <div class="grid2">
@@ -346,8 +349,14 @@ function fillForm(){
   if($('g-form')) $('g-form').value=cur.gForm||'';
   if($('g-doc')) $('g-doc').value=cur.gDoc||'';
   if($('g-sheet')) $('g-sheet').value=cur.gSheet||'';
-  renderFormQR();
+  renderFormQR(); updateFormalReminder();
   renderAgenda(); renderSign();
+}
+/* 🔔 正式大會（要報主管機關）才提醒備紙本親簽簽到簿 */
+function updateFormalReminder(){
+  var el=$('formal-reminder'); if(!el) return;
+  var t=$('m-type')?$('m-type').value:'';
+  el.style.display=(['成立大會','會員大會','會員代表大會'].indexOf(t)>=0)?'block':'none';
 }
 function pull(){
   cur.type=$('m-type').value; cur.no=$('m-no').value.trim(); cur.date=$('m-date').value; cur.time=$('m-time').value;
@@ -432,6 +441,7 @@ function updateQuorum(){
 
 /* 儲存／刪除 */
 (function(){
+  var mt=$('m-type'); if(mt) mt.addEventListener('change',updateFormalReminder);
   var gf=$('g-form'); if(gf) gf.addEventListener('input',()=>{ renderFormQR(); });
   function openOr(id,label){ var v=$(id)&&$(id).value.trim(); if(/^https?:\/\//.test(v)) window.open(v,'_blank'); else toast('請先貼上'+label+'連結'); }
   if($('g-open-doc')) $('g-open-doc').addEventListener('click',()=>openOr('g-doc','共筆文件'));
@@ -500,7 +510,8 @@ function docSign(){
     <div class="meta"><b>法定人數</b>：應到 ${total} 人，過半需 ${total?need:'＿'} 人（章程第32條：會員過半數出席始得開會）</div>
     <table><thead><tr><th style="width:3em">編號</th><th>姓名</th><th>單位</th><th style="width:30%">簽　名</th></tr></thead><tbody>${rows}</tbody></table>
     ${cur.guest?`<div class="h2">列席／來賓</div><p>${esc(cur.guest).replace(/\n/g,'、')}</p>`:''}
-    <div class="meta" style="margin-top:1rem">實到：＿＿＿ 人　　主席：＿＿＿＿　　記錄：＿＿＿＿</div>`;
+    <div class="meta" style="margin-top:1rem">實到：＿＿＿ 人　　主席：＿＿＿＿　　記錄：＿＿＿＿</div>
+    <div class="meta" style="margin-top:.6rem;font-size:12px;color:#555">※ 請與會者<b>親筆簽名</b>，本表存查；正式大會之簽到簿併同會議紀錄報主管機關。</div>`;
 }
 function docMinutes(){
   const mem=activeMembers(), present=mem.filter(m=>cur.present[m.id]);
