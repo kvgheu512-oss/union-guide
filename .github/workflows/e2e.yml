@@ -1,0 +1,31 @@
+name: e2e 自動化測試
+
+# 每次推到 main，或手動觸發時，在雲端跑端對端測試（紅綠燈標在 commit 上）
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安裝 Playwright（含 Chromium）
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@latest
+          npx playwright install --with-deps chromium
+
+      - name: 跑端對端測試
+        env:
+          PW_CORE: playwright      # 用 npm 安裝的 playwright（自帶瀏覽器）
+          CHROME: ""               # 留空＝用 Playwright 自帶的 Chromium
+          PORT: "8099"
+        run: bash tests/run.sh

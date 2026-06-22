@@ -7,7 +7,9 @@
      CHROME       Chromium 執行檔（預設 /opt/pw-browsers/chromium-1194/chrome-linux/chrome）
    全部通過 exit 0；有失敗 exit 1（方便 CI／改完一鍵重跑）。 */
 const PW_CORE = process.env.PW_CORE || '/opt/node22/lib/node_modules/playwright/node_modules/playwright-core';
-const CHROME  = process.env.CHROME  || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+// CHROME 留空＝用 Playwright 自帶的瀏覽器（GitHub Actions 用）；沙箱預設指到本機 Chromium。
+const CHROME  = process.env.CHROME != null ? process.env.CHROME
+              : '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const BASE    = process.env.BASE    || 'http://localhost:8099/';
 const { chromium } = require(PW_CORE);
 
@@ -16,7 +18,7 @@ const ok  = n => { pass++; console.log('  ✅ ' + n); };
 const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ ' + n + ' — ' + d); };
 
 (async () => {
-  const b = await chromium.launch({ executablePath: CHROME });
+  const b = await chromium.launch(CHROME ? { executablePath: CHROME } : {});
   const ctx = await b.newContext();
   const page = async () => { const p = await ctx.newPage(); p.__err = []; p.on('pageerror', e => p.__err.push(e.message)); return p; };
   const go = async (p, u) => { await p.goto(BASE + u, { waitUntil: 'domcontentloaded' }); await p.evaluate(() => { try { localStorage.clear(); } catch (e) {} }); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200); };

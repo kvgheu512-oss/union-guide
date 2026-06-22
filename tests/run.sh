@@ -6,8 +6,14 @@ set -e
 cd "$(dirname "$0")/.."
 
 PORT="${PORT:-8099}"
-NODE="${NODE:-/opt/node22/bin/node}"
-export NODE_PATH="${NODE_PATH:-/opt/node22/lib/node_modules}"
+# Node：沙箱用 /opt/node22，其它環境（如 GitHub Actions）退回 PATH 上的 node
+if [ -z "${NODE:-}" ]; then
+  if [ -x /opt/node22/bin/node ]; then NODE=/opt/node22/bin/node; else NODE=node; fi
+fi
+# 只有沙箱才需要這個 NODE_PATH；CI 用本地 node_modules 解析 playwright
+if [ -z "${NODE_PATH:-}" ] && [ -d /opt/node22/lib/node_modules ]; then
+  export NODE_PATH=/opt/node22/lib/node_modules
+fi
 
 # 開伺服器（若該埠已有伺服器在跑，沿用既有的）
 python3 -m http.server "$PORT" >/dev/null 2>&1 &
