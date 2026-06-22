@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<title>範本庫 · 高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+ :root{--navy:#1A3A6B;--navy2:#2E5C8A;--red:#C0392B;--green:#0F5C36;--green2:#1A7A4A;--gold:#B7860B;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F5F6F8;--card:#fff;--border:#E3E6EC;--gold-light:#FEF9E7;}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7}
+ .header{background:linear-gradient(160deg,#1A3A6B,#0E2347);color:#fff;padding:1.5rem 1.1rem 1.2rem;text-align:center}
+ .header h1{font-family:'Noto Serif TC',serif;font-size:20px}
+ .header p{font-size:12px;opacity:.9;margin-top:5px;line-height:1.6}
+ main{max-width:680px;margin:0 auto;padding:1rem .9rem 4rem}
+ .note{background:var(--gold-light);border:1px solid #EAD67A;border-radius:12px;padding:.75rem .95rem;font-size:12.5px;color:#5C4000;line-height:1.8;margin-bottom:1rem}
+ .pick{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1rem}
+ .pick button{font-size:13px;padding:.5rem .8rem;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--navy);cursor:pointer;font-family:inherit}
+ .pick button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+ .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+ .toolbar label,.toolbar button{flex:1;min-width:150px;text-align:center;border:none;border-radius:10px;padding:.7rem;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+ .up{background:var(--green2);color:#fff} .link{background:var(--navy);color:#fff}
+ .cat-title{font-family:'Noto Serif TC',serif;font-size:16px;color:var(--navy);margin:.3rem 0 .7rem;font-weight:700}
+ .item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .85rem;margin-bottom:9px}
+ .item .ic{font-size:26px;flex-shrink:0}
+ .item .body{flex:1;min-width:0}
+ .item .nm{font-weight:700;font-size:14px;word-break:break-all}
+ .item .meta{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+ .item .act{display:flex;gap:6px;flex-shrink:0}
+ .item .act button,.item .act a{background:none;border:1px solid var(--border);border-radius:8px;padding:4px 9px;font-size:12px;cursor:pointer;color:var(--ink-mid);text-decoration:none}
+ .item .act .del{color:var(--red);border-color:#f0c5c2}
+ .empty{text-align:center;color:var(--ink-soft);font-size:13.5px;padding:1.6rem 1rem;background:var(--card);border:1px dashed var(--border);border-radius:12px}
+ .foot{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:1.4rem;line-height:1.8}
+ .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--green);color:#fff;padding:9px 16px;border-radius:22px;font-size:13px;font-weight:700;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none}
+ .toast.show{opacity:1}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="union.html">
+
+<div class="header">
+  <h1>📚 範本庫</h1>
+  <p>把找到的範本存起來、擴充各區範本 · 資料存本機，不上傳</p>
+</div>
+
+<main>
+  <div class="note">
+    💡 <b>用法</b>：選你的分區 → 按「📎 上傳範本檔」存 Word／PDF／圖片（存在<b>本機</b>，這台手機/電腦看得到）；或按「🔗 加範本連結」貼雲端網址（如 Google Drive，<b>連結可跨裝置／給其他幹部共用</b>）。<br>
+    ⚠️ 上傳的「<b>檔案</b>」只存在你這台裝置，不會自動同步給別人；要共用請改用「<b>連結</b>」。
+  </div>
+
+  <div class="pick" id="pick"></div>
+
+  <div class="toolbar">
+    <label class="up">📎 上傳範本檔<input type="file" id="fileIn" style="display:none"></label>
+    <button class="link" id="linkBtn">🔗 加範本連結</button>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部範本庫<br>檔案存於本機 IndexedDB；換裝置請重新上傳或改用雲端連結。</div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+var CATS=[
+  {v:'common',t:'通用 / 會務'},
+  {v:'chair',t:'理事長'},
+  {v:'doc',t:'法規'},
+  {v:'fin',t:'總務 / 財務'},
+  {v:'org',t:'組訓'},
+  {v:'pub',t:'文宣'},
+  {v:'sup',t:'監事'},
+];
+var cur='common';
+var $=function(id){return document.getElementById(id);};
+function esc(s){return (s||'').replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function uid(){return 't'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function catName(v){var c=CATS.find(function(x){return x.v===v;});return c?c.t:v;}
+var tt; function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show');},2200);}
+function fmtSize(n){ if(!n) return ''; return n>1048576?(n/1048576).toFixed(1)+'MB':Math.round(n/1024)+'KB'; }
+function icon(it){ if(it.kind==='link') return '🔗'; var m=(it.mime||'')+(it.name||''); if(/pdf/i.test(m))return '📕'; if(/word|\.docx?|\.odt/i.test(m))return '📘'; if(/image|\.(png|jpe?g|gif|webp)/i.test(m))return '🖼'; if(/sheet|\.xlsx?|\.csv/i.test(m))return '📗'; return '📄'; }
+
+/* IndexedDB：存範本檔（含 Blob） */
+var IDB={db:null,
+  open:function(){return new Promise(function(res,rej){var r=indexedDB.open('unionTpl',1);r.onupgradeneeded=function(e){var d=e.target.result;if(!d.objectStoreNames.contains('tpl'))d.createObjectStore('tpl',{keyPath:'id'});};r.onsuccess=function(e){IDB.db=e.target.result;res(IDB.db);};r.onerror=function(e){rej(e);};});},
+  st:async function(mode){if(!IDB.db)await IDB.open();return IDB.db.transaction('tpl',mode).objectStore('tpl');},
+  put:async function(o){var s=await IDB.st('readwrite');return new Promise(function(res,rej){var r=s.put(o);r.onsuccess=function(){res();};r.onerror=function(){rej(r.error);};});},
+  all:async function(){var s=await IDB.st('readonly');return new Promise(function(res){var r=s.getAll();r.onsuccess=function(){res(r.result||[]);};r.onerror=function(){res([]);};});},
+  get:async function(id){var s=await IDB.st('readonly');return new Promise(function(res){var r=s.get(id);r.onsuccess=function(){res(r.result);};r.onerror=function(){res(null);};});},
+  del:async function(id){var s=await IDB.st('readwrite');return new Promise(function(res){var r=s.delete(id);r.onsuccess=function(){res();};r.onerror=function(){res();};});}
+};
+
+function renderPick(){
+  $('pick').innerHTML=CATS.map(function(c){return '<button data-v="'+c.v+'"'+(c.v===cur?' class="on"':'')+'>'+esc(c.t)+'</button>';}).join('');
+  Array.prototype.forEach.call($('pick').querySelectorAll('button'),function(b){ b.addEventListener('click',function(){ cur=b.dataset.v; renderPick(); render(); }); });
+}
+async function render(){
+  var all=await IDB.all();
+  var items=all.filter(function(x){return x.cat===cur;}).sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+  var box=$('list');
+  if(!items.length){ box.innerHTML='<div class="empty">這區還沒有範本。<br>按上面「📎 上傳範本檔」或「🔗 加範本連結」加入。</div>'; return; }
+  box.innerHTML='<div class="cat-title">'+esc(catName(cur))+'（'+items.length+'）</div>'+items.map(function(it){
+    var meta=(it.kind==='link'?'連結':((it.mime||'檔案')+(it.size?' · '+fmtSize(it.size):'')))+' · '+new Date(it.ts).toLocaleDateString();
+    var openBtn = it.kind==='link'
+      ? '<a href="'+esc(it.url)+'" target="_blank" rel="noopener">開啟↗</a>'
+      : '<button data-act="open" data-id="'+it.id+'">開啟</button>';
+    return '<div class="item"><span class="ic">'+icon(it)+'</span>'+
+      '<div class="body"><div class="nm">'+esc(it.name)+'</div><div class="meta">'+esc(meta)+'</div></div>'+
+      '<div class="act">'+openBtn+'<button class="del" data-act="del" data-id="'+it.id+'">刪</button></div></div>';
+  }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('[data-act]'),function(btn){ btn.addEventListener('click',function(){ act(btn.dataset.act, btn.dataset.id); }); });
+}
+async function act(a,id){
+  var it=await IDB.get(id); if(!it) return;
+  if(a==='del'){ if(confirm('刪除「'+it.name+'」？')){ await IDB.del(id); render(); toast('已刪除'); } }
+  else if(a==='open'){
+    if(it.blob){ var u=URL.createObjectURL(it.blob); window.open(u,'_blank'); setTimeout(function(){URL.revokeObjectURL(u);},60000); }
+    else if(it.dataURL){ window.open(it.dataURL,'_blank'); }
+  }
+}
+$('fileIn').addEventListener('change',async function(){
+  var f=this.files&&this.files[0]; if(!f) return;
+  if(f.size>25*1048576){ alert('檔案過大（>25MB），建議改用「🔗 加範本連結」放雲端。'); this.value=''; return; }
+  try{
+    await IDB.put({id:uid(),cat:cur,kind:'file',name:f.name,mime:f.type||'',size:f.size,blob:f,ts:Date.now()});
+    toast('已上傳：'+f.name); render();
+  }catch(e){ alert('上傳失敗：'+e.message); }
+  this.value='';
+});
+$('linkBtn').addEventListener('click',async function(){
+  var url=prompt('貼上範本的雲端網址（http(s)://，例如 Google Drive 分享連結）：'); if(url==null) return; url=url.trim();
+  if(!/^https?:\/\//.test(url)){ alert('請貼完整網址（要 http(s):// 開頭）'); return; }
+  var name=prompt('幫這個範本取個名字：', url.replace(/^https?:\/\//,'').slice(0,40)); if(name==null) return; name=name.trim()||url;
+  try{ await IDB.put({id:uid(),cat:cur,kind:'link',name:name,url:url,ts:Date.now()}); toast('已加入連結'); render(); }
+  catch(e){ alert('失敗：'+e.message); }
+});
+
+renderPick(); render();
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
