@@ -30,10 +30,13 @@
  .warn{background:#FDECEA;border:1.5px solid #F0C5C2;border-radius:10px;padding:.7rem .85rem;font-size:13px;color:#7B1818;line-height:1.8;margin-bottom:.8rem}
  .warn b{font-weight:700}
  .tier{font-family:'Noto Serif TC',serif;font-weight:700;font-size:14px;margin:.7rem 0 .2rem;display:flex;align-items:center;gap:6px}
- .tier.must{color:var(--ac2)} .tier.sub{color:var(--ink-mid)}
+ .tier.must{color:var(--ac2)} .tier.sub{color:var(--ink-mid)} .tier.extra{color:var(--navy,#1A3A6B)}
  .tier .tag{font-family:'Noto Sans TC';font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:99px}
  .tier.must .tag{background:#FDECEA;color:#C0392B;border:1px solid #F0C5C2}
  .tier.sub .tag{background:#F0EEEA;color:#777;border:1px solid var(--border)}
+ .tier.extra .tag{background:#EEF2F8;color:#1A3A6B;border:1px solid #D8E1EE}
+ label.item.extra .t{color:#1A3A6B}
+ .tier-note{font-size:11.5px;color:var(--ink-soft);margin:.1rem 0 .3rem;line-height:1.6}
  label.item{display:flex;gap:10px;align-items:flex-start;padding:.5rem .2rem;border-bottom:1px solid #F2EEE7;cursor:pointer}
  label.item:last-child{border-bottom:none}
  label.item input{margin-top:3px;width:20px;height:20px;flex-shrink:0;accent-color:var(--green)}
@@ -89,6 +92,11 @@ var CATS=[
    sub:[
     ['雇主的言論','要你別參加、威脅、暗示後果的訊息或錄音'],
     ['證人','願意作證的同事（姓名、可聯絡方式）'],
+   ],
+   extra:[
+    ['雇主不當動機的內部文件','內部會議紀錄、email、主管敵視工會言論——裁決會認定「不當勞動行為動機」的關鍵'],
+    ['處分前後待遇對照','考績、獎金、排班在你參與工會前後的明顯落差（量化對比最有力）'],
+    ['對其他工會成員的類似對待','顯示針對工會的一貫性、非個案'],
    ]},
  { id:'ot', name:'加班費／工時', icon:'⏱',
    law:'勞基法 §24（加給）· §23（按時發薪）· 追溯 5 年（民法§126）',
@@ -104,6 +112,11 @@ var CATS=[
     ['自己每日加班時數紀錄','手機備忘也行，要能跟出勤對得起來'],
     ['公告／LINE／email','要求加班、年底統一結算等訊息'],
     ['駁回紀錄（若被駁回）','駁回的理由、書面或對話截圖'],
+   ],
+   extra:[
+    ['電子化工時紀錄','門禁刷卡、電腦登入登出、派工／差勤系統紀錄——法院實務常採為工時佐證'],
+    ['下班後交辦工作的時間戳','主管以 LINE／email 於下班後指派工作的訊息（含時間）'],
+    ['同部門普遍加班的旁證','同事相同情形，佐證制度性超時'],
    ]},
  { id:'holiday', name:'國定假日／特休／調休', icon:'📅',
    law:'勞基法 §37 §38 §39',
@@ -117,6 +130,10 @@ var CATS=[
    sub:[
     ['調休／補休的通知或申請','證明是誰決定、用調休換掉加班費'],
     ['特休未休天數紀錄','年度結束沒休完的天數'],
+   ],
+   extra:[
+    ['歷年薪資明細對照','比對假日有無一致加給，凸顯短給'],
+    ['差勤系統／班表電子紀錄','系統內的假日出勤與核假紀錄，實務常採認'],
    ]},
  { id:'injury', name:'職災／職傷／公傷', icon:'🦺',
    law:'勞基法 §59 · 職安法 · 勞保職災給付',
@@ -132,6 +149,11 @@ var CATS=[
     ['與職安室／主管的對話','申請公傷往來、被刁難或要求改健保的紀錄'],
     ['出勤／班表','證明事故發生在工作時間或通勤途中'],
     ['證人','目擊同事'],
+   ],
+   extra:[
+    ['職業醫學科專科評估','職業傷病診治網絡之職業病／職災認定（專科意見證明力高）'],
+    ['勞保局職災給付核定函','核定本身即有力證據，可佐證職災成立'],
+    ['通勤事故的警方紀錄','上下班途中事故的道路交通事故證明、現場圖'],
    ]},
  { id:'parental', name:'育嬰留停', icon:'👶',
    law:'性別平等工作法 §16 §21 · 就業保險育嬰留職停薪津貼',
@@ -147,6 +169,11 @@ var CATS=[
     ['復職申請與雇主回覆','期滿前申請復職的書面與對方回覆'],
     ['津貼申請資料','向勞保局申請育嬰留停津貼的紀錄'],
     ['被刁難／拒絕的證據','拒絕、減薪、調職、不准復職的對話或公文'],
+   ],
+   extra:[
+    ['同仁申請准駁對照','他人獲准而你被拒，佐證差別待遇'],
+    ['勞保局育嬰留停津貼核定','核定資料佐證留停事實與期間'],
+    ['復職後職務/待遇變動對照','復職前後職稱、薪資、地點落差（§21不利對待佐證）'],
    ]},
  { id:'publicleave', name:'公假／會務／受訓', icon:'📚',
    law:'工會法 §36（會務公假）· 勞工請假規則（公假）',
@@ -160,6 +187,10 @@ var CATS=[
    sub:[
     ['出席／簽到證明','實際參加的簽到、結業證明'],
     ['被扣薪或不准假紀錄','薪資明細、駁回對話（用以主張權益）'],
+   ],
+   extra:[
+    ['會務假之團體協約／約定書','§36 公假時數的書面依據，效力最明確'],
+    ['歷次准假紀錄','過往同類公假獲准的前例對照'],
    ]},
  { id:'fire', name:'解僱／資遣／調職', icon:'📄',
    law:'勞基法 §11 §16 §17（資遣）· 調職五原則',
@@ -174,6 +205,11 @@ var CATS=[
     ['資遣費／預告工資計算','對照年資是否給足'],
     ['解僱理由相關文件','雇主主張的依據'],
     ['你的工作表現紀錄','考績、獎勵、感謝信等反證'],
+   ],
+   extra:[
+    ['解僱最後手段性佐證','雇主未先調職、輔導、改善期即解僱的紀錄——法院審查解僱合法性的核心'],
+    ['績效評核歷程','歷年考績良好，證明解僱理由與事實不符'],
+    ['職缺仍存在的證據','資遣後同職缺再徵人，反證「業務緊縮」不實'],
    ]},
  { id:'bully', name:'霸凌／不當管理', icon:'🗣',
    law:'職安法 §6（職場不法侵害預防）· 申訴／性平管道',
@@ -188,6 +224,11 @@ var CATS=[
     ['證人','在場同事'],
     ['申訴往來紀錄','向院方申訴的書面與回覆'],
     ['身心影響佐證','因此就醫的診斷或紀錄'],
+   ],
+   extra:[
+    ['身心科就醫與診斷證明','證明損害與因果——法院認定職場不法侵害常參酌'],
+    ['連續事件的時間序列','把多次事件排成時間軸，形成「持續性」模式'],
+    ['雇主申訴處理結果','雇主未處理或敷衍，佐證未盡§6預防義務'],
    ]},
 ];
 
@@ -215,18 +256,28 @@ function itemsHTML(c,tier){
       '<span><span class="t">'+esc(it[0])+'</span><span class="why">'+esc(it[1])+'</span></span></label>';
   }).join('');
 }
+var TIERS=[
+ {key:'must',label:'🔴 必要證據',tag:'非有不可',note:''},
+ {key:'sub',label:'⚪ 次要證據',tag:'加分／補強',note:''},
+ {key:'extra',label:'⚖️ 補充證據',tag:'法院實務常採認',note:'這些是實務上法院／裁決會常採認、能強化證明力的證據類型，有就盡量補。'},
+];
+function tierLen(c,t){return (c[t]||[]).length;}
+function tierDone(c,t){return (c[t]||[]).reduce(function(n,_,i){return n+(state[k(c.id,t,i)]?1:0);},0);}
 function renderCat(){
   var c=CATS.find(function(x){return x.id===cur;});
-  var all=(c.must||[]).length+(c.sub||[]).length;
-  var done=0; (c.must||[]).forEach(function(_,i){if(state[k(c.id,'must',i)])done++;}); (c.sub||[]).forEach(function(_,i){if(state[k(c.id,'sub',i)])done++;});
-  var mustDone=(c.must||[]).reduce(function(n,_,i){return n+(state[k(c.id,'must',i)]?1:0);},0);
-  var pct=Math.round(done/all*100);
+  var all=0,done=0; TIERS.forEach(function(T){all+=tierLen(c,T.key);done+=tierDone(c,T.key);});
+  var mustDone=tierDone(c,'must');
+  var pct=all?Math.round(done/all*100):0;
   var html='<div class="cat"><h2>'+c.icon+' '+esc(c.name)+'</h2><div class="law">'+esc(c.law)+'</div>';
   if(c.warn) html+='<div class="warn">'+c.warn+'</div>';
-  html+='<div class="prog-label">必要證據 '+mustDone+'/'+(c.must||[]).length+'　·　全部 '+done+'/'+all+'　('+pct+'%)</div>'+
+  html+='<div class="prog-label">必要證據 '+mustDone+'/'+tierLen(c,'must')+'　·　全部 '+done+'/'+all+'　('+pct+'%)</div>'+
     '<div class="prog"><span style="width:'+pct+'%"></span></div>';
-  html+='<div class="tier must">🔴 必要證據 <span class="tag">非有不可</span></div>'+itemsHTML(c,'must');
-  if((c.sub||[]).length) html+='<div class="tier sub">⚪ 次要證據 <span class="tag">加分／補強</span></div>'+itemsHTML(c,'sub');
+  TIERS.forEach(function(T){
+    if(!tierLen(c,T.key)) return;
+    html+='<div class="tier '+T.key+'">'+T.label+' <span class="tag">'+T.tag+'</span></div>';
+    if(T.note) html+='<div class="tier-note">'+esc(T.note)+'</div>';
+    html+=itemsHTML(c,T.key);
+  });
   if(c.tip) html+='<div class="tip">💡 '+esc(c.tip)+'</div>';
   if(c.more) html+='<a class="more" href="'+c.more.u+'">→ '+esc(c.more.t)+'</a>';
   html+='<div class="btns"><button class="btn copy" id="cp">📋 複製這份清單（給幹部／律師）</button>'+
@@ -236,15 +287,18 @@ function renderCat(){
     inp.addEventListener('change',function(){ state[k(c.id,inp.dataset.tier,inp.dataset.i)]=inp.checked; save(); renderCat(); });
   });
   $('cp').addEventListener('click',function(){ copyList(c); });
-  $('rs').addEventListener('click',function(){ ['must','sub'].forEach(function(t){(c[t]||[]).forEach(function(_,i){delete state[k(c.id,t,i)];});}); save(); renderCat(); });
+  $('rs').addEventListener('click',function(){ TIERS.forEach(function(T){(c[T.key]||[]).forEach(function(_,i){delete state[k(c.id,T.key,i)];});}); save(); renderCat(); });
 }
 function copyList(c){
   var L=['【蒐證清單】'+c.name+'（'+c.law+'）',''];
-  L.push('■ 必要證據（非有不可）');
-  (c.must||[]).forEach(function(it,i){ L.push((state[k(c.id,'must',i)]?'✅ ':'⬜ ')+it[0]+'　— '+it[1]); });
-  if((c.sub||[]).length){ L.push('','■ 次要證據（加分／補強）');
-    (c.sub||[]).forEach(function(it,i){ L.push((state[k(c.id,'sub',i)]?'✅ ':'⬜ ')+it[0]+'　— '+it[1]); }); }
-  L.push('','（高榮企業工會蒐證指南產生；✅＝已備齊，⬜＝待補。請掌握時效，盡早找幹部協助。）');
+  var HEAD={must:'■ 必要證據（非有不可）',sub:'■ 次要證據（加分／補強）',extra:'■ 補充證據（法院實務常採認）'};
+  TIERS.forEach(function(T){
+    if(!(c[T.key]||[]).length) return;
+    L.push(HEAD[T.key]);
+    (c[T.key]||[]).forEach(function(it,i){ L.push((state[k(c.id,T.key,i)]?'✅ ':'⬜ ')+it[0]+'　— '+it[1]); });
+    L.push('');
+  });
+  L.push('（高榮企業工會蒐證指南產生；✅＝已備齊，⬜＝待補。請掌握時效，盡早找幹部協助。）');
   var txt=L.join('\n');
   function ok(){ var t=$('tt'); if(t){ t.textContent='✅ 已複製，貼到 LINE 給幹部或附給律師'; setTimeout(function(){t.textContent='';},3000);} }
   if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(ok,function(){fb(txt);ok();}); } else { fb(txt); ok(); }
