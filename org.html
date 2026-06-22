@@ -102,6 +102,19 @@
         row+='<label style="display:flex;gap:8px;align-items:flex-start;font-weight:500;margin-top:.4rem;color:#444;line-height:1.6">'+
              '<input type="checkbox" id="org-addrPublic" style="width:auto;margin-top:3px"'+(o.addrPublic?' checked':'')+'> '+
              '<span>會址要<b>公開</b>給大家看嗎？（這可能是<b>理事長家的住址</b>，公開與否<b>由理事長決定</b>；不勾＝只用在公文、不對外顯示）</span></label>';
+        row+='<details style="margin-top:.5rem"><summary style="color:#7B1818;font-weight:700;font-size:13px;cursor:pointer">⚠️ 用住家當會址前，先看這個（稅務提醒＋可以問哪裡）</summary>'+
+             '<div style="font-size:12.5px;line-height:1.9;background:#FDF3F2;border:1px solid #F0C5C2;border-radius:8px;padding:.65rem .85rem;color:#5A1A1A;margin-top:.45rem">'+
+             '申請統編是<b>「人民團體」稅籍</b>，不是營業登記；但如果住家<b>實際當成辦公的地方在用</b>，這間房子的<b>房屋稅（自住 1.2%）</b>和<b>地價稅（自用 0.2%）</b>可能就會用掉<b>部分面積</b>的優惠。只是「掛會址、人還住在裡面」多半沒事，但<b>各地稅捐處認定不一樣</b>。<br><br>'+
+             '<b>📞 登記前先問清楚（請對方白紙黑字回覆）：</b><br>'+
+             '• 房屋稅／地價稅是地方稅 → 問 <b>高雄市稅捐稽徵處</b>（高雄市民可撥 <b>1999</b>）<br>'+
+             '• 統編／稅籍 → 問 <b>財政部高雄國稅局</b>（免付費服務 <b>0800-000-321</b>）<br>'+
+             '• <b>怎麼問</b>：「以住家作為工會（人民團體）會址並申請統編，會不會影響這間房子的<b>自用住宅房屋稅</b>和<b>自用住宅用地地價稅</b>優惠？」<br><br>'+
+             '<b>🏠 想避開風險：</b>會址可以改用<b>其他幹部/會員同意的地點、租借小空間、里或社區活動中心</b>；而且<b>會址日後可以變更</b>，不一定要綁理事長家。<br>'+
+             '<span style="color:#999">※ 這是一般整理、非正式稅務意見，正式以稅捐處／國稅局或會計師答覆為準。 ⚠待核對</span>'+
+             '</div></details>';
+        row+='<label style="display:flex;gap:8px;align-items:flex-start;font-weight:500;margin-top:.5rem;color:#7B1818;line-height:1.6">'+
+             '<input type="checkbox" id="org-addrConsent" style="width:auto;margin-top:3px"'+(o.addrConsent?' checked':'')+'> '+
+             '<span>我已了解上述稅務影響，並已取得<b>理事長知情同意</b>，才填住家當會址</span></label>';
       }
       return row;
     }).join("");
@@ -111,7 +124,33 @@
     var o2=Object.assign({}, EBNOrg.get());
     EBNOrg.FIELDS.forEach(function(f){ var el=$("org-"+f[0]); if(el) o2[f[0]]=el.value.trim(); });
     var ap=$("org-addrPublic"); o2.addrPublic=!!(ap&&ap.checked);
+    var ac=$("org-addrConsent"); o2.addrConsent=!!(ac&&ac.checked);
     return o2;
+  }
+  // 填住家會址時主動跳出說明，確保「知情同意」
+  function consented(){ var c=$("org-addrConsent"); return (c&&c.checked) || sessionStorage.getItem("ebn_addr_notice")==="1"; }
+  function showAddrNotice(){
+    if(document.getElementById("ebn-addr-modal")) return;
+    var w=document.createElement("div"); w.id="ebn-addr-modal";
+    w.style.cssText="position:fixed;inset:0;z-index:100002;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;";
+    w.innerHTML='<div style="background:#fff;max-width:400px;width:100%;max-height:90vh;overflow-y:auto;border-radius:16px;padding:18px 18px 14px;box-shadow:0 18px 50px rgba(0,0,0,.45)">'+
+      '<div style="font-family:\'Noto Serif TC\',serif;font-weight:700;font-size:17px;color:#7B1818">🏠 填住家當會址前，請先知道這件事</div>'+
+      '<div style="font-size:13px;line-height:1.9;color:#3A1010;margin-top:8px">'+
+        '工會申請統編是<b>人民團體稅籍</b>、不是營業登記；但若住家<b>實際當辦公處所使用</b>，這間房子的<b>房屋稅（自住 1.2%）</b>、<b>地價稅（自用 0.2%）</b>可能會用掉部分優惠。只是掛會址、人仍自住多半沒事，但<b>各地稅捐處認定不同</b>。<br><br>'+
+        '<b>📞 登記前可先問：</b><br>• 房屋稅／地價稅 → <b>高雄市稅捐稽徵處</b>（市民熱線 <b>1999</b>）<br>• 統編／稅籍 → <b>財政部高雄國稅局</b>（免付費 <b>0800-000-321</b>）<br>'+
+        '問法：「以住家作為工會會址並申請統編，會不會影響自用住宅房屋稅與地價稅優惠？」<br><br>'+
+        '<b>🤝 我們會一起想辦法</b>：可改用其他幹部/會員同意的地點、租借小空間、里/社區活動中心；會址<b>日後可變更</b>。<b>絕不會因為這件事讓理事長本人受損</b>。'+
+      '</div>'+
+      '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:700;color:#7B1818;font-size:13.5px;margin:12px 0 4px;line-height:1.6"><input type="checkbox" id="ebn-addr-agree" style="width:auto;margin-top:3px"> <span>我已了解，並已取得理事長<b>知情同意</b></span></label>'+
+      '<button id="ebn-addr-ok" style="display:block;width:100%;background:#B7860B;color:#fff;border:0;border-radius:11px;padding:.8rem;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;opacity:.5" disabled>我了解了，繼續</button>'+
+      '<button id="ebn-addr-cancel" style="display:block;width:100%;background:none;color:#999;border:0;padding:.55rem;font-size:13px;cursor:pointer">先不要用住家、之後再說</button>'+
+      '</div>';
+    document.body.appendChild(w);
+    var agree=document.getElementById("ebn-addr-agree"), okb=document.getElementById("ebn-addr-ok");
+    agree.addEventListener("change",function(){ okb.disabled=!agree.checked; okb.style.opacity=agree.checked?"1":".5"; });
+    okb.addEventListener("click",function(){ var c=$("org-addrConsent"); if(c) c.checked=true; sessionStorage.setItem("ebn_addr_notice","1"); EBNOrg.set(readForm()); w.remove(); });
+    document.getElementById("ebn-addr-cancel").addEventListener("click",function(){ var a=$("org-addr"); if(a) a.value=""; w.remove(); });
+    w.addEventListener("click",function(e){ if(e.target===w) w.remove(); });
   }
   var extrasEdited=false;
   function fillExtras(){
@@ -150,6 +189,8 @@
     $("pubDl").addEventListener("click",function(){
       var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([$("pubOut").value],{type:"application/json"})); a.download="public.json"; a.click();
     });
+    // 一點到「會址」就跳說明，確保知情同意（用事件委派，重繪後仍有效）
+    document.addEventListener("focusin",function(e){ if(e.target&&e.target.id==="org-addr"&&!consented()) showAddrNotice(); });
     // public.json 載到後，若使用者還沒動手編輯，就把公告版填上來
     document.addEventListener("ebnorg:public",function(){ if(!edited) render(); fillExtras(); });
   }
