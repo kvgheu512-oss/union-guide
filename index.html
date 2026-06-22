@@ -319,11 +319,11 @@
       </div>
 
       <div class="card" style="margin-top:10px;border-left:5px solid var(--gold)">
-        <p style="font-weight:700;color:#7B1818;font-size:15px;margin-bottom:8px">⚠️ 入會前，先懂這三件事（別人走過的經驗）</p>
-        <p style="font-size:13.5px;color:var(--ink-mid);line-height:1.85">
-          <strong>1. 工會是「工具」，不是許願池。</strong>連署、繳會費只是開始，職場問題<strong>不會自己消失</strong>，要靠大家一起把工會用起來。<br>
-          <strong>2. 請務必看群組／網站資訊、來開會。</strong>不少人因為沒參與過程、沒看訊息，工會成立後才覺得「跟想像差很多」而退會——其實來開會、看公告就會很清楚。<br>
-          <strong>3. 有勞動問題，主動找工會「一起」處理。</strong>不是繳了費工會就自動幫你搞定；遇到加班費、排班、被刁難，<strong>主動告訴幹部</strong>，工會才能陪你爭取。
+        <p style="font-weight:700;color:#7B1818;font-size:15px;margin-bottom:8px">⚠️ 入會前，記住三件事</p>
+        <p style="font-size:14px;color:var(--ink-mid);line-height:2">
+          🔧 工會是<strong>工具，不是許願池</strong>——繳費是開始、不是結束。<br>
+          📢 <strong>看群組、來開會</strong>——沒參與最容易失望。<br>
+          🙋 有問題<strong>主動找幹部</strong>，工會才能陪你一起爭取。
         </p>
       </div>
 
@@ -519,7 +519,33 @@ function goJoin(){
   wrap.innerHTML=h; document.body.appendChild(wrap);
   wrap.addEventListener('click',function(e){ if(e.target===wrap||e.target.id==='join-cancel'||e.target.tagName==='A') wrap.remove(); });
 }
-['cta-join','cta-join2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',goJoin); });
+// 連署前先跳出「先說好三件事」的簡短視窗，看完再進入連署選項
+function showPledgeIntro(next){
+  function item(ic,t,d){
+    return '<div style="display:flex;gap:11px;align-items:flex-start;background:#FBF8F5;border:1px solid #EEE4DC;border-radius:12px;padding:.75rem .85rem;margin-bottom:10px">'
+      +'<span style="font-size:26px;line-height:1.1;flex-shrink:0">'+ic+'</span>'
+      +'<div style="font-size:13.5px;line-height:1.7"><b style="color:#7B1818;font-size:15px">'+t+'</b><br><span style="color:#444">'+d+'</span></div>'
+      +'</div>';
+  }
+  var ex=document.getElementById('pledge-intro'); if(ex) ex.remove();
+  var wrap=document.createElement('div'); wrap.id='pledge-intro';
+  wrap.style.cssText='position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1.1rem;';
+  wrap.innerHTML='<div style="background:#fff;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;border-radius:18px;padding:1.4rem 1.2rem 1.1rem;box-shadow:0 20px 60px rgba(0,0,0,.45)">'
+    +'<div style="text-align:center;font-family:\'Noto Serif TC\',serif;font-weight:700;font-size:20px;color:#7B1818">✋ 連署前，先說好三件事</div>'
+    +'<div style="text-align:center;font-size:12.5px;color:#777;margin:5px 0 14px">30 秒看完，免得以後失望 🙏</div>'
+    +'<div style="background:#EAF4FB;border:1px solid #C4DCEF;border-radius:12px;padding:.8rem .9rem;margin-bottom:14px;font-size:13.5px;line-height:1.85;color:#1A4E7A">🩺 <b>用看病來比喻最好懂：</b>病要治好，靠「<b>醫生＋病人＋家屬</b>」三方一起。醫生再厲害、設備再好，<b>病人自己不配合（不吃藥、不回診），也治不好</b>。<br>工會也一樣——<b>你就是病人本人</b>：工會像醫療團隊能幫你，但<b>你不參與、不開口，問題一樣好不了</b>。</div>'
+    +item('🔧','工會是「工具」，不是許願池','繳會費是<b>開始</b>、不是結束。職場問題不會自己消失，要<b>大家一起</b>解決。')
+    +item('📢','一定要看群組、來開會','沒看訊息、沒參與的人，成立後最容易覺得「跟想像不一樣」。')
+    +item('🙋','有問題，主動找工會','加班費、排班、被刁難 → <b>跟幹部說</b>，工會才能陪你一起爭取。')
+    +'<button id="pledge-go" style="display:block;width:100%;background:#C0392B;color:#fff;border:0;border-radius:12px;padding:.9rem;font-weight:700;font-size:15.5px;cursor:pointer;margin-top:8px">我了解了，前往連署 →</button>'
+    +'<button id="pledge-cancel" style="display:block;width:100%;background:none;border:0;color:#999;font-size:13.5px;padding:.6rem;cursor:pointer;margin-top:2px">先看看就好</button>'
+    +'</div>';
+  document.body.appendChild(wrap);
+  document.getElementById('pledge-go').addEventListener('click',function(){ wrap.remove(); if(typeof next==='function') next(); });
+  document.getElementById('pledge-cancel').addEventListener('click',function(){ wrap.remove(); });
+  wrap.addEventListener('click',function(e){ if(e.target===wrap) wrap.remove(); });
+}
+['cta-join','cta-join2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',function(){ showPledgeIntro(goJoin); }); });
 // Line 聯絡連結
 (function(){ const a=document.getElementById('contact-line'); if(LINE_URL){ a.href=LINE_URL; a.target='_blank'; a.rel='noopener'; a.textContent='點此加入 Line ↗'; } })();
 
