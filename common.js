@@ -7,7 +7,7 @@
   function fmt(v){
     v = String(v||"").trim();
     if(!/^\d{10}$/.test(v)) return v ? ("v"+v) : "";
-    return "v"+v.slice(0,4)+"."+v.slice(4,6)+"."+v.slice(6,8)+"."+v.slice(8);
+    return "v"+v.slice(2,4)+"."+v.slice(4,6)+"."+v.slice(6,8)+"."+v.slice(8);
   }
   function setBadge(t){ var el=document.getElementById("verBadge"); if(el && t) el.textContent=t; }
   var el=document.getElementById("verBadge");

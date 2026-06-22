@@ -1259,7 +1259,7 @@ const CHANGELOG=[
   "可加到主畫面變 App、沒網路也能開（離線）",
   "自動偵測新版本、跳「🔄 有新版」提醒"
 ];
-function verLabel(){ const b=BUILD,n=+b.slice(8); return b.slice(0,4)+"."+b.slice(4,6)+"."+b.slice(6,8)+"."+(n<10?"0"+n:n); }
+function verLabel(){ const b=BUILD,n=+b.slice(8); return b.slice(2,4)+"."+b.slice(4,6)+"."+b.slice(6,8)+"."+(n<10?"0"+n:n); }
 function checkUpdate(manual){
   const vs=document.getElementById("ver-status");
   if(manual&&vs)vs.textContent=" · 檢查中…";
