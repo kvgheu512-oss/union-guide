@@ -83,7 +83,23 @@
   <div class="card" style="border-top-color:#B7860B">
     <label>你的月薪（<b>含經常性給與</b>，新臺幣元）</label>
     <input id="salary" type="number" inputmode="numeric" value="40000" min="0">
-    <div class="hint">＝ 本薪＋全勤＋固定津貼等「工資」項目總和（不是只算本薪）。</div>
+    <div class="hint">＝ 本薪＋全勤＋固定津貼等「工資」項目總和（不是只算本薪）。不會抓？用下面的「薪資明細」幫你加。</div>
+
+    <details id="salWrap" style="margin:.5rem 0 .2rem">
+      <summary style="cursor:pointer;color:var(--green-deep);font-size:13.5px;font-weight:700">🧾 照你的薪資明細，自動幫你算出月薪基數 →</summary>
+      <div class="hint" style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.55rem .75rem;color:#5C4000;margin:.5rem 0;font-size:12.5px;line-height:1.8">
+        照你薪資單上的項目，把<b>金額</b>填進去；<b>打勾</b>的項目會被加總成「月薪基數」。<br>
+        🔸 <b>團體績效</b>：只有<b>特殊單位</b>才有，不是每個單位都領。<br>
+        🔸 <b>架別代理</b>：<b>不是每個月都有</b>，有領的月份再填、再勾。<br>
+        🔸 不確定某項算不算？先把<b>每個月固定都領的</b>勾起來；有疑問問工會或打 <b>1955</b>。<br>
+        💾 填的內容只<b>存在你自己手機</b>，不會上傳。
+      </div>
+      <div id="salRows"></div>
+      <button type="button" id="salAdd" style="width:100%;background:#EAFAF1;color:#0F5C36;border:1.5px dashed #1A7A4A;border-radius:10px;padding:.55rem;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:.2rem">＋ 自行新增項目（例如其他津貼）</button>
+      <div class="out" id="salSum" style="margin-top:.6rem"></div>
+      <button type="button" id="salApply" style="width:100%;background:#1A7A4A;color:#fff;border:0;border-radius:10px;padding:.65rem;font-weight:700;font-size:14px;cursor:pointer;margin-top:.5rem">✅ 用這個總額當作我的月薪</button>
+    </details>
+
     <label>月薪換算<b>除數</b>（每月幾天）</label>
     <input id="dv" type="number" inputmode="numeric" value="30" min="1" max="31">
     <div class="hint">⚖️ <b>特休折算法定固定用 30</b>（細則 §24-1）。<b>高榮若以「當月實際天數」計</b>，就改填該月天數（如 <b>31</b>）來比對。<b>除數越大＝每天金額越低</b>；用 31 折特休會比法定少，差額可主張。</div>
@@ -338,6 +354,71 @@
 
   calc();
   if(typeof hdChg==="function") hdChg();
+})();
+(function(){
+  // 🧾 薪資明細→月薪基數（本機儲存、可自行新增項目）
+  var $=function(id){return document.getElementById(id);};
+  var rowsBox=$("salRows"); if(!rowsBox) return;
+  var SK="leavepay_salary_v1";
+  var DEFAULTS=[
+    {name:"本薪", amt:"", on:true},
+    {name:"工作獎金（點值制）", amt:"", on:true},
+    {name:"夜班費", amt:"", on:false},
+    {name:"工作獎金—團體績效（特殊單位才有）", amt:"", on:false},
+    {name:"架別代理（非每月）", amt:"", on:false}
+  ];
+  function money(n){ return "NT$ "+Math.round(n).toLocaleString("en-US"); }
+  function rowHTML(it){
+    var nm=(it.name||"").replace(/"/g,"&quot;");
+    return '<div class="salrow" style="display:flex;align-items:center;gap:6px;margin-bottom:7px">'
+      +'<input type="checkbox" class="sal-on" '+(it.on?"checked":"")+' style="width:20px;height:20px;flex:none;padding:0;margin:0">'
+      +'<input type="text" class="sal-name" value="'+nm+'" placeholder="項目名稱" style="flex:1.3;min-width:0;width:auto;padding:.45rem .5rem;font-size:14px">'
+      +'<input type="number" inputmode="numeric" class="sal-amt" value="'+(it.amt!=null?it.amt:"")+'" placeholder="金額" min="0" style="flex:1;min-width:0;width:auto;padding:.45rem .5rem;font-size:14px">'
+      +'<button type="button" class="sal-del" aria-label="刪除" style="background:#FDECEA;color:#7B1818;border:1px solid #F0C5C2;border-radius:8px;width:32px;height:32px;font-size:14px;cursor:pointer;flex:none;padding:0">✕</button>'
+      +'</div>';
+  }
+  function getRows(){
+    var out=[];
+    rowsBox.querySelectorAll(".salrow").forEach(function(r){
+      out.push({
+        name:r.querySelector(".sal-name").value,
+        amt:r.querySelector(".sal-amt").value,
+        on:r.querySelector(".sal-on").checked
+      });
+    });
+    return out;
+  }
+  function render(arr){ rowsBox.innerHTML=(arr&&arr.length?arr:DEFAULTS).map(rowHTML).join(""); }
+  function save(){ try{ localStorage.setItem(SK, JSON.stringify(getRows())); }catch(e){} }
+  function sum(){
+    var t=0, lines="";
+    getRows().forEach(function(it){
+      var v=parseFloat(it.amt); if(isNaN(v)) v=0;
+      if(it.on && v>0){ t+=v; lines+='<div class="row"><span>'+((it.name||"（未命名）").replace(/</g,"&lt;"))+'</span><b>'+money(v)+'</b></div>'; }
+    });
+    $("salSum").innerHTML=lines+'<div class="row"><span><b>計入月薪基數合計</b></span><span class="big">'+money(t)+'</span></div>'+
+      (t===0?'<div style="font-size:11.5px;color:#777">把有領的項目填金額、打勾，這裡就會加總。</div>':'');
+    return t;
+  }
+  // 載入（本機）→ 沒有就用預設
+  var saved=null; try{ saved=JSON.parse(localStorage.getItem(SK)||"null"); }catch(e){}
+  render(saved && saved.length ? saved : DEFAULTS);
+  sum();
+  // 任何變動：重算合計＋存檔
+  rowsBox.addEventListener("input", function(){ sum(); save(); });
+  rowsBox.addEventListener("change", function(){ sum(); save(); });
+  rowsBox.addEventListener("click", function(e){
+    var del=e.target&&e.target.closest&&e.target.closest(".sal-del"); if(!del) return;
+    var row=del.closest(".salrow"); if(row) row.remove();
+    sum(); save();
+  });
+  $("salAdd").addEventListener("click", function(){ rowsBox.insertAdjacentHTML("beforeend", rowHTML({name:"",amt:"",on:true})); save(); });
+  $("salApply").addEventListener("click", function(){
+    var t=sum();
+    if(t<=0){ return; }
+    var sal=$("salary"); if(sal){ sal.value=Math.round(t); sal.dispatchEvent(new Event("input",{bubbles:true})); }
+    var w=$("salWrap"); if(w){ w.open=false; }
+  });
 })();
 (function(){
   // 證據清單存本機
