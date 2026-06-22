@@ -107,15 +107,15 @@
     <label>醫院實際給的國定假日加班費？<span class="opt">（選填，對照）</span></label>
     <input id="actHoli" type="number" inputmode="numeric" placeholder="例：1333" min="0">
     <label style="margin-top:.85rem">醫院有以「<b>調休</b>」代替這天的加班費嗎？</label>
-    <div class="rg">
-      <label class="rb"><input type="radio" name="hm" value="pay" checked onchange="hdChg()"> 有給加班費（正常）</label>
-      <label class="rb"><input type="radio" name="hm" value="comp" onchange="hdChg()"> 只給調休，未給加班費</label>
+    <div style="display:flex;flex-direction:column;gap:8px;margin:.4rem 0 .65rem">
+      <label id="rb-pay" style="display:flex;align-items:center;gap:8px;background:#E8F5EE;border:1.5px solid var(--green);border-radius:10px;padding:.5rem .85rem;cursor:pointer;font-size:14px"><input type="radio" name="hm" value="pay" checked onchange="hdChg()"> 有給加班費（正常）</label>
+      <label id="rb-comp" style="display:flex;align-items:center;gap:8px;background:#F7F9F7;border:1.5px solid var(--border);border-radius:10px;padding:.5rem .85rem;cursor:pointer;font-size:14px"><input type="radio" name="hm" value="comp" onchange="hdChg()"> 只給調休，未給加班費</label>
     </div>
     <div id="ci-wrap" hidden>
       <label>調休是<b>誰的決定</b>？</label>
-      <div class="rg">
-        <label class="rb"><input type="radio" name="ci" value="me" onchange="hdChg()"> 我主動要求調休</label>
-        <label class="rb"><input type="radio" name="ci" value="hosp" checked onchange="hdChg()"> 醫院單方決定</label>
+      <div style="display:flex;flex-direction:column;gap:8px;margin:.4rem 0 .65rem">
+        <label id="rb-me" style="display:flex;align-items:center;gap:8px;background:#F7F9F7;border:1.5px solid var(--border);border-radius:10px;padding:.5rem .85rem;cursor:pointer;font-size:14px"><input type="radio" name="ci" value="me" onchange="hdChg()"> 我主動要求調休</label>
+        <label id="rb-hosp" style="display:flex;align-items:center;gap:8px;background:#FDECEA;border:1.5px solid #F0C5C2;border-radius:10px;padding:.5rem .85rem;cursor:pointer;font-size:14px"><input type="radio" name="ci" value="hosp" checked onchange="hdChg()"> 醫院單方決定</label>
       </div>
     </div>
     <div id="holi-verdict"></div>
@@ -254,11 +254,21 @@
 function hdChg(){
   var mode=document.querySelector('input[name="hm"]:checked');
   if(!mode) return;
+  var selSt='background:#E8F5EE;border:1.5px solid #1A7A4A;border-radius:10px;padding:.5rem .85rem;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px';
+  var noSt='background:#F7F9F7;border:1.5px solid #DCE6DF;border-radius:10px;padding:.5rem .85rem;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px';
+  var rp=document.getElementById('rb-pay'), rc=document.getElementById('rb-comp');
+  if(rp&&rc){rp.style.cssText=mode.value==='pay'?selSt:noSt; rc.style.cssText=mode.value==='comp'?selSt:noSt;}
   var ciWrap=document.getElementById('ci-wrap');
   var verdict=document.getElementById('holi-verdict');
   if(mode.value==='pay'){ ciWrap.hidden=true; verdict.innerHTML=''; return; }
   ciWrap.hidden=false;
   var ci=document.querySelector('input[name="ci"]:checked');
+  var rm=document.getElementById('rb-me'), rh=document.getElementById('rb-hosp');
+  var redSt='background:#FDECEA;border:1.5px solid #F0C5C2;border-radius:10px;padding:.5rem .85rem;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px';
+  if(rm&&rh){
+    rm.style.cssText=(!ci||ci.value==='me')?selSt:noSt;
+    rh.style.cssText=(ci&&ci.value==='hosp')?redSt:noSt;
+  }
   var byHosp=!ci||ci.value==='hosp';
   if(byHosp){
     verdict.innerHTML='<div class="vb vb-red"><div class="vb-title">⚖️ 法規研判：可能構成雙重違法</div><div class="vb-body">'
