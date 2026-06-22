@@ -76,6 +76,8 @@
         '<input class="ap-zip2" inputmode="numeric" maxlength="2" placeholder="00" style="width:52px;text-align:center;'+iStyle+'">'+
         '<span style="font-size:12px;color:#999">後2碼選填</span>'+
       '</div>'+
+      '<select class="ap-roadsel" style="width:100%;'+iStyle+';margin-bottom:6px;display:none"></select>'+
+      '<select class="ap-seg" style="width:100%;'+iStyle+';margin-bottom:6px;display:none"></select>'+
       '<input class="ap-road" type="text" placeholder="路／街名（例：澄清路）" autocomplete="off" style="width:100%;'+iStyle+';margin-bottom:6px">'+
       '<input class="ap-rest" type="text" placeholder="段／巷／弄／號／樓（例：123號5樓）" autocomplete="off" style="width:100%;'+iStyle+'">';
 
@@ -83,6 +85,8 @@
     var distSel = wrap.querySelector(".ap-dist");
     var zip3 = wrap.querySelector(".ap-zip3");
     var zip2 = wrap.querySelector(".ap-zip2");
+    var roadSel = wrap.querySelector(".ap-roadsel");
+    var segSel = wrap.querySelector(".ap-seg");
     var roadIn = wrap.querySelector(".ap-road");
     var restIn = wrap.querySelector(".ap-rest");
 
@@ -102,8 +106,54 @@
     }
     function fire(){ if(typeof opts.onChange==="function") opts.onChange(api.get(), api.getParts()); }
 
-    citySel.addEventListener("change", function(){ fillDist(citySel.value); zip3.value=""; fire(); });
-    distSel.addEventListener("change", function(){ syncZip(); fire(); });
+    // ── 3+2 路名→5碼（若該縣市區有內嵌資料，路名改用下拉、自動帶後2碼）
+    function curZip5(){
+      var key = (citySel.value||"") + (distSel.value||"");
+      return (window.TW_ZIP5 && window.TW_ZIP5[key]) || null;
+    }
+    function syncRoadMode(keepRoad){
+      var z5 = curZip5();
+      if(z5){
+        var roads = Object.keys(z5).sort();
+        roadSel.innerHTML = '<option value="">選路／街名（自動帶郵遞區號）…</option>' +
+          roads.map(function(r){ return '<option>'+r+'</option>'; }).join("") +
+          '<option value="__other">▸ 找不到？手動輸入</option>';
+        roadSel.style.display = "";
+        roadIn.style.display = "none";
+        segSel.style.display = "none";
+        if(keepRoad && z5[keepRoad]){ roadSel.value = keepRoad; onRoadSel(); }
+        else if(keepRoad){ roadSel.value="__other"; roadIn.style.display=""; roadIn.value=keepRoad; }
+      } else {
+        roadSel.style.display = "none";
+        segSel.style.display = "none";
+        roadIn.style.display = "";
+      }
+    }
+    function onRoadSel(){
+      var z5 = curZip5(); if(!z5) return;
+      var r = roadSel.value;
+      if(r === "__other"){ roadIn.style.display=""; roadIn.value=""; segSel.style.display="none"; zip2.value=""; roadIn.focus(); return; }
+      roadIn.style.display = "none";
+      roadIn.value = r;
+      var segs = z5[r] || [];
+      var uniqZ = {}; segs.forEach(function(s){ uniqZ[s.z]=1; });
+      if(!r){ segSel.style.display="none"; zip2.value=""; }
+      else if(Object.keys(uniqZ).length <= 1){
+        segSel.style.display = "none";
+        zip2.value = segs.length ? segs[0].z.slice(-2) : "";
+      } else {
+        // 多個投遞段：列出讓使用者依門牌挑
+        segSel.innerHTML = '<option value="">依門牌選段別…</option>' +
+          segs.map(function(s){ return '<option value="'+s.z+'">'+s.s+' → '+s.z+'</option>'; }).join("");
+        segSel.style.display = "";
+        zip2.value = "";
+      }
+    }
+
+    citySel.addEventListener("change", function(){ fillDist(citySel.value); zip3.value=""; zip2.value=""; syncRoadMode(); fire(); });
+    distSel.addEventListener("change", function(){ syncZip(); zip2.value=""; syncRoadMode(); fire(); });
+    roadSel.addEventListener("change", function(){ onRoadSel(); fire(); });
+    segSel.addEventListener("change", function(){ if(segSel.value) zip2.value = segSel.value.slice(-2); fire(); });
     [zip2, roadIn, restIn].forEach(function(el){ el.addEventListener("input", fire); });
 
     var api = {
@@ -123,8 +173,9 @@
       set: function(p){
         p = p || {};
         if(p.city){ citySel.value = p.city; fillDist(p.city, p.dist); }
-        if(p.zip2!=null) zip2.value = p.zip2;
+        syncRoadMode(p.road!=null ? p.road : "");
         if(p.road!=null) roadIn.value = p.road;
+        if(p.zip2!=null) zip2.value = p.zip2;   // 還原使用者存的後2碼（覆蓋自動值）
         if(p.rest!=null) restIn.value = p.rest;
       }
     };
@@ -133,6 +184,7 @@
     var dc = opts.defaultCity || "高雄市";
     citySel.value = dc;
     fillDist(dc, opts.defaultDist || "");
+    syncRoadMode();
 
     mount.appendChild(wrap);
     return api;
