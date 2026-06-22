@@ -98,7 +98,8 @@
       var row='<label>'+label+'</label>'+
              '<input id="org-'+k+'" type="text"'+im+' value="'+v+'">'+
              (hint?'<div class="hint">'+hint+'</div>':'');
-      if(k==="addr"){ // 會址下面：是否公開（理事長決定）
+      if(k==="addr"){ // 會址下面：先給明確建議，再放細節與同意
+        row+='<div class="hint" style="background:#FDF3F2;border:1px solid #F0C5C2;border-radius:8px;padding:.55rem .75rem;color:#7B1818;margin-top:.4rem;font-size:12.8px;line-height:1.8">🏠 <b>強烈建議：別用個人住家當會址</b>。用住家會牽動<b>房屋稅、地價稅</b>，連<b>日後賣屋</b>的優惠都可能沒了（害到屋主）。<br>👉 改用<b>工會專用或非自住地址</b>；<b>開會地點</b>另外借便宜場地或線上即可，<b>不必</b>綁會址。</div>';
         row+='<label style="display:flex;gap:8px;align-items:flex-start;font-weight:500;margin-top:.4rem;color:#444;line-height:1.6">'+
              '<input type="checkbox" id="org-addrPublic" style="width:auto;margin-top:3px"'+(o.addrPublic?' checked':'')+'> '+
              '<span>會址要<b>公開</b>給大家看嗎？（這可能是<b>理事長家的住址</b>，公開與否<b>由理事長決定</b>；不勾＝只用在公文、不對外顯示）</span></label>';
@@ -141,31 +142,32 @@
     var w=document.createElement("div"); w.id="ebn-addr-modal";
     w.style.cssText="position:fixed;inset:0;z-index:100002;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;";
     w.innerHTML='<div style="background:#fff;max-width:400px;width:100%;max-height:90vh;overflow-y:auto;border-radius:16px;padding:18px 18px 14px;box-shadow:0 18px 50px rgba(0,0,0,.45)">'+
-      '<div style="font-family:\'Noto Serif TC\',serif;font-weight:700;font-size:17px;color:#7B1818">🏠 填住家當會址前，請先知道這件事</div>'+
+      '<div style="font-family:\'Noto Serif TC\',serif;font-weight:700;font-size:17px;color:#7B1818">🏠 建議「不要」用住家當會址</div>'+
       '<div style="font-size:13px;line-height:1.9;color:#3A1010;margin-top:8px">'+
-        '工會申請統編是<b>人民團體稅籍</b>、不是營業登記；但若住家<b>實際當辦公處所使用</b>，這間房子的<b>房屋稅（自住 1.2%）</b>、<b>地價稅（自用 0.2%）</b>可能會用掉部分優惠。只是掛會址、人仍自住多半沒事，但<b>各地稅捐處認定不同</b>。<br><br>'+
-        '<b>⚠️ 影響的不只是每年稅金，連「日後賣房子」都會受害：</b><br>'+
-        '• <b>土地增值稅</b>：自用住宅一生一次 <b>10% 優惠</b>；若這塊地曾被當營業/非自住用，可能<b>用不到</b>，賣時土增稅大增。<br>'+
-        '• <b>房地合一稅</b>：自住優惠（稅率10%、免稅額400萬）要「有設籍自住、<b>無營業使用</b>」；曾營業使用可能<b>喪失優惠</b>，賣屋要多繳很多。<br>'+
-        '＝ 可能<b>每年多繳，賣房時再被扣一次大的</b>，一定要先弄清楚再決定。 ⚠待核對<br><br>'+
-        '<b>📞 打電話求證（手機可直接點撥）：</b><br>'+
-        '• 房屋稅／地價稅 → <b>高雄市稅捐稽徵處</b>　市民熱線 <a href="tel:1999" style="color:#1A3A6B;font-weight:700">1999</a>（各分處電話見官網）<br>'+
-        '• 統編／稅籍 → <b>財政部高雄國稅局</b>　免付費 <a href="tel:0800000321" style="color:#1A3A6B;font-weight:700">0800-000-321</a><br>'+
-        '<b>🔗 官網說明（可點）：</b><br>'+
-        '• 高雄市稅捐稽徵處 <a href="https://www.kctax.gov.tw" target="_blank" rel="noopener" style="color:#1A3A6B;font-weight:700">www.kctax.gov.tw</a><br>'+
-        '• 財政部高雄國稅局 <a href="https://www.ntbk.gov.tw" target="_blank" rel="noopener" style="color:#1A3A6B;font-weight:700">www.ntbk.gov.tw</a><br>'+
-        '怎麼問：「以住家作為工會會址並申請統編，會不會影響自用住宅房屋稅與地價稅優惠？」<br><br>'+
-        '<b>🤝 我們會一起想辦法</b>：可改用其他幹部/會員同意的地點、租借小空間、里/社區活動中心；會址<b>日後可變更</b>。<b>絕不會因為這件事讓理事長本人受損</b>。'+
+        '用<b>個人住家</b>當會址，將來可能<b>害到屋主</b>——除非真的沒辦法，<b>否則別用</b>：<br>'+
+        '• <b>每年</b>：房屋稅(自住1.2%→更高)、地價稅(自用0.2%→1%起)，年年多繳。<br>'+
+        '• <b>賣房子時</b>：自用的<b>土增稅一生一次10%</b>、<b>房地合一自住優惠</b>(稅率10%、免稅額400萬)，曾被當營業/非自住用就可能<b>整個沒了</b>，賣屋大筆損失。 ⚠待核對<br><br>'+
+        '<b>✅ 比較好的做法（建議優先）：</b><br>'+
+        '1. 用<b>其他幹部／會員「願意且非自住」</b>的地址<br>'+
+        '2. 問<b>勞工局</b>可接受的會址／通訊地址方式<br>'+
+        '3. <b>開會地點</b>不必用會址：借便宜公營場地或用線上 Google Meet 即可<br><br>'+
+        '<b>📞 真的考慮用住家，先打電話問清楚（可直接點撥）：</b><br>'+
+        '• 房屋稅／地價稅 → <b>高雄市稅捐稽徵處</b>　<a href="tel:1999" style="color:#1A3A6B;font-weight:700">1999</a><br>'+
+        '• 統編／稅籍 → <b>財政部高雄國稅局</b>　<a href="tel:0800000321" style="color:#1A3A6B;font-weight:700">0800-000-321</a><br>'+
+        '• 官網：<a href="https://www.kctax.gov.tw" target="_blank" rel="noopener" style="color:#1A3A6B;font-weight:700">www.kctax.gov.tw</a>　<a href="https://www.ntbk.gov.tw" target="_blank" rel="noopener" style="color:#1A3A6B;font-weight:700">www.ntbk.gov.tw</a><br>'+
+        '問法：「以住家作為工會會址並申請統編，會不會影響自用住宅房屋稅、地價稅，以及日後賣屋的優惠？」'+
       '</div>'+
-      '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:700;color:#7B1818;font-size:13.5px;margin:12px 0 4px;line-height:1.6"><input type="checkbox" id="ebn-addr-agree" style="width:auto;margin-top:3px"> <span>我已了解（含<b>日後賣屋</b>的稅務影響），並取得理事長<b>知情同意</b></span></label>'+
-      '<button id="ebn-addr-ok" style="display:block;width:100%;background:#B7860B;color:#fff;border:0;border-radius:11px;padding:.8rem;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;opacity:.5" disabled>我了解了，繼續</button>'+
-      '<button id="ebn-addr-cancel" style="display:block;width:100%;background:none;color:#999;border:0;padding:.55rem;font-size:13px;cursor:pointer">先不要用住家、之後再說</button>'+
+      '<button id="ebn-addr-cancel" style="display:block;width:100%;background:#1A7A4A;color:#fff;border:0;border-radius:11px;padding:.85rem;font-weight:700;font-size:15.5px;cursor:pointer;margin-top:12px">👍 好，我用別的會址（不用住家）</button>'+
+      '<details style="margin-top:10px"><summary style="color:#999;font-size:12.5px;cursor:pointer">真的沒辦法、仍要用住家…</summary>'+
+        '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:700;color:#7B1818;font-size:13px;margin:8px 0 4px;line-height:1.6"><input type="checkbox" id="ebn-addr-agree" style="width:auto;margin-top:3px"> <span>我（理事長本人或已取得理事長<b>知情同意</b>）已充分了解上述<b>每年稅金</b>與<b>日後賣屋</b>的影響，仍決定使用住家會址</span></label>'+
+        '<button id="ebn-addr-ok" style="display:block;width:100%;background:#B7860B;color:#fff;border:0;border-radius:11px;padding:.75rem;font-weight:700;font-size:14px;cursor:pointer;margin-top:6px;opacity:.5" disabled>仍要用住家（已充分了解後果）</button>'+
+      '</details>'+
       '</div>';
     document.body.appendChild(w);
     var agree=document.getElementById("ebn-addr-agree"), okb=document.getElementById("ebn-addr-ok");
     agree.addEventListener("change",function(){ okb.disabled=!agree.checked; okb.style.opacity=agree.checked?"1":".5"; });
     okb.addEventListener("click",function(){ var c=$("org-addrConsent"); if(c) c.checked=true; sessionStorage.setItem("ebn_addr_notice","1"); EBNOrg.set(readForm()); w.remove(); });
-    document.getElementById("ebn-addr-cancel").addEventListener("click",function(){ var a=$("org-addr"); if(a) a.value=""; w.remove(); });
+    document.getElementById("ebn-addr-cancel").addEventListener("click",function(){ var a=$("org-addr"); if(a){ a.value=""; a.blur(); } var c=$("org-addrConsent"); if(c) c.checked=false; sessionStorage.setItem("ebn_addr_notice","1"); w.remove(); });
     w.addEventListener("click",function(e){ if(e.target===w) w.remove(); });
   }
   var extrasEdited=false;
