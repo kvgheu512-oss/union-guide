@@ -94,12 +94,11 @@
   <div class="card">
     <h2>① 一般（平日）加班費</h2>
     <div class="sub">勞基法 §24：平常上班日，正常工時（8 小時）以外的延長工作</div>
-    <label>前 2 小時的加班時數（<b>×1⅓</b>）</label>
+    <div class="hint" style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.5rem .7rem;color:#5C4000;margin:.3rem 0 .2rem">💡 加班費分兩段算：<b>每天</b>下班後<b>前 2 小時 ×1⅓</b>，<b>第 3 小時起 ×1⅔</b>。所以這兩格要填的是<b>時數</b>，不是金額。<br>👉 算<b>一天</b>：例如加班 3 小時 → 上格填 <b>2</b>、下格填 <b>1</b>。<br>👉 算<b>整個月</b>：把每天「前 2 小時」加起來填上格、「超過的」加起來填下格（每天上格最多只會增加 2）。</div>
+    <label>① ×1⅓ 時段的時數（每天前 2 小時，累計）</label>
     <input id="wkF" type="number" inputmode="decimal" value="0" min="0" step="0.5">
-    <div class="hint">每天下班後<b>最先 2 小時</b>，×1⅓（≈1.34）。要算整個月，就把各天「前 2 小時」加總填這裡。</div>
-    <label>超過 2 小時之後的加班時數（<b>×1⅔</b>）</label>
+    <label>② ×1⅔ 時段的時數（每天第 3 小時起，累計）</label>
     <input id="wkR" type="number" inputmode="decimal" value="0" min="0" step="0.5">
-    <div class="hint">每天<b>第 3 小時起</b>，×1⅔（≈1.67）。</div>
     <label>醫院實際給的平日加班費？<span class="opt">（選填，對照）</span></label>
     <input id="actWk" type="number" inputmode="numeric" placeholder="例：900" min="0">
     <div class="out" id="outWk"></div>
@@ -218,8 +217,8 @@
     // ① 平日加班費（§24：前2時×1⅓、再2時×1⅔；時薪法定 ÷30÷8）
     var wkF=num("wkF"), wkR=num("wkR");
     var wkPay=wkF*legalHr*(4/3)+wkR*legalHr*(5/3);
-    $("outWk").innerHTML=(wkF>0?'<div class="row"><span>前 2 時 '+wkF+' 小時 ×1⅓</span><b>'+money(wkF*legalHr*(4/3))+'</b></div>':'')+
-      (wkR>0?'<div class="row"><span>超過 2 時 '+wkR+' 小時 ×1⅔</span><b>'+money(wkR*legalHr*(5/3))+'</b></div>':'')+
+    $("outWk").innerHTML=(wkF>0?'<div class="row"><span>×1⅓ 時段：'+wkF+' 小時</span><b>'+money(wkF*legalHr*(4/3))+'</b></div>':'')+
+      (wkR>0?'<div class="row"><span>×1⅔ 時段：'+wkR+' 小時</span><b>'+money(wkR*legalHr*(5/3))+'</b></div>':'')+
       '<div class="row"><span>平日加班費 應領</span><span class="big">'+money(wkPay)+'</span></div>'+
       (dv>30?'<div style="font-size:12px;color:#7B1818;margin-top:5px;font-weight:700">⚠ 高榮用 ÷'+dv+' 算時薪（月薪÷'+(dv*8)+'＝'+money(hr)+'），比法定 ÷240（'+money(legalHr)+'）每小時少給；逐時累積差額可主張（見 ④）。</div>':'')+
       (wkF<=0&&wkR<=0?'<div style="font-size:11.5px;color:#777">填入加班時數即自動試算。</div>':'');
