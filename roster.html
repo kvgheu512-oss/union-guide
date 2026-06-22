@@ -396,7 +396,7 @@ $('list').addEventListener('click',e=>{
 function openForm(m){
   $('form').classList.add('show');
   $('f-id').value=m?m.id:''; $('f-name').value=m?m.name:''; $('f-no').value=m?(m.no||''):'';
-  $('f-dept').value=m?(m.dept||''):''; $('f-title').value=m?(m.title||''):'';
+  $('f-dept').value=m?(m.dept||''):'護理部／'; $('f-title').value=m?(m.title||''):'護理師';
   $('f-type').value=m?(m.type||'full'):'full'; $('f-status').value=m?m.status:'applicant';
   $('f-join').value=m?(m.join||''):''; $('f-fee').value=m?(m.feeTo||''):'';
   $('f-phone').value=m?(m.phone||''):''; $('f-contact').value=m?(m.contact||''):''; $('f-note').value=m?(m.note||''):'';
