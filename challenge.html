@@ -276,8 +276,8 @@ function render(){
   el("grow").textContent = growLabel(r);
   el("barFill").style.width = pct + "%";
 
-  // 植物成長
-  el("stem").setAttribute("transform","scaleY(" + (0.12 + 0.88*r).toFixed(3) + ")");
+  // 植物成長（用 CSS transform，scaleY 才有效且會套用 transform-origin；SVG transform 屬性不支援 scaleY）
+  el("stem").style.transform = "scaleY(" + (0.12 + 0.88*r).toFixed(3) + ")";
   document.querySelectorAll(".leaf").forEach(leaf=>{
     const th = parseFloat(leaf.dataset.th);
     leaf.classList.toggle("on", r > th);
