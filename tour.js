@@ -44,6 +44,40 @@
   function pickVoice() {
     try { var vs = speechSynthesis.getVoices() || []; return vs.filter(function (v) { return /zh|cmn|Chinese|Taiwan|TW|Hant/i.test(v.lang + v.name); })[0] || null; } catch (e) { return null; }
   }
+  function voiceReady() { return !!(window.speechSynthesis && pickVoice()); }
+  // 語音清單常常非同步載入，先暖機並監聽
+  try { if (window.speechSynthesis) { speechSynthesis.getVoices(); if (!speechSynthesis.onvoiceschanged) speechSynthesis.onvoiceschanged = function () { try { speechSynthesis.getVoices(); } catch (e) {} }; } } catch (e) {}
+
+  // 沒有中文語音時，跳出「怎麼開啟中文朗讀」圖文步驟（依手機平台）
+  function voiceHelp(stepList) {
+    var ua = navigator.userAgent || "", steps, plat;
+    if (/iPhone|iPad|iPod/i.test(ua)) { plat = "iPhone／iPad";
+      steps = ["打開「設定」App", "輔助使用 → 朗讀內容", "開啟「朗讀螢幕」", "點「聲音 → 中文」，下載台灣中文語音", "回來再按一次「🔊 語音導覽」"]; }
+    else if (/Android/i.test(ua)) { plat = "Android";
+      steps = ["打開「設定」", "系統 → 語言與輸入", "文字轉語音輸出（朗讀）", "選「Google 文字轉語音」→ 安裝語音資料 → 中文（台灣）", "回來再按一次「🔊 語音導覽」"]; }
+    else { plat = "電腦";
+      steps = ["Chrome／Edge 多半內建中文語音", "若沒有：到系統「語音」設定安裝中文語音包", "重開瀏覽器後再按「🔊 語音導覽」"]; }
+    var ex = document.getElementById("ebntour-vh"); if (ex) ex.remove();
+    var w = document.createElement("div"); w.id = "ebntour-vh";
+    w.style.cssText = "position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:18px;font-family:'Noto Sans TC',system-ui,sans-serif;";
+    w.innerHTML = '<div style="background:#fff;max-width:380px;width:100%;border-radius:16px;padding:18px 18px 14px;box-shadow:0 16px 50px rgba(0,0,0,.4)">'
+      + '<div style="font-family:\'Noto Serif TC\',serif;font-weight:700;font-size:17px;color:#122A4F">🔊 這支裝置還沒中文朗讀</div>'
+      + '<div style="font-size:13px;color:#666;margin:4px 0 12px">沒關係，也可以直接用文字或自動展示。想開語音的話（' + plat + '）：</div>'
+      + '<ol style="margin:0 0 6px 1.1rem;font-size:13.5px;line-height:1.9;color:#333">' + steps.map(function (s) { return '<li>' + s + '</li>'; }).join("") + '</ol>'
+      + '<div style="font-size:12px;color:#999;margin:6px 0 12px">💡 沒聲音時也先檢查手機<b>靜音鍵</b>與<b>音量</b>。</div>'
+      + '<button data-vh="text" style="display:block;width:100%;background:#1A3A6B;color:#fff;border:0;border-radius:11px;padding:.75rem;font-weight:700;font-size:14.5px;cursor:pointer">📖 先用文字導覽（一樣完整）</button>'
+      + '<button data-vh="auto" style="display:block;width:100%;background:#EAF0FA;color:#1A3A6B;border:0;border-radius:11px;padding:.7rem;font-weight:700;font-size:14px;cursor:pointer;margin-top:8px">🎬 改用自動展示</button>'
+      + '<button data-vh="close" style="display:block;width:100%;background:none;color:#999;border:0;padding:.6rem;font-size:13.5px;cursor:pointer">關閉</button>'
+      + '</div>';
+    document.body.appendChild(w);
+    w.addEventListener("click", function (e) {
+      if (e.target === w) { w.remove(); return; }
+      var b = e.target.closest && e.target.closest("button[data-vh]"); if (!b) return;
+      var a = b.getAttribute("data-vh"); w.remove();
+      if (a === "text") start(stepList, {});
+      else if (a === "auto") start(stepList, { auto: true });
+    });
+  }
   function speak(text, onend) {
     if (!voice || !window.speechSynthesis) { if (onend) onend(); return; }
     speakStop();
@@ -149,13 +183,16 @@
     menu.innerHTML =
       '<button data-m="text"><span class="e">📖</span> 文字導覽（自己點下一步）</button>' +
       (hasVoice ? '<button data-m="voice"><span class="e">🔊</span> 語音導覽（唸給你聽）</button>' : '') +
-      '<button data-m="auto"><span class="e">🎬</span> 自動展示（像影片自動播）</button>';
+      '<button data-m="auto"><span class="e">🎬</span> 自動展示（像影片自動播）</button>' +
+      (hasVoice ? '<button data-m="vhelp" style="font-size:12.5px;color:#777"><span class="e">ℹ️</span> 語音沒聲音？開啟中文朗讀</button>' : '');
     document.body.appendChild(btn); document.body.appendChild(menu);
     btn.addEventListener("click", function () { menu.classList.toggle("on"); });
     menu.addEventListener("click", function (e) {
       var t = e.target.closest && e.target.closest("button[data-m]"); if (!t) return;
       menu.classList.remove("on");
       var m = t.getAttribute("data-m");
+      if (m === "vhelp") { voiceHelp(stepList); return; }
+      if (m === "voice" && !voiceReady()) { voiceHelp(stepList); return; }   // 沒中文語音→先教學/改用其它
       start(stepList, { voice: m === "voice", auto: m === "auto" });
     });
   }
