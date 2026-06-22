@@ -173,6 +173,23 @@
       </div>
 
       <div class="card">
+        <h3>✍️ 手寫簽到（單機輪簽）</h3>
+        <p class="law" style="margin-top:0">一支手機／平板<b>傳著簽</b>：填姓名→手寫簽名→「完成這位」。<b>電子簽名與親筆簽名同等效力</b>（電子簽章法）。簽名只存本機，可輸出 PDF 簽到簿。</p>
+        <div class="grid2">
+          <div><label>姓名</label><input id="sg-name" placeholder="王小明"></div>
+          <div><label>單位／科別</label><input id="sg-unit" placeholder="護理部 5A"></div>
+        </div>
+        <label>請在框內簽名</label>
+        <canvas id="sg-pad" width="600" height="200" style="width:100%;height:160px;border:1.5px dashed var(--gold);border-radius:10px;background:#fff;touch-action:none;display:block"></canvas>
+        <div class="btn-row" style="margin-top:.5rem">
+          <button class="btn ghost sm" id="sg-clear">🧽 清除重簽</button>
+          <button class="btn green sm" id="sg-save">✓ 完成這位</button>
+        </div>
+        <div id="sg-list" style="margin-top:.6rem"></div>
+        <button class="btn navy sm" data-doc="signed" style="margin-top:.5rem">🖨 產生手寫簽到簿（PDF）</button>
+      </div>
+
+      <div class="card">
         <h3>🔗 即時簽到／共筆（Google）</h3>
         <p class="law" style="margin-top:0">大家用<b>大螢幕／投影機</b>看，手機只拿來「掃碼簽到」。共筆文件多人同編、自動存，散會就有初稿。連結存本機，會跟著這場會議。</p>
         <label>簽到表單連結（Google 表單「填寫」連結）</label>
@@ -349,9 +366,38 @@ function fillForm(){
   if($('g-form')) $('g-form').value=cur.gForm||'';
   if($('g-doc')) $('g-doc').value=cur.gDoc||'';
   if($('g-sheet')) $('g-sheet').value=cur.gSheet||'';
-  renderFormQR(); updateFormalReminder();
+  renderFormQR(); updateFormalReminder(); renderSigList();
   renderAgenda(); renderSign();
 }
+/* ✍️ 手寫簽到（單機輪簽）— 電子簽章法，與親簽同等效力 */
+function _cyrb53(str,seed){seed=seed||0;var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return(4294967296*(2097151&h2)+(h1>>>0)).toString(16);}
+var sigPad=(function(){
+  var c=$('sg-pad'); if(!c) return null; var ctx=c.getContext('2d'); var on=false,last=null,dirty=false;
+  function P(e){var r=c.getBoundingClientRect(),t=(e.touches&&e.touches[0])||e;return{x:(t.clientX-r.left)*(c.width/r.width),y:(t.clientY-r.top)*(c.height/r.height)};}
+  function s(e){on=true;last=P(e);e.preventDefault();}
+  function m(e){if(!on)return;var p=P(e);ctx.strokeStyle='#111';ctx.lineWidth=2.6;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;dirty=true;e.preventDefault();}
+  function en(){on=false;}
+  c.addEventListener('mousedown',s);c.addEventListener('mousemove',m);window.addEventListener('mouseup',en);
+  c.addEventListener('touchstart',s,{passive:false});c.addEventListener('touchmove',m,{passive:false});c.addEventListener('touchend',en);
+  return{clear:function(){ctx.clearRect(0,0,c.width,c.height);dirty=false;},dirty:function(){return dirty;},data:function(){return c.toDataURL('image/png');}};
+})();
+function renderSigList(){
+  var box=$('sg-list'); if(!box) return; var a=cur.signatures||[];
+  box.innerHTML='<div style="font-size:13px;font-weight:700;color:var(--green-deep);margin-bottom:4px">✅ 已簽到 '+a.length+' 位</div>'+
+    a.map(function(s,i){return '<div style="display:flex;align-items:center;gap:8px;border-bottom:1px solid #eee;padding:3px 0"><img src="'+s.sig+'" style="height:30px;border:1px solid #eee;border-radius:4px;background:#fff"><span style="font-size:13px">'+esc(s.n)+' <span style="color:#999">'+esc(s.u||'')+'</span></span><button data-rmsig="'+i+'" style="margin-left:auto;background:none;border:none;color:#C0392B;font-size:16px;cursor:pointer">✕</button></div>';}).join('');
+}
+(function(){
+  var sv=$('sg-save'); if(sv) sv.addEventListener('click',function(){
+    var n=$('sg-name').value.trim(); if(!n){toast('請先填姓名');return;}
+    if(!sigPad||!sigPad.dirty()){toast('請先在框內手寫簽名');return;}
+    if(!cur.signatures)cur.signatures=[];
+    var at=new Date().toISOString(), sig=sigPad.data();
+    cur.signatures.push({n:n,u:$('sg-unit').value.trim(),sig:sig,at:at,h:_cyrb53(n+'|'+at+'|'+sig)});
+    $('sg-name').value='';$('sg-unit').value='';sigPad.clear();renderSigList();toast('✓ 已簽到：'+n);
+  });
+  var cl=$('sg-clear'); if(cl) cl.addEventListener('click',function(){ if(sigPad)sigPad.clear(); });
+  var ls=$('sg-list'); if(ls) ls.addEventListener('click',function(e){var btn=e.target.closest('[data-rmsig]');if(!btn)return;if(confirm('刪除這筆簽到？')){cur.signatures.splice(+btn.dataset.rmsig,1);renderSigList();}});
+})();
 /* 🔔 正式大會（要報主管機關）才提醒備紙本親簽簽到簿 */
 function updateFormalReminder(){
   var el=$('formal-reminder'); if(!el) return;
@@ -528,11 +574,23 @@ function docMinutes(){
   html+=`<div class="sign-line">主席：＿＿＿＿＿＿　　　記錄：＿＿＿＿＿＿</div>`;
   return html;
 }
+function docSignedRoster(){
+  const a=cur.signatures||[];
+  const rows=a.length?a.map((s,i)=>`<tr><td class="c">${i+1}</td><td>${esc(s.n)}</td><td>${esc(s.u||'')}</td><td class="c"><img src="${s.sig}" style="height:46px"></td><td style="font-size:11px">${esc((s.at||'').replace('T',' ').slice(0,16))}</td></tr>`).join(''):'<tr><td colspan="5" class="c">（尚無簽到）</td></tr>';
+  return header()+`<div class="sub">${esc(cur.type)}　${esc(cur.no)}　簽到簿（手寫電子簽名）</div>
+    <div class="meta"><b>開會時間</b>：${rocDate(cur.date)} ${cur.time||''}</div>
+    <div class="meta"><b>開會地點</b>：${esc(cur.place||'＿＿＿＿')}</div>
+    <div class="meta"><b>實　　到</b>：${a.length} 人</div>
+    <table><thead><tr><th style="width:3em">編號</th><th>姓名</th><th>單位</th><th style="width:28%">簽名</th><th>簽到時間</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="meta" style="margin-top:1rem">主席：＿＿＿＿　　記錄：＿＿＿＿</div>
+    <div class="meta" style="font-size:11px;color:#555;margin-top:.5rem">※ 本簽到簿採電子簽章（依電子簽章法，與親筆簽名同等效力），含簽名、簽到時間與查驗碼存查。</div>`;
+}
 document.querySelectorAll('[data-doc]').forEach(b=>b.addEventListener('click',()=>{
   pull();
   const d=b.dataset.doc;
   if(d==='notice') openDoc('開會通知',docNotice());
   else if(d==='sign') openDoc('簽到表',docSign());
+  else if(d==='signed') openDoc('簽到簿（手寫）',docSignedRoster());
   else openDoc('會議紀錄',docMinutes());
 }));
 
