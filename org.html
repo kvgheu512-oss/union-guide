@@ -105,6 +105,10 @@
         row+='<details style="margin-top:.5rem"><summary style="color:#7B1818;font-weight:700;font-size:13px;cursor:pointer">⚠️ 用住家當會址前，先看這個（稅務提醒＋可以問哪裡）</summary>'+
              '<div style="font-size:12.5px;line-height:1.9;background:#FDF3F2;border:1px solid #F0C5C2;border-radius:8px;padding:.65rem .85rem;color:#5A1A1A;margin-top:.45rem">'+
              '申請統編是<b>「人民團體」稅籍</b>，不是營業登記；但如果住家<b>實際當成辦公的地方在用</b>，這間房子的<b>房屋稅（自住 1.2%）</b>和<b>地價稅（自用 0.2%）</b>可能就會用掉<b>部分面積</b>的優惠。只是「掛會址、人還住在裡面」多半沒事，但<b>各地稅捐處認定不一樣</b>。<br><br>'+
+             '<b>⚠️ 不只每年稅金，「日後賣房子」也會受害：</b><br>'+
+             '• <b>土地增值稅</b>：自用住宅一生一次 <b>10% 優惠</b>，若曾營業/非自住使用可能<b>用不到</b>，賣時土增稅大增。<br>'+
+             '• <b>房地合一稅</b>：自住優惠（稅率10%、免稅額400萬）要「有設籍自住、<b>無營業使用</b>」，曾營業使用可能<b>喪失優惠</b>。<br>'+
+             '＝ 可能<b>每年多繳，賣屋時再被扣一次大的</b>。<br><br>'+
              '<b>📞 打電話求證（手機可直接點撥）：</b><br>'+
              '• 房屋稅／地價稅（地方稅）→ <b>高雄市稅捐稽徵處</b>　市民熱線 <a href="tel:1999" style="color:#1A3A6B;font-weight:700">1999</a>（各分處電話見官網）<br>'+
              '• 統編／稅籍（國稅）→ <b>財政部高雄國稅局</b>　免付費 <a href="tel:0800000321" style="color:#1A3A6B;font-weight:700">0800-000-321</a><br>'+
@@ -117,7 +121,7 @@
              '</div></details>';
         row+='<label style="display:flex;gap:8px;align-items:flex-start;font-weight:500;margin-top:.5rem;color:#7B1818;line-height:1.6">'+
              '<input type="checkbox" id="org-addrConsent" style="width:auto;margin-top:3px"'+(o.addrConsent?' checked':'')+'> '+
-             '<span>我已了解上述稅務影響，並已取得<b>理事長知情同意</b>，才填住家當會址</span></label>';
+             '<span>我已了解上述稅務影響（含<b>每年稅金</b>與<b>日後賣屋</b>的土增稅／房地合一稅優惠可能喪失），並已取得<b>理事長知情同意</b>，才填住家當會址</span></label>';
       }
       return row;
     }).join("");
@@ -140,6 +144,10 @@
       '<div style="font-family:\'Noto Serif TC\',serif;font-weight:700;font-size:17px;color:#7B1818">🏠 填住家當會址前，請先知道這件事</div>'+
       '<div style="font-size:13px;line-height:1.9;color:#3A1010;margin-top:8px">'+
         '工會申請統編是<b>人民團體稅籍</b>、不是營業登記；但若住家<b>實際當辦公處所使用</b>，這間房子的<b>房屋稅（自住 1.2%）</b>、<b>地價稅（自用 0.2%）</b>可能會用掉部分優惠。只是掛會址、人仍自住多半沒事，但<b>各地稅捐處認定不同</b>。<br><br>'+
+        '<b>⚠️ 影響的不只是每年稅金，連「日後賣房子」都會受害：</b><br>'+
+        '• <b>土地增值稅</b>：自用住宅一生一次 <b>10% 優惠</b>；若這塊地曾被當營業/非自住用，可能<b>用不到</b>，賣時土增稅大增。<br>'+
+        '• <b>房地合一稅</b>：自住優惠（稅率10%、免稅額400萬）要「有設籍自住、<b>無營業使用</b>」；曾營業使用可能<b>喪失優惠</b>，賣屋要多繳很多。<br>'+
+        '＝ 可能<b>每年多繳，賣房時再被扣一次大的</b>，一定要先弄清楚再決定。 ⚠待核對<br><br>'+
         '<b>📞 打電話求證（手機可直接點撥）：</b><br>'+
         '• 房屋稅／地價稅 → <b>高雄市稅捐稽徵處</b>　市民熱線 <a href="tel:1999" style="color:#1A3A6B;font-weight:700">1999</a>（各分處電話見官網）<br>'+
         '• 統編／稅籍 → <b>財政部高雄國稅局</b>　免付費 <a href="tel:0800000321" style="color:#1A3A6B;font-weight:700">0800-000-321</a><br>'+
@@ -149,7 +157,7 @@
         '怎麼問：「以住家作為工會會址並申請統編，會不會影響自用住宅房屋稅與地價稅優惠？」<br><br>'+
         '<b>🤝 我們會一起想辦法</b>：可改用其他幹部/會員同意的地點、租借小空間、里/社區活動中心；會址<b>日後可變更</b>。<b>絕不會因為這件事讓理事長本人受損</b>。'+
       '</div>'+
-      '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:700;color:#7B1818;font-size:13.5px;margin:12px 0 4px;line-height:1.6"><input type="checkbox" id="ebn-addr-agree" style="width:auto;margin-top:3px"> <span>我已了解，並已取得理事長<b>知情同意</b></span></label>'+
+      '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:700;color:#7B1818;font-size:13.5px;margin:12px 0 4px;line-height:1.6"><input type="checkbox" id="ebn-addr-agree" style="width:auto;margin-top:3px"> <span>我已了解（含<b>日後賣屋</b>的稅務影響），並取得理事長<b>知情同意</b></span></label>'+
       '<button id="ebn-addr-ok" style="display:block;width:100%;background:#B7860B;color:#fff;border:0;border-radius:11px;padding:.8rem;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;opacity:.5" disabled>我了解了，繼續</button>'+
       '<button id="ebn-addr-cancel" style="display:block;width:100%;background:none;color:#999;border:0;padding:.55rem;font-size:13px;cursor:pointer">先不要用住家、之後再說</button>'+
       '</div>';
