@@ -194,6 +194,18 @@ const MEET_URL = {
 </script>
 <div id="verBadge"></div>
 <script src="org.js" defer></script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load", function(){
+  if(!window.EBNTour) return;
+  EBNTour.attach([
+    { title:"沒辦法到現場？線上一起開", text:"用手機就能參加，不用到現場。我帶你看怎麼進去。" },
+    { sel:"#join-prep", title:"開會時間到，點這裡", text:"點綠色按鈕進 <b>Google Meet</b>。連結沒設定時，當天看 LINE 群組。" },
+    { title:"進去後怎麼用", text:"填<b>真實姓名</b>→按『要求加入』；想講話再開 🎤 麥克風、📹 鏡頭，只想聽就都關著。" },
+    { title:"好了！", text:"不熟可以提早幾分鐘進來試。隨時點上面 🎬 導覽再看一次。" }
+  ], {});
+});
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

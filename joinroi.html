@@ -103,6 +103,20 @@
   ["salary","otHr","annual"].forEach(function(id){ document.getElementById(id).addEventListener("input",calc); });
   calc();
 </script>
+<div id="verBadge"></div>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load", function(){
+  if(!window.EBNTour) return;
+  EBNTour.attach([
+    { title:"1 分鐘算入會划不划算", text:"輸入幾個數字，看「會費」跟「可能拿回的錢」誰多。" },
+    { sel:"#salary", title:"先填月薪", text:"填你<b>一個月領多少</b>。", demo:function(){ var e=document.getElementById('salary'); if(e){ e.value='40000'; e.dispatchEvent(new Event('input',{bubbles:true})); } } },
+    { sel:"#otHr", title:"填每月加班時數", text:"大概<b>每個月加班幾小時</b>就好。", demo:function(){ var e=document.getElementById('otHr'); if(e){ e.value='20'; e.dispatchEvent(new Event('input',{bubbles:true})); } } },
+    { sel:"#out", title:"看結果", text:"這裡告訴你<b>可能拿回的錢遠超過會費</b>。" },
+    { title:"好了！", text:"覺得划算？回首頁按『我想連署／加入』。" }
+  ], {});
+});
+</script>
 <script src="law-tips.js" defer></script>
 <script src="common.js" defer></script>
 </body>

@@ -705,6 +705,20 @@ document.getElementById('faq-toggle-btn').addEventListener('click',function(){
 })();
 </script>
 <script src="org.js" defer></script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load", function(){
+  if(!window.EBNTour) return;
+  EBNTour.attach([
+    { title:"歡迎！我帶你看一遍", text:"這是工會的入口頁。30 秒帶你看：連署、加入、會議、有問題怎麼問。" },
+    { sel:"#signbar", title:"連署進度", text:"這裡看<b>還差幾人</b>就能成立工會。湊滿就能坐上談判桌。" },
+    { sel:"#cta-join", title:"想加入就按這裡", text:"按下去會先說明<b>三件事</b>，再帶你到加入方式。先連署、表達意願就好。" },
+    { sel:"#meetings", title:"兩場關鍵會議", text:"發起人會議、成立大會——<b>到不了現場也能線上參加</b>。" },
+    { sel:"#bot-in", title:"有問題問小幫手", text:"打字問我，例如「約用可以加入嗎」，會給你答案。" },
+    { title:"好了！", text:"想算加班費、看保障，往下滑都有。隨時點上面的 🎬 導覽再看一次。" }
+  ], {});
+});
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

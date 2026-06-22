@@ -622,6 +622,18 @@ document.querySelectorAll('.faq-q').forEach(q => {
 });
 </script>
 <div id="verBadge">v2026.06.21.66</div>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load", function(){
+  if(!window.EBNTour) return;
+  EBNTour.attach([
+    { title:"這頁教你追回加班費", text:"約用人員以前沒領到的加班費，<b>5 年內可以追</b>。我帶你看怎麼做。" },
+    { sel:"#cd-days", title:"先看倒數", text:"這是<b>追溯期倒數</b>——過了就追不回，越早辦越好。" },
+    { sel:"#checklist", title:"照清單一步步做", text:"把<b>出勤紀錄、薪資單</b>準備好，照清單打勾完成。" },
+    { title:"好了！", text:"要算金額？回首頁用『加班費試算機』。有問題找工會。" }
+  ], {});
+});
+</script>
 <script src="law-tips.js" defer></script>
 <script src="common.js" defer></script>
 </body>
