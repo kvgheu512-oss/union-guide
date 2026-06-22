@@ -15,19 +15,16 @@
  .header h1{font-family:'Noto Serif TC',serif;font-size:20px}
  .header p{font-size:12px;opacity:.9;margin-top:5px}
  main{max-width:720px;margin:0 auto;padding:1rem .9rem 4rem}
- /* 統計列 */
  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .4rem;text-align:center;cursor:pointer}
  .stat .n{font-family:'Noto Serif TC',serif;font-size:24px;font-weight:700;line-height:1}
  .stat .l{font-size:11.5px;color:var(--ink-soft);margin-top:4px}
  .stat.todo .n{color:var(--red)} .stat.doing .n{color:var(--amber)} .stat.done .n{color:var(--green2)} .stat.due .n{color:var(--red-deep)}
  .stat.on{outline:2px solid var(--navy);outline-offset:-1px}
- /* 工具列 */
  .bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:.8rem;align-items:center}
  .bar select,.bar input{padding:.5rem .6rem;font-size:14px;border:1.5px solid var(--border);border-radius:9px;background:#fff;font-family:inherit}
  .bar input{flex:1;min-width:120px}
  .addbtn{background:var(--navy);color:#fff;border:none;border-radius:9px;padding:.55rem .9rem;font-size:14px;font-weight:700;cursor:pointer}
- /* 表單 */
  .form{background:var(--card);border:1.5px solid var(--navy);border-radius:14px;padding:1rem;margin-bottom:1rem;display:none}
  .form.show{display:block}
  .form h3{font-size:15px;color:var(--navy);margin-bottom:.6rem;font-family:'Noto Serif TC',serif}
@@ -39,7 +36,6 @@
  .frow{display:flex;gap:8px;margin-top:.8rem}
  .frow button{flex:1;border:none;border-radius:9px;padding:.65rem;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
  .save{background:var(--green2);color:#fff} .cancel{background:#fff;border:1.5px solid var(--border)!important;color:var(--ink-mid)}
- /* 案件卡 */
  .case{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:.8rem .9rem;margin-bottom:9px;border-left:5px solid var(--ink-soft)}
  .case.todo{border-left-color:var(--red)} .case.doing{border-left-color:var(--amber)} .case.done{border-left-color:var(--green2);opacity:.72}
  .case .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -58,38 +54,76 @@
  .acts button{background:none;border:1px solid var(--border);border-radius:7px;padding:3px 9px;font-size:12px;cursor:pointer;color:var(--ink-mid)}
  .empty{text-align:center;color:var(--ink-soft);font-size:13.5px;padding:2rem 1rem;background:var(--card);border:1px dashed var(--border);border-radius:13px}
  .foot{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:1.3rem;line-height:1.8}
+ .foot .lk{background:none;border:none;color:var(--navy2);font-size:12px;text-decoration:underline;cursor:pointer;margin:0 .3rem}
  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--green);color:#fff;padding:9px 16px;border-radius:22px;font-size:13px;font-weight:700;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none}
  .toast.show{opacity:1}
  .lock{position:fixed;inset:0;background:linear-gradient(160deg,#1A3A6B,#0E2347);z-index:300;display:flex;align-items:center;justify-content:center;padding:1.5rem}
  .lock.hide{display:none}
- .lock .box{background:#fff;border-radius:16px;padding:1.7rem 1.4rem;max-width:350px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+ .lock .box{background:#fff;border-radius:16px;padding:1.7rem 1.4rem;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
  .lock h2{font-family:'Noto Serif TC',serif;font-size:19px;color:var(--navy);margin-bottom:6px}
  .lock p{font-size:12.5px;color:var(--ink-soft);line-height:1.75;margin-bottom:14px}
  .lock input{width:100%;padding:.7rem .9rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;text-align:center;margin-bottom:10px}
- .lock button{width:100%;padding:.7rem;font-size:15px;font-weight:700;color:#fff;background:var(--navy);border:none;border-radius:10px;cursor:pointer}
+ .lock .pri{width:100%;padding:.7rem;font-size:15px;font-weight:700;color:#fff;background:var(--navy);border:none;border-radius:10px;cursor:pointer}
  .lock .err{color:var(--red);font-size:12.5px;min-height:16px;margin-top:8px}
- .chpw{background:none;border:none;color:var(--navy2);font-size:12px;text-decoration:underline;cursor:pointer;margin-top:.6rem}
+ .lock .link{background:none;border:none;color:var(--navy2);font-size:12.5px;text-decoration:underline;cursor:pointer;margin-top:12px;width:auto;padding:4px}
+ .lock .pnl{display:none} .lock .pnl.on{display:block}
+ .rkbox{font-family:monospace;font-size:18px;font-weight:700;letter-spacing:2px;background:#F4F7FB;border:1.5px dashed var(--navy);border-radius:10px;padding:.8rem;margin:.4rem 0 .8rem;color:var(--navy);word-break:break-all}
+ .lock .ghost{background:#fff;border:1.5px solid var(--border);color:var(--ink-mid);margin-bottom:8px}
 </style>
 <link rel="stylesheet" href="common.css">
 </head>
 <body data-home="union.html">
 
-<!-- 🔒 隱私鎖（含會員個案資料） -->
+<!-- 🔐 加密鎖 -->
 <div class="lock" id="lock">
   <div class="box">
-    <h2>🔒 會員服務案件台</h2>
-    <p>此區含<b>會員個案資料</b>，為保護當事人隱私，需輸入通行碼。<br>資料只存本機、不上傳。</p>
-    <input id="pw" type="password" inputmode="text" autocomplete="current-password" placeholder="請輸入通行碼" enterkeyhint="go">
-    <button id="unlockBtn">進入</button>
-    <div class="err" id="pwErr"></div>
-    <p style="margin:12px 0 0;font-size:11px;color:#999">通行碼由法規幹部保管；如需變更，進入後點頁尾「變更通行碼」。</p>
+    <!-- 首次設定 -->
+    <div class="pnl" id="pnl-setup">
+      <h2>🔐 設定加密通行碼</h2>
+      <p>案件含當事人個資，將以 <b>AES-GCM 256 加密</b>後存在本機（沒密碼讀不出來）。首次使用請設定通行碼。</p>
+      <input id="su-pw" type="password" placeholder="設定通行碼（至少 6 字）" autocomplete="new-password">
+      <input id="su-pw2" type="password" placeholder="再輸入一次" autocomplete="new-password">
+      <button class="pri" id="su-btn">建立加密保護</button>
+      <div class="err" id="su-err"></div>
+    </div>
+    <!-- 顯示救回碼 -->
+    <div class="pnl" id="pnl-reckey">
+      <h2>🔑 你的救回碼</h2>
+      <p>忘記通行碼時，用這組救回碼可<b>重設密碼並取回資料</b>。請<b>立刻拍照或抄下來</b>收好；離開此畫面後無法再看到原碼。</p>
+      <div class="rkbox" id="rk-code"></div>
+      <button class="pri ghost" id="rk-copy">📋 複製救回碼</button>
+      <button class="pri" id="rk-done">我已抄好，進入 →</button>
+    </div>
+    <!-- 解鎖 -->
+    <div class="pnl" id="pnl-unlock">
+      <h2>🔒 會員服務案件台</h2>
+      <p>含當事人個案資料（已加密）。請輸入通行碼解鎖。</p>
+      <input id="pw" type="password" placeholder="通行碼" autocomplete="current-password" enterkeyhint="go">
+      <button class="pri" id="unlockBtn">解鎖進入</button>
+      <div class="err" id="pwErr"></div>
+      <button class="link" id="forgotBtn">忘記通行碼？用救回碼重設 →</button>
+    </div>
+    <!-- 救回流程 -->
+    <div class="pnl" id="pnl-recover">
+      <h2>🆘 用救回碼重設</h2>
+      <p>輸入當初的救回碼，再設定新的通行碼。</p>
+      <input id="rc-code" placeholder="救回碼 XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
+      <input id="rc-pw" type="password" placeholder="新通行碼（至少 6 字）" autocomplete="new-password">
+      <button class="pri" id="rc-btn">重設並進入</button>
+      <div class="err" id="rc-err"></div>
+      <button class="link" id="rc-back">‹ 返回</button>
+    </div>
+    <!-- 不支援 -->
+    <div class="pnl" id="pnl-nocrypto">
+      <h2>⚠️ 瀏覽器不支援加密</h2>
+      <p>此裝置／瀏覽器不支援 Web Crypto（需 HTTPS）。請用較新的瀏覽器、並確認網址是 https:// 開頭。</p>
+    </div>
   </div>
 </div>
-<script>try{if(sessionStorage.getItem('union_cases_session'))document.getElementById('lock').classList.add('hide');}catch(e){}</script>
 
 <div class="header">
   <h1>📋 會員服務案件台</h1>
-  <p>會員的問題登記在這 · 一眼看出待辦與時效 · 資料只存本機，不上傳</p>
+  <p>會員的問題登記在這 · 一眼看出待辦與時效 · 資料<b>加密</b>存本機，不上傳</p>
 </div>
 
 <main>
@@ -127,12 +161,153 @@
 
   <div id="list"></div>
 
-  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部案件管理<br>⚠ 含會員個資，僅存本機瀏覽器、不上傳；換手機請另行備份。<br><button class="chpw" id="chpwBtn">🔑 變更通行碼</button></div>
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部案件管理<br>🔐 案件以 AES-GCM 加密存本機、不上傳；換手機請另行備份。<br>
+    <button class="lk" id="chpwBtn">🔑 變更通行碼</button>·<button class="lk" id="regenBtn">♻️ 重新產生救回碼</button>·<button class="lk" id="lockNowBtn">🔒 立即上鎖</button>
+  </div>
 </main>
 <div class="toast" id="toast"></div>
 
 <script>
-/* 分類（對應蒐證指南），含建議時效提示 */
+var $=function(id){return document.getElementById(id);};
+function esc(s){return (s||'').replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function uid(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+var tt; function toast(m){ var t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(function(){t.classList.remove('show');},2200); }
+
+/* ───────── 加密核心（Web Crypto：PBKDF2 + AES-GCM 256，信封加密：DEK 由密碼與救回碼各包一份） ───────── */
+var ENC='cases_enc_v1', SK='cases_dek_sess';
+var dekKey=null;            // 解密後的資料金鑰（CryptoKey，僅存記憶體／sessionStorage）
+var data=[];                // 解密後的案件陣列
+var C=(window.crypto&&crypto.subtle)?crypto.subtle:null;
+function b64e(buf){var u=new Uint8Array(buf),s='';for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s);}
+function b64d(str){var bin=atob(str),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;}
+function rnd(n){return crypto.getRandomValues(new Uint8Array(n));}
+async function deriveKEK(pw,salt){
+  var base=await C.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  return C.deriveKey({name:'PBKDF2',salt:salt,iterations:150000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function aesEnc(key,bytes){var iv=rnd(12);var ct=await C.encrypt({name:'AES-GCM',iv:iv},key,bytes);return {iv:b64e(iv),ct:b64e(ct)};}
+async function aesDec(key,ivb64,ctb64){var pt=await C.decrypt({name:'AES-GCM',iv:b64d(ivb64)},key,b64d(ctb64));return new Uint8Array(pt);}
+async function importDek(raw){return C.importKey('raw',raw,{name:'AES-GCM'},false,['encrypt','decrypt']);}
+function genRecovery(){var a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',u=rnd(16),s='';for(var i=0;i<16;i++){s+=a[u[i]%a.length];if(i%4===3&&i<15)s+='-';}return s;}
+function normCode(c){return (c||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+
+async function setupNew(pw){
+  var dekRaw=rnd(32), rec=genRecovery();
+  var saltPw=rnd(16), saltRec=rnd(16);
+  var kekPw=await deriveKEK(pw,saltPw), kekRec=await deriveKEK(normCode(rec),saltRec);
+  var wrapPw=await aesEnc(kekPw,dekRaw), wrapRec=await aesEnc(kekRec,dekRaw);
+  var init=[]; try{var old=localStorage.getItem('cases_v1');if(old)init=JSON.parse(old)||[];}catch(e){}   // 遷移舊明文
+  dekKey=await importDek(dekRaw);
+  var blob=await aesEnc(dekKey,new TextEncoder().encode(JSON.stringify(init)));
+  var e={v:1,saltPw:b64e(saltPw),wrapPwIv:wrapPw.iv,wrapPw:wrapPw.ct,saltRec:b64e(saltRec),wrapRecIv:wrapRec.iv,wrapRec:wrapRec.ct,dataIv:blob.iv,data:blob.ct};
+  localStorage.setItem(ENC,JSON.stringify(e));
+  try{localStorage.removeItem('cases_v1');}catch(_){}
+  try{sessionStorage.setItem(SK,b64e(dekRaw));}catch(_){}
+  data=init; return rec;
+}
+async function loadBlob(e){var pt=await aesDec(dekKey,e.dataIv,e.data);return JSON.parse(new TextDecoder().decode(pt)||'[]');}
+async function unlockPw(pw){
+  var e=JSON.parse(localStorage.getItem(ENC));
+  var kek=await deriveKEK(pw,b64d(e.saltPw));
+  var dekRaw=await aesDec(kek,e.wrapPwIv,e.wrapPw);     // 密碼錯→丟例外
+  dekKey=await importDek(dekRaw); data=await loadBlob(e);
+  try{sessionStorage.setItem(SK,b64e(dekRaw));}catch(_){}
+}
+async function recoverReset(code,newPw){
+  var e=JSON.parse(localStorage.getItem(ENC));
+  var kekRec=await deriveKEK(normCode(code),b64d(e.saltRec));
+  var dekRaw=await aesDec(kekRec,e.wrapRecIv,e.wrapRec); // 救回碼錯→丟例外
+  var saltPw=rnd(16),kekPw=await deriveKEK(newPw,saltPw),wrapPw=await aesEnc(kekPw,dekRaw);
+  e.saltPw=b64e(saltPw);e.wrapPwIv=wrapPw.iv;e.wrapPw=wrapPw.ct;
+  localStorage.setItem(ENC,JSON.stringify(e));
+  dekKey=await importDek(dekRaw); data=await loadBlob(e);
+  try{sessionStorage.setItem(SK,b64e(dekRaw));}catch(_){}
+}
+async function changePassword(newPw){
+  var e=JSON.parse(localStorage.getItem(ENC)), dekRaw=b64d(sessionStorage.getItem(SK));
+  var saltPw=rnd(16),kekPw=await deriveKEK(newPw,saltPw),wrapPw=await aesEnc(kekPw,dekRaw);
+  e.saltPw=b64e(saltPw);e.wrapPwIv=wrapPw.iv;e.wrapPw=wrapPw.ct;
+  localStorage.setItem(ENC,JSON.stringify(e));
+}
+async function regenRecovery(){
+  var e=JSON.parse(localStorage.getItem(ENC)), dekRaw=b64d(sessionStorage.getItem(SK)), rec=genRecovery();
+  var saltRec=rnd(16),kekRec=await deriveKEK(normCode(rec),saltRec),wrapRec=await aesEnc(kekRec,dekRaw);
+  e.saltRec=b64e(saltRec);e.wrapRecIv=wrapRec.iv;e.wrapRec=wrapRec.ct;
+  localStorage.setItem(ENC,JSON.stringify(e));
+  return rec;
+}
+async function saveData(){
+  if(!dekKey) return;
+  var e=JSON.parse(localStorage.getItem(ENC));
+  var blob=await aesEnc(dekKey,new TextEncoder().encode(JSON.stringify(data)));
+  e.dataIv=blob.iv;e.data=blob.ct;
+  localStorage.setItem(ENC,JSON.stringify(e));
+}
+function persist(){ saveData(); }   // 非同步寫入（使用者操作頻率低，無競態風險）
+async function tryResume(){
+  var sk=null; try{sk=sessionStorage.getItem(SK);}catch(_){}
+  var e=localStorage.getItem(ENC);
+  if(sk&&e){ try{ dekKey=await importDek(b64d(sk)); data=await loadBlob(JSON.parse(e)); return true; }catch(_){ try{sessionStorage.removeItem(SK);}catch(__){} } }
+  return false;
+}
+
+/* ───────── 鎖 UI ───────── */
+function panel(id){ ['setup','reckey','unlock','recover','nocrypto'].forEach(function(x){ $('pnl-'+x).classList.toggle('on',x===id); }); }
+function enterApp(){ $('lock').classList.add('hide'); fillCatSelects(); renderStats(); renderList(); }
+
+(async function initLock(){
+  if(!C){ panel('nocrypto'); return; }
+  var hasEnc=!!localStorage.getItem(ENC);
+  if(!hasEnc){ panel('setup'); $('su-pw').focus(); return; }
+  if(await tryResume()){ enterApp(); return; }
+  panel('unlock'); $('pw').focus();
+})();
+
+$('su-btn').addEventListener('click',async function(){
+  var a=$('su-pw').value, b=$('su-pw2').value;
+  if(a.length<6){ $('su-err').textContent='通行碼至少 6 字'; return; }
+  if(a!==b){ $('su-err').textContent='兩次輸入不一致'; return; }
+  $('su-err').textContent='建立中…';
+  try{ var rec=await setupNew(a); $('rk-code').textContent=rec; window._rk=rec; panel('reckey'); }
+  catch(e){ $('su-err').textContent='建立失敗：'+e.message; }
+});
+$('rk-copy').addEventListener('click',function(){ if(navigator.clipboard) navigator.clipboard.writeText(window._rk||'').then(function(){toast('已複製救回碼');}); });
+$('rk-done').addEventListener('click',function(){ window._rk=null; enterApp(); });
+$('unlockBtn').addEventListener('click',async function(){
+  var v=$('pw').value; if(!v){return;}
+  $('pwErr').textContent='解鎖中…';
+  try{ await unlockPw(v); $('pwErr').textContent=''; enterApp(); }
+  catch(e){ $('pwErr').textContent='通行碼不對，或資料毀損。'; }
+});
+$('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') $('unlockBtn').click(); });
+$('forgotBtn').addEventListener('click',function(){ panel('recover'); $('rc-code').focus(); });
+$('rc-back').addEventListener('click',function(){ panel('unlock'); });
+$('rc-btn').addEventListener('click',async function(){
+  var code=$('rc-code').value, np=$('rc-pw').value;
+  if(np.length<6){ $('rc-err').textContent='新通行碼至少 6 字'; return; }
+  $('rc-err').textContent='驗證中…';
+  try{ await recoverReset(code,np); $('rc-err').textContent=''; toast('已重設通行碼'); enterApp(); }
+  catch(e){ $('rc-err').textContent='救回碼不正確'; }
+});
+
+/* 已解鎖時的密碼管理 */
+$('chpwBtn').addEventListener('click',async function(){
+  if(!dekKey){ toast('請先解鎖'); return; }
+  var v=prompt('輸入新通行碼（至少 6 字）：'); if(v==null) return; v=v.trim();
+  if(v.length<6){ alert('通行碼至少 6 字'); return; }
+  try{ await changePassword(v); alert('✅ 已更新通行碼，下次解鎖請用新碼。'); }catch(e){ alert('更新失敗：'+e.message); }
+});
+$('regenBtn').addEventListener('click',async function(){
+  if(!dekKey){ toast('請先解鎖'); return; }
+  if(!confirm('重新產生救回碼？舊的救回碼將立即失效。')) return;
+  try{ var rec=await regenRecovery(); window.prompt('新的救回碼（請抄下來，舊碼已失效）：',rec); }catch(e){ alert('失敗：'+e.message); }
+});
+$('lockNowBtn').addEventListener('click',function(){
+  try{sessionStorage.removeItem(SK);}catch(_){}
+  dekKey=null; data=[]; location.reload();
+});
+
+/* ───────── 案件 App ───────── */
 var CATS=[
  {v:'ot',t:'加班費／工時',due:'加班費追溯 5 年（民法§126）'},
  {v:'holiday',t:'國定假日／特休',due:'工資請求權 5 年'},
@@ -145,22 +320,13 @@ var CATS=[
  {v:'fee',t:'會費／入會',due:''},
  {v:'other',t:'其他',due:''},
 ];
-var KEY='cases_v1';
-var data=[]; try{ data=JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){}
-function persist(){ try{ localStorage.setItem(KEY,JSON.stringify(data)); }catch(e){} }
-var $=function(id){return document.getElementById(id);};
-function esc(s){return (s||'').replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
-function uid(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function catName(v){var c=CATS.find(function(x){return x.v===v;});return c?c.t:'其他';}
 var ST={todo:'待處理',doing:'處理中',done:'已結案'};
 var filter={status:'',cat:'',q:''};
-
-/* 時效徽章 */
 function dueBadge(due){
   if(!due) return '';
   var d=new Date(due+'T00:00:00'), now=new Date(); now.setHours(0,0,0,0);
-  var days=Math.round((d-now)/86400000);
-  var cls,txt;
+  var days=Math.round((d-now)/86400000), cls,txt;
   if(days<0){cls='over';txt='已逾期 '+(-days)+' 天';}
   else if(days<=3){cls='soon';txt=(days===0?'今天到期':days+' 天後到期');}
   else if(days<=7){cls='warn';txt=days+' 天後到期';}
@@ -168,36 +334,25 @@ function dueBadge(due){
   return '<span class="due '+cls+'">⏰ '+txt+'</span>';
 }
 function dueSort(c){ if(!c.due) return 9e15; return new Date(c.due+'T00:00:00').getTime(); }
-
 function renderStats(){
   var todo=data.filter(function(c){return c.status==='todo';}).length;
   var doing=data.filter(function(c){return c.status==='doing';}).length;
   var done=data.filter(function(c){return c.status==='done';}).length;
   var now=new Date();now.setHours(0,0,0,0);
   var due=data.filter(function(c){ if(c.status==='done'||!c.due)return false; var d=new Date(c.due+'T00:00:00'); return (d-now)/86400000<=7; }).length;
-  $('stats').innerHTML=
-    stat('todo','待處理',todo)+stat('doing','處理中',doing)+stat('done','已結案',done)+stat('due','7天內到期',due);
+  $('stats').innerHTML=stat('todo','待處理',todo)+stat('doing','處理中',doing)+stat('done','已結案',done)+stat('due','7天內到期',due);
   function stat(k,l,n){ return '<div class="stat '+k+(filter.status===k&&k!=='due'?' on':'')+'" data-k="'+k+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
   Array.prototype.forEach.call($('stats').querySelectorAll('.stat'),function(s){
-    s.addEventListener('click',function(){
-      var k=s.dataset.k;
-      if(k==='due'){ filter.status='__due'; } else { filter.status=(filter.status===k?'':k); }
-      renderStats(); renderList();
-    });
+    s.addEventListener('click',function(){ var k=s.dataset.k; if(k==='due'){filter.status='__due';}else{filter.status=(filter.status===k?'':k);} renderStats(); renderList(); });
   });
 }
 function renderList(){
   var arr=data.slice();
-  if(filter.status==='__due'){ var now=new Date();now.setHours(0,0,0,0);
-    arr=arr.filter(function(c){return c.status!=='done'&&c.due&&(new Date(c.due+'T00:00:00')-now)/86400000<=7;}); }
+  if(filter.status==='__due'){ var now=new Date();now.setHours(0,0,0,0); arr=arr.filter(function(c){return c.status!=='done'&&c.due&&(new Date(c.due+'T00:00:00')-now)/86400000<=7;}); }
   else if(filter.status){ arr=arr.filter(function(c){return c.status===filter.status;}); }
   if(filter.cat) arr=arr.filter(function(c){return c.cat===filter.cat;});
   if(filter.q){ var q=filter.q.toLowerCase(); arr=arr.filter(function(c){return (c.name+c.desc+(c.note||'')).toLowerCase().indexOf(q)>=0;}); }
-  // 未結案優先，依時效近者在前；其次新到舊
-  arr.sort(function(a,b){
-    var ad=a.status==='done'?1:0, bd=b.status==='done'?1:0; if(ad!==bd)return ad-bd;
-    var s=dueSort(a)-dueSort(b); if(s)return s; return (b.created||0)-(a.created||0);
-  });
+  arr.sort(function(a,b){ var ad=a.status==='done'?1:0,bd=b.status==='done'?1:0; if(ad!==bd)return ad-bd; var s=dueSort(a)-dueSort(b); if(s)return s; return (b.created||0)-(a.created||0); });
   if(!arr.length){ $('list').innerHTML='<div class="empty">目前沒有符合的案件。<br>點「＋ 新增案件」把會員的問題登記進來。</div>'; return; }
   $('list').innerHTML=arr.map(function(c){
     return '<div class="case '+c.status+'">'+
@@ -213,27 +368,22 @@ function renderList(){
         '<button data-id="'+c.id+'" data-act="del">刪除</button></span></div>'+
       '</div>';
   }).join('');
-  Array.prototype.forEach.call($('list').querySelectorAll('[data-act]'),function(b){
-    b.addEventListener('click',function(){ act(b.dataset.act,b.dataset.id); });
-  });
+  Array.prototype.forEach.call($('list').querySelectorAll('[data-act]'),function(b){ b.addEventListener('click',function(){ act(b.dataset.act,b.dataset.id); }); });
 }
 function act(a,id){
   var i=data.findIndex(function(c){return c.id===id;}); if(i<0)return; var c=data[i];
-  if(a==='cycle'){ c.status=c.status==='todo'?'doing':c.status==='doing'?'done':'todo'; c.updated=Date.now(); persist(); renderStats(); renderList(); }
+  if(a==='cycle'){ c.status=c.status==='todo'?'doing':c.status==='doing'?'done':'todo'; persist(); renderStats(); renderList(); }
   else if(a==='edit'){ openForm(c); }
   else if(a==='del'){ if(confirm('刪除「'+(c.name||'此案件')+'」？')){ data.splice(i,1); persist(); renderStats(); renderList(); toast('已刪除'); } }
   else if(a==='copy'){ copyCase(c); }
 }
 function copyCase(c){
-  var t='【工會服務案件】\n會員：'+(c.name||'')+'\n分類：'+catName(c.cat)+'\n狀態：'+ST[c.status]+
-    (c.owner?'\n負責：'+c.owner:'')+(c.due?'\n時效：'+c.due:'')+'\n問題：'+(c.desc||'')+(c.note?'\n備註：'+c.note:'');
-  if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){toast('已複製案件摘要');},function(){toast('複製失敗');});
-  else toast('此瀏覽器不支援複製');
+  var t='【工會服務案件】\n會員：'+(c.name||'')+'\n分類：'+catName(c.cat)+'\n狀態：'+ST[c.status]+(c.owner?'\n負責：'+c.owner:'')+(c.due?'\n時效：'+c.due:'')+'\n問題：'+(c.desc||'')+(c.note?'\n備註：'+c.note:'');
+  if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){toast('已複製案件摘要');}); else toast('此瀏覽器不支援複製');
 }
 function fillCatSelects(){
   var opts=CATS.map(function(c){return '<option value="'+c.v+'">'+c.t+'</option>';}).join('');
-  $('c-cat').innerHTML=opts;
-  $('fCat').innerHTML='<option value="">全部分類</option>'+opts;
+  $('c-cat').innerHTML=opts; $('fCat').innerHTML='<option value="">全部分類</option>'+opts;
 }
 function openForm(c){
   $('form').classList.add('show'); $('formTitle').textContent=c?'編輯案件':'新增案件';
@@ -242,13 +392,9 @@ function openForm(c){
   $('c-desc').value=c?c.desc||'':''; $('c-due').value=c?c.due||'':''; $('c-contact').value=c?c.contact||'':''; $('c-note').value=c?c.note||'':'';
   updateDueHint(); window.scrollTo({top:0,behavior:'smooth'});
 }
-function updateDueHint(){
-  var c=CATS.find(function(x){return x.v===$('c-cat').value;});
-  $('dueHint').innerHTML=c&&c.due?('⏰ '+c.due):'';
-}
-function closeForm(){ $('form').classList.remove('show'); }
-$('newBtn').addEventListener('click',function(){ openForm(null); });
-$('cancelBtn').addEventListener('click',closeForm);
+function updateDueHint(){ var c=CATS.find(function(x){return x.v===$('c-cat').value;}); $('dueHint').innerHTML=c&&c.due?('⏰ '+c.due):''; }
+$('newBtn').addEventListener('click',function(){ if(!dekKey){toast('請先解鎖');return;} openForm(null); });
+$('cancelBtn').addEventListener('click',function(){ $('form').classList.remove('show'); });
 $('c-cat').addEventListener('change',updateDueHint);
 $('saveBtn').addEventListener('click',function(){
   var name=$('c-name').value.trim();
@@ -258,31 +404,10 @@ $('saveBtn').addEventListener('click',function(){
     desc:$('c-desc').value.trim(), due:$('c-due').value, contact:$('c-contact').value.trim(), note:$('c-note').value.trim() };
   if(id){ var i=data.findIndex(function(c){return c.id===id;}); if(i>=0){ obj.created=data[i].created; obj.updated=Date.now(); data[i]=obj; } }
   else { obj.created=Date.now(); data.unshift(obj); }
-  persist(); closeForm(); renderStats(); renderList(); toast('已儲存');
+  persist(); $('form').classList.remove('show'); renderStats(); renderList(); toast('已儲存');
 });
 $('fCat').addEventListener('change',function(){ filter.cat=this.value; renderList(); });
 $('fSearch').addEventListener('input',function(){ filter.q=this.value.trim(); renderList(); });
-var tt;
-function toast(m){ var t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(function(){t.classList.remove('show');},2200); }
-
-fillCatSelects(); renderStats(); renderList();
-
-/* 🔒 隱私鎖：通行碼（雜湊存本機；僅為隱私屏障，非加密，資料仍在本機 localStorage） */
-var PW_KEY='union_cases_pw', SES='union_cases_session', DEF='qqq11111111+';
-function pwHash(s){ var h=0; for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return ''+h; }
-function curHash(){ return localStorage.getItem(PW_KEY) || pwHash(DEF); }
-function tryUnlock(){
-  var v=($('pw').value||'').trim();
-  if(pwHash(v)===curHash()){ try{sessionStorage.setItem(SES,'1');}catch(e){} $('lock').classList.add('hide'); $('pwErr').textContent=''; }
-  else { $('pwErr').textContent='通行碼不對，請再試一次或詢問法規幹部'; }
-}
-$('unlockBtn').addEventListener('click',tryUnlock);
-$('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') tryUnlock(); });
-$('chpwBtn').addEventListener('click',function(){
-  var v=prompt('輸入新通行碼（至少 4 個字）：'); if(v==null) return; v=v.trim();
-  if(v.length<4){ alert('通行碼至少 4 個字'); return; }
-  localStorage.setItem(PW_KEY,pwHash(v)); alert('✅ 已更新通行碼，下次進入請用新碼。');
-});
 </script>
 <script src="common.js" defer></script>
 </body>
