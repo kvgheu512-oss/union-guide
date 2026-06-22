@@ -52,16 +52,67 @@
      </tr>
    </table>
 
-   <div style="font-weight:700;font-size:13px;color:#444;margin-bottom:.35rem">▌成立大會當場需決定（填入章程）</div>
-   <div style="font-size:13px;line-height:2;color:#333">
-     <div>📍 <b>第五條</b>：本會會址 → 高雄市仁武區 <span style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:4px;padding:1px 6px">待填地址</span></div>
-     <div>👥 <b>第十四條</b>：理事人數 → <span style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:4px;padding:1px 6px">5 ～ 9 人（大會決定）</span> 監事人數（不超過理事 ⅓）</div>
-     <div>💰 <b>第二十二條</b>：入會費 → <span style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:4px;padding:1px 6px">NT$ _____ 元</span></div>
-     <div>💰 <b>第二十二條</b>：常月會費 → 月工資的 <span style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:4px;padding:1px 6px">_____ %</span>（法定下限 0.5%）</div>
-     <div>📅 <b>末條</b>：通過日期 → 中華民國 <span style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:4px;padding:1px 6px">___ 年 ___ 月 ___ 日</span></div>
+   <div style="font-weight:700;font-size:13px;color:#444;margin:.85rem 0 .45rem">▌成立大會當場決定（填好→複製完整章程）</div>
+
+   <div style="font-size:13.5px;color:#333">
+
+     <div style="margin:.5rem 0">
+       📍 <b>§5 會址</b>　高雄市仁武區……
+       <input id="ch-addr" type="text" placeholder="○○路○號" style="display:block;width:100%;box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 10px;font-size:15px;background:#FEF9E7;margin-top:4px;font-family:inherit">
+     </div>
+
+     <div style="margin:.7rem 0">
+       👥 <b>§14 理事人數</b>
+       <select id="ch-board" style="display:block;width:100%;box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 10px;font-size:15px;background:#FEF9E7;margin-top:4px;font-family:inherit">
+         <option value="">請選擇…</option>
+         <option value="5">5 人（監事上限 1 人）</option>
+         <option value="7">7 人（監事上限 2 人）</option>
+         <option value="9">9 人（監事上限 3 人）</option>
+       </select>
+     </div>
+
+     <div style="margin:.7rem 0">
+       💰 <b>§22 入會費</b>
+       <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+         <span style="white-space:nowrap">NT$</span>
+         <input id="ch-join" type="number" inputmode="numeric" placeholder="200" min="0" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 10px;font-size:15px;background:#FEF9E7;font-family:inherit">
+         <span>元</span>
+       </div>
+     </div>
+
+     <div style="margin:.7rem 0">
+       💰 <b>§22 常月會費</b>　月工資的
+       <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+         <input id="ch-monthly" type="number" inputmode="decimal" value="0.5" min="0.5" step="0.1" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 10px;font-size:15px;background:#FEF9E7;font-family:inherit">
+         <span style="white-space:nowrap">%（下限 0.5%）</span>
+       </div>
+     </div>
+
+     <div style="margin:.7rem 0">
+       📅 <b>通過日期</b>　中華民國
+       <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">
+         <input id="ch-year" type="number" inputmode="numeric" placeholder="115" min="100" max="200" style="width:72px;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 8px;font-size:15px;background:#FEF9E7;font-family:inherit"> <span>年</span>
+         <select id="ch-month" style="width:68px;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 6px;font-size:15px;background:#FEF9E7;font-family:inherit">
+           <option value="">月</option>
+           <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+           <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+         </select> <span>月</span>
+         <select id="ch-day" style="width:68px;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 6px;font-size:15px;background:#FEF9E7;font-family:inherit">
+           <option value="">日</option>
+           <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option>
+           <option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option>
+           <option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option>
+           <option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option>
+           <option>29</option><option>30</option><option>31</option>
+         </select> <span>日</span>
+       </div>
+     </div>
    </div>
 
-   <div style="margin-top:.85rem;font-size:12.5px;color:#5C4000;background:#FEF9E7;border-radius:8px;padding:.55rem .75rem;line-height:1.75">
+   <button onclick="copyCharter()" style="display:block;width:100%;margin-top:.9rem;background:#7B1818;color:#fff;border:none;border-radius:10px;padding:.7rem;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">📋 複製完整章程（含填入值）</button>
+   <div id="ch-toast" style="text-align:center;font-size:13px;font-weight:700;color:#0F5C36;min-height:20px;margin-top:6px"></div>
+
+   <div style="margin-top:.75rem;font-size:12.5px;color:#5C4000;background:#FEF9E7;border-radius:8px;padding:.55rem .75rem;line-height:1.75">
      ⚠️ <b>提醒：</b>選舉理監事後，由<b>理事互選理事長</b>（§15）；監事名額若滿 3 人再互選常務監事。章程通過後需<b>報請高雄市勞工局備查</b>（§25）。
    </div>
  </div>
@@ -229,6 +280,88 @@
     });
   });
 })();
+
+// ── 章程填空：localStorage 持久化
+(function(){
+  var CK='charter_fill_v1';
+  var IDS=['ch-addr','ch-board','ch-join','ch-monthly','ch-year','ch-month','ch-day'];
+  function save(){
+    var d={};
+    IDS.forEach(function(id){var el=document.getElementById(id);if(el)d[id]=el.value;});
+    try{localStorage.setItem(CK,JSON.stringify(d));}catch(e){}
+  }
+  function load(){
+    try{
+      var d=JSON.parse(localStorage.getItem(CK)||'{}');
+      IDS.forEach(function(id){var el=document.getElementById(id);if(el&&d[id]!=null)el.value=d[id];});
+    }catch(e){}
+  }
+  load();
+  IDS.forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',save);});
+})();
+
+// ── 複製完整章程
+function copyCharter(){
+  var addr=document.getElementById('ch-addr').value.trim()||'【○○路○號】';
+  var board=document.getElementById('ch-board').value||'【五至九】';
+  var supMap={'5':'一','7':'二','9':'三'};
+  var sup=supMap[document.getElementById('ch-board').value]||'【一至三】';
+  var join=document.getElementById('ch-join').value.trim()||'【○○○】';
+  var monthly=document.getElementById('ch-monthly').value.trim()||'【○.五】';
+  var yr=document.getElementById('ch-year').value.trim()||'【○】';
+  var mo=document.getElementById('ch-month').value.trim()||'【○】';
+  var dy=document.getElementById('ch-day').value.trim()||'【○】';
+
+  var txt=[
+'高雄榮民總醫院企業工會　章程（大會審議版）',
+'',
+'第一章　總則',
+'第一條　本會定名為「高雄榮民總醫院企業工會」（以下簡稱本會）。',
+'第二條　本會以保障勞工權益、增進勞工知能、發展生產事業、改善勞工生活為宗旨。',
+'第三條　本會之任務如下：一、團體協約之締結、修改或廢止。二、勞資爭議之處理。三、勞動條件、勞工安全衛生及會員福利事項之促進。四、勞工政策與法令之制（訂）定及修正之推動。五、勞工教育之舉辦。六、會員就業之協助。七、會員康樂事項之舉辦。八、工會或會員糾紛事件之調處。九、依法令從事事業之舉辦。十、勞工家庭生計之調查及勞工統計之編製。十一、其他合於本會宗旨及法律規定之事項。',
+'第四條　本會之組織區域為高雄榮民總醫院。',
+'第五條　本會會址設於高雄市仁武區'+addr+'。',
+'',
+'第二章　會員',
+'第六條　凡在本會組織區域內，年滿十六歲、受僱於高雄榮民總醫院之勞工（含約用、契約、派遣等受僱身分），且無其他企業工會會員身分者，均得申請加入本會為會員。',
+'第七條　申請入會者，應填具入會申請書，經理事會審查通過，並繳納入會費後，成為會員。',
+'第八條　會員有下列情形之一者，喪失會員資格：一、喪失第六條所定資格者。二、死亡。三、經本人書面申請出會者。',
+'第九條　會員有下列情形之一者，經理事會決議得予以停權或除名；除名應經會員（代表）大會議決：一、違反本章程或會員（代表）大會決議，情節重大者。二、積欠會費達六個月，經催繳仍不繳納者。三、有損害本會信譽或利益之行為者。',
+'第十條　會員之權利如下：一、表決權、選舉權、被選舉權及罷免權。二、享受本會各項服務及福利之權利。三、對會務之建議、興革及批評之權利。',
+'第十一條　會員之義務如下：一、遵守本章程及會員（代表）大會決議。二、依規定繳納入會費及經常會費。三、擔任本會所指派之職務。四、參加本會召集之會議及活動。',
+'',
+'第三章　組織及職權',
+'第十二條　本會以會員大會為最高權力機關；會員人數眾多者，得依章程劃分選區，選出會員代表，組成會員代表大會，行使會員大會職權。',
+'第十三條　會員（代表）大會之職權如下：一、章程之訂定與修改。二、理事、監事之選舉及罷免。三、入會費、經常會費之數額及繳納方式之議決。四、工作計畫、預算及決算之審議。五、財產之處分。六、本會之合併、分立或解散。七、其他依法令或本章程應由大會議決之事項。',
+'第十四條　本會置理事'+board+'人、候補理事若干人，組成理事會；置監事'+sup+'人（不超過理事名額三分之一）、候補監事若干人，組成監事會；均由會員（代表）大會就會員中選舉之。',
+'第十五條　理事會置理事長一人，由理事互選之，對外代表本會；理事名額在三人以上者，得另互選常務理事。監事名額在三人以上者，得互選常務監事一人。',
+'第十六條　理事、監事之任期為四年，連選得連任；理事長之連任，以一次為限。',
+'第十七條　理事會之職權：一、執行會員（代表）大會之決議。二、審查會員入會及處理會務。三、擬訂工作計畫、預算及決算。四、其他應辦事項。監事會職權：監察理事會執行會務及財務狀況，並得查核帳冊。',
+'',
+'第四章　會議',
+'第十八條　會員（代表）大會分定期會議及臨時會議，由理事長召集之，並擔任主席。定期會議每年至少召開一次。臨時會議於理事會認為必要，或經會員（代表）五分之一以上請求，或監事會請求時召開。',
+'第十九條　會議之決議，除本章程或法令另有規定外，應有會員（代表）過半數之出席，出席會員（代表）過半數之同意行之。',
+'第二十條　下列事項應有會員（代表）三分之二以上之出席，出席會員（代表）四分之三以上之同意：一、章程之修改。二、財產之處分。三、本會之合併、分立或解散。四、會員之除名。五、理事、監事、會員代表之罷免。六、其他與會員權利義務有關之重大事項。',
+'',
+'第五章　經費及會計',
+'第二十一條　本會經費來源如下：一、入會費。二、經常會費。三、政府補助。四、捐款。五、依法令舉辦事業或活動之收入。六、基金及其孳息。七、其他收入。',
+'第二十二條　入會費每人新臺幣'+join+'元，於入會時繳納一次。經常會費為會員當月工資之'+monthly+'%（不得低於百分之零點五），按月繳納。費額之調整由會員（代表）大會議決。',
+'第二十三條　本會會計年度以曆年制為準，自一月一日起至十二月三十一日止。本會之收支，每年應編造預算、決算，經監事會審核後提會員（代表）大會通過，並公開徵信。',
+'',
+'第六章　附則',
+'第二十四條　本章程未規定事項，悉依《工會法》及其他有關法令之規定辦理。',
+'第二十五條　本章程經本會成立大會通過，報請主管機關備查後施行；修改時亦同。',
+'',
+'本章程經中華民國'+yr+'年'+mo+'月'+dy+'日成立大會通過。',
+'理事長：楊淯涵'
+].join('\n');
+
+  var toast=document.getElementById('ch-toast');
+  function ok(){if(toast){toast.textContent='✅ 已複製！貼到 Word 或 LINE 即可';setTimeout(function(){toast.textContent='';},3000);}}
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(ok,function(){fallback(txt);ok();});}
+  else{fallback(txt);ok();}
+  function fallback(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+}
 </script>
 <script src="law-tips.js" defer></script>
 <script src="common.js" defer></script>
