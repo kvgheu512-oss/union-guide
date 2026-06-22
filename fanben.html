@@ -56,12 +56,33 @@
   <div class="toolbar">
     <label class="up">📎 上傳範本檔<input type="file" id="fileIn" style="display:none"></label>
     <button class="link" id="linkBtn">🔗 加範本連結</button>
+    <button class="link" id="subBtn" style="background:#7A4F9D">📤 投稿給小巫整理</button>
   </div>
 
   <div id="list"></div>
 
   <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部範本庫<br>檔案存於本機 IndexedDB；換裝置請重新上傳或改用雲端連結。</div>
 </main>
+
+<!-- 投稿給小巫整理 -->
+<div id="subModal" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#fff;border-radius:16px;max-width:400px;width:100%;padding:1.3rem 1.2rem;max-height:90vh;overflow:auto">
+    <h3 style="font-family:'Noto Serif TC',serif;color:#7A4F9D;font-size:17px;margin-bottom:4px">📤 投稿範本給小巫整理</h3>
+    <p style="font-size:12px;color:#777;line-height:1.7;margin-bottom:12px">後台由<b>法規・小巫</b>建構。請把檔案放進「共用資料夾」，並<b>寫清楚這是什麼文件、屬於哪個業務</b>，小巫才知道歸到哪一個資料夾。</p>
+    <label style="display:block;font-size:12.5px;font-weight:700;color:#7A4F9D;margin:.5rem 0 .2rem">屬於哪個業務</label>
+    <select id="sub-cat" style="width:100%;padding:.6rem;border:1.5px solid #E3E6EC;border-radius:9px;font-size:15px;font-family:inherit"></select>
+    <label style="display:block;font-size:12.5px;font-weight:700;color:#7A4F9D;margin:.6rem 0 .2rem">文件名稱</label>
+    <input id="sub-name" placeholder="例：北榮工會章程範本" style="width:100%;padding:.6rem;border:1.5px solid #E3E6EC;border-radius:9px;font-size:15px;font-family:inherit">
+    <label style="display:block;font-size:12.5px;font-weight:700;color:#7A4F9D;margin:.6rem 0 .2rem">這是什麼文件／用途（請寫清楚）</label>
+    <textarea id="sub-desc" placeholder="例：這是別家醫院工會的章程，可參考第幾條…用於我們起草章程" style="width:100%;min-height:60px;padding:.6rem;border:1.5px solid #E3E6EC;border-radius:9px;font-size:15px;font-family:inherit;resize:vertical"></textarea>
+    <label style="display:block;font-size:12.5px;font-weight:700;color:#7A4F9D;margin:.6rem 0 .2rem">你是誰（選填）</label>
+    <input id="sub-by" placeholder="投稿者，方便小巫詢問" style="width:100%;padding:.6rem;border:1.5px solid #E3E6EC;border-radius:9px;font-size:15px;font-family:inherit">
+    <div style="font-size:12px;color:#444;margin:.7rem 0 .2rem">共用資料夾：<span id="sub-folder" style="word-break:break-all">（未設定）</span> <button id="sub-setfolder" style="background:none;border:none;color:#2E5C8A;text-decoration:underline;cursor:pointer;font-size:12px">設定／修改</button></div>
+    <div style="font-size:11px;color:#999;margin-bottom:10px">（由小巫設定一次共用雲端資料夾連結，例如 Google Drive 的「知道連結可上傳」資料夾）</div>
+    <button id="sub-go" style="width:100%;background:#7A4F9D;color:#fff;border:none;border-radius:10px;padding:.75rem;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">① 開資料夾上傳檔案　②複製投稿單</button>
+    <button id="sub-cancel" style="width:100%;background:#fff;border:1.5px solid #E3E6EC;color:#444;border-radius:10px;padding:.6rem;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit">取消</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -136,6 +157,40 @@ $('linkBtn').addEventListener('click',async function(){
   var name=prompt('幫這個範本取個名字：', url.replace(/^https?:\/\//,'').slice(0,40)); if(name==null) return; name=name.trim()||url;
   try{ await IDB.put({id:uid(),cat:cur,kind:'link',name:name,url:url,ts:Date.now()}); toast('已加入連結'); render(); }
   catch(e){ alert('失敗：'+e.message); }
+});
+
+/* 📤 投稿給小巫整理 */
+var INBOX='fanben_inbox_url';
+function inboxUrl(){ try{return localStorage.getItem(INBOX)||'';}catch(e){return '';} }
+function refreshFolder(){ var u=inboxUrl(); $('sub-folder').textContent=u||'（未設定）'; }
+function openSub(){
+  $('sub-cat').innerHTML=CATS.map(function(c){return '<option value="'+c.v+'"'+(c.v===cur?' selected':'')+'>'+esc(c.t)+'</option>';}).join('');
+  $('sub-name').value=''; $('sub-desc').value=''; $('sub-by').value='';
+  refreshFolder(); $('subModal').style.display='flex';
+}
+$('subBtn').addEventListener('click',openSub);
+$('sub-cancel').addEventListener('click',function(){ $('subModal').style.display='none'; });
+$('sub-setfolder').addEventListener('click',function(){
+  var u=prompt('貼上共用雲端資料夾連結（由小巫提供，例如 Google Drive「知道連結者可上傳」的資料夾網址）：', inboxUrl());
+  if(u==null) return; u=u.trim();
+  if(u && !/^https?:\/\//.test(u)){ alert('請貼完整網址（http(s):// 開頭）'); return; }
+  try{ if(u) localStorage.setItem(INBOX,u); else localStorage.removeItem(INBOX); }catch(e){}
+  refreshFolder();
+});
+$('sub-go').addEventListener('click',function(){
+  var name=$('sub-name').value.trim(), desc=$('sub-desc').value.trim();
+  if(!name){ alert('請填文件名稱'); return; }
+  if(!desc){ alert('請寫清楚「這是什麼文件／用途」，小巫才知道歸到哪一類'); return; }
+  var catT=catName($('sub-cat').value), by=$('sub-by').value.trim();
+  var slip='【範本投稿單 → 小巫整理】\n業務分區：'+catT+'\n文件名稱：'+name+'\n用途說明：'+desc+(by?'\n投稿者：'+by:'')+'\n日期：'+new Date().toLocaleString()+
+    '\n\n建議檔名（上傳時改成這個，小巫好歸檔）：['+catT+']'+name;
+  function ok(){ toast('投稿單已複製，貼到資料夾或傳給小巫'); }
+  if(navigator.clipboard){ navigator.clipboard.writeText(slip).then(ok,function(){fb(slip);ok();}); } else { fb(slip); ok(); }
+  function fb(t){ var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta); }
+  var u=inboxUrl();
+  if(u){ window.open(u,'_blank'); }
+  else { alert('尚未設定共用資料夾。請小巫先按「設定／修改」貼上資料夾連結；目前已複製投稿單，可先傳給小巫。'); }
+  $('subModal').style.display='none';
 });
 
 renderPick(); render();
