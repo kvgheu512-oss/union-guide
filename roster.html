@@ -158,6 +158,21 @@
 
     <div class="btn-row" style="margin-bottom:.8rem">
       <button class="btn" id="add-btn">＋ 新增會員／申請</button>
+      <button class="btn ghost" id="paste-btn">📥 從連署名單貼上匯入</button>
+    </div>
+
+    <div class="form" id="paste-panel" style="display:none">
+      <label>把 Google 連署試算表的資料貼進來（要含<b>第一列標題</b>）</label>
+      <div style="font-size:12px;color:var(--ink-soft,#777);line-height:1.8;margin:4px 0 8px">
+        ① 開「高榮工會_發起人資料」試算表 → ② 框選含<b>標題列</b>的資料 → ③ 複製 → ④ 貼到下框 → ⑤ 按「分析並匯入」。<br>
+        會自動對應<b>姓名／單位／職稱／工號／手機／Email</b>，匯入狀態為<b>入會申請中（待審）</b>，重複的人自動略過。資料只進這台手機、不上傳。
+      </div>
+      <textarea id="paste-data" style="min-height:120px;width:100%;font-size:13px" placeholder="姓名（Tab）單位（Tab）職稱（Tab）手機（Tab）Email&#10;直接從試算表複製整片貼上即可"></textarea>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn" id="paste-go">分析並匯入</button>
+        <button class="btn ghost" id="paste-cancel">取消</button>
+      </div>
+      <div id="paste-result" style="font-size:13px;margin-top:8px;line-height:1.7"></div>
     </div>
 
     <div class="form" id="form">
@@ -228,6 +243,7 @@
     </div>
 
     <div id="list"></div>
+    <div id="trash" style="margin-top:10px"></div>
 
     <div class="btn-row" style="margin-top:1.2rem">
       <button class="btn ghost sm" id="csv-btn">⬇ 匯出 Excel(CSV)</button>
@@ -408,9 +424,64 @@ $('list').addEventListener('click',e=>{
   const el=e.target.closest('[data-act]'); if(!el) return;
   const m=members.find(x=>x.id===el.dataset.id); if(!m) return;
   const a=el.dataset.act;
-  if(a==='approve'){ m.status='active'; if(!m.join) m.join=new Date().toISOString().slice(0,10); save(); render(); toast('已核准入會'); }
+  if(a==='approve'){
+    const prevStatus=m.status, hadJoin=!!m.join;
+    m.status='active'; if(!m.join) m.join=new Date().toISOString().slice(0,10);
+    save(); render();
+    showUndo('已核准「'+(m.name||'')+'」入會', function(){
+      const mm=members.find(x=>x.id===m.id); if(!mm) return;
+      mm.status=prevStatus; if(!hadJoin) mm.join='';
+      save(); render(); toast('已退回待審');
+    });
+  }
   else if(a==='edit') openForm(m);
-  else if(a==='del'){ if(confirm(`刪除會員「${m.name}」？`)){ members=members.filter(x=>x.id!==m.id); save(); render(); } }
+  else if(a==='del'){ if(confirm('刪除會員「'+(m.name||'')+'」？\n（刪除後可從下方「♻️ 最近刪除」復原，不用重打）')){
+    const removed=members.find(x=>x.id===m.id);
+    members=members.filter(x=>x.id!==m.id); save(); render();
+    pushTrash(removed);
+    showUndo('已刪除「'+(removed&&removed.name||'')+'」', function(){ restoreMember(removed); });
+  } }
+});
+
+/* 復原小橫幅（核准/刪除誤觸都能救回）：顯示訊息＋「↩ 復原」鍵，8 秒後自動消失 */
+let undoT;
+function showUndo(msg, undoFn){
+  let bar=document.getElementById('undobar');
+  if(!bar){ bar=document.createElement('div'); bar.id='undobar';
+    bar.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:12px;background:#1A2433;color:#fff;padding:10px 14px;border-radius:24px;box-shadow:0 6px 20px rgba(0,0,0,.35);font-size:13.5px;max-width:94vw';
+    document.body.appendChild(bar); }
+  bar.innerHTML='';
+  const t=document.createElement('span'); t.textContent=msg; bar.appendChild(t);
+  const b=document.createElement('button'); b.textContent='↩ 復原';
+  b.style.cssText='background:#FFC845;color:#3A2E00;border:0;border-radius:16px;padding:5px 13px;font-weight:700;font-size:13px;cursor:pointer';
+  b.onclick=function(){ clearTimeout(undoT); bar.remove(); undoFn(); };
+  bar.appendChild(b); bar.style.display='flex';
+  clearTimeout(undoT); undoT=setTimeout(function(){ if(bar) bar.remove(); }, 8000);
+}
+
+/* 最近刪除（暫存本機，可事後復原，不必重打） */
+const TRASH_KEY='roster_trash_v1';
+function getTrash(){ try{ return JSON.parse(localStorage.getItem(TRASH_KEY))||[]; }catch(_){ return []; } }
+function setTrash(arr){ try{ localStorage.setItem(TRASH_KEY, JSON.stringify(arr.slice(0,30))); }catch(_){} }
+function pushTrash(m){ if(!m) return; const t=getTrash().filter(x=>x.id!==m.id); t.unshift(Object.assign({_delAt:Date.now()},m)); setTrash(t); renderTrash(); }
+function restoreMember(m){ if(!m) return;
+  if(!members.some(x=>x.id===m.id)){ const mm=Object.assign({},m); delete mm._delAt; members.push(mm); save(); }
+  setTrash(getTrash().filter(x=>x.id!==m.id)); render(); renderTrash(); toast('已復原「'+(m.name||'')+'」');
+}
+function renderTrash(){
+  const box=$('trash'); if(!box) return;
+  const t=getTrash();
+  if(!t.length){ box.innerHTML=''; return; }
+  box.innerHTML='<details><summary style="cursor:pointer;font-size:13px;color:#7A1818;font-weight:600">♻️ 最近刪除（'+t.length+'）— 點開可一鍵復原</summary><div style="margin-top:8px">'
+    +t.map(m=>'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border:1px solid var(--border,#eee);border-radius:10px;margin-bottom:6px;font-size:13px">'
+      +'<span>'+esc(m.name||'(未命名)')+(m.dept?' · '+esc(m.dept):'')+(m.phone?' · '+esc(m.phone):'')+'</span>'
+      +'<span style="white-space:nowrap"><button class="btn ghost sm" data-restore="'+m.id+'">↩ 復原</button> <button class="btn ghost sm" data-purge="'+m.id+'" style="color:#999">✕</button></span></div>').join('')
+    +'<div style="text-align:right"><button class="btn ghost sm" id="trash-clear" style="color:#999;font-size:12px">清空最近刪除</button></div></div></details>';
+}
+$('trash').addEventListener('click',function(e){
+  const r=e.target.closest('[data-restore]'); if(r){ const m=getTrash().find(x=>x.id===r.dataset.restore); restoreMember(m); return; }
+  const p=e.target.closest('[data-purge]'); if(p){ setTrash(getTrash().filter(x=>x.id!==p.dataset.purge)); renderTrash(); return; }
+  if(e.target.id==='trash-clear'){ if(confirm('清空「最近刪除」暫存？清空後就無法復原了。')){ setTrash([]); renderTrash(); } }
 });
 
 function openForm(m){
@@ -502,10 +573,62 @@ $('import-file').addEventListener('change',e=>{
 });
 $('print-btn').addEventListener('click',()=>window.print());
 
+/* 從連署試算表「貼上」匯入：自動偵測分隔（試算表複製＝Tab）、對應標題欄、略過重複 */
+$('paste-btn').addEventListener('click',()=>{ const p=$('paste-panel'); p.style.display=p.style.display==='none'?'block':'none'; if(p.style.display==='block'){ $('paste-data').focus(); p.scrollIntoView({behavior:'smooth',block:'center'}); } });
+$('paste-cancel').addEventListener('click',()=>{ $('paste-panel').style.display='none'; $('paste-data').value=''; $('paste-result').innerHTML=''; });
+function splitLine(line,d){
+  if(d==='\t') return line.split('\t').map(s=>s.trim());
+  const out=[]; let cur='',q=false;
+  for(let i=0;i<line.length;i++){ const c=line[i];
+    if(q){ if(c==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else { if(c==='"') q=true; else if(c===',') { out.push(cur); cur=''; } else cur+=c; } }
+  out.push(cur); return out.map(s=>s.trim());
+}
+function mapHeaders(hs){ const map={};
+  hs.forEach((h,i)=>{ h=h||'';
+    if(/姓名|名字/.test(h)&&map.name==null) map.name=i;
+    else if(/單位|科別|部門/.test(h)&&map.dept==null) map.dept=i;
+    else if(/職稱|職位/.test(h)&&!/代表雇主|管理權|是否/.test(h)&&map.title==null) map.title=i;
+    else if(/工號|員編|員工編號/.test(h)&&map.no==null) map.no=i;
+    else if(/手機|電話/.test(h)&&map.phone==null) map.phone=i;
+    else if(/email|e-mail|信箱|電子郵件|郵件|line/i.test(h)&&map.contact==null) map.contact=i;
+    else if(/代表雇主|管理權/.test(h)&&map.mgr==null) map.mgr=i;
+  }); return map;
+}
+$('paste-go').addEventListener('click',()=>{
+  const txt=$('paste-data').value, out=$('paste-result');
+  const lines=txt.replace(/\r/g,'').split('\n').filter(l=>l.trim()!=='');
+  if(lines.length<2){ out.innerHTML='<span style="color:#C0392B">沒抓到資料，請貼上「含標題列」且至少一筆的內容。</span>'; return; }
+  const d=lines[0].indexOf('\t')>=0?'\t':',';
+  const rows=lines.map(l=>splitLine(l,d));
+  const map=mapHeaders(rows[0]);
+  if(map.name==null){ out.innerHTML='<span style="color:#C0392B">找不到「姓名」欄——請確認有把第一列標題一起貼進來。</span>'; return; }
+  const seen=new Set(members.map(m=>(m.name||'')+'|'+(m.phone||'')));
+  let added=0,skipped=0,mgr=0;
+  for(let i=1;i<rows.length;i++){ const r=rows[i];
+    const name=(r[map.name]||'').trim(); if(!name) continue;
+    const phone=map.phone!=null?(r[map.phone]||'').trim():'';
+    if(seen.has(name+'|'+phone)){ skipped++; continue; }
+    const m={ id:uid(), name,
+      no:map.no!=null?(r[map.no]||'').trim():'',
+      dept:map.dept!=null?(r[map.dept]||'').trim():'',
+      title:map.title!=null?(r[map.title]||'').trim():'',
+      type:'full', status:'applicant', join:'', feeTo:'',
+      phone, contact:map.contact!=null?(r[map.contact]||'').trim():'', note:'' };
+    if(map.mgr!=null){ const v=r[map.mgr]||''; if(/是/.test(v)&&!/否/.test(v)){ m.note='⚠ 連署時填「代表雇主行使管理權」，可能不具入會資格，請查核'; mgr++; } }
+    members.push(m); seen.add(name+'|'+phone); added++;
+  }
+  if(added) save();
+  render();
+  out.innerHTML='✅ 匯入 <b>'+added+'</b> 筆（待審）'+(skipped?'，略過 '+skipped+' 筆（重複/已存在）':'')+(mgr?'，其中 <b>'+mgr+'</b> 筆已標註「可能不具入會資格」':'')+'。';
+  if(added) toast('已匯入 '+added+' 筆到名冊');
+});
+
 let toastT; function toast(m){ const e=$('toast'); e.textContent=m; e.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>e.classList.remove('show'),1900); }
 function init(){
   load();
   render();
+  renderTrash();
   // localStorage 是空的 → 試從 IndexedDB 備援還原（防「一鍵歸零」）
   if(!members.length){
     idbGet().then(function(bak){
