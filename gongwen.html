@@ -144,7 +144,7 @@
       </div>
       <div class="grid2">
         <div><label>具名（職稱）</label><input id="f-signer" value="理事長"></div>
-        <div><label>姓名</label><input id="f-signer-name" placeholder="○○○"></div>
+        <div><label>姓名</label><input id="f-signer-name" value="楊淯涵" placeholder="○○○"></div>
       </div>
     </div>
 
@@ -261,7 +261,7 @@ function fill(d){
   $('f-to').value=d.to||''; $('f-date').value=d.date||''; $('f-no').value=d.no||''; $('f-speed').value=d.speed||'普通件';
   $('f-secret').value=d.secret||'普通'; $('f-attach').value=d.attach||''; $('f-subject').value=d.subject||'';
   $('f-explain').value=d.explain||''; $('f-main').value=d.main||''; $('f-copy').value=d.copy||'';
-  $('f-signer').value=d.signer||'理事長'; $('f-signer-name').value=d.signerName||'';
+  $('f-signer').value=d.signer||'理事長'; $('f-signer-name').value=d.signerName||'楊淯涵';
 }
 function renderDrafts(){
   const a=getDrafts(), box=$('draft-list');

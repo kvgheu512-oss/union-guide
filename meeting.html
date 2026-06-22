@@ -163,7 +163,7 @@
         </div>
         <label>地點</label><input id="m-place" placeholder="例：高榮第一會議室">
         <div class="grid2">
-          <div><label>主席</label><input id="m-chair" placeholder="○○○"></div>
+          <div><label>主席</label><input id="m-chair" value="楊淯涵" placeholder="○○○"></div>
           <div><label>記錄</label><input id="m-rec" placeholder="○○○"></div>
         </div>
       </div>
@@ -383,7 +383,7 @@ $('back').addEventListener('click',e=>{
 function openEdit(m){ cur=JSON.parse(JSON.stringify(m)); if(!cur.present)cur.present={}; if(!cur.agenda)cur.agenda=[]; fillForm(); showView('edit'); }
 function fillForm(){
   $('m-type').value=cur.type||'會員大會'; $('m-no').value=cur.no||''; $('m-date').value=cur.date||'';
-  $('m-time').value=cur.time||''; $('m-place').value=cur.place||''; $('m-chair').value=cur.chair||'';
+  $('m-time').value=cur.time||''; $('m-place').value=cur.place||''; $('m-chair').value=cur.chair||'楊淯涵';
   $('m-rec').value=cur.rec||''; $('m-guest').value=cur.guest||'';
   var n=$('m-notes'); if(n) n.value=cur.notes||'';
   if($('g-form')) $('g-form').value=cur.gForm||'';
@@ -420,6 +420,34 @@ function renderSigList(){
   });
   var cl=$('sg-clear'); if(cl) cl.addEventListener('click',function(){ if(sigPad)sigPad.clear(); });
   var ls=$('sg-list'); if(ls) ls.addEventListener('click',function(e){var btn=e.target.closest('[data-rmsig]');if(!btn)return;if(confirm('刪除這筆簽到？')){cur.signatures.splice(+btn.dataset.rmsig,1);renderSigList();}});
+})();
+/* 手寫簽到姓名自動帶入：輸入1~2字 → 從會員名冊查到本人 → 自動填入單位科別 */
+(function(){
+  var nm=$('sg-name'), un=$('sg-unit'); if(!nm) return;
+  var drop=document.createElement('div');
+  drop.style.cssText='position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid #d4b45a;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.2);z-index:300;max-height:200px;overflow-y:auto;display:none;';
+  nm.parentNode.style.position='relative';
+  nm.parentNode.appendChild(drop);
+  function rms(){ try{return JSON.parse(localStorage.getItem('roster_members_v1'))||[];}catch(_){return[];} }
+  function e2(s){return(s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  nm.addEventListener('input',function(){
+    var q=nm.value.trim(); if(!q){drop.style.display='none';return;}
+    var list=rms().filter(function(m){return m.name&&m.name.indexOf(q)>=0;});
+    if(!list.length){drop.style.display='none';return;}
+    drop.innerHTML=list.slice(0,8).map(function(m){
+      var unit=(m.dept||'')+(m.title?'／'+m.title:'');
+      return '<div style="padding:8px 12px;cursor:pointer;font-size:13px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #f5f5f5" data-n="'+e2(m.name)+'" data-u="'+e2(unit)+'">'+
+        '<b>'+e2(m.name)+'</b><span style="color:#888;font-size:12px">'+e2(m.dept||'')+'</span></div>';
+    }).join('');
+    drop.style.display='block';
+  });
+  drop.addEventListener('click',function(e){
+    var item=e.target.closest('[data-n]'); if(!item) return;
+    nm.value=item.dataset.n;
+    if(un&&item.dataset.u) un.value=item.dataset.u;
+    drop.style.display='none';
+  });
+  document.addEventListener('click',function(e){ if(!drop.contains(e.target)&&e.target!==nm) drop.style.display='none'; });
 })();
 /* 🔔 正式大會（要報主管機關）才提醒備紙本親簽簽到簿 */
 function updateFormalReminder(){

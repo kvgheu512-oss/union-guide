@@ -527,6 +527,35 @@ function openForm(m){
   setOn(localStorage.getItem(KEY)==='1');
 })();
 $('add-btn').addEventListener('click',()=>openForm(null));
+/* 姓名欄位自動帶入：輸入1字 → 從現有名單查到相符成員 → 點選一鍵帶入所有欄位（適合復原刪除或補齊資料） */
+(function(){
+  const nameEl=$('f-name'); if(!nameEl) return;
+  const drop=document.createElement('div');
+  drop.style.cssText='position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid #1A3A6B;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.2);z-index:300;max-height:220px;overflow-y:auto;display:none;';
+  nameEl.parentNode.style.position='relative';
+  nameEl.parentNode.appendChild(drop);
+  nameEl.addEventListener('input',function(){
+    const q=nameEl.value.trim(); if(!q){drop.style.display='none';return;}
+    const list=members.filter(m=>m.name&&m.name.indexOf(q)>=0);
+    if(!list.length){drop.style.display='none';return;}
+    drop.innerHTML=list.slice(0,8).map(m=>
+      '<div style="padding:8px 14px;cursor:pointer;font-size:13px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #f0f0f0" data-mid="'+esc(m.id)+'">'+
+      '<b>'+esc(m.name)+'</b>'+
+      '<span style="color:#666;font-size:12px">'+esc(m.dept||'')+(m.title?' · '+esc(m.title):'')+'</span>'+
+      '<span style="margin-left:auto;font-size:11px;color:#aaa">帶入</span></div>'
+    ).join('')+'<div style="padding:5px 14px;font-size:11px;color:#bbb;text-align:center">點選一鍵帶入所有欄位</div>';
+    drop.style.display='block';
+  });
+  drop.addEventListener('click',function(e){
+    const item=e.target.closest('[data-mid]'); if(!item) return;
+    const m=members.find(x=>x.id===item.dataset.mid); if(!m) return;
+    $('f-name').value=m.name||''; $('f-no').value=m.no||''; $('f-dept').value=m.dept||''; $('f-title').value=m.title||'';
+    $('f-phone').value=m.phone||''; $('f-contact').value=m.contact||''; $('f-note').value=m.note||'';
+    try{$('f-contact').dispatchEvent(new Event('input',{bubbles:true}));}catch(_){}
+    drop.style.display='none'; toast('已帶入「'+m.name+'」的資料');
+  });
+  document.addEventListener('click',function(e){ if(!drop.contains(e.target)&&e.target!==nameEl) drop.style.display='none'; });
+})();
 $('f-cancel').addEventListener('click',()=>$('form').classList.remove('show'));
 $('f-save').addEventListener('click',()=>{
   const name=$('f-name').value.trim(); if(!name){ toast('請輸入姓名'); return; }
