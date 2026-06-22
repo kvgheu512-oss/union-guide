@@ -214,7 +214,30 @@
   // 選年資時，自動把「未休天數」帶成該年應有天數（方便、仍可手動改）
   $("sen").addEventListener("change",function(){ $("unused").value=this.value; calc(); });
   ["salary","dv","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
+
+  // 🛟 整頁暫存：含預設值的欄位＋調休單選鈕，重開自動還原（本機，不上傳）
+  var PK="leavepay_state_v1";
+  var FIELDS=["salary","dv","sen","unused","actLeave","holi","otHr","actHoli"];
+  function saveState(){
+    var d={};
+    FIELDS.forEach(function(id){ var el=$(id); if(el) d[id]=el.value; });
+    var hm=document.querySelector('input[name="hm"]:checked'); if(hm) d.hm=hm.value;
+    var ci=document.querySelector('input[name="ci"]:checked'); if(ci) d.ci=ci.value;
+    try{ localStorage.setItem(PK, JSON.stringify(d)); }catch(e){}
+  }
+  function loadState(){
+    var d; try{ d=JSON.parse(localStorage.getItem(PK)||"null"); }catch(e){ return; }
+    if(!d) return;
+    FIELDS.forEach(function(id){ var el=$(id); if(el && d[id]!=null && d[id]!=="") el.value=d[id]; });
+    if(d.hm){ var r=document.querySelector('input[name="hm"][value="'+d.hm+'"]'); if(r) r.checked=true; }
+    if(d.ci){ var r2=document.querySelector('input[name="ci"][value="'+d.ci+'"]'); if(r2) r2.checked=true; }
+  }
+  loadState();
+  FIELDS.forEach(function(id){ var el=$(id); if(el){ el.addEventListener("input",saveState); el.addEventListener("change",saveState); } });
+  document.querySelectorAll('input[name="hm"],input[name="ci"]').forEach(function(r){ r.addEventListener("change",saveState); });
+
   calc();
+  if(typeof hdChg==="function") hdChg();
 })();
 (function(){
   // 證據清單存本機
