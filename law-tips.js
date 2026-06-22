@@ -310,7 +310,7 @@
     var done=false;
     function close(){ if(done)return; done=true; ov.classList.remove("show"); setTimeout(function(){ ov.remove(); },300); }
     ov.addEventListener("click",close);
-    if(!pKeep) setTimeout(close,6000);
+    if(!pKeep) setTimeout(close,8000);
   }
   if(document.body) boot(); else document.addEventListener("DOMContentLoaded",boot);
 })();
