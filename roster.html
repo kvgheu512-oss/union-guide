@@ -197,12 +197,16 @@
         <button type="button" class="mailchip" data-dom="@icloud.com">@icloud.com</button>
         <button type="button" class="mailchip" data-dom="@outlook.com">@outlook.com</button>
         <button type="button" class="mailchip" data-dom="@msn.com">@msn.com</button>
+        <button type="button" id="hospUnlock" class="mc-lock" aria-label="解鎖醫院信箱結尾">🔒</button>
       </div>
       <style>
       #mailchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 2px 8px}
       #mailchips .mc-label{font-size:11px;color:var(--ink-soft,#777)}
       .mailchip{font-size:12px;padding:4px 9px;border:1px solid var(--border,#ddd);background:#fff;border-radius:14px;color:#1A3A6B;cursor:pointer;-webkit-tap-highlight-color:transparent}
       .mailchip:active{transform:scale(.95);background:#f2f5fa}
+      .mailchip.hosp{border-color:#1A7A4A;color:#0F5C36;background:#F1FAF5}
+      .mc-lock{font-size:12px;padding:4px 8px;border:1px dashed var(--border,#ccc);background:transparent;border-radius:14px;color:#bbb;cursor:pointer;-webkit-tap-highlight-color:transparent}
+      .mc-lock:active{transform:scale(.95)}
       </style>
       <label>備註</label>
       <textarea id="f-note" style="min-height:48px" placeholder="選填"></textarea>
@@ -424,6 +428,26 @@ function openForm(m){
     inp.value=(at>=0?v.slice(0,at):v)+b.getAttribute('data-dom'); inp.focus();
     try{ inp.dispatchEvent(new Event('input',{bubbles:true})); }catch(_){}
   });
+})();
+/* 醫院公務信箱結尾：低調期隱藏，需刻意「解鎖」（含確認，防手殘誤觸）才出現；可重新隱藏。
+   網域只存在這支程式、解鎖後才動態長出按鈕，畫面平時完全看不到醫院字樣。 */
+(function(){ var KEY='roster_hosp_mail_v1', HOSP='@vghks.gov.tw';
+  var lock=$('hospUnlock'), box=$('mailchips'); if(!lock||!box) return;
+  function setOn(on){
+    var chip=box.querySelector('.hosp');
+    if(on){ if(!chip){ chip=document.createElement('button'); chip.type='button'; chip.className='mailchip hosp'; chip.setAttribute('data-dom',HOSP); chip.textContent=HOSP; box.insertBefore(chip,lock); } }
+    else if(chip){ chip.remove(); }
+    lock.textContent=on?'🏥✓':'🔒';
+    lock.title=on?'醫院信箱結尾：已解鎖（點可重新隱藏）':'解鎖醫院信箱結尾';
+  }
+  lock.addEventListener('click',function(e){ e.preventDefault();
+    if(localStorage.getItem(KEY)==='1'){
+      if(confirm('要重新隱藏「醫院公務信箱」結尾嗎？')){ localStorage.removeItem(KEY); setOn(false); }
+      return;
+    }
+    if(confirm('⚠️ 解鎖「醫院公務信箱」結尾？\n\n工會草創低調期建議先別開；等工會壯大、可公開後再解鎖。\n\n確定要現在解鎖嗎？')){ localStorage.setItem(KEY,'1'); setOn(true); }
+  });
+  setOn(localStorage.getItem(KEY)==='1');
 })();
 $('add-btn').addEventListener('click',()=>openForm(null));
 $('f-cancel').addEventListener('click',()=>$('form').classList.remove('show'));
