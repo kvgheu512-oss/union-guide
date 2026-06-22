@@ -86,7 +86,8 @@
 <script>
 (function(){
   var $=function(id){return document.getElementById(id);};
-  var SECS=[
+  var CADRE=/[?&]for=cadre/.test(location.search);   // 幹部功能表進來＝幹部篇；否則會員篇
+  var ALL=[
     {cat:"會員篇",nm:"認識工會",s:"工會，是大家一起為自己爭取合理勞動條件的團體。湊滿三十人連署就能成立。記住：工會是工具，不是許願池，要來開會，有問題主動找幹部。"},
     {cat:"會員篇",nm:"加班費試算機",s:"幫你算三種錢：平日加班、國定假日上班、還有沒休的特休。填月薪和加班時數，就知道醫院有沒有少給你。"},
     {cat:"會員篇",nm:"入會划不划算",s:"輸入月薪和每月加班時數，就看得出，能拿回的加班費和特休，常常遠遠超過一年的會費。"},
@@ -99,6 +100,14 @@
     {cat:"幹部篇",nm:"會址怎麼辦（重要）",s:"別用理事長家當會址，會影響房屋稅、地價稅，連賣房優惠都沒了。改租借址登記，或借非自住的房子，先打一九九九問勞工局。"},
     {cat:"幹部篇",nm:"避坑清單",s:"成立工會有些坑：沒辦扣繳會被罰、用個人帳戶收費傷信任、會址用住家害屋主、個資別放公開網站。看完打勾，重要的事帶到會議投票。"}
   ];
+  var SECS=ALL.filter(function(x){ return CADRE ? x.cat==="幹部篇" : x.cat==="會員篇"; });
+  // 標題依對象切換
+  try{
+    var h=document.querySelector(".header h1"), sub=document.querySelector(".header p");
+    if(h) h.textContent = CADRE ? "🎧 幹部工具 語音導覽" : "🎧 會員 語音導覽";
+    if(sub) sub.textContent = CADRE ? "幹部後台工具，用聽的就好" : "認識工會，用聽的就好";
+    document.title = (CADRE?"幹部":"會員")+"語音導覽｜高榮企業工會";
+  }catch(e){}
   var rate=4.6;
   function fmt(t){t=t.replace(/\s+/g,"");var sec=Math.round(t.length/rate);var m=Math.floor(sec/60),s=sec%60;return m?(m+"分"+(s<10?"0":"")+s+"秒"):(s+"秒");}
 
