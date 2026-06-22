@@ -82,7 +82,7 @@
     <input id="pw" type="password" inputmode="text" autocomplete="current-password" placeholder="請輸入通行碼" enterkeyhint="go">
     <button id="unlockBtn">進入</button>
     <div class="err" id="pwErr"></div>
-    <p style="margin:12px 0 0;font-size:11px;color:#999">預設通行碼 <b>union2026</b>，進入後請點「變更通行碼」改成只有法規幹部知道的密碼。</p>
+    <p style="margin:12px 0 0;font-size:11px;color:#999">通行碼由法規幹部保管；如需變更，進入後點頁尾「變更通行碼」。</p>
   </div>
 </div>
 <script>try{if(sessionStorage.getItem('union_cases_session'))document.getElementById('lock').classList.add('hide');}catch(e){}</script>
@@ -268,7 +268,7 @@ function toast(m){ var t=$('toast'); t.textContent=m; t.classList.add('show'); c
 fillCatSelects(); renderStats(); renderList();
 
 /* 🔒 隱私鎖：通行碼（雜湊存本機；僅為隱私屏障，非加密，資料仍在本機 localStorage） */
-var PW_KEY='union_cases_pw', SES='union_cases_session', DEF='union2026';
+var PW_KEY='union_cases_pw', SES='union_cases_session', DEF='qqq11111111+';
 function pwHash(s){ var h=0; for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return ''+h; }
 function curHash(){ return localStorage.getItem(PW_KEY) || pwHash(DEF); }
 function tryUnlock(){
