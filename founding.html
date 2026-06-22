@@ -160,7 +160,8 @@
       links:[ {l:"勞動部·如何籌組工會", u:"https://www.mol.gov.tw/topic/3073/19159/"}, {l:"連署進度", u:"index.html", c:"tool"} ] },
     { t:"召開發起人會議（推選籌備委員）", d:"⚠️ <b>此時還沒有「主體」</b>（既不是工會、也還不是籌備會），所以<b>不用委託書</b>；以<b>實際到場的發起人</b>開會即可，未到的可<b>事後補簽到</b>。本次最重要的是<b>推選出籌備委員、組成「籌備委員會」</b>——之後才能以「<b>高榮籌備委員會</b>」名義對外與辦理後續（北榮工會會長實務指點）。",
       links:[ {l:"開會通知（公文工具）", u:"gongwen.html", c:"tool"}, {l:"📝 發起人會議紀錄範本", u:"meeting.html?type=發起人會議", c:"tool"} ] },
-    { t:"公開徵求會員", d:"以公告對外公開徵求會員、受理入會申請，建立會員名冊。會員入會申請書用官方範例。",
+    { t:"公開徵求會員", d:"以公告對外公開徵求會員、受理入會申請，建立會員名冊。會員入會申請書用官方範例。<b>若有登報徵求，請拍照存下報紙電子檔備查。</b>",
+      upload:{ key:"union_news_clip_v1", label:"登報剪報（拍照存查）" },
       links:[ {l:"入會申請書（官方·odt）", u:"https://socbu.kcg.gov.tw/download_file.php?file_dir=wf_content_file&file_link=WFC_00312_20160115_3Mi.odt"}, {l:"名冊工具", u:"roster.html", c:"tool"} ] },
     { t:"召開籌備會議", d:"審查會員入會資格、擬訂章程草案、編列成立大會議程與各項書表，並排定成立大會日期。",
       links:[ {l:"章程範本", u:"charter.html", c:"tool"}, {l:"📝 籌備會議紀錄範本", u:"meeting.html?type=籌備會議", c:"tool"}, {l:"工會法施行細則", u:"https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=N0020002", c:"law"} ] },
@@ -191,11 +192,38 @@
   var pnum = document.getElementById("pnum"), pbar = document.getElementById("pbar"), ptot=document.getElementById("ptot");
   ptot.textContent = STEPS.length;
 
-  function linkHtml(l){
+  // ===== 官方連結失效自救：可改網址（存本機，覆蓋預設） =====
+  var OVR_KEY = "union_link_override_v1";
+  function getOvr(){ try{ return JSON.parse(localStorage.getItem(OVR_KEY))||{}; }catch(e){ return {}; } }
+  function saveOvr(o){ try{ localStorage.setItem(OVR_KEY, JSON.stringify(o)); }catch(e){} }
+  function effUrl(orig){ var o=getOvr(); return o[orig]||orig; }
+
+  function linkHtml(l, sIdx, lIdx){
+    var isExt = (l.u.indexOf("http")===0);
     var cls = l.c==="law" ? "law" : l.c==="tool" ? "tool" : "";
-    var ext = (l.u.indexOf("http")===0) ? ' target="_blank" rel="noopener"' : '';
-    var arrow = (l.u.indexOf("http")===0) ? " ↗" : " ›";
-    return '<a class="'+cls+'" href="'+l.u+'"'+ext+'>'+l.l+arrow+'</a>';
+    var url = effUrl(l.u);
+    var ext = isExt ? ' target="_blank" rel="noopener"' : '';
+    var arrow = isExt ? " ↗" : " ›";
+    var changed = isExt && getOvr()[l.u] ? ' <span style="font-size:10px;color:#0F5C36">(已更新網址)</span>' : '';
+    var fix = isExt ? '<button class="fixlink" data-orig="'+encodeURIComponent(l.u)+'" title="連結失效？改網址" style="background:none;border:none;color:#999;cursor:pointer;font-size:12px;padding:0 4px">🔧</button>' : '';
+    return '<a class="'+cls+'" href="'+url+'"'+ext+'>'+l.l+arrow+'</a>'+changed+fix;
+  }
+  function bindFixLinks(){
+    stepsEl.querySelectorAll(".fixlink").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.preventDefault();
+        var orig = decodeURIComponent(this.getAttribute("data-orig"));
+        var o = getOvr();
+        var cur = o[orig] || orig;
+        var v = prompt("這個官方連結失效了？貼上新的官方網址（留空＝恢復原本預設）：", cur);
+        if(v===null) return;
+        v = v.trim();
+        if(!v){ delete o[orig]; }
+        else if(/^https?:\/\//.test(v)){ o[orig]=v; }
+        else { alert("請貼完整網址（要以 http(s):// 開頭）"); return; }
+        saveOvr(o); renderSteps();
+      });
+    });
   }
 
   function renderSteps(){
@@ -204,7 +232,7 @@
       var done = state[idx];
       var div = document.createElement("div");
       div.className = "step" + (done?" done":"");
-      var links = (s.links||[]).map(linkHtml).join("");
+      var links = (s.links||[]).map(function(l,li){ return linkHtml(l, idx, li); }).join("");
       div.innerHTML =
         '<div class="head">'+
           '<div class="chk" data-i="'+idx+'" role="checkbox" aria-checked="'+done+'">'+(done?"✓":"")+'</div>'+
@@ -213,6 +241,7 @@
             '<div class="t">'+s.t+'</div>'+
             '<div class="d">'+s.d+'</div>'+
             (links?'<div class="links">'+links+'</div>':'')+
+            (s.upload?uploadHtml(s.upload):'')+
           '</div>'+
         '</div>';
       stepsEl.appendChild(div);
@@ -225,6 +254,64 @@
         renderSteps();
         updateProgress();
         renderUnlock();
+      });
+    });
+    bindFixLinks();
+    bindUpload();
+  }
+
+  // ===== 登報剪報：拍照／上傳，縮圖後存本機 =====
+  function getClips(key){ try{ return JSON.parse(localStorage.getItem(key))||[]; }catch(e){ return []; } }
+  function saveClips(key,a){ try{ localStorage.setItem(key, JSON.stringify(a)); }catch(e){ alert("⚠ 儲存失敗：本機空間可能已滿，請先移除舊圖。"); } }
+  function uploadHtml(u){
+    var clips = getClips(u.key);
+    var thumbs = clips.map(function(src,i){
+      return '<span style="display:inline-block;position:relative;margin:4px 4px 0 0">'+
+        '<img src="'+src+'" data-key="'+u.key+'" data-i="'+i+'" class="clipimg" style="height:64px;border-radius:8px;border:1px solid #ccc;cursor:pointer">'+
+        '<button class="clipdel" data-key="'+u.key+'" data-i="'+i+'" title="移除" style="position:absolute;top:-7px;right:-7px;background:#C0392B;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1">×</button>'+
+        '</span>';
+    }).join("");
+    return '<div style="margin-top:10px;background:#F7F9F7;border:1px solid #dfe7df;border-radius:10px;padding:.6rem .7rem">'+
+      '<div style="font-size:12.5px;color:#0F5C36;font-weight:700;margin-bottom:6px">📰 '+u.label+'</div>'+
+      '<label style="display:inline-block;background:#1A7A4A;color:#fff;border-radius:8px;padding:.45rem .8rem;font-size:13px;font-weight:700;cursor:pointer">📷 拍照／上傳電子檔'+
+        '<input type="file" accept="image/*" data-key="'+u.key+'" class="clipin" style="display:none">'+
+      '</label>'+
+      '<div style="font-size:11px;color:#777;margin-top:5px">只存在本機、不上傳；可存多張。點縮圖看大圖。</div>'+
+      (thumbs?'<div style="margin-top:6px">'+thumbs+'</div>':'')+
+      '</div>';
+  }
+  function bindUpload(){
+    stepsEl.querySelectorAll(".clipin").forEach(function(inp){
+      inp.addEventListener("change", function(){
+        var key=this.getAttribute("data-key"), f=this.files&&this.files[0]; if(!f) return;
+        var rd=new FileReader();
+        rd.onload=function(){
+          var img=new Image();
+          img.onload=function(){
+            var max=1400, w=img.width, h=img.height;
+            if(w>max||h>max){ var r=Math.min(max/w,max/h); w=Math.round(w*r); h=Math.round(h*r); }
+            var cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+            cv.getContext("2d").drawImage(img,0,0,w,h);
+            var data; try{ data=cv.toDataURL("image/jpeg",0.8); }catch(e){ data=rd.result; }
+            var a=getClips(key); a.push(data); saveClips(key,a); renderSteps();
+          };
+          img.onerror=function(){ var a=getClips(key); a.push(rd.result); saveClips(key,a); renderSteps(); };
+          img.src=rd.result;
+        };
+        rd.readAsDataURL(f);
+      });
+    });
+    stepsEl.querySelectorAll(".clipdel").forEach(function(b){
+      b.addEventListener("click", function(e){
+        e.preventDefault();
+        var key=this.getAttribute("data-key"), i=+this.getAttribute("data-i");
+        if(!confirm("移除這張剪報？")) return;
+        var a=getClips(key); a.splice(i,1); saveClips(key,a); renderSteps();
+      });
+    });
+    stepsEl.querySelectorAll(".clipimg").forEach(function(im){
+      im.addEventListener("click", function(){
+        var w=window.open("","_blank"); if(w) w.document.write('<img src="'+this.src+'" style="max-width:100%">');
       });
     });
   }

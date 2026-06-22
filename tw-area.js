@@ -79,7 +79,14 @@
       '<select class="ap-roadsel" style="width:100%;'+iStyle+';margin-bottom:6px;display:none"></select>'+
       '<select class="ap-seg" style="width:100%;'+iStyle+';margin-bottom:6px;display:none"></select>'+
       '<input class="ap-road" type="text" placeholder="路／街名（例：澄清路）" autocomplete="off" style="width:100%;'+iStyle+';margin-bottom:6px">'+
-      '<input class="ap-rest" type="text" placeholder="段／巷／弄／號／樓（例：123號5樓）" autocomplete="off" style="width:100%;'+iStyle+'">';
+      '<div style="font-size:12px;color:#7A5600;margin-bottom:3px">門牌（只填數字，沒有的免填）</div>'+
+      '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">'+
+        '<input class="ap-sec" type="text" inputmode="numeric" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">段</span>'+
+        '<input class="ap-lane"  type="text" inputmode="numeric" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">巷</span>'+
+        '<input class="ap-alley" type="text" inputmode="numeric" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">弄</span>'+
+        '<input class="ap-no"    type="text" inputmode="numeric" style="width:48px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">號</span>'+
+        '<input class="ap-floor" type="text" inputmode="numeric" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">樓</span>'+
+      '</div>';
 
     var citySel = wrap.querySelector(".ap-city");
     var distSel = wrap.querySelector(".ap-dist");
@@ -88,7 +95,15 @@
     var roadSel = wrap.querySelector(".ap-roadsel");
     var segSel = wrap.querySelector(".ap-seg");
     var roadIn = wrap.querySelector(".ap-road");
-    var restIn = wrap.querySelector(".ap-rest");
+    var secIn = wrap.querySelector(".ap-sec");
+    var laneIn = wrap.querySelector(".ap-lane");
+    var alleyIn = wrap.querySelector(".ap-alley");
+    var noIn = wrap.querySelector(".ap-no");
+    var floorIn = wrap.querySelector(".ap-floor");
+    function composeRest(){
+      var v=secIn.value.trim(), l=laneIn.value.trim(), a=alleyIn.value.trim(), n=noIn.value.trim(), f=floorIn.value.trim();
+      return (v?v+'段':'')+(l?l+'巷':'')+(a?a+'弄':'')+(n?n+'號':'')+(f?f+'樓':'');
+    }
 
     // 縣市選項
     citySel.innerHTML = '<option value="">縣市…</option>' +
@@ -154,14 +169,16 @@
     distSel.addEventListener("change", function(){ syncZip(); zip2.value=""; syncRoadMode(); fire(); });
     roadSel.addEventListener("change", function(){ onRoadSel(); fire(); });
     segSel.addEventListener("change", function(){ if(segSel.value) zip2.value = segSel.value.slice(-2); fire(); });
-    [zip2, roadIn, restIn].forEach(function(el){ el.addEventListener("input", fire); });
+    [zip2, roadIn, secIn, laneIn, alleyIn, noIn, floorIn].forEach(function(el){ el.addEventListener("input", fire); });
 
     var api = {
       getParts: function(){
         return {
           city: citySel.value, dist: distSel.value,
           zip3: zip3.value, zip2: zip2.value,
-          road: roadIn.value.trim(), rest: restIn.value.trim()
+          road: roadIn.value.trim(),
+          sec: secIn.value.trim(), lane: laneIn.value.trim(), alley: alleyIn.value.trim(), no: noIn.value.trim(), floor: floorIn.value.trim(),
+          rest: composeRest()
         };
       },
       get: function(){
@@ -176,7 +193,11 @@
         syncRoadMode(p.road!=null ? p.road : "");
         if(p.road!=null) roadIn.value = p.road;
         if(p.zip2!=null) zip2.value = p.zip2;   // 還原使用者存的後2碼（覆蓋自動值）
-        if(p.rest!=null) restIn.value = p.rest;
+        if(p.sec!=null) secIn.value = p.sec;
+        if(p.lane!=null) laneIn.value = p.lane;
+        if(p.alley!=null) alleyIn.value = p.alley;
+        if(p.no!=null) noIn.value = p.no;
+        if(p.floor!=null) floorIn.value = p.floor;
       }
     };
 
