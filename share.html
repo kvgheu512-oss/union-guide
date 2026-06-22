@@ -60,7 +60,7 @@
       <p class="use">用 CASP 逐題評讀文獻、產報告／簡報</p>
       <div class="qrbox"><div id="qr1"></div></div>
       <p class="hint">📷 手機相機掃我</p>
-      <p class="url"><a href="https://wgz5138.github.io/union-guide/evidence.html">wgz5138.github.io/union-guide/evidence.html</a></p>
+      <p class="url"><a id="ln1" href="evidence.html">evidence.html</a></p>
     </div>
 
     <div class="card">
@@ -69,7 +69,7 @@
       <p class="use">查文獻標題＋摘要，醫院網路看全文</p>
       <div class="qrbox"><div id="qr2"></div></div>
       <p class="hint">📷 手機相機掃我</p>
-      <p class="url"><a href="https://wgz5138.github.io/union-guide/search.html">wgz5138.github.io/union-guide/search.html</a></p>
+      <p class="url"><a id="ln2" href="search.html">search.html</a></p>
     </div>
 
     <div class="card">
@@ -78,7 +78,7 @@
       <p class="use">貼狀況／對方的話，引法條、找破綻、列證據</p>
       <div class="qrbox"><div id="qr4"></div></div>
       <p class="hint">📷 手機相機掃我</p>
-      <p class="url"><a href="https://wgz5138.github.io/union-guide/lawyer.html">wgz5138.github.io/union-guide/lawyer.html</a></p>
+      <p class="url"><a id="ln4" href="lawyer.html">lawyer.html</a></p>
     </div>
   </div>
 
@@ -105,10 +105,14 @@
 <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js"></script>
 <script>
 (function(){
-  var E="https://wgz5138.github.io/union-guide/evidence.html";
-  var S="https://wgz5138.github.io/union-guide/search.html";
-  var L="https://wgz5138.github.io/union-guide/lawyer.html";
+  // 依「目前實際網址」自動組出同站連結，不寫死任何帳號／網域，掛在哪都正確
+  var base=location.href.replace(/[?#].*$/,"").replace(/[^/]*$/,"");  // share.html 所在資料夾
+  var E=base+"evidence.html";
+  var S=base+"search.html";
+  var L=base+"lawyer.html";
   var F="https://docs.google.com/forms/d/e/1FAIpQLSdd4R-JdKe7Cfqy7j9bhCRfBXa-B4ZODEvI_ZSfy2H5SQ_I6g/viewform";
+  function setLink(id,url){ var a=document.getElementById(id); if(a){ a.href=url; a.textContent=url.replace(/^https?:\/\//,""); } }
+  setLink("ln1",E); setLink("ln2",S); setLink("ln4",L);
   function make(id,url){
     try{
       new QRCode(document.getElementById(id),{ text:url, width:240, height:240,
