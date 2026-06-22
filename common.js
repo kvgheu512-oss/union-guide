@@ -21,26 +21,9 @@
 
   if(!("serviceWorker" in navigator)) return;
   var sw = navigator.serviceWorker;
-
-  // 正在填表/打字時別自動重載，免得吃掉還沒存的內容
-  function busy(){
-    var a = document.activeElement;
-    return !!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
-  }
-  // ③ 新版 SW 接管 → 自動換到最新版（零點擊）。首次安裝(本來沒有 controller)不重載。
-  var hadController = !!sw.controller, reloaded = false, pending = false;
-  sw.addEventListener("controllerchange", function(){
-    if(!hadController || reloaded) return;          // 首次安裝不重載
-    if(busy()){ pending = true; return; }           // 填表中：先記著，等閒置再換
-    reloaded = true; location.reload();
-  });
-  // 填表中被擱置的更新：等離開輸入或切回分頁時補上
-  document.addEventListener("visibilitychange", function(){
-    if(pending && !reloaded && document.visibilityState === "visible" && !busy()){ reloaded = true; location.reload(); }
-  });
-
+  // 背景自動更新：偵測到新版會在背景安裝，並於「下次換頁」自然套用最新版。
+  // 不強制重整目前頁面——避免打斷你看內容／打字／鉤子被中斷而造成畫面抖動。
   sw.register("sw.js").then(function(reg){
-    // 回到分頁/載入完成時主動問有沒有新版，讓更新更快被抓到
     if(reg){
       var check = function(){ try{ reg.update(); }catch(e){} };
       window.addEventListener("load", check);
