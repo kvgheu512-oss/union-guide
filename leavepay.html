@@ -94,12 +94,13 @@
   <div class="card">
     <h2>① 一般（平日）加班費</h2>
     <div class="sub">勞基法 §24：平常上班日，正常工時（8 小時）以外的延長工作</div>
-    <div class="hint" style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.5rem .7rem;color:#5C4000;margin:.3rem 0 .2rem">💡 加班費分兩段算：<b>每天</b>下班後<b>前 2 小時 ×1⅓</b>，<b>第 3 小時起 ×1⅔</b>。所以這兩格要填的是<b>時數</b>，不是金額。<br>👉 算<b>一天</b>：例如加班 3 小時 → 上格填 <b>2</b>、下格填 <b>1</b>。<br>👉 算<b>整個月</b>：把每天「前 2 小時」加起來填上格、「超過的」加起來填下格（每天上格最多只會增加 2）。</div>
-    <label>① ×1⅓ 時段的時數（每天前 2 小時，累計）</label>
-    <input id="wkF" type="number" inputmode="decimal" value="0" min="0" step="0.5">
-    <label>② ×1⅔ 時段的時數（每天第 3 小時起，累計）</label>
-    <input id="wkR" type="number" inputmode="decimal" value="0" min="0" step="0.5">
-    <label>醫院實際給的平日加班費？<span class="opt">（選填，對照）</span></label>
+    <div class="hint" style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.6rem .8rem;color:#5C4000;margin:.3rem 0 .5rem;font-size:13px">😀 <b>超簡單，免懂法律</b>：你只要填「<b>那天加班幾小時</b>」，算錢的事交給我們。<br>一天加了好幾次？先<b>加起來當一天</b>。加了好幾天？<b>一天填一行</b>（按下面綠色鈕加一行）。</div>
+    <label>哪幾天加班、各加幾小時？</label>
+    <div id="wkDays"></div>
+    <button type="button" id="wkAdd" style="width:100%;background:#EAFAF1;color:#0F5C36;border:1.5px dashed #1A7A4A;border-radius:10px;padding:.6rem;font-weight:700;font-size:14px;cursor:pointer;margin-top:.2rem">＋ 再加一天</button>
+    <div class="hint">只算一天就填一列即可；想算整個月，就把有加班的每一天各列一行。</div>
+    <div class="hint" style="background:#FFF3F2;border:1px solid #F0C5C2;border-radius:8px;padding:.5rem .7rem;color:#7B1818;margin-top:.4rem;font-size:13px">📌 <b>記得一件事就好</b>：上面的「月薪」要填<b>加班那個月</b>領的薪水。<br>👉 3 月加班，就填 3 月的月薪；4 月加班，就填 4 月的月薪。<b>哪個月加班，就用那個月的薪水算。</b></div>
+    <label style="margin-top:.85rem">醫院實際給的平日加班費？<span class="opt">（選填，對照）</span></label>
     <input id="actWk" type="number" inputmode="numeric" placeholder="例：900" min="0">
     <div class="out" id="outWk"></div>
     <div id="diffWk"></div>
@@ -204,6 +205,40 @@
   function num(id){ var v=parseFloat($(id).value); return isNaN(v)?0:v; }
   function money(n){ return "NT$ "+Math.round(n).toLocaleString("en-US"); }
 
+  // —— ① 平日加班費：小白「逐日」輸入（每天填總時數，系統自動分段 ×1⅓／×1⅔）——
+  var wkBox=$("wkDays");
+  function getWkDays(){
+    var out=[];
+    if(wkBox){ wkBox.querySelectorAll(".wk-h").forEach(function(i){ var v=parseFloat(i.value); out.push(isNaN(v)?0:v); }); }
+    return out;
+  }
+  function wkRowHTML(v){
+    return '<div class="wkrow" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+      '<span class="wkn" style="font-size:13px;color:#0F5C36;font-weight:700;white-space:nowrap">第 1 天</span>'+
+      '<input class="wk-h" type="number" inputmode="decimal" min="0" step="0.5" placeholder="加班幾小時" value="'+(v>0?v:"")+'" style="flex:1">'+
+      '<span style="font-size:13px;color:#777;flex:none">小時</span>'+
+      '<button type="button" class="wk-del" aria-label="刪除這天" style="background:#FDECEA;color:#7B1818;border:1px solid #F0C5C2;border-radius:8px;width:36px;height:36px;font-size:16px;cursor:pointer;flex:none">✕</button>'+
+      '</div>';
+  }
+  function renumberWk(){ if(wkBox){ var rs=wkBox.querySelectorAll(".wkn"); for(var i=0;i<rs.length;i++) rs[i].textContent="第 "+(i+1)+" 天"; } }
+  function renderWkDays(arr){
+    if(!wkBox) return;
+    if(!arr||!arr.length) arr=[0];
+    wkBox.innerHTML=arr.map(function(v){ return wkRowHTML(v); }).join("");
+    renumberWk();
+  }
+  function addWkRow(){ if(wkBox){ wkBox.insertAdjacentHTML("beforeend", wkRowHTML(0)); renumberWk(); } }
+  if(wkBox){
+    wkBox.addEventListener("input", function(e){ if(e.target&&e.target.classList&&e.target.classList.contains("wk-h")){ calc(); saveState(); } });
+    wkBox.addEventListener("click", function(e){
+      var del=e.target&&e.target.closest&&e.target.closest(".wk-del"); if(!del) return;
+      var row=del.closest(".wkrow"); if(row) row.remove();
+      if(!wkBox.querySelector(".wkrow")) addWkRow();
+      renumberWk(); calc(); saveState();
+    });
+  }
+  var wkAddBtn=$("wkAdd"); if(wkAddBtn) wkAddBtn.addEventListener("click", function(){ addWkRow(); calc(); saveState(); });
+
   function calc(){
     var sal=num("salary");
     var dv=num("dv")||30;
@@ -214,14 +249,23 @@
                         '<div class="row"><span>一小時工資（月薪÷'+(dv*8)+'）</span><b>'+money(hr)+'</b></div>'+
                         (dv!=30?'<div class="row"><span>※ 法定時薪（÷30÷8）</span><b>'+money(legalHr)+'</b></div>':'');
 
-    // ① 平日加班費（§24：前2時×1⅓、再2時×1⅔；時薪法定 ÷30÷8）
-    var wkF=num("wkF"), wkR=num("wkR");
-    var wkPay=wkF*legalHr*(4/3)+wkR*legalHr*(5/3);
-    $("outWk").innerHTML=(wkF>0?'<div class="row"><span>×1⅓ 時段：'+wkF+' 小時</span><b>'+money(wkF*legalHr*(4/3))+'</b></div>':'')+
-      (wkR>0?'<div class="row"><span>×1⅔ 時段：'+wkR+' 小時</span><b>'+money(wkR*legalHr*(5/3))+'</b></div>':'')+
+    // ① 平日加班費（§24：每天前2時×1⅓、第3時起×1⅔；時薪法定 ÷30÷8）
+    // 小白填法：逐「天」輸入當天加班總時數，系統自動分段
+    var dayHrs=getWkDays();          // 各天加班時數陣列
+    var totF=0, totR=0, rows="";
+    dayHrs.forEach(function(h,i){
+      if(h<=0) return;
+      var f=Math.min(h,2), r=Math.max(h-2,0);
+      totF+=f; totR+=r;
+      rows+='<div class="row"><span>第 '+(i+1)+' 天 加班 '+h+' 小時</span><b>'+money(f*legalHr*(4/3)+r*legalHr*(5/3))+'</b></div>';
+    });
+    var wkPay=totF*legalHr*(4/3)+totR*legalHr*(5/3);
+    var anyHr=totF+totR>0;
+    $("outWk").innerHTML=rows+
+      (anyHr?'<div class="row" style="font-size:12px;color:#777"><span>　其中 ×1⅓ 共 '+totF+' 時、×1⅔ 共 '+totR+' 時</span><span></span></div>':'')+
       '<div class="row"><span>平日加班費 應領</span><span class="big">'+money(wkPay)+'</span></div>'+
       (dv>30?'<div style="font-size:12px;color:#7B1818;margin-top:5px;font-weight:700">⚠ 高榮用 ÷'+dv+' 算時薪（月薪÷'+(dv*8)+'＝'+money(hr)+'），比法定 ÷240（'+money(legalHr)+'）每小時少給；逐時累積差額可主張（見 ④）。</div>':'')+
-      (wkF<=0&&wkR<=0?'<div style="font-size:11.5px;color:#777">填入加班時數即自動試算。</div>':'');
+      (!anyHr?'<div style="font-size:11.5px;color:#777">填入每天加班時數即自動試算。</div>':'');
     var aW=$("actWk").value, dW=$("diffWk");
     if(aW!==""&&!isNaN(parseFloat(aW))){
       var d0=wkPay-parseFloat(aW);
@@ -267,22 +311,24 @@
 
   // 選年資時，自動把「未休天數」帶成該年應有天數（方便、仍可手動改）
   $("sen").addEventListener("change",function(){ $("unused").value=this.value; calc(); });
-  ["salary","dv","wkF","wkR","actWk","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
+  ["salary","dv","actWk","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
 
   // 🛟 整頁暫存：含預設值的欄位＋調休單選鈕，重開自動還原（本機，不上傳）
   var PK="leavepay_state_v1";
-  var FIELDS=["salary","dv","wkF","wkR","actWk","sen","unused","actLeave","holi","otHr","actHoli"];
+  var FIELDS=["salary","dv","actWk","sen","unused","actLeave","holi","otHr","actHoli"];
   function saveState(){
     var d={};
     FIELDS.forEach(function(id){ var el=$(id); if(el) d[id]=el.value; });
+    d.wkDays=getWkDays();
     var hm=document.querySelector('input[name="hm"]:checked'); if(hm) d.hm=hm.value;
     var ci=document.querySelector('input[name="ci"]:checked'); if(ci) d.ci=ci.value;
     try{ localStorage.setItem(PK, JSON.stringify(d)); }catch(e){}
   }
   function loadState(){
-    var d; try{ d=JSON.parse(localStorage.getItem(PK)||"null"); }catch(e){ return; }
-    if(!d) return;
+    var d; try{ d=JSON.parse(localStorage.getItem(PK)||"null"); }catch(e){ renderWkDays([0]); return; }
+    if(!d){ renderWkDays([0]); return; }
     FIELDS.forEach(function(id){ var el=$(id); if(el && d[id]!=null && d[id]!=="") el.value=d[id]; });
+    renderWkDays(d.wkDays && d.wkDays.length ? d.wkDays : [0]);
     if(d.hm){ var r=document.querySelector('input[name="hm"][value="'+d.hm+'"]'); if(r) r.checked=true; }
     if(d.ci){ var r2=document.querySelector('input[name="ci"][value="'+d.ci+'"]'); if(r2) r2.checked=true; }
   }
