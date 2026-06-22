@@ -50,9 +50,12 @@
 
   main{max-width:640px;margin:0 auto;padding:1rem 1rem 4rem;}
 
-  .tpl-pick{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1rem;}
-  .tpl-pick button{font-size:12.5px;padding:.45rem .7rem;border-radius:9px;border:1.3px solid var(--border);background:#fff;color:var(--red-deep);cursor:pointer;}
-  .tpl-pick button.on{background:var(--red);color:#fff;border-color:var(--red);}
+  #tpl-pick{margin-bottom:.6rem;}
+  .tpl-grp{font-size:11.5px;font-weight:700;color:var(--ink-soft,#777);letter-spacing:.04em;margin:.7rem 2px .35rem;}
+  .tpl-grp:first-child{margin-top:0;}
+  .tpl-row{display:flex;flex-wrap:wrap;gap:7px;}
+  .tpl-row button{font-size:12.5px;padding:.45rem .7rem;border-radius:9px;border:1.3px solid var(--border);background:#fff;color:var(--red-deep);cursor:pointer;}
+  .tpl-row button.on{background:var(--red);color:#fff;border-color:var(--red);}
 
   .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem;margin-bottom:1rem;}
   .card h3{font-family:'Noto Serif TC',serif;font-size:15px;color:var(--red-deep);margin-bottom:.5rem;}
@@ -107,15 +110,9 @@
 
   <main>
     <div class="card">
-      <h3>① 選範本（會帶入主旨與說明，可再改）</h3>
-      <div class="tpl-pick" id="tpl-pick">
-        <button class="on" data-tpl="blank">空白函</button>
-        <button data-tpl="meeting">開會通知函</button>
-        <button data-tpl="invite">邀請函</button>
-        <button data-tpl="petition">陳情／請求函</button>
-        <button data-tpl="bargain">協商請求函</button>
-        <button data-tpl="record">函報主管機關備查</button>
-      </div>
+      <h3>① 選範本（依你負責的區塊找；會自動帶入主旨與說明，可再改）</h3>
+      <div id="tpl-pick"></div>
+      <div id="tpl-hint" style="display:none;background:var(--gold-light,#FEF9E7);border:1px solid #EAD67A;border-radius:9px;padding:.6rem .8rem;font-size:12.5px;color:#5C4000;line-height:1.7;margin-top:.3rem"></div>
     </div>
 
     <div class="card">
@@ -182,30 +179,91 @@ function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>
 function today(){ return new Date().toISOString().slice(0,10); }
 function rocDate(ds){ if(!ds) return '中華民國　年　月　日'; const p=ds.split('-'); return `中華民國${p[0]-1911}年${+p[1]}月${+p[2]}日`; }
 
-/* 範本 */
+/* 範本（【】內為待填，套用後直接取代即可；hint＝怎麼填的白話提示） */
 const TPL={
- blank:{to:'',subject:'',explain:'',copy:'無'},
- meeting:{to:'本會全體會員',subject:'本會謹訂於下列時間召開○○會議，敬請　準時出席。',
-   explain:'開會時間：中華民國○年○月○日（○）○時○分。\n開會地點：○○○。\n如不克出席，請事先向本會請假。',copy:'無'},
- invite:{to:'○○○',subject:'敬邀　台端蒞臨本會○○活動，惠予指導。',
-   explain:'活動名稱：○○○。\n時間地點：○年○月○日於○○○。\n敬請撥冗出席，無任歡迎。',copy:'無'},
- petition:{to:'高雄榮民總醫院',subject:'為維護本會會員勞動權益，就○○事項提出陳情，請　惠予處理見復。',
-   explain:'查○○○（敘明事實與依據）。\n本會主張：○○○。\n請貴院於文到○日內惠予回復，俾利後續處理。',copy:'高雄市政府勞工局'},
+ blank:{to:'',subject:'',explain:'',copy:'無',hint:'空白函：自己從頭寫。主旨一句話講目的、句末加「。」；說明每行一點會自動編號。'},
+ meeting:{to:'本會全體會員',subject:'本會謹訂於下列時間召開【○○】會議，敬請　準時出席。',
+   explain:'開會時間：中華民國【○】年【○】月【○】日（【○】）【○】時【○】分。\n開會地點：【○○○】。\n如不克出席，請事先向本會請假。',copy:'無',
+   hint:'開會通知：把【】換成會議名稱、時間、地點即可。發給全體會員用。'},
+ invite:{to:'【受邀單位／姓名】',subject:'敬邀　台端蒞臨本會【○○】活動，惠予指導。',
+   explain:'活動名稱：【○○○】。\n時間地點：【○】年【○】月【○】日於【○○○】。\n敬請撥冗出席，無任歡迎。',copy:'無',
+   hint:'邀請函：邀外賓／長官／媒體出席。填活動名稱與時間地點。'},
+ petition:{to:'高雄榮民總醫院',subject:'為維護本會會員勞動權益，就【○○】事項提出陳情，請　惠予處理見復。',
+   explain:'查【敘明事實：時間、地點、發生什麼事】。\n本會主張：【你們希望院方怎麼做】。\n請貴院於文到【○】日內惠予回復，俾利後續處理。',copy:'高雄市政府勞工局',
+   hint:'陳情／請求：向院方反映問題、要求處理。把事實寫清楚、講明你們的主張與回覆期限。'},
  bargain:{to:'高雄榮民總醫院',subject:'本會依團體協約法規定，請求與貴院進行團體協約之協商，請　查照辦理。',
-   explain:'依團體協約法第6條規定，勞資雙方應本誠實信用原則進行團體協約之協商。\n協商事項：○○○（如工資、工時、安全衛生等）。\n請貴院於文到○日內指派代表，並就協商時間、地點與本會聯繫。',copy:'高雄市政府勞工局'},
- record:{to:'高雄市政府勞工局',subject:'檢陳本會○○○（章程／理監事名冊／會議紀錄），請　查照備查。',
-   explain:'本會業於○年○月○日召開○○會議完成○○事項。\n隨文檢附相關文件如附件。\n請　惠予備查。',copy:'無'},
+   explain:'依團體協約法第6條規定，勞資雙方應本誠實信用原則進行團體協約之協商。\n協商事項：【如工資、工時、安全衛生等】。\n請貴院於文到【○】日內指派代表，並就協商時間、地點與本會聯繫。',copy:'高雄市政府勞工局',
+   hint:'協商請求：正式要求院方坐下來談團體協約。填要談的事項即可，法律依據已寫好。'},
+ record:{to:'高雄市政府勞工局',subject:'檢陳本會【章程／理監事名冊／會議紀錄】，請　查照備查。',
+   explain:'本會業於【○】年【○】月【○】日召開【○○】會議完成【○○】事項。\n隨文檢附相關文件如附件。\n請　惠予備查。',copy:'無',
+   hint:'函報備查：成立大會後把章程、名冊、紀錄送勞工局備查。記得附件欄填「如文」並夾帶文件。'},
+ /* 法規 */
+ unfair:{to:'高雄市政府勞工局',subject:'為本會會員遭雇主因參與工會而為不利對待，依工會法第35條申請裁決，請　鑒核。',
+   explain:'申訴人：【姓名／本會】。\n相對人：高雄榮民總醫院。\n事實經過：【何時、何地、發生什麼不利對待，如解僱、調職、減薪、考績打壓等】。\n法律依據：工會法第35條、勞資爭議處理法第39條以下（不當勞動行為裁決）。\n請求：請依法作成裁決，命相對人【回復原狀／給付○○】。',copy:'無',
+   hint:'不當勞動行為裁決：有人因加入工會被報復時用。事實要具體（時間、人、事），請求要明確。'},
+ inquiry:{to:'高雄市政府勞工局',subject:'為釐清【○○】法令適用疑義，函請惠予釋示，請　查照。',
+   explain:'本會就【具體條文或情形】之適用產生疑義。\n本會初步見解：【你們的理解】。\n敬請貴機關惠予函釋，俾利依循。',copy:'無',
+   hint:'函詢法令：不確定某條法規怎麼適用，正式問主管機關。'},
+ /* 總務 */
+ feedue:{to:'本會會員　【姓名】',subject:'台端常月會費自【○年○月】起尚未繳納，請　查照惠予補繳。',
+   explain:'依本會章程第22條，會員應按月繳納經常會費。\n台端尚積欠【○】個月會費，計新臺幣【○】元。\n請於文到【15】日內，以【現金／轉帳：○○銀行○○分行　帳號○○○○】補繳；逾期將依章程第9條辦理。',copy:'無',
+   hint:'催繳會費：填會員姓名、欠繳起迄與金額、繳費方式。語氣留餘地。'},
+ subsidy:{to:'高雄市政府勞工局',subject:'本會為新成立工會，依規定函請補助【○○】費用，請　鑒核。',
+   explain:'本會業於【○】年【○】月【○】日完成設立登記（登記證號：【○○】）。\n申請補助項目：【○○】，所需經費新臺幣【○】元。\n隨文檢附【收支預算表／立案證明】等文件如附件。\n請　惠予核撥。',copy:'無',
+   hint:'申請補助：向勞工局請領新成立工會補助。填登記資訊與補助項目金額，記得夾附件。'},
+ /* 組訓 */
+ training:{to:'本會全體會員',subject:'本會謹訂於【○年○月○日】辦理【○○】教育訓練，敬請　踴躍報名參加。',
+   explain:'課程名稱：【○○】。\n時間：【○】年【○】月【○】日【○】時。\n地點：【○○】。\n報名方式：【線上表單／洽○○幹部】，報名截止【○月○日】。',copy:'無',
+   hint:'教育訓練通知：辦勞動法研習、幹部訓練時用。填課程、時間地點、報名方式。'},
+ /* 文宣 */
+ notice:{to:'本會全體會員',subject:'為周知【○○】事項，請　查照。',
+   explain:'【第一件要周知的事…】\n【第二件…】\n【如需配合事項或聯絡窗口…】',copy:'無',
+   hint:'會員週知：把要公告給全體會員的事項，每行一點寫清楚。'},
+ /* 監事 */
+ audit:{to:'本會理事會（總務）',subject:'本會監事將於【○年○月○日】辦理【○○年度】財務稽核，請　惠予配合提供帳冊憑證。',
+   explain:'依工會法第17條及本會章程，監事得查核本會財務狀況。\n稽核時間：【○】年【○】月【○】日【○】時。\n請備妥【收支帳冊、傳票憑證、銀行存摺】等資料供查核。',copy:'無',
+   hint:'稽核通知：監事查帳前通知總務備齊資料。填稽核時間與年度。'},
+ auditreport:{to:'本會會員大會',subject:'檢陳本會【○○年度】財務監察報告，請　公鑒。',
+   explain:'監事業就本會【○○年度】財務收支完成查核。\n查核結果：【如：帳證相符、無異常／發現○○】。\n建議事項：【○○】。\n敬請大會公鑒。',copy:'無',
+   hint:'監察報告：查完帳後向會員大會報告結果。填年度、查核結果與建議。'},
 };
+/* 範本分區（依幹部職掌；通用組各幹部都會用到） */
+const TPL_GROUPS=[
+ {role:'通用 · 會務',keys:['blank','meeting','invite','record']},
+ {role:'法規',keys:['petition','unfair','inquiry']},
+ {role:'協商（理事長）',keys:['bargain']},
+ {role:'總務',keys:['feedue','subsidy']},
+ {role:'組訓',keys:['training']},
+ {role:'文宣',keys:['notice']},
+ {role:'監事',keys:['audit','auditreport']},
+];
+const TPL_LABEL={blank:'空白函',meeting:'開會通知函',invite:'邀請函',record:'函報主管機關備查',
+ petition:'陳情／請求函',unfair:'申訴不當勞動行為',inquiry:'函詢法令疑義',bargain:'協商請求函',
+ feedue:'催繳會費通知',subsidy:'函請撥付補助',training:'教育訓練通知',notice:'會員週知函',
+ audit:'財務稽核通知',auditreport:'監察報告函'};
 let curTpl='blank';
 function applyTpl(t){
   const d=TPL[t]; if(!d) return;
   $('f-to').value=d.to; $('f-subject').value=d.subject; $('f-explain').value=d.explain;
   $('f-main').value=d.to; $('f-copy').value=d.copy;
+  const h=$('tpl-hint'); if(h){ h.textContent=d.hint?('💡 '+d.hint):''; h.style.display=d.hint?'block':'none'; }
 }
+/* 渲染分區範本按鈕 */
+(function renderTpl(){
+  const wrap=$('tpl-pick'); if(!wrap) return;
+  let html='';
+  TPL_GROUPS.forEach(g=>{
+    html+='<div class="tpl-grp">'+esc(g.role)+'</div><div class="tpl-row">';
+    g.keys.forEach(k=>{ html+='<button data-tpl="'+k+'"'+(k===curTpl?' class="on"':'')+'>'+esc(TPL_LABEL[k]||k)+'</button>'; });
+    html+='</div>';
+  });
+  wrap.innerHTML=html;
+})();
 document.querySelectorAll('#tpl-pick button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('#tpl-pick button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
   curTpl=b.dataset.tpl; applyTpl(curTpl);
 }));
+{ const h=$('tpl-hint'); const d=TPL[curTpl]; if(h&&d&&d.hint){ h.textContent='💡 '+d.hint; h.style.display='block'; } }
 
 /* 產生公文 */
 function explainHTML(){
