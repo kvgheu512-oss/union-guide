@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#8A6D0B">
+<title>法規幹部工作台（小巫專區）｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#B7860B;--gold-deep:#8A6D0B;--gold-light:#FEF9E7;--navy:#1A3A6B;--navy-deep:#122A4F;--green:#1A7A4A;--green-deep:#0F5C36;--red:#C0392B;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#FAF7EF;--card:#fff;--border:#EAE2CC;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#B7860B,#8A6D0B);color:#fff;padding:1.9rem 1.25rem 1.5rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:20px;}
+  .header p{font-size:12.5px;opacity:.93;margin-top:6px;}
+  main{max-width:680px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:var(--gold-light);border:1px solid #EAD67A;border-radius:10px;padding:.75rem .95rem;font-size:12.5px;color:#5C4000;margin-bottom:1rem;line-height:1.75;}
+  h2{font-family:'Noto Serif TC',serif;color:var(--gold-deep);font-size:17px;margin:1.6rem 0 .6rem;display:flex;align-items:center;gap:8px;}
+
+  a.task{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:12px;padding:.75rem .9rem;margin-bottom:.55rem;}
+  a.task .ic{font-size:22px;flex-shrink:0;}
+  a.task .t{font-weight:700;color:var(--navy-deep);font-size:14.5px;}
+  a.task .d{font-size:12px;color:var(--ink-soft);margin-top:2px;line-height:1.6;}
+  a.task .go{margin-left:auto;color:var(--gold);font-size:18px;}
+  a.task.law{border-left-color:var(--gold);} a.task.tool{border-left-color:var(--navy);} a.task.tool .go{color:var(--navy);}
+  a.task.mem{border-left-color:var(--green);} a.task.mem .go{color:var(--green);}
+
+  .tpl{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:.7rem;overflow:hidden;}
+  .tpl>summary{cursor:pointer;padding:.8rem 1rem;font-weight:700;color:var(--gold-deep);font-family:'Noto Serif TC',serif;font-size:15px;list-style:none;}
+  .tpl>summary::-webkit-details-marker{display:none;}
+  .tpl>summary::before{content:'▸ ';color:var(--gold);}
+  .tpl[open]>summary::before{content:'▾ ';}
+  .tplbody{padding:0 1rem 1rem;}
+  .tplbody .src{font-size:11.5px;color:var(--ink-soft);margin-bottom:.5rem;}
+  pre.doc{white-space:pre-wrap;background:#FCFAF3;border:1px solid var(--border);border-radius:9px;padding:.8rem;font-family:inherit;font-size:13px;line-height:1.85;color:var(--ink-mid);}
+  .cpbtn{margin-top:.5rem;background:var(--navy);color:#fff;border:0;border-radius:9px;padding:.55rem 1rem;font-weight:700;font-size:13px;cursor:pointer;}
+  .cptoast{color:var(--green-deep);font-size:12px;min-height:15px;margin-top:5px;font-weight:700;}
+
+  .chk{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.3rem .4rem;margin:.3rem 0 1rem;}
+  .chk label{display:flex;align-items:flex-start;gap:11px;padding:.55rem .7rem;border-bottom:1px solid #F3EEDF;cursor:pointer;font-size:13.5px;line-height:1.7;}
+  .chk label:last-child{border-bottom:none;}
+  .chk input{width:21px;height:21px;flex-shrink:0;margin-top:1px;accent-color:var(--gold);}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.4rem;line-height:1.8;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<a class="noprint" href="union.html" onclick="if(history.length>1){history.back();return false;}" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;background:#fff;color:#8A6D0B;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">‹ 功能表</a>
+
+<div class="header">
+  <h1>⚖️ 法規幹部工作台</h1>
+  <p>小巫專區 · 你扛的法規線，一頁全部理清楚</p>
+</div>
+
+<main>
+  <div class="topnote">📌 法規線在年度計畫裡最吃重（章程、入會辦法、申報籌備、登記、勞資會議辦法、會議文件…）。這頁把<b>每項職責對應到該用的工具</b>，並附上你要產出的<b>兩份文件草案範本</b>。範本為依法條整理之草案，請依本會實況填寫、提會研議。</div>
+
+  <h2>🧭 你負責什麼 × 用哪個工具</h2>
+  <a class="task tool" href="charter.html"><span class="ic">📜</span><div><div class="t">起草／修訂章程</div><div class="d">章程草案（含與北榮逐條對照）。章程應載事項見工會法 §12。</div></div><span class="go">→</span></a>
+  <a class="task tool" href="founding.html"><span class="ic">🏗</span><div><div class="t">申報籌備 → 辦理工會登記</div><div class="d">籌備流程逐步勾選、每步附官方書表；走完可解鎖正式運營。</div></div><span class="go">→</span></a>
+  <a class="task tool" href="gongwen.html"><span class="ic">📄</span><div><div class="t">對主管機關的函稿／公文</div><div class="d">申報籌備、函報登記、開會通知等公文格式，一鍵列印／存 PDF。</div></div><span class="go">→</span></a>
+  <a class="task tool" href="meeting.html"><span class="ic">🗂</span><div><div class="t">章程通過、選舉理監事（會議）</div><div class="d">成立大會／會員大會議程、簽到表（法定人數檢查）、會議紀錄。</div></div><span class="go">→</span></a>
+  <a class="task law" href="official-forms.html"><span class="ic">📋</span><div><div class="t">官方書表與法令</div><div class="d">直連勞動部／高雄市勞工局——籌組流程、登記書表、法令全文。</div></div><span class="go">↗</span></a>
+  <a class="task tool" href="lawyer.html"><span class="ic">⚖️</span><div><div class="t">法律諮詢 · 評讀資方說法 · 列證據</div><div class="d">AI 律師（你的私人工具）：引法條、判斷對方破綻、列舉證據策略。</div></div><span class="go">→</span></a>
+  <a class="task mem" href="zhizai.html"><span class="ic">🦺</span><div><div class="t">會員權益個案：職災／公傷</div><div class="d">被職安室擋公傷時的接招步驟＋證據清單。</div></div><span class="go">→</span></a>
+  <a class="task mem" href="leavepay.html"><span class="ic">🧮</span><div><div class="t">會員權益個案：特休折算／加班費</div><div class="d">試算應領、抓醫院「÷31／年底結算」少給，附主張範本。</div></div><span class="go">→</span></a>
+
+  <h2>📑 你要產出的兩份範本（點開、可複製）</h2>
+
+  <details class="tpl">
+    <summary>① 會員入退會辦法（草案範本）</summary>
+    <div class="tplbody">
+      <div class="src">依據：工會法 §12（章程應載「入會、出會、停權、除名」）、§14（管理權主管不得入會）、§26（會費經會員大會議決）。</div>
+      <pre class="doc" id="tpl1">高雄榮民總醫院企業工會　會員入退會辦法（草案）
+
+第一條（依據）
+　本辦法依本會章程第○條規定訂定之。
+
+第二條（入會資格）
+　凡於高雄榮民總醫院從事工作、具勞工身分（約用、契約、派遣等非代表雇主行使管理權之人員）、年滿十六歲者，得申請加入本會為會員。
+　（依工會法第十四條，代表雇主行使管理權之主管人員不得加入；章程另有規定者，從其規定。）
+
+第三條（入會程序）
+　一、填具入會申請書，並檢附在職或身分證明。
+　二、經理事會（或其授權之受理單位）審查通過。
+　三、繳納入會費及當期會費後，正式取得會員資格。
+
+第四條（會費）
+　入會費新臺幣○○元；經常會費每月（或每年）新臺幣○○元，以○○方式收繳。
+　（費額由會員大會議決、章程訂定——工會法第二十六條。）
+
+第五條（會員權利）
+　出席會員（代表）大會並發言、表決、選舉、被選舉、罷免；享有本會法律諮詢、爭議協助及各項服務與福利。
+
+第六條（會員義務）
+　遵守章程及大會決議、按期繳納會費、出席會議、擔任經選任之本會職務。
+
+第七條（出會）
+　會員喪失勞工身分、退休或離職者，自事實發生之日起出會；章程另有規定者，從其規定。
+
+第八條（停權與除名）
+　會員積欠會費經催繳仍不繳納，或違反章程情節重大者，得依章程及會員大會議決之規定予以停權或除名。
+
+第九條（施行）
+　本辦法經理事會通過、提會員大會備查後施行；修正時亦同。</pre>
+      <button class="cpbtn" data-tpl="tpl1">📋 複製這份範本</button>
+      <div class="cptoast" data-toast="tpl1"></div>
+    </div>
+  </details>
+
+  <details class="tpl">
+    <summary>② 勞資會議勞方代表選舉辦法（草案範本）</summary>
+    <div class="tplbody">
+      <div class="src">依據：勞資會議實施辦法 §3（同數代表各 2～15 人）、§5（有企業工會者由會員大會選舉）、§6（單一性別逾半之名額保障＋候補）、§7（滿 15 歲有選舉/被選舉權）、§8（一級主管不得為勞方代表）、§10（任期 4 年）。</div>
+      <pre class="doc" id="tpl2">高雄榮民總醫院　勞資會議勞方代表選舉辦法（草案）
+
+第一條（依據）
+　本辦法依勞資會議實施辦法訂定之。
+
+第二條（代表名額）
+　勞資會議由勞資雙方同數代表組成，各置代表○人。
+　（依勞資會議實施辦法第三條，視單位人數各為二人至十五人；事業單位人數在一百人以上者，各不得少於五人。）
+
+第三條（選舉方式）
+　本事業單位已成立企業工會，勞方代表由本會會員（或會員代表）大會選舉之（勞資會議實施辦法第五條）。
+
+第四條（選舉權與被選舉權）
+　年滿十五歲之勞工，有選舉及被選舉為勞方代表之權（第七條）。
+　但代表雇主行使管理權之一級業務行政主管人員，不得為勞方代表（第八條）。
+
+第五條（性別比例保障）
+　本單位單一性別勞工人數逾二分之一者，該性別當選之勞方代表名額，不得少於勞方應選出代表總額三分之一（第六條）。
+
+第六條（候補代表）
+　候補代表名額不得超過應選出代表總額；勞方代表出缺時，由候補代表依序遞補（第六條、第十條）。
+
+第七條（任期）
+　勞方代表任期四年，連選得連任；任期自選出之翌日（或上屆任期屆滿之翌日）起算（第十條）。
+
+第八條（選務）
+　選舉之公告、候選、投開票及當選名單公布等事項，由本會理事會辦理之。
+
+第九條（施行）
+　本辦法經會員（代表）大會通過後施行；修正時亦同。</pre>
+      <button class="cpbtn" data-tpl="tpl2">📋 複製這份範本</button>
+      <div class="cptoast" data-toast="tpl2"></div>
+      <div class="src" style="margin-top:.6rem">📖 對照官方全文：<a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020008" target="_blank" rel="noopener" style="color:var(--gold-deep);font-weight:700">勞資會議實施辦法 ↗</a>（或在 AI 律師法規庫搜「勞資會議」）</div>
+    </div>
+  </details>
+
+  <h2>✅ 法規線進度（勾選、存本機）</h2>
+  <div class="chk" id="fgchk">
+    <label><input type="checkbox" data-k="f1"> 章程草案完成、提籌備會研議</label>
+    <label><input type="checkbox" data-k="f2"> 會員入退會辦法草案完成</label>
+    <label><input type="checkbox" data-k="f3"> 向主管機關（高雄市勞工局）申報籌備</label>
+    <label><input type="checkbox" data-k="f4"> 成立大會：章程通過、選出理監事</label>
+    <label><input type="checkbox" data-k="f5"> 成立日起 30 日內函報工會登記</label>
+    <label><input type="checkbox" data-k="f6"> 領取工會登記證書／核可文件</label>
+    <label><input type="checkbox" data-k="f7"> 勞資會議勞方代表選舉辦法訂定、辦理選舉</label>
+  </div>
+
+  <div class="foot">範本依全國法規資料庫（工會法／勞資會議實施辦法）整理之草案，正式版以本會大會決議及主管機關規定為準 · 高雄榮民總醫院企業工會（籌備中）</div>
+</main>
+
+<script>
+(function(){
+  // 進度勾選存本機
+  var CK="fagui_chk_v1", saved={};
+  try{ saved=JSON.parse(localStorage.getItem(CK))||{}; }catch(e){}
+  document.querySelectorAll("#fgchk input").forEach(function(b){
+    if(saved[b.dataset.k]) b.checked=true;
+    b.addEventListener("change",function(){ saved[b.dataset.k]=b.checked; try{localStorage.setItem(CK,JSON.stringify(saved));}catch(e){} });
+  });
+  // 複製範本
+  document.querySelectorAll(".cpbtn").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var id=btn.getAttribute("data-tpl"), txt=document.getElementById(id).textContent;
+      var toast=document.querySelector('[data-toast="'+id+'"]');
+      function ok(){ if(toast){toast.textContent="✅ 已複製，可貼到公文工具或 Word";setTimeout(function(){toast.textContent="";},2600);} }
+      if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(ok,function(){var r=document.createRange();r.selectNode(document.getElementById(id));window.getSelection().removeAllRanges();window.getSelection().addRange(r);document.execCommand("copy");ok();}); }
+      else { var r=document.createRange();r.selectNode(document.getElementById(id));window.getSelection().removeAllRanges();window.getSelection().addRange(r);document.execCommand("copy");ok(); }
+    });
+  });
+})();
+</script>
+<script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
+</body>
+</html>
