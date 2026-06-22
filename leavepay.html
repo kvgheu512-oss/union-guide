@@ -55,7 +55,10 @@
   <div class="card" style="border-top-color:#B7860B">
     <label>你的月薪（<b>含經常性給與</b>，新臺幣元）</label>
     <input id="salary" type="number" inputmode="numeric" value="40000" min="0">
-    <div class="hint">＝ 本薪＋全勤＋固定津貼等「工資」項目總和。一日工資＝月薪 ÷ 30；一小時工資＝月薪 ÷ 240。</div>
+    <div class="hint">＝ 本薪＋全勤＋固定津貼等「工資」項目總和（不是只算本薪）。</div>
+    <label>月薪換算<b>除數</b>（每月幾天）</label>
+    <input id="dv" type="number" inputmode="numeric" value="30" min="1" max="31">
+    <div class="hint">⚖️ <b>特休折算法定固定用 30</b>（細則 §24-1）。<b>高榮若以「當月實際天數」計</b>，就改填該月天數（如 <b>31</b>）來比對。<b>除數越大＝每天金額越低</b>；用 31 折特休會比法定少，差額可主張。</div>
     <div class="out" id="base"></div>
   </div>
 
@@ -115,15 +118,21 @@
 
   function calc(){
     var sal=num("salary");
-    var day=sal/30, hr=sal/240;
-    $("base").innerHTML='<div class="row"><span>一日工資（月薪÷30）</span><b>'+money(day)+'</b></div>'+
-                        '<div class="row"><span>一小時工資（月薪÷240）</span><b>'+money(hr)+'</b></div>';
+    var dv=num("dv")||30;
+    var day=sal/dv, hr=sal/(dv*8);
+    var legalDay=sal/30;                 // 特休法定基準：固定 ÷30
+    $("base").innerHTML='<div class="row"><span>一日工資（月薪÷'+dv+'）</span><b>'+money(day)+'</b></div>'+
+                        '<div class="row"><span>一小時工資（月薪÷'+(dv*8)+'）</span><b>'+money(hr)+'</b></div>'+
+                        (dv!=30?'<div class="row"><span>※ 特休法定一日（÷30）</span><b>'+money(legalDay)+'</b></div>':'');
 
-    // ① 特休
-    var unused=num("unused"), leavePay=unused*day;
+    // ① 特休（法定固定 ÷30；同時顯示你填的除數算法以便對照高榮）
+    var unused=num("unused");
+    var legalLeave=unused*legalDay, dvLeave=unused*day;
     $("outLeave").innerHTML='<div class="row"><span>未休天數</span><b>'+unused+' 天</b></div>'+
-      '<div class="row"><span>一日工資</span><b>'+money(day)+'</b></div>'+
-      '<div class="row"><span>應折算工資</span><span class="big">'+money(leavePay)+'</span></div>';
+      '<div class="row"><span><b>法定應折算</b>（÷30）</span><span class="big">'+money(legalLeave)+'</span></div>'+
+      (dv!=30?'<div class="row"><span>高榮算法（÷'+dv+'）</span><b>'+money(dvLeave)+'</b></div>':'');
+    var leavePay=legalLeave;             // 對照基準用法定金額
+    if(dv>30){ $("outLeave").innerHTML+='<div style="font-size:12px;color:#7B1818;margin-top:5px;font-weight:700">⚠ 高榮用 ÷'+dv+' 比法定 ÷30 每天少 '+money(legalDay-day)+'，共少 '+money(legalLeave-dvLeave)+'——依細則 §24-1，特休折算應 ÷30，差額可主張。</div>'; }
     var aL=$("actLeave").value, dL=$("diffLeave");
     if(aL!==""&&!isNaN(parseFloat(aL))){
       var diff=leavePay-parseFloat(aL);
@@ -153,7 +162,7 @@
 
   // 選年資時，自動把「未休天數」帶成該年應有天數（方便、仍可手動改）
   $("sen").addEventListener("change",function(){ $("unused").value=this.value; calc(); });
-  ["salary","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
+  ["salary","dv","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
   calc();
 })();
 </script>
