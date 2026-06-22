@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#5B3B8C">
+<meta name="apple-mobile-web-app-title" content="導覽語音包">
+<title>導覽語音包（用聽的）｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ac:#5B3B8C;--ac-deep:#3F2A63;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F6F3FB;--card:#fff;--border:#E1D9EE;--gold-light:#FEF9E7;--gold-line:#EAD67A;--green:#1A7A4A;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.85;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#5B3B8C,#3F2A63);color:#fff;padding:1.8rem 1.25rem 1.4rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:20px;}
+  .header p{font-size:12.8px;opacity:.92;margin-top:6px;line-height:1.7;}
+  main{max-width:620px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:var(--gold-light);border:1px solid var(--gold-line);border-radius:10px;padding:.75rem .95rem;font-size:12.8px;color:#5C4000;margin-bottom:1rem;line-height:1.75;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem;margin-bottom:1rem;border-top:4px solid var(--ac);}
+  label{display:block;font-size:12.5px;font-weight:700;color:var(--ac-deep);margin:.5rem 0 .2rem;}
+  select{width:100%;padding:.6rem .7rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-family:inherit;}
+  .try{margin-top:8px;width:100%;background:#EFEAF7;color:var(--ac-deep);border:1.5px solid var(--ac);border-radius:10px;padding:.55rem;font-weight:700;font-size:14px;cursor:pointer;}
+  .play{display:block;width:100%;background:var(--ac);color:#fff;border:0;border-radius:12px;padding:.95rem;font-weight:700;font-size:17px;cursor:pointer;text-align:center;}
+  .play:active{background:var(--ac-deep);}
+  .mini{display:flex;gap:8px;margin-top:8px;}
+  .mini button{flex:1;background:#EFEAF7;color:var(--ac-deep);border:1.5px solid var(--ac);border-radius:10px;padding:.6rem;font-weight:700;font-size:14px;cursor:pointer;}
+  .now{font-size:13px;color:var(--ac-deep);font-weight:700;min-height:20px;margin-top:10px;text-align:center;}
+  .cat{font-family:'Noto Serif TC',serif;font-size:15px;color:var(--ac-deep);margin:1rem 0 .4rem;font-weight:700;}
+  .sec{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .8rem;margin-bottom:7px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .sec.on{background:#F1ECF9;border-color:var(--ac);}
+  .sec .pi{font-size:18px;color:var(--ac);flex:none;}
+  .sec .nm{font-weight:700;font-size:14.5px;}
+  .sec .meta{margin-left:auto;font-size:12px;color:var(--ink-soft);flex:none;}
+  .help{background:#FDF3F2;border:1px solid #F0C5C2;border-radius:12px;padding:.8rem 1rem;font-size:13px;color:#5A1010;line-height:1.8;margin-top:1rem;display:none;}
+  .help.show{display:block;}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.3rem;line-height:1.8;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="index.html">
+
+<div class="header">
+  <h1>🎧 導覽語音包</h1>
+  <p>閉著眼睛聽就好，不用看螢幕</p>
+</div>
+
+<main>
+  <div class="topnote">📌 先在下面<b>挑一個你順耳的聲音</b>（有的偏女聲、有的偏男聲，按「試聽」比較看看），再按「全部播放」。沒聲音先檢查手機<b>靜音鍵／音量</b>。</div>
+
+  <div class="card">
+    <label>🎚️ 選聲音</label>
+    <select id="voiceSel"></select>
+    <label style="margin-top:.6rem">語速</label>
+    <select id="rateSel">
+      <option value="1">正常</option>
+      <option value="0.9">稍慢</option>
+      <option value="0.8">慢（長輩好聽）</option>
+    </select>
+    <button class="try" id="tryBtn">🔎 試聽這個聲音</button>
+  </div>
+
+  <div class="card" style="text-align:center">
+    <button class="play" id="playAll">▶️ 全部播放</button>
+    <div class="mini">
+      <button id="pause">⏸ 暫停</button>
+      <button id="resume">▶ 繼續</button>
+      <button id="stop">⏹ 停止</button>
+    </div>
+    <div class="now" id="now"></div>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="help" id="help">
+    🔊 <b>這支手機好像沒有中文朗讀。</b><br>
+    • iPhone：設定 → 輔助使用 → 朗讀內容 → 開啟並下載中文語音<br>
+    • Android：設定 → 系統 → 語言與輸入 → 文字轉語音 → 安裝中文（台灣）<br>
+    裝好回來再按播放；或先用各頁的「📖 文字導覽」。
+  </div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 用手機內建朗讀，免費</div>
+</main>
+
+<div id="verBadge"></div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var SECS=[
+    {cat:"會員篇",nm:"認識工會",s:"工會，是大家一起為自己爭取合理勞動條件的團體。湊滿三十人連署就能成立。記住：工會是工具，不是許願池，要來開會，有問題主動找幹部。"},
+    {cat:"會員篇",nm:"加班費試算機",s:"幫你算三種錢：平日加班、國定假日上班、還有沒休的特休。填月薪和加班時數，就知道醫院有沒有少給你。"},
+    {cat:"會員篇",nm:"入會划不划算",s:"輸入月薪和每月加班時數，就看得出，能拿回的加班費和特休，常常遠遠超過一年的會費。"},
+    {cat:"會員篇",nm:"加班費補發",s:"以前沒領到的加班費，五年內可以追。畫面有倒數，越早辦越好，照清單準備資料就行。"},
+    {cat:"會員篇",nm:"線上會議室",s:"用手機就能線上開會。點進 Google Meet，填真名、按加入。想講話再開麥克風，只想聽就關著。"},
+    {cat:"幹部篇",nm:"工會基本資料",s:"幹部先在這裡填一次工會資料，之後做文件會自動帶入。只存手機；公開的按發布，大家就看得到。"},
+    {cat:"幹部篇",nm:"合併列印",s:"勾選會員、選範本，一次幫每個人做一份通知或收據，印出來或存檔。"},
+    {cat:"幹部篇",nm:"公文文號簿",s:"公文自動編號、自動記錄，不用手寫。"},
+    {cat:"幹部篇",nm:"批次收據",s:"一次貼上多人姓名和金額，幫每個人開收據，外加一張總表。"},
+    {cat:"幹部篇",nm:"會址怎麼辦（重要）",s:"別用理事長家當會址，會影響房屋稅、地價稅，連賣房優惠都沒了。改租借址登記，或借非自住的房子，先打一九九九問勞工局。"},
+    {cat:"幹部篇",nm:"避坑清單",s:"成立工會有些坑：沒辦扣繳會被罰、用個人帳戶收費傷信任、會址用住家害屋主、個資別放公開網站。看完打勾，重要的事帶到會議投票。"}
+  ];
+  var rate=4.6;
+  function fmt(t){t=t.replace(/\s+/g,"");var sec=Math.round(t.length/rate);var m=Math.floor(sec/60),s=sec%60;return m?(m+"分"+(s<10?"0":"")+s+"秒"):(s+"秒");}
+
+  // ---- 聲音 ----
+  var VK="ebn_voice_name", RK="ebn_voice_rate";
+  function zhVoices(){ try{ return (speechSynthesis.getVoices()||[]).filter(function(v){return /zh|cmn|Chinese|TW|HK|Hant|Hans/i.test(v.lang+v.name);}); }catch(e){ return []; } }
+  function chosen(){ var vs=zhVoices(); if(!vs.length) return null; var n=localStorage.getItem(VK); return vs.filter(function(v){return v.name===n;})[0]||vs[0]; }
+  function chosenRate(){ var r=parseFloat(localStorage.getItem(RK)); return isNaN(r)?1:r; }
+  function populate(){
+    var vs=zhVoices(), sel=$("voiceSel");
+    if(!vs.length){ sel.innerHTML='<option>（這支手機沒有中文聲音）</option>'; $("help").classList.add("show"); return; }
+    var saved=localStorage.getItem(VK);
+    sel.innerHTML=vs.map(function(v,i){ var lbl=v.name+"（"+v.lang+"）"; return '<option value="'+v.name.replace(/"/g,"")+'"'+((saved?v.name===saved:i===0)?' selected':'')+'>'+lbl+'</option>'; }).join("");
+  }
+  try{ if(window.speechSynthesis){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){ populate(); }; } }catch(e){}
+  populate();
+  $("rateSel").value=String(chosenRate());
+  $("voiceSel").addEventListener("change",function(){ localStorage.setItem(VK,this.value); });
+  $("rateSel").addEventListener("change",function(){ localStorage.setItem(RK,this.value); });
+
+  function sentences(t){ t=(t||"").replace(/\s+/g," ").trim(); var a=t.split(/([。！？!?；;，,、])/),o=[],c=""; for(var k=0;k<a.length;k++){ c+=a[k]; if(/[。！？!?；;，,、]/.test(a[k])){ if(c.trim())o.push(c.trim()); c=""; } } if(c.trim())o.push(c.trim()); return o; }
+  var cur=-1, playingAll=false, stopped=true;
+  function chain(parts, done){
+    if(!window.speechSynthesis||!parts.length){ if(done)done(); return; }
+    var v=chosen(), rt=chosenRate(), j=0;
+    (function nx(){ if(stopped)return; if(j>=parts.length){ if(done)done(); return; }
+      try{ var u=new SpeechSynthesisUtterance(parts[j]); u.lang="zh-TW"; u.rate=rt; if(v)u.voice=v;
+        u.onend=function(){ j++; nx(); }; u.onerror=function(){ j++; nx(); };
+        speechSynthesis.speak(u);
+      }catch(e){ j++; nx(); }
+    })();
+  }
+  function highlight(){ document.querySelectorAll(".sec").forEach(function(el,k){ el.classList.toggle("on",k===cur); }); $("now").textContent=cur>=0?("🔊 播放中："+SECS[cur].nm):""; }
+  function playFrom(idx){
+    if(!zhVoices().length){ $("help").classList.add("show"); $("now").textContent="（沒有中文聲音，見下方說明）"; return; }
+    stopped=false; cur=idx; highlight();
+    chain(sentences(SECS[idx].s), function(){ if(stopped)return; if(playingAll&&idx+1<SECS.length){ playFrom(idx+1); } else { stopped=true; cur=-1; highlight(); $("now").textContent="✅ 播放完畢"; } });
+  }
+  $("tryBtn").addEventListener("click",function(){ try{speechSynthesis.cancel();}catch(e){} stopped=false; chain(["哈囉，這是工會導覽的聲音，你聽起來還順耳嗎？"],function(){stopped=true;}); });
+  $("playAll").addEventListener("click",function(){ try{speechSynthesis.cancel();}catch(e){} playingAll=true; playFrom(0); });
+  $("pause").addEventListener("click",function(){ try{speechSynthesis.pause();}catch(e){} $("now").textContent="⏸ 已暫停"; });
+  $("resume").addEventListener("click",function(){ try{speechSynthesis.resume();}catch(e){} if(cur>=0)$("now").textContent="🔊 播放中："+SECS[cur].nm; });
+  $("stop").addEventListener("click",function(){ stopped=true; playingAll=false; cur=-1; try{speechSynthesis.cancel();}catch(e){} highlight(); $("now").textContent="⏹ 已停止"; });
+
+  var html="", lastCat="";
+  SECS.forEach(function(x,k){ if(x.cat!==lastCat){ html+='<div class="cat">'+x.cat+'</div>'; lastCat=x.cat; }
+    html+='<div class="sec" data-i="'+k+'"><span class="pi">▶</span><div class="nm">'+x.nm+'</div><div class="meta">'+fmt(x.s)+'</div></div>';
+  });
+  $("list").innerHTML=html;
+  (function(){ var all=SECS.map(function(x){return x.s;}).join(""); $("playAll").textContent="▶️ 全部播放（約 "+fmt(all)+"）"; })();
+  $("list").addEventListener("click",function(e){ var el=e.target.closest&&e.target.closest(".sec"); if(!el)return; try{speechSynthesis.cancel();}catch(_){} playingAll=false; playFrom(+el.dataset.i); });
+  window.addEventListener("pagehide",function(){ try{speechSynthesis.cancel();}catch(e){} });
+})();
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>

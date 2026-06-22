@@ -42,8 +42,14 @@
 
   function speakStop() { try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {} }
   function pickVoice() {
-    try { var vs = speechSynthesis.getVoices() || []; return vs.filter(function (v) { return /zh|cmn|Chinese|Taiwan|TW|Hant/i.test(v.lang + v.name); })[0] || null; } catch (e) { return null; }
+    try {
+      var vs = (speechSynthesis.getVoices() || []).filter(function (v) { return /zh|cmn|Chinese|Taiwan|TW|HK|Hant|Hans/i.test(v.lang + v.name); });
+      if (!vs.length) return null;
+      var name = null; try { name = localStorage.getItem("ebn_voice_name"); } catch (e) {}
+      return vs.filter(function (v) { return v.name === name; })[0] || vs[0];   // 用使用者在語音包選的聲音
+    } catch (e) { return null; }
   }
+  function pickRate() { try { var r = parseFloat(localStorage.getItem("ebn_voice_rate")); return isNaN(r) ? 1 : r; } catch (e) { return 1; } }
   function voiceReady() { return !!(window.speechSynthesis && pickVoice()); }
   // 語音清單常常非同步載入，先暖機並監聽
   try { if (window.speechSynthesis) { speechSynthesis.getVoices(); if (!speechSynthesis.onvoiceschanged) speechSynthesis.onvoiceschanged = function () { try { speechSynthesis.getVoices(); } catch (e) {} }; } } catch (e) {}
@@ -83,7 +89,7 @@
     speakStop();
     try {
       var u = new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g, ""));
-      u.lang = "zh-TW"; u.rate = 1; u.pitch = 1; var v = pickVoice(); if (v) u.voice = v;
+      u.lang = "zh-TW"; u.rate = pickRate(); u.pitch = 1; var v = pickVoice(); if (v) u.voice = v;
       if (onend) u.onend = onend;
       speechSynthesis.speak(u);
     } catch (e) { if (onend) onend(); }
@@ -104,7 +110,7 @@
       if (j >= parts.length) { if (done) done(); return; }
       try {
         var u = new SpeechSynthesisUtterance(parts[j]);
-        u.lang = "zh-TW"; u.rate = 1; u.pitch = 1; var v = pickVoice(); if (v) u.voice = v;
+        u.lang = "zh-TW"; u.rate = pickRate(); u.pitch = 1; var v = pickVoice(); if (v) u.voice = v;
         u.onend = function () { j++; nx(); };
         u.onerror = function () { j++; nx(); };
         speechSynthesis.speak(u);
