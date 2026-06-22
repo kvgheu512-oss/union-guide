@@ -403,10 +403,11 @@
     </div>
     <div class="card">
       <div class="card-title">🔐 加密與通行碼</div>
-      <button class="btn ghost full sm" onclick="changePw()">🔑 變更通行碼</button>
+      <button class="btn full sm" onclick="enableEnc()" style="background:#1A3A6B;color:#fff">🔐 啟用加密保護（要正式上鎖時才按）</button>
+      <button class="btn ghost full sm" style="margin-top:6px" onclick="changePw()">🔑 變更通行碼</button>
       <button class="btn ghost full sm" style="margin-top:6px" onclick="regenRec()">♻️ 重新產生救回碼</button>
       <button class="btn ghost full sm" style="margin-top:6px" onclick="lockNow()">🔒 立即上鎖</button>
-      <p class="muted" style="margin-top:6px;font-size:11px">帳本以 <b>AES-GCM 加密</b>存本機，無通行碼讀不出；<b>閒置 5 分鐘自動上鎖</b>。忘記密碼可用<b>救回碼</b>自行重設；兩者都遺失則無法復原，請定期匯出備份。</p>
+      <p class="muted" style="margin-top:6px;font-size:11px"><b>草創測試期預設「開放」</b>，方便試用。要正式保護當事人個資時，按上面「啟用加密保護」設一組密碼即可——之後帳本以 <b>AES-GCM 加密</b>存本機、閒置 5 分鐘自動上鎖、忘記可用救回碼自救。</p>
     </div>
     <div class="card">
       <button class="btn red full" onclick="wipe()">⚠ 清空本機所有帳目</button>
@@ -574,9 +575,10 @@ ${pages}
 }
 
 /* ===================== 進場加密鎖（SecLock） ===================== */
+function enableEnc(){ if(window.SecLock) SecLock.enable(); }
 function changePw(){ if(window.SecLock) SecLock.changePassword(); }   // 相容舊按鈕
 function regenRec(){ if(window.SecLock) SecLock.regenRecovery(); }
-function lockNow(){ if(window.SecLock) SecLock.lockNow(); }
+function lockNow(){ if(window.SecLock){ if(!SecLock.isEncrypted()){ alert('目前是開放模式，尚未啟用加密。請先按「啟用加密保護」。'); return; } SecLock.lockNow(); } }
 
 /* ===================== Tabs ===================== */
 document.getElementById('tabs').addEventListener('click',e=>{

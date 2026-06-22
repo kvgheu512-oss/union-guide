@@ -162,8 +162,8 @@
 
   <div id="list"></div>
 
-  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部案件管理<br>🔐 案件以 AES-GCM 加密存本機、不上傳；<b>閒置 5 分鐘自動上鎖</b>；換手機請另行備份。<br>
-    <button class="lk" id="chpwBtn">🔑 變更通行碼</button>·<button class="lk" id="regenBtn">♻️ 重新產生救回碼</button>·<button class="lk" id="lockNowBtn">🔒 立即上鎖</button>
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部案件管理<br><b>草創測試期預設開放</b>（免密碼、方便試用）；要正式保護當事人個資時按下方「🔐 啟用加密保護」設一組密碼。資料只存本機、不上傳。<br>
+    <button class="lk" id="enableBtn" style="color:#1A3A6B;font-weight:700">🔐 啟用加密保護</button>·<button class="lk" id="chpwBtn">🔑 變更通行碼</button>·<button class="lk" id="regenBtn">♻️ 重新產生救回碼</button>·<button class="lk" id="lockNowBtn">🔒 立即上鎖</button>
   </div>
 </main>
 <div class="toast" id="toast"></div>
@@ -175,9 +175,10 @@ function uid(){return 'c'+Date.now().toString(36)+Math.random().toString(36).sli
 var tt; function toast(m){ var t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(function(){t.classList.remove('show');},2200); }
 
 /* ───────── 加密核心（Web Crypto：PBKDF2 + AES-GCM 256，信封加密：DEK 由密碼與救回碼各包一份） ───────── */
-var ENC='cases_enc_v1', SK='cases_dek_sess';
+var ENC='cases_enc_v1', SK='cases_dek_sess', PLAIN='cases_v1';
 var dekKey=null;            // 解密後的資料金鑰（CryptoKey，僅存記憶體／sessionStorage）
-var data=[];                // 解密後的案件陣列
+var data=[];                // 案件陣列（開放模式為明文、加密模式為解密後）
+var mode='open';            // 'open'=草創測試免密碼；'enc'=已啟用加密
 var C=(window.crypto&&crypto.subtle)?crypto.subtle:null;
 function b64e(buf){var u=new Uint8Array(buf),s='';for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s);}
 function b64d(str){var bin=atob(str),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;}
@@ -197,14 +198,15 @@ async function setupNew(pw){
   var saltPw=rnd(16), saltRec=rnd(16);
   var kekPw=await deriveKEK(pw,saltPw), kekRec=await deriveKEK(normCode(rec),saltRec);
   var wrapPw=await aesEnc(kekPw,dekRaw), wrapRec=await aesEnc(kekRec,dekRaw);
-  var init=[]; try{var old=localStorage.getItem('cases_v1');if(old)init=JSON.parse(old)||[];}catch(e){}   // 遷移舊明文
+  var init=(data&&data.length)?data:[];                 // 用目前資料（保住測試期已輸入的）
+  try{ if(!init.length){var old=localStorage.getItem(PLAIN);if(old)init=JSON.parse(old)||[];} }catch(e){}
   dekKey=await importDek(dekRaw);
   var blob=await aesEnc(dekKey,new TextEncoder().encode(JSON.stringify(init)));
   var e={v:1,saltPw:b64e(saltPw),wrapPwIv:wrapPw.iv,wrapPw:wrapPw.ct,saltRec:b64e(saltRec),wrapRecIv:wrapRec.iv,wrapRec:wrapRec.ct,dataIv:blob.iv,data:blob.ct};
   localStorage.setItem(ENC,JSON.stringify(e));
-  try{localStorage.removeItem('cases_v1');}catch(_){}
+  try{localStorage.removeItem(PLAIN);}catch(_){}    // 移除明文
   try{sessionStorage.setItem(SK,b64e(dekRaw));}catch(_){}
-  data=init; return rec;
+  data=init; mode='enc'; return rec;
 }
 async function loadBlob(e){var pt=await aesDec(dekKey,e.dataIv,e.data);return JSON.parse(new TextDecoder().decode(pt)||'[]');}
 async function unlockPw(pw){
@@ -238,7 +240,7 @@ async function regenRecovery(){
   return rec;
 }
 async function saveData(){
-  if(!dekKey) return;
+  if(mode!=='enc' || !dekKey){ try{localStorage.setItem(PLAIN,JSON.stringify(data));}catch(e){} return; }   // 開放模式：存明文
   var e=JSON.parse(localStorage.getItem(ENC));
   var blob=await aesEnc(dekKey,new TextEncoder().encode(JSON.stringify(data)));
   e.dataIv=blob.iv;e.data=blob.ct;
@@ -261,13 +263,20 @@ function startIdle(){
   if(!idleBound){ ['click','keydown','touchstart','mousemove','scroll'].forEach(function(ev){ document.addEventListener(ev,reset,{passive:true}); }); idleBound=true; }
   reset();
 }
-function lockNow(){ try{sessionStorage.removeItem(SK);}catch(_){} dekKey=null; data=[]; location.reload(); }
-function enterApp(){ $('lock').classList.add('hide'); fillCatSelects(); renderStats(); renderList(); startIdle(); }
+function lockNow(){ if(mode!=='enc'){ alert('目前是開放模式，尚未啟用加密。請按下方「啟用加密」。'); return; } try{sessionStorage.removeItem(SK);}catch(_){} dekKey=null; data=[]; location.reload(); }
+function openLoad(){ try{var s=localStorage.getItem(PLAIN); data=s?(JSON.parse(s)||[]):[];}catch(e){ data=[]; } }
+function enterApp(){ $('lock').classList.add('hide'); fillCatSelects(); renderStats(); renderList(); if(mode==='enc') startIdle(); }
+function enableEnc(){
+  if(mode==='enc'){ alert('已經是加密狀態了。'); return; }
+  if(!C){ alert('此瀏覽器不支援加密（需 https:// 與較新瀏覽器）。'); return; }
+  $('lock').classList.remove('hide'); panel('setup'); var f=$('su-pw'); if(f)f.focus();
+}
 
 (async function initLock(){
+  var hasEnc=!!(C && localStorage.getItem(ENC));
+  if(!hasEnc){ mode='open'; openLoad(); setTimeout(enterApp,0); return; }   // 預設開放：免密碼直接用（延後到 CATS 等定義完成）
+  mode='enc';
   if(!C){ panel('nocrypto'); return; }
-  var hasEnc=!!localStorage.getItem(ENC);
-  if(!hasEnc){ panel('setup'); $('su-pw').focus(); return; }
   if(await tryResume()){ enterApp(); return; }
   panel('unlock'); $('pw').focus();
 })();
@@ -312,6 +321,7 @@ $('regenBtn').addEventListener('click',async function(){
   try{ var rec=await regenRecovery(); window.prompt('新的救回碼（請抄下來，舊碼已失效）：',rec); }catch(e){ alert('失敗：'+e.message); }
 });
 $('lockNowBtn').addEventListener('click',lockNow);
+$('enableBtn').addEventListener('click',enableEnc);
 
 /* ───────── 案件 App ───────── */
 var CATS=[
@@ -399,7 +409,7 @@ function openForm(c){
   updateDueHint(); window.scrollTo({top:0,behavior:'smooth'});
 }
 function updateDueHint(){ var c=CATS.find(function(x){return x.v===$('c-cat').value;}); $('dueHint').innerHTML=c&&c.due?('⏰ '+c.due):''; }
-$('newBtn').addEventListener('click',function(){ if(!dekKey){toast('請先解鎖');return;} openForm(null); });
+$('newBtn').addEventListener('click',function(){ openForm(null); });
 $('cancelBtn').addEventListener('click',function(){ $('form').classList.remove('show'); });
 $('c-cat').addEventListener('change',updateDueHint);
 $('saveBtn').addEventListener('click',function(){

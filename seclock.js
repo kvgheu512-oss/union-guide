@@ -11,7 +11,7 @@
 */
 (function(){
   var C=(window.crypto&&crypto.subtle)?crypto.subtle:null;
-  var cfg=null, ENC=null, SK=null, dekKey=null, dataObj=null;
+  var cfg=null, ENC=null, SK=null, PLAIN=null, dekKey=null, dataObj=null, mode='open';
 
   function b64e(buf){var u=new Uint8Array(buf),s='';for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s);}
   function b64d(str){var bin=atob(str),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;}
@@ -31,14 +31,16 @@
     var dekRaw=rnd(32), rec=genRecovery(), saltPw=rnd(16), saltRec=rnd(16);
     var kekPw=await deriveKEK(pw,saltPw), kekRec=await deriveKEK(normCode(rec),saltRec);
     var wrapPw=await aesEnc(kekPw,dekRaw), wrapRec=await aesEnc(kekRec,dekRaw);
-    var init=null; if(cfg.legacyKey){ try{var old=localStorage.getItem(cfg.legacyKey); if(old)init=JSON.parse(old);}catch(e){} }
+    // 要加密的內容：優先用目前記憶體的資料（啟用加密時保住現有測試資料），否則讀明文存檔
+    var init=dataObj;
+    if(init==null && PLAIN){ try{var old=localStorage.getItem(PLAIN); if(old)init=JSON.parse(old);}catch(e){} }
     dekKey=await importDek(dekRaw); dataObj=init;
     var blob=await aesEnc(dekKey,new TextEncoder().encode(JSON.stringify(init)));
     var e={v:1,saltPw:b64e(saltPw),wrapPwIv:wrapPw.iv,wrapPw:wrapPw.ct,saltRec:b64e(saltRec),wrapRecIv:wrapRec.iv,wrapRec:wrapRec.ct,dataIv:blob.iv,data:blob.ct};
     localStorage.setItem(ENC,JSON.stringify(e));
-    if(cfg.legacyKey){ try{localStorage.removeItem(cfg.legacyKey);}catch(_){} }
+    if(PLAIN){ try{localStorage.removeItem(PLAIN);}catch(_){} }   // 移除明文
     try{sessionStorage.setItem(SK,b64e(dekRaw));}catch(_){}
-    return rec;
+    mode='enc'; return rec;
   }
   async function loadBlob(e){var pt=await aesDec(dekKey,e.dataIv,e.data);var s=new TextDecoder().decode(pt);return s?JSON.parse(s):null;}
   async function unlockPw(pw){
@@ -140,21 +142,40 @@
     });
   }
 
+  function openLoad(){
+    var d=null; if(PLAIN){ try{var s=localStorage.getItem(PLAIN); if(s)d=JSON.parse(s);}catch(e){} } dataObj=d; return d;
+  }
   var API={
     mount:async function(c){
-      cfg=c||{}; ENC='seclock_'+cfg.ns; SK='seclock_dek_'+cfg.ns;
+      cfg=c||{}; ENC='seclock_'+cfg.ns; SK='seclock_dek_'+cfg.ns; PLAIN=cfg.plainKey||cfg.legacyKey||null;
       injectStyle(); injectDom(); wire();
       if(cfg.desc){ var sd=$('sl-setup-desc'); if(sd)sd.innerHTML=cfg.desc; var ud=$('sl-unlock-desc'); if(ud)ud.innerHTML=cfg.desc; }
       if(cfg.title){ var ut=$('sl-unlock-title'); if(ut)ut.textContent='🔒 '+cfg.title; }
+      var hasEnc=!!(C && localStorage.getItem(ENC));
+      if(!hasEnc){
+        // 預設「開放」：免密碼直接用（草創期測試用）；要保護時再呼叫 enable()
+        mode='open'; openLoad();
+        $('seclock').classList.add('hide');
+        if(typeof cfg.onUnlock==='function') cfg.onUnlock(dataObj);
+        return;
+      }
+      // 已啟用加密 → 需解鎖
+      mode='enc';
       if(!C){ panel('nocrypto'); return; }
-      var hasEnc=!!localStorage.getItem(ENC);
-      if(!hasEnc){ panel('setup'); var f=$('sl-su1'); if(f)f.focus(); return; }
       if(await tryResume()){ enter(); return; }
       panel('unlock'); var p=$('sl-pw'); if(p)p.focus();
     },
+    isEncrypted:function(){ return mode==='enc'; },
+    // 啟用加密保護（草創期測試完、要正式上鎖時呼叫）：跳出設定通行碼，沿用現有資料
+    enable:function(){
+      if(mode==='enc'){ alert('已經是加密狀態了。'); return; }
+      if(!C){ alert('此瀏覽器不支援加密（需 https:// 與較新瀏覽器）。'); return; }
+      $('seclock').classList.remove('hide'); panel('setup'); var f=$('sl-su1'); if(f)f.focus();
+    },
     getData:function(){ return dataObj; },
     setData:async function(obj){
-      dataObj=obj; if(!dekKey) return;
+      dataObj=obj;
+      if(mode!=='enc' || !dekKey){ if(PLAIN){ try{localStorage.setItem(PLAIN,JSON.stringify(obj));}catch(e){} } return; }   // 開放模式：存明文
       var e=JSON.parse(localStorage.getItem(ENC));
       var blob=await aesEnc(dekKey,new TextEncoder().encode(JSON.stringify(obj)));
       e.dataIv=blob.iv; e.data=blob.ct; localStorage.setItem(ENC,JSON.stringify(e));
