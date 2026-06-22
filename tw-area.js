@@ -71,9 +71,9 @@
       '</div>'+
       '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">'+
         '<span style="font-size:13px;color:#7A5600;white-space:nowrap">郵遞區號</span>'+
-        '<input class="ap-zip3" inputmode="numeric" maxlength="3" readonly style="width:62px;text-align:center;'+iStyle+';background:#F0EAD0">'+
+        '<input class="ap-zip3" inputmode="tel" maxlength="3" readonly style="width:62px;text-align:center;'+iStyle+';background:#F0EAD0">'+
         '<span style="color:#7A5600">-</span>'+
-        '<input class="ap-zip2" inputmode="numeric" maxlength="2" placeholder="00" style="width:52px;text-align:center;'+iStyle+'">'+
+        '<input class="ap-zip2" inputmode="tel" maxlength="2" placeholder="00" style="width:52px;text-align:center;'+iStyle+'">'+
         '<span style="font-size:12px;color:#999">後2碼選填</span>'+
       '</div>'+
       '<select class="ap-roadsel" style="width:100%;'+iStyle+';margin-bottom:6px;display:none"></select>'+
@@ -81,11 +81,11 @@
       '<input class="ap-road" type="text" placeholder="路／街名（例：澄清路）" autocomplete="off" style="width:100%;'+iStyle+';margin-bottom:6px">'+
       '<div style="font-size:12px;color:#7A5600;margin-bottom:3px">門牌（只填數字，沒有的免填）</div>'+
       '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">'+
-        '<input class="ap-sec" type="text" inputmode="numeric" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">段</span>'+
-        '<input class="ap-lane"  type="text" inputmode="numeric" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">巷</span>'+
-        '<input class="ap-alley" type="text" inputmode="numeric" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">弄</span>'+
-        '<input class="ap-no"    type="text" inputmode="numeric" style="width:48px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">號</span>'+
-        '<input class="ap-floor" type="text" inputmode="numeric" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">樓</span>'+
+        '<input class="ap-sec" type="text" inputmode="tel" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">段</span>'+
+        '<input class="ap-lane"  type="text" inputmode="tel" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">巷</span>'+
+        '<input class="ap-alley" type="text" inputmode="tel" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">弄</span>'+
+        '<input class="ap-no"    type="text" inputmode="tel" style="width:48px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">號</span>'+
+        '<input class="ap-floor" type="text" inputmode="tel" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">樓</span>'+
       '</div>';
 
     var citySel = wrap.querySelector(".ap-city");

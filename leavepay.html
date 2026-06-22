@@ -82,7 +82,7 @@
   <!-- 共用月薪 -->
   <div class="card" style="border-top-color:#B7860B">
     <label>你的月薪（<b>含經常性給與</b>，新臺幣元）</label>
-    <input id="salary" type="number" inputmode="numeric" value="40000" min="0">
+    <input id="salary" type="text" inputmode="tel" value="40000" min="0">
     <div class="hint">＝ 本薪＋全勤＋固定津貼等「工資」項目總和（不是只算本薪）。不會抓？用下面的「薪資明細」幫你加。</div>
 
     <details id="salWrap" style="margin:.5rem 0 .2rem">
@@ -101,7 +101,7 @@
     </details>
 
     <label>月薪換算<b>除數</b>（每月幾天）</label>
-    <input id="dv" type="number" inputmode="numeric" value="30" min="1" max="31">
+    <input id="dv" type="text" inputmode="tel" value="30" min="1" max="31">
     <div class="hint">⚖️ 特休折算<b>法定固定用 30</b>。高榮若用「當月天數」計，就改填該月天數（如 <b>31</b>）來比對——<b>除數越大、每天越少</b>，差額可主張。</div>
     <div class="out" id="base"></div>
   </div>
@@ -117,7 +117,7 @@
     <div class="hint">只算一天就填一列即可；想算整個月，就把有加班的每一天各列一行。</div>
     <div class="hint" style="background:#FFF3F2;border:1px solid #F0C5C2;border-radius:8px;padding:.5rem .7rem;color:#7B1818;margin-top:.4rem;font-size:13px">📌 <b>記得一件事就好</b>：上面的「月薪」要填<b>加班那個月</b>領的薪水。<br>👉 3 月加班，就填 3 月的月薪；4 月加班，就填 4 月的月薪。<b>哪個月加班，就用那個月的薪水算。</b></div>
     <label style="margin-top:.85rem">醫院實際給的平日加班費？<span class="opt">（選填，對照）</span></label>
-    <input id="actWk" type="number" inputmode="numeric" placeholder="例：900" min="0">
+    <input id="actWk" type="text" inputmode="tel" placeholder="例：900" min="0">
     <div class="out" id="outWk"></div>
     <div id="diffWk"></div>
     <details><summary>看法源重點</summary><div class="law"><b>§24 Ⅰ</b>：延長工作時間在 2 小時以內者，按平日每小時工資額<b>加給 1/3 以上</b>（即 ×1⅓）；再延長者<b>加給 2/3 以上</b>（即 ×1⅔）。<br>平日每小時工資額（時薪）標準＝<b>月薪 ÷ 30 ÷ 8</b>。<br>💡 這是「<b>平常上班日</b>」多做的錢，跟國定假日（②）、特休折算（③）<b>完全不同</b>，別混在一起。<br>⚠️ 高榮把整年加班費拖到 12 月、又用 ÷31 算時薪的問題，見下方 <b>④</b>。</div></details>
@@ -128,11 +128,11 @@
     <h2 style="color:#8A6D0B">② 國定假日 出勤加班費</h2>
     <div class="sub">勞基法 §37（國定假日）＋ §39（加倍發給）</div>
     <label>國定假日<b>出勤天數</b>（當天工作 8 小時內）</label>
-    <input id="holi" type="number" inputmode="decimal" value="1" min="0" step="0.5">
+    <input id="holi" type="text" inputmode="decimal" value="1" min="0" step="0.5">
     <label>當天有超過 8 小時嗎？<b>總超時時數</b> <span class="opt">（選填）</span></label>
-    <input id="otHr" type="number" inputmode="decimal" placeholder="例：2" min="0" step="0.5">
+    <input id="otHr" type="text" inputmode="decimal" placeholder="例：2" min="0" step="0.5">
     <label>醫院實際給的國定假日加班費？<span class="opt">（選填，對照）</span></label>
-    <input id="actHoli" type="number" inputmode="numeric" placeholder="例：1333" min="0">
+    <input id="actHoli" type="text" inputmode="tel" placeholder="例：1333" min="0">
     <label style="margin-top:.85rem">醫院有以「<b>調休</b>」代替這天的加班費嗎？</label>
     <div style="margin:.4rem 0 .65rem">
       <label id="rb-pay" style="display:block;width:100%;box-sizing:border-box;background:#E8F5EE;border:1.5px solid #1A7A4A;border-radius:10px;padding:.55rem .9rem;margin-bottom:8px;cursor:pointer;font-size:14px;line-height:1.7"><input type="radio" name="hm" value="pay" checked onchange="hdChg()"> 有給加班費（正常）</label>
@@ -170,9 +170,9 @@
       <option value="30">滿 24 年以上（30 天上限）</option>
     </select>
     <label>今年<b>沒休完</b>的特休天數</label>
-    <input id="unused" type="number" inputmode="decimal" value="3" min="0" step="0.5">
+    <input id="unused" type="text" inputmode="decimal" value="3" min="0" step="0.5">
     <label>醫院實際折算給你多少？<span class="opt">（選填，用來對照）</span></label>
-    <input id="actLeave" type="number" inputmode="numeric" placeholder="例：4000" min="0">
+    <input id="actLeave" type="text" inputmode="tel" placeholder="例：4000" min="0">
     <div class="out" id="outLeave"></div>
     <div id="diffLeave"></div>
     <details><summary>看法源重點</summary><div class="law"><b>§38 Ⅳ</b>：特休因年度終結未休之日數，雇主<b>應發給工資</b>（不發＝違法；要遞延須雙方協商）。<br><b>細則 §24-1</b>：一日工資＝年度結束前最近一個月<b>正常工作時間工資 ÷ 30</b>，乘以未休天數。<br>💡 折算是 <b>1 日工資/天</b>（不是 ×2）；但因月薪本來照領，這筆是<b>額外</b>多給，對沒休的那幾天等於拿到雙份價值。</div></details>
@@ -231,7 +231,7 @@
   function wkRowHTML(v){
     return '<div class="wkrow" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
       '<span class="wkn" style="font-size:13px;color:#0F5C36;font-weight:700;white-space:nowrap">第 1 天</span>'+
-      '<input class="wk-h" type="number" inputmode="decimal" min="0" step="0.5" placeholder="加班幾小時" value="'+(v>0?v:"")+'" style="flex:1">'+
+      '<input class="wk-h" type="text" inputmode="decimal" min="0" step="0.5" placeholder="加班幾小時" value="'+(v>0?v:"")+'" style="flex:1">'+
       '<span style="font-size:13px;color:#777;flex:none">小時</span>'+
       '<button type="button" class="wk-del" aria-label="刪除這天" style="background:#FDECEA;color:#7B1818;border:1px solid #F0C5C2;border-radius:8px;width:36px;height:36px;font-size:16px;cursor:pointer;flex:none">✕</button>'+
       '</div>';
@@ -373,7 +373,7 @@
     return '<div class="salrow" style="display:flex;align-items:center;gap:6px;margin-bottom:7px">'
       +'<input type="checkbox" class="sal-on" '+(it.on?"checked":"")+' style="width:20px;height:20px;flex:none;padding:0;margin:0">'
       +'<input type="text" class="sal-name" value="'+nm+'" placeholder="項目名稱" style="flex:1.3;min-width:0;width:auto;padding:.45rem .5rem;font-size:14px">'
-      +'<input type="number" inputmode="numeric" class="sal-amt" value="'+(it.amt!=null?it.amt:"")+'" placeholder="金額" min="0" style="flex:1;min-width:0;width:auto;padding:.45rem .5rem;font-size:14px">'
+      +'<input type="text" inputmode="tel" class="sal-amt" value="'+(it.amt!=null?it.amt:"")+'" placeholder="金額" min="0" style="flex:1;min-width:0;width:auto;padding:.45rem .5rem;font-size:14px">'
       +'<button type="button" class="sal-del" aria-label="刪除" style="background:#FDECEA;color:#7B1818;border:1px solid #F0C5C2;border-radius:8px;width:32px;height:32px;font-size:14px;cursor:pointer;flex:none;padding:0">✕</button>'
       +'</div>';
   }
