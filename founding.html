@@ -263,42 +263,53 @@
   // ===== 登報剪報：拍照／上傳，縮圖後存本機 =====
   function getClips(key){ try{ return JSON.parse(localStorage.getItem(key))||[]; }catch(e){ return []; } }
   function saveClips(key,a){ try{ localStorage.setItem(key, JSON.stringify(a)); }catch(e){ alert("⚠ 儲存失敗：本機空間可能已滿，請先移除舊圖。"); } }
+  function clipSrc(c){ return (typeof c==='string')?c:(c&&c.src)||''; }
+  function clipDate(c){ if(c&&c.ts){ var d=new Date(c.ts); return (d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); } return ''; }
   function uploadHtml(u){
     var clips = getClips(u.key);
-    var thumbs = clips.map(function(src,i){
-      return '<span style="display:inline-block;position:relative;margin:4px 4px 0 0">'+
-        '<img src="'+src+'" data-key="'+u.key+'" data-i="'+i+'" class="clipimg" style="height:64px;border-radius:8px;border:1px solid #ccc;cursor:pointer">'+
+    var thumbs = clips.map(function(c,i){
+      var dt=clipDate(c);
+      return '<span style="display:inline-block;position:relative;margin:4px 6px 0 0;text-align:center;vertical-align:top">'+
+        '<img src="'+clipSrc(c)+'" data-key="'+u.key+'" data-i="'+i+'" class="clipimg" style="height:72px;border-radius:8px;border:1px solid #ccc;cursor:pointer;display:block">'+
         '<button class="clipdel" data-key="'+u.key+'" data-i="'+i+'" title="移除" style="position:absolute;top:-7px;right:-7px;background:#C0392B;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1">×</button>'+
+        (dt?'<div style="font-size:10px;color:#777;margin-top:2px">'+dt+'</div>':'')+
         '</span>';
     }).join("");
     return '<div style="margin-top:10px;background:#F7F9F7;border:1px solid #dfe7df;border-radius:10px;padding:.6rem .7rem">'+
-      '<div style="font-size:12.5px;color:#0F5C36;font-weight:700;margin-bottom:6px">📰 '+u.label+'</div>'+
-      '<label style="display:inline-block;background:#1A7A4A;color:#fff;border-radius:8px;padding:.45rem .8rem;font-size:13px;font-weight:700;cursor:pointer">📷 拍照／上傳電子檔'+
-        '<input type="file" accept="image/*" data-key="'+u.key+'" class="clipin" style="display:none">'+
+      '<div style="font-size:12.5px;color:#0F5C36;font-weight:700;margin-bottom:2px">📰 '+u.label+'　<span style="color:#777;font-weight:400">（已存 '+clips.length+' 份）</span></div>'+
+      '<div style="font-size:11px;color:#777;margin-bottom:6px">登報常連續數天～一週，<b>每天的報紙都可各拍一張存進來</b>，會標上日期。</div>'+
+      '<label style="display:inline-block;background:#1A7A4A;color:#fff;border-radius:8px;padding:.45rem .8rem;font-size:13px;font-weight:700;cursor:pointer">📷 拍照／上傳（可多份）'+
+        '<input type="file" accept="image/*" multiple data-key="'+u.key+'" class="clipin" style="display:none">'+
       '</label>'+
-      '<div style="font-size:11px;color:#777;margin-top:5px">只存在本機、不上傳；可存多張。點縮圖看大圖。</div>'+
-      (thumbs?'<div style="margin-top:6px">'+thumbs+'</div>':'')+
+      '<div style="font-size:11px;color:#777;margin-top:5px">只存本機、不上傳；點縮圖看大圖。</div>'+
+      (thumbs?'<div style="margin-top:8px">'+thumbs+'</div>':'')+
       '</div>';
   }
   function bindUpload(){
     stepsEl.querySelectorAll(".clipin").forEach(function(inp){
       inp.addEventListener("change", function(){
-        var key=this.getAttribute("data-key"), f=this.files&&this.files[0]; if(!f) return;
-        var rd=new FileReader();
-        rd.onload=function(){
-          var img=new Image();
-          img.onload=function(){
-            var max=1400, w=img.width, h=img.height;
-            if(w>max||h>max){ var r=Math.min(max/w,max/h); w=Math.round(w*r); h=Math.round(h*r); }
-            var cv=document.createElement("canvas"); cv.width=w; cv.height=h;
-            cv.getContext("2d").drawImage(img,0,0,w,h);
-            var data; try{ data=cv.toDataURL("image/jpeg",0.8); }catch(e){ data=rd.result; }
-            var a=getClips(key); a.push(data); saveClips(key,a); renderSteps();
+        var key=this.getAttribute("data-key"), files=this.files; if(!files||!files.length) return;
+        var queue=Array.prototype.slice.call(files);
+        function next(){
+          if(!queue.length){ renderSteps(); return; }
+          var f=queue.shift(), rd=new FileReader();
+          rd.onload=function(){
+            var img=new Image();
+            function store(data){ var a=getClips(key); a.push({src:data, ts:Date.now()}); saveClips(key,a); next(); }
+            img.onload=function(){
+              var max=1400, w=img.width, h=img.height;
+              if(w>max||h>max){ var r=Math.min(max/w,max/h); w=Math.round(w*r); h=Math.round(h*r); }
+              var cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+              cv.getContext("2d").drawImage(img,0,0,w,h);
+              var data; try{ data=cv.toDataURL("image/jpeg",0.8); }catch(e){ data=rd.result; }
+              store(data);
+            };
+            img.onerror=function(){ store(rd.result); };
+            img.src=rd.result;
           };
-          img.onerror=function(){ var a=getClips(key); a.push(rd.result); saveClips(key,a); renderSteps(); };
-          img.src=rd.result;
-        };
-        rd.readAsDataURL(f);
+          rd.readAsDataURL(f);
+        }
+        next();
       });
     });
     stepsEl.querySelectorAll(".clipdel").forEach(function(b){

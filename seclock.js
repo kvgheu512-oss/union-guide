@@ -86,7 +86,8 @@
     var d=document.createElement('div'); d.id='seclock';
     d.innerHTML='<div class="box">'
       +'<div class="pnl" id="sl-setup"><h2>🔐 設定加密通行碼</h2><p id="sl-setup-desc"></p>'
-        +'<input id="sl-su1" type="password" placeholder="設定通行碼（至少 6 字）" autocomplete="new-password">'
+        +'<p style="font-size:12px;color:#0F5C36;background:#E9F6EF;border:1px solid #BFE3CF;border-radius:8px;padding:.5rem .7rem;margin-bottom:12px">👇 <b>第一次使用</b>：請自己<b>想一組新密碼</b>打進去（這就是日後解鎖用的，<b>沒有預設密碼</b>）。記不住可在進入後產生「救回碼」。</p>'
+        +'<input id="sl-su1" type="password" placeholder="自己設一組通行碼（至少 6 字）" autocomplete="new-password">'
         +'<input id="sl-su2" type="password" placeholder="再輸入一次" autocomplete="new-password">'
         +'<button class="pri" id="sl-su-btn">建立加密保護</button><div class="err" id="sl-su-err"></div></div>'
       +'<div class="pnl" id="sl-reckey"><h2>🔑 你的救回碼</h2><p>忘記通行碼時，用這組救回碼可<b>重設密碼並取回資料</b>。請<b>立刻拍照或抄下來</b>收好；離開此畫面後無法再看到原碼。</p>'

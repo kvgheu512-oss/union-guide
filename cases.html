@@ -80,8 +80,9 @@
     <!-- 首次設定 -->
     <div class="pnl" id="pnl-setup">
       <h2>🔐 設定加密通行碼</h2>
-      <p>案件含當事人個資，將以 <b>AES-GCM 256 加密</b>後存在本機（沒密碼讀不出來）。首次使用請設定通行碼。</p>
-      <input id="su-pw" type="password" placeholder="設定通行碼（至少 6 字）" autocomplete="new-password">
+      <p>案件含當事人個資，將以 <b>AES-GCM 256 加密</b>後存在本機（沒密碼讀不出來）。</p>
+      <p style="font-size:12px;color:#0F5C36;background:#E9F6EF;border:1px solid #BFE3CF;border-radius:8px;padding:.5rem .7rem;margin-bottom:12px">👇 <b>第一次使用</b>：請自己<b>想一組新密碼</b>打進去（這就是日後解鎖用的，<b>沒有預設密碼</b>）。怕忘記？設定後會給你「救回碼」。</p>
+      <input id="su-pw" type="password" placeholder="自己設一組通行碼（至少 6 字）" autocomplete="new-password">
       <input id="su-pw2" type="password" placeholder="再輸入一次" autocomplete="new-password">
       <button class="pri" id="su-btn">建立加密保護</button>
       <div class="err" id="su-err"></div>
