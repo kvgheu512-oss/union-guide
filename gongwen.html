@@ -226,10 +226,15 @@ const TPL={
  auditreport:{to:'本會會員大會',subject:'檢陳本會【○○年度】財務監察報告，請　公鑒。',
    explain:'監事業就本會【○○年度】財務收支完成查核。\n查核結果：【如：帳證相符、無異常／發現○○】。\n建議事項：【○○】。\n敬請大會公鑒。',copy:'無',
    hint:'監察報告：查完帳後向會員大會報告結果。填年度、查核結果與建議。'},
+ /* 籌組登記 */
+ register:{to:'高雄市政府勞工局',subject:'本會業於【○】年【○】月【○】日召開成立大會完成成立，依工會法第11條檢具相關書表函報登記，請　鑒核並發給工會登記證書。',
+   explain:'本會名稱：高雄榮民總醫院企業工會。\n組織區域：高雄榮民總醫院。\n會址：【○○○○○○○○】。\n成立大會日期：【○】年【○】月【○】日。\n會員人數：【○○】人。\n理事長：【姓名】。\n隨文檢附下列書表各一份（如附件）：（一）章程。（二）會員名冊。（三）理事、監事名冊（含基本資料）。（四）成立大會會議紀錄。（五）理事會、監事會互選紀錄。（六）工作計畫及經費收支預算。\n請　惠予登記並發給工會登記證書，俾利依法運作。',copy:'無',
+   hint:'函報登記：成立大會後 30 日內送勞工局。填成立日期、會址、會員數、理事長；附件欄填「如文」並夾帶六項書表。領證後可申請成立獎勵補助。'},
 };
 /* 範本分區（依幹部職掌；通用組各幹部都會用到） */
 const TPL_GROUPS=[
  {role:'通用 · 會務',keys:['blank','meeting','invite','record']},
+ {role:'籌組登記（理事長／法規）',keys:['register']},
  {role:'法規',keys:['petition','unfair','inquiry']},
  {role:'協商（理事長）',keys:['bargain']},
  {role:'總務',keys:['feedue','subsidy']},
@@ -240,7 +245,7 @@ const TPL_GROUPS=[
 const TPL_LABEL={blank:'空白函',meeting:'開會通知函',invite:'邀請函',record:'函報主管機關備查',
  petition:'陳情／請求函',unfair:'申訴不當勞動行為',inquiry:'函詢法令疑義',bargain:'協商請求函',
  feedue:'催繳會費通知',subsidy:'函請撥付補助',training:'教育訓練通知',notice:'會員週知函',
- audit:'財務稽核通知',auditreport:'監察報告函'};
+ audit:'財務稽核通知',auditreport:'監察報告函',register:'函報成立登記'};
 let curTpl='blank';
 function applyTpl(t){
   const d=TPL[t]; if(!d) return;

@@ -189,6 +189,15 @@
           <div><label>姓名</label><input id="el-name" placeholder="○○○"></div>
           <div><label>部門／現職</label><input id="el-dept" placeholder="例：護理部 護理師"></div>
         </div>
+        <div class="grid2">
+          <div><label>性別<span style="color:#999">（選填）</span></label>
+            <select id="el-sex"><option value="">—</option><option>男</option><option>女</option></select></div>
+          <div><label>出生年月<span style="color:#999">（選填）</span></label><input id="el-birth" placeholder="例：75.06"></div>
+        </div>
+        <div class="grid2">
+          <div><label>聯絡電話<span style="color:#999">（選填）</span></label><input id="el-tel" inputmode="tel" placeholder="09xx-xxx-xxx"></div>
+          <div><label>學經歷<span style="color:#999">（登記用，選填）</span></label><input id="el-edu" placeholder="例：○○大學護理系／本院護理師"></div>
+        </div>
         <div class="btn-row"><button class="btn green sm" id="el-add">＋ 加入當選人</button></div>
         <div id="el-list" style="margin-top:.5rem"></div>
         <div class="grid2" style="margin-top:.6rem">
@@ -553,8 +562,9 @@ if($('m-type')) $('m-type').addEventListener('change',updateElectCard);
 if($('el-add')) $('el-add').addEventListener('click',function(){
   var name=($('el-name').value||'').trim(); if(!name){ $('el-name').focus(); return; }
   if(!cur.election) cur.election={rows:[],chair:'',supchair:''};
-  cur.election.rows.push({role:$('el-role').value, name:name, dept:($('el-dept').value||'').trim(), votes:($('el-votes').value||'').trim()});
-  $('el-name').value=''; $('el-dept').value=''; $('el-votes').value='';
+  cur.election.rows.push({role:$('el-role').value, name:name, dept:($('el-dept').value||'').trim(), votes:($('el-votes').value||'').trim(),
+    sex:($('el-sex').value||''), birth:($('el-birth').value||'').trim(), tel:($('el-tel').value||'').trim(), edu:($('el-edu').value||'').trim()});
+  ['el-name','el-dept','el-votes','el-birth','el-tel','el-edu'].forEach(function(id){ $(id).value=''; }); $('el-sex').value='';
   renderElect();
 });
 
@@ -735,8 +745,8 @@ function docProxy(){
 function docElectRoster(){
   var e=cur.election||{rows:[]}; var rows=e.rows||[];
   var body = rows.length
-    ? '<table><thead><tr><th style="width:3em">編號</th><th>職稱</th><th>姓名</th><th>性別</th><th>出生年月</th><th>部門／現職</th><th>得票</th><th>聯絡電話</th></tr></thead><tbody>'+
-      rows.map(function(r,i){ return '<tr><td class="c">'+(i+1)+'</td><td>'+esc(r.role)+'</td><td>'+esc(r.name)+'</td><td>＿</td><td>＿＿＿</td><td>'+esc(r.dept||'')+'</td><td class="c">'+esc(r.votes||'')+'</td><td>＿＿＿＿</td></tr>'; }).join('')+
+    ? '<table><thead><tr><th style="width:3em">編號</th><th>職稱</th><th>姓名</th><th>性別</th><th>出生年月</th><th>部門／現職</th><th>學經歷</th><th>得票</th><th>聯絡電話</th></tr></thead><tbody>'+
+      rows.map(function(r,i){ return '<tr><td class="c">'+(i+1)+'</td><td>'+esc(r.role)+'</td><td>'+esc(r.name)+'</td><td class="c">'+esc(r.sex||'＿')+'</td><td>'+esc(r.birth||'＿＿＿')+'</td><td>'+esc(r.dept||'')+'</td><td>'+esc(r.edu||'')+'</td><td class="c">'+esc(r.votes||'')+'</td><td>'+esc(r.tel||'＿＿＿＿')+'</td></tr>'; }).join('')+
       '</tbody></table>'
     : '<p>（請先於編輯頁「🗳️ 選舉結果」填入當選名單）</p>';
   var inter='';
