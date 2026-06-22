@@ -160,12 +160,13 @@ const MEET_URL = {
 (function(){
   var $=function(id){return document.getElementById(id);};
   var labels={prep:"發起人會議", found:"成立大會"};
+  function pub(k){ try{ var mt=window.EBNOrg&&EBNOrg.publicData().meet; return (mt&&mt[k])||{}; }catch(e){ return {}; } }
   function fill(k){
-    var m=MEET[k]||{};
+    var m=Object.assign({}, MEET[k]||{}, pub(k));   // 已發布(public.json)的會議資訊優先
     if($("d-"+k)) $("d-"+k).textContent = m.date ? m.date : "（待幹部填入）";
     if($("t-"+k)) $("t-"+k).textContent = m.time ? m.time : "—";
     if($("p-"+k)) $("p-"+k).textContent = m.place || "實體會場＋線上同步";
-    var url=(MEET_URL[k]||"").trim();
+    var url=(m.url||MEET_URL[k]||"").trim();
     var a=$("join-"+k), l=$("lnk-"+k);
     if(url){
       if(a){ a.href=url; a.textContent="🟢 進入 Google Meet（"+labels[k]+"）"; a.style.opacity="1"; }
@@ -177,6 +178,7 @@ const MEET_URL = {
     }
   }
   fill("prep"); fill("found");
+  document.addEventListener("ebnorg:public", function(){ fill("prep"); fill("found"); });   // 公告版載到後更新
 
   var toast=$("toast");
   function showToast(t){ if(toast){ toast.textContent=t; setTimeout(function(){ toast.textContent=""; },2800); } }
@@ -191,6 +193,7 @@ const MEET_URL = {
 })();
 </script>
 <div id="verBadge"></div>
+<script src="org.js" defer></script>
 <script src="common.js" defer></script>
 </body>
 </html>

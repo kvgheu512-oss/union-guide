@@ -1,0 +1,24 @@
+{
+  "org": {
+    "fullName": "",
+    "regNo": "",
+    "taxId": "",
+    "chair": "",
+    "clerk": "",
+    "addr": "",
+    "addrPublic": false,
+    "tel": "",
+    "email": "",
+    "bank": "",
+    "bankAcct": "",
+    "docWord": "",
+    "docYear": "",
+    "docSeq": "1"
+  },
+  "meet": {
+    "prep":  { "date": "", "time": "", "place": "實體會場＋線上同步", "url": "" },
+    "found": { "date": "", "time": "", "place": "實體會場＋線上同步", "url": "" }
+  },
+  "sign": { "now": 15, "goal": 30 },
+  "updated": ""
+}

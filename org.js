@@ -24,8 +24,29 @@
     ["docSeq", "目前文號流水號", "下一件會用這個號，發文後自動+1"]
   ];
 
-  function get() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  // 已發布的公開資料（全站每個人都讀同一份 public.json）；本機草稿(KEY)會疊在上面
+  var PUB = "public.json", _pub = null, _pubLoaded = false;
+  function draft() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  // get()＝已發布的 org ＋ 本機草稿（草稿優先，讓正在編輯的人看到自己最新的）
+  function get() { return Object.assign({}, (_pub && _pub.org) || {}, draft()); }
   function set(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+  function publicData() { return _pub || {}; }
+  function publicLoaded() { return _pubLoaded; }
+  function loadPublic(cb) {
+    var done = function () { _pubLoaded = true; if (cb) cb(); };
+    try {
+      fetch(PUB, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) { if (j) _pub = j; done(); })
+        .catch(function () { done(); });
+    } catch (e) { done(); }
+  }
+  // 把目前的 org 草稿合進完整的 public.json（供「發布」匯出；保留 meet/sign 等其他區塊）
+  function buildPublic(orgObj) {
+    var base = _pub ? JSON.parse(JSON.stringify(_pub)) : {};
+    base.org = orgObj || get();
+    base.updated = new Date().toISOString().slice(0, 10);
+    return base;
+  }
 
   function fill(root) {
     var o = get(); root = root || document;
@@ -64,6 +85,8 @@
   function getLog() { try { return JSON.parse(localStorage.getItem(LOG) || "[]"); } catch (e) { return []; } }
   function setLog(arr) { try { localStorage.setItem(LOG, JSON.stringify(arr || [])); } catch (e) {} }
 
-  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, FIELDS: FIELDS, KEY: KEY, LOG: LOG };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { fill(); }); else fill();
+  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB };
+  // 先用本機草稿即時填一次（不必等網路）；public.json 載到後再填一次（公告版蓋上來）
+  function init() { fill(); loadPublic(function () { fill(); try { document.dispatchEvent(new CustomEvent("ebnorg:public")); } catch (e) {} }); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();

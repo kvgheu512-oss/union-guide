@@ -347,7 +347,16 @@
         <div style="height:14px;background:#E6EFE9;border-radius:20px;overflow:hidden;margin:8px 0 6px"><i id="sign-fill" style="display:block;height:100%;width:0;background:linear-gradient(90deg,#1A7A4A,#0F5C36);border-radius:20px;transition:width .8s ease"></i></div>
         <div id="sign-left" style="font-size:13.5px;color:#7B1818;font-weight:600"></div>
       </div>
-      <script>(function(){var c=document.getElementById('signbar');if(!c)return;var now=+c.dataset.now||0,goal=+c.dataset.goal||30,pct=Math.min(100,Math.round(now/goal*1000)/10),left=Math.max(0,goal-now);document.getElementById('sign-now').textContent=now;document.getElementById('sign-goal').textContent=goal;setTimeout(function(){document.getElementById('sign-fill').style.width=pct+'%';},150);document.getElementById('sign-left').textContent=left>0?('再 '+left+' 人，就能成立工會、坐上談判桌！'):'已達門檻！籌備成立中 🎉';})();</script>
+      <script>(function(){var c=document.getElementById('signbar');if(!c)return;
+        function render(now,goal){ now=+now||0; goal=+goal||30; c.dataset.now=now; c.dataset.goal=goal;
+          var pct=Math.min(100,Math.round(now/goal*1000)/10),left=Math.max(0,goal-now);
+          document.getElementById('sign-now').textContent=now; document.getElementById('sign-goal').textContent=goal;
+          setTimeout(function(){var f=document.getElementById('sign-fill'); if(f) f.style.width=pct+'%';},150);
+          document.getElementById('sign-left').textContent=left>0?('再 '+left+' 人，就能成立工會、坐上談判桌！'):'已達門檻！籌備成立中 🎉'; }
+        render(c.dataset.now,c.dataset.goal);
+        // 公告版(public.json)的連署人數載到後就更新（全站一致、大家看到同一個數字）
+        document.addEventListener('ebnorg:public',function(){ try{ var s=window.EBNOrg&&EBNOrg.publicData().sign; if(s&&(s.now!=null||s.goal!=null)) render(s.now!=null?s.now:c.dataset.now, s.goal!=null?s.goal:c.dataset.goal); }catch(e){} });
+      })();</script>
       <div class="card">
         <div class="step"><div class="step-no">1</div><div><strong>確認身分</strong><br><span style="font-size:13px;color:var(--ink-soft)">你是約用／契約／派遣等勞工身分（非正式公職、非代表雇主的主管）。</span></div></div>
         <div class="step"><div class="step-no">2</div><div><strong>表達意願</strong><br><span style="font-size:13px;color:var(--ink-soft)">點下方按鈕，留下聯絡方式（透過 Line 或表單），幹部會私下與你聯繫。</span></div></div>
@@ -695,6 +704,7 @@ document.getElementById('faq-toggle-btn').addEventListener('click',function(){
     if(pb && st && st.status==="official"){ pb.textContent="🎖 正式運營 · 歡迎加入"; pb.style.background="#FFF6D6"; pb.style.color="#7A5800"; } }catch(_){}
 })();
 </script>
+<script src="org.js" defer></script>
 <script src="common.js" defer></script>
 </body>
 </html>

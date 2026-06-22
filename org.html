@@ -42,8 +42,31 @@
 
   <div class="card">
     <div id="fields"></div>
-    <button class="save" id="saveBtn" type="button">💾 儲存基本資料</button>
+    <button class="save" id="saveBtn" type="button">💾 先儲存（存這支手機）</button>
     <div class="toast" id="toast"></div>
+  </div>
+
+  <div class="card" style="border-top-color:#1A7A4A">
+    <h2 style="font-family:'Noto Serif TC',serif;color:#0F5C36;font-size:16px;margin-bottom:.4rem">📅 會議與連署（公告給大家看）</h2>
+    <div class="hint" style="font-size:12px;margin-bottom:.3rem">這幾項會顯示在「線上會議室」與「對外首頁」。填好後一起按下面發布。</div>
+    <label>發起人會議 — 日期 / 時間 / 地點</label>
+    <input id="m-prep-date" placeholder="例：115/7/15"><input id="m-prep-time" placeholder="例：19:00" style="margin-top:6px"><input id="m-prep-place" placeholder="地點（實體＋線上）" style="margin-top:6px">
+    <input id="m-prep-url" placeholder="Google Meet 連結（可留空）" style="margin-top:6px">
+    <label>成立大會 — 日期 / 時間 / 地點</label>
+    <input id="m-found-date" placeholder="例：115/8/15"><input id="m-found-time" placeholder="例：19:00" style="margin-top:6px"><input id="m-found-place" placeholder="地點（實體＋線上）" style="margin-top:6px">
+    <input id="m-found-url" placeholder="Google Meet 連結（可留空）" style="margin-top:6px">
+    <label>連署進度（顯示在首頁）</label>
+    <div style="display:flex;gap:8px"><input id="sign-now" inputmode="tel" placeholder="目前人數"><input id="sign-goal" inputmode="tel" placeholder="目標(預設30)"></div>
+  </div>
+
+  <div class="card" style="border-top-color:#B7860B">
+    <h2 style="font-family:'Noto Serif TC',serif;color:#8A6D0B;font-size:16px;margin-bottom:.4rem">📢 發布上線（讓所有人看得到）</h2>
+    <div class="hint" style="font-size:12.8px;line-height:1.85;color:#5C4000;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.6rem .8rem">先按上面「儲存」，再按下面「產生公告檔」。把產生的內容<b>貼給 Claude（或交給網站維護者）上線</b>，網站更新後<b>所有人</b>都看得到。<br>（純靜態網站沒有後端，所以要靠這一步「上線」；之後要改，改完再發布一次即可。）</div>
+    <button class="save" id="pubBtn" type="button" style="background:#B7860B;margin-top:.7rem">📢 產生「要上線的內容」</button>
+    <textarea id="pubOut" readonly style="display:none;width:100%;min-height:150px;margin-top:.6rem;font-size:12px;font-family:monospace;border:1.5px solid var(--border);border-radius:10px;padding:.6rem;background:#0A111C;color:#D7E2EF"></textarea>
+    <button class="save" id="pubCopy" type="button" style="display:none;background:#1E73C8">📋 複製（貼給 Claude 上線）</button>
+    <button class="save" id="pubDl" type="button" style="display:none;background:#0F5C36">⬇ 下載 public.json</button>
+    <div class="toast" id="pubToast"></div>
   </div>
 
   <div class="card" style="border-top-color:var(--green)">
@@ -63,26 +86,74 @@
 <script src="org.js" defer></script>
 <script>
 (function(){
-  function build(){
-    var box=document.getElementById("fields"); if(!box||!window.EBNOrg) { setTimeout(build,30); return; }
+  var $=function(id){return document.getElementById(id);};
+  var edited=false;
+  function render(){
+    var box=$("fields"); if(!box||!window.EBNOrg) { setTimeout(render,30); return; }
     var o=EBNOrg.get();
     box.innerHTML=EBNOrg.FIELDS.map(function(f){
       var k=f[0],label=f[1],hint=f[2]||"";
       var v=(o[k]!=null?String(o[k]):"").replace(/"/g,"&quot;");
       var im=(k==="tel"||k==="docYear"||k==="docSeq"||k==="taxId")?' inputmode="tel"':'';
-      return '<label>'+label+'</label>'+
+      var row='<label>'+label+'</label>'+
              '<input id="org-'+k+'" type="text"'+im+' value="'+v+'">'+
              (hint?'<div class="hint">'+hint+'</div>':'');
+      if(k==="addr"){ // 會址下面：是否公開（理事長決定）
+        row+='<label style="display:flex;gap:8px;align-items:flex-start;font-weight:500;margin-top:.4rem;color:#444;line-height:1.6">'+
+             '<input type="checkbox" id="org-addrPublic" style="width:auto;margin-top:3px"'+(o.addrPublic?' checked':'')+'> '+
+             '<span>會址要<b>公開</b>給大家看嗎？（這可能是<b>理事長家的住址</b>，公開與否<b>由理事長決定</b>；不勾＝只用在公文、不對外顯示）</span></label>';
+      }
+      return row;
     }).join("");
-    document.getElementById("saveBtn").addEventListener("click",function(){
-      var o2=EBNOrg.get();
-      EBNOrg.FIELDS.forEach(function(f){ var el=document.getElementById("org-"+f[0]); if(el) o2[f[0]]=el.value.trim(); });
-      EBNOrg.set(o2);
-      var t=document.getElementById("toast"); t.textContent="✅ 已儲存，其他文件頁會自動帶入這些資料";
-      setTimeout(function(){ t.textContent=""; },3000);
-    });
+    box.addEventListener("input",function(){ edited=true; },{once:true});
   }
-  build();
+  function readForm(){
+    var o2=Object.assign({}, EBNOrg.get());
+    EBNOrg.FIELDS.forEach(function(f){ var el=$("org-"+f[0]); if(el) o2[f[0]]=el.value.trim(); });
+    var ap=$("org-addrPublic"); o2.addrPublic=!!(ap&&ap.checked);
+    return o2;
+  }
+  var extrasEdited=false;
+  function fillExtras(){
+    if(extrasEdited) return;
+    var pd=(window.EBNOrg?EBNOrg.publicData():{})||{}, mt=pd.meet||{}, sg=pd.sign||{};
+    function set(id,v){ var e=$(id); if(e&&v!=null) e.value=v; }
+    ["prep","found"].forEach(function(k){ var m=mt[k]||{}; set("m-"+k+"-date",m.date); set("m-"+k+"-time",m.time); set("m-"+k+"-place",m.place); set("m-"+k+"-url",m.url); });
+    set("sign-now",sg.now); set("sign-goal",sg.goal);
+  }
+  function readExtras(){
+    function v(id){ var e=$(id); return e?e.value.trim():""; }
+    function meet(k){ return { date:v("m-"+k+"-date"), time:v("m-"+k+"-time"), place:v("m-"+k+"-place")||"實體會場＋線上同步", url:v("m-"+k+"-url") }; }
+    return { meet:{ prep:meet("prep"), found:meet("found") }, sign:{ now:parseInt(v("sign-now"),10)||0, goal:parseInt(v("sign-goal"),10)||30 } };
+  }
+  function start(){
+    if(!window.EBNOrg){ setTimeout(start,30); return; }
+    render(); fillExtras();
+    ["m-prep-date","m-prep-time","m-prep-place","m-prep-url","m-found-date","m-found-time","m-found-place","m-found-url","sign-now","sign-goal"].forEach(function(id){ var e=$(id); if(e) e.addEventListener("input",function(){ extrasEdited=true; }); });
+    $("saveBtn").addEventListener("click",function(){
+      EBNOrg.set(readForm());
+      var t=$("toast"); t.textContent="✅ 已存這支手機。要讓大家看到，請按下面『發布上線』";
+      setTimeout(function(){ t.textContent=""; },3500);
+    });
+    $("pubBtn").addEventListener("click",function(){
+      EBNOrg.set(readForm());                    // 順手存一下
+      var full=EBNOrg.buildPublic(readForm());
+      var ex=readExtras(); full.meet=ex.meet; full.sign=ex.sign;   // 會議/連署一起發布
+      var txt=JSON.stringify(full,null,2);
+      $("pubOut").value=txt; $("pubOut").style.display="block";
+      $("pubCopy").style.display="block"; $("pubDl").style.display="block";
+      $("pubToast").textContent="👇 把下面內容複製給 Claude 上線，或下載檔案交給維護者";
+    });
+    $("pubCopy").addEventListener("click",function(){
+      var ta=$("pubOut"); if(navigator.clipboard){ navigator.clipboard.writeText(ta.value).then(function(){ $("pubToast").textContent="✅ 已複製，貼給 Claude 說『發布這個』即可"; },function(){ ta.select(); document.execCommand("copy"); }); } else { ta.select(); document.execCommand("copy"); }
+    });
+    $("pubDl").addEventListener("click",function(){
+      var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([$("pubOut").value],{type:"application/json"})); a.download="public.json"; a.click();
+    });
+    // public.json 載到後，若使用者還沒動手編輯，就把公告版填上來
+    document.addEventListener("ebnorg:public",function(){ if(!edited) render(); fillExtras(); });
+  }
+  start();
 })();
 </script>
 <script src="tour.js" defer></script>
