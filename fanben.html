@@ -56,8 +56,10 @@
   <div class="toolbar">
     <label class="up">📎 上傳範本檔<input type="file" id="fileIn" style="display:none"></label>
     <button class="link" id="linkBtn">🔗 加範本連結</button>
-    <button class="link" id="subBtn" style="background:#7A4F9D">📤 投稿給小巫整理</button>
+    <button class="link" id="subBtn" style="background:#7A4F9D">📤 投稿待整理（建檔）</button>
   </div>
+
+  <div id="backlog" style="display:none;background:#F3EEF8;border:1px solid #D9CBE8;border-radius:12px;padding:.7rem .95rem;margin-bottom:1rem;font-size:13px;color:#4A2F6B;line-height:1.8"></div>
 
   <div id="list"></div>
 
@@ -67,8 +69,8 @@
 <!-- 投稿給小巫整理 -->
 <div id="subModal" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem">
   <div style="background:#fff;border-radius:16px;max-width:400px;width:100%;padding:1.3rem 1.2rem;max-height:90vh;overflow:auto">
-    <h3 style="font-family:'Noto Serif TC',serif;color:#7A4F9D;font-size:17px;margin-bottom:4px">📤 投稿範本給小巫整理</h3>
-    <p style="font-size:12px;color:#777;line-height:1.7;margin-bottom:12px">後台由<b>法規・小巫</b>建構。請把檔案放進「共用資料夾」，並<b>寫清楚這是什麼文件、屬於哪個業務</b>，小巫才知道歸到哪一個資料夾。</p>
+    <h3 style="font-family:'Noto Serif TC',serif;color:#7A4F9D;font-size:17px;margin-bottom:4px">📤 投稿範本・待整理建檔</h3>
+    <p style="font-size:12px;color:#777;line-height:1.7;margin-bottom:12px">請把檔案放進「共用資料夾」，並<b>寫清楚這是什麼文件、屬於哪個業務</b>，負責建檔的法規幹部才知道歸到哪一個資料夾。送出後會計入「待整理」數字。</p>
     <label style="display:block;font-size:12.5px;font-weight:700;color:#7A4F9D;margin:.5rem 0 .2rem">屬於哪個業務</label>
     <select id="sub-cat" style="width:100%;padding:.6rem;border:1.5px solid #E3E6EC;border-radius:9px;font-size:15px;font-family:inherit"></select>
     <label style="display:block;font-size:12.5px;font-weight:700;color:#7A4F9D;margin:.6rem 0 .2rem">文件名稱</label>
@@ -120,7 +122,7 @@ function renderPick(){
 }
 async function render(){
   var all=await IDB.all();
-  var items=all.filter(function(x){return x.cat===cur;}).sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+  var items=all.filter(function(x){return x.cat===cur && x.kind!=='pending';}).sort(function(a,b){return (b.ts||0)-(a.ts||0);});
   var box=$('list');
   if(!items.length){ box.innerHTML='<div class="empty">這區還沒有範本。<br>按上面「📎 上傳範本檔」或「🔗 加範本連結」加入。</div>'; return; }
   box.innerHTML='<div class="cat-title">'+esc(catName(cur))+'（'+items.length+'）</div>'+items.map(function(it){
@@ -177,23 +179,42 @@ $('sub-setfolder').addEventListener('click',function(){
   try{ if(u) localStorage.setItem(INBOX,u); else localStorage.removeItem(INBOX); }catch(e){}
   refreshFolder();
 });
-$('sub-go').addEventListener('click',function(){
+$('sub-go').addEventListener('click',async function(){
   var name=$('sub-name').value.trim(), desc=$('sub-desc').value.trim();
   if(!name){ alert('請填文件名稱'); return; }
-  if(!desc){ alert('請寫清楚「這是什麼文件／用途」，小巫才知道歸到哪一類'); return; }
+  if(!desc){ alert('請寫清楚「這是什麼文件／用途」，負責建檔的人才知道歸到哪一類'); return; }
   var catT=catName($('sub-cat').value), by=$('sub-by').value.trim();
-  var slip='【範本投稿單 → 小巫整理】\n業務分區：'+catT+'\n文件名稱：'+name+'\n用途說明：'+desc+(by?'\n投稿者：'+by:'')+'\n日期：'+new Date().toLocaleString()+
-    '\n\n建議檔名（上傳時改成這個，小巫好歸檔）：['+catT+']'+name;
-  function ok(){ toast('投稿單已複製，貼到資料夾或傳給小巫'); }
+  // 記成本機「待整理」紀錄 → 計入積壓數字
+  try{ await IDB.put({id:uid(),cat:$('sub-cat').value,kind:'pending',name:name,desc:desc,by:by,ts:Date.now()}); }catch(e){}
+  var slip='【範本投稿單・待整理】\n業務分區：'+catT+'\n文件名稱：'+name+'\n用途說明：'+desc+(by?'\n投稿者：'+by:'')+'\n日期：'+new Date().toLocaleString()+
+    '\n\n建議檔名（上傳時改成這個，好歸檔）：['+catT+']'+name;
+  function ok(){ toast('已計入待整理；投稿單已複製'); }
   if(navigator.clipboard){ navigator.clipboard.writeText(slip).then(ok,function(){fb(slip);ok();}); } else { fb(slip); ok(); }
   function fb(t){ var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta); }
   var u=inboxUrl();
   if(u){ window.open(u,'_blank'); }
-  else { alert('尚未設定共用資料夾。請小巫先按「設定／修改」貼上資料夾連結；目前已複製投稿單，可先傳給小巫。'); }
+  else { alert('尚未設定共用資料夾。請負責建檔的法規幹部先按「設定／修改」貼上資料夾連結；投稿單已複製，可先傳過去。'); }
   $('subModal').style.display='none';
+  render(); renderBacklog();
 });
 
-renderPick(); render();
+async function renderBacklog(){
+  var all=await IDB.all();
+  var pend=all.filter(function(x){return x.kind==='pending';});
+  var box=$('backlog'); if(!box) return;
+  if(!pend.length){ box.style.display='none'; box.innerHTML=''; return; }
+  box.style.display='block';
+  box.innerHTML='📥 <b>目前待整理（積壓）：'+pend.length+' 筆</b>——這些投稿需要有人花時間建檔歸類。<br>'+
+    '<span style="font-size:11.5px;color:#7A5A9A">⚙️ 要全工會即時彙總、自動歸檔、長期保存，需要「網路後台維護」（雲端空間、網域、系統維護）——這是工會<b>必要的營運支出</b>，已列入經費預算供會員大會審議。</span><br>'+
+    '<button id="clearPend" style="margin-top:6px;background:#fff;border:1px solid #D9CBE8;color:#7A4F9D;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer">✅ 我已建檔，清除待整理</button>';
+  var cp=$('clearPend'); if(cp) cp.addEventListener('click',async function(){
+    if(!confirm('清除全部「待整理」紀錄？（請確認檔案都已歸檔）')) return;
+    for(var i=0;i<pend.length;i++){ await IDB.del(pend[i].id); }
+    renderBacklog(); toast('已清除待整理');
+  });
+}
+
+renderPick(); render(); renderBacklog();
 </script>
 <script src="common.js" defer></script>
 </body>
