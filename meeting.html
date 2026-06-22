@@ -179,6 +179,17 @@
         <p class="law" style="margin-top:.7rem">點選後開新視窗，可直接列印或存成 PDF。會議紀錄會帶入各議程的決議內容。</p>
       </div>
 
+      <div class="card">
+        <h3>🧠 AI 整理會議紀錄</h3>
+        <label>現場零散筆記（想到什麼打什麼、不用工整，逐字也行）</label>
+        <textarea id="m-notes" style="min-height:96px" placeholder="例：理事長報告連署到28人…大家討論會費要收多少，有人說100有人說50…最後決議每月100元，10月開始收…臨時動議：辦尾牙"></textarea>
+        <div class="btn-row" style="margin-top:.5rem">
+          <button class="btn navy sm" id="ai-gen">📋 複製給 AI 整理</button>
+        </div>
+        <div id="ai-toast" style="font-size:12px;color:var(--green-deep);min-height:16px;margin-top:5px;font-weight:700"></div>
+        <p class="law" style="margin-top:.4rem">貼到 Claude／ChatGPT，它會<b>依議程把你的零散筆記整理成通順正式的會議紀錄</b>（潤飾語句、文法，列出「決議」），<b>不會自己編沒提到的內容</b>。取回後貼回上面各議程「決議」欄、或直接當紀錄用。筆記只存本機。</p>
+      </div>
+
       <div class="btn-row">
         <button class="btn ghost sm" id="save-btn" data-draft-clear>💾 儲存會議</button>
         <button class="btn ghost sm" id="del-btn" style="color:var(--red);border-color:#E7B4AE">🗑 刪除</button>
@@ -304,11 +315,37 @@ function fillForm(){
   $('m-type').value=cur.type||'會員大會'; $('m-no').value=cur.no||''; $('m-date').value=cur.date||'';
   $('m-time').value=cur.time||''; $('m-place').value=cur.place||''; $('m-chair').value=cur.chair||'';
   $('m-rec').value=cur.rec||''; $('m-guest').value=cur.guest||'';
+  var n=$('m-notes'); if(n) n.value=cur.notes||'';
   renderAgenda(); renderSign();
 }
 function pull(){
   cur.type=$('m-type').value; cur.no=$('m-no').value.trim(); cur.date=$('m-date').value; cur.time=$('m-time').value;
   cur.place=$('m-place').value.trim(); cur.chair=$('m-chair').value.trim(); cur.rec=$('m-rec').value.trim(); cur.guest=$('m-guest').value.trim();
+  var n=$('m-notes'); if(n) cur.notes=n.value;
+}
+/* 🧠 產生「給 AI 整理會議紀錄」的提示詞 */
+function aiMinutesPrompt(){
+  pull();
+  var L=[];
+  L.push('你是會議紀錄整理助手。以下是一場工會會議的「現場零散筆記」與「議程」，請整理成通順、正式、條理分明的繁體中文會議紀錄。');
+  L.push('要求：①依議程順序；報告事項簡述、討論事項務必寫出「決議：」。②潤飾語句、修正文法與用詞，客觀精準。③只依我提供的內容整理與潤飾，缺漏處留「＿＿」，不要捏造沒提到的人、時、地、數字或決議。');
+  L.push('');
+  L.push('【會議資訊】');
+  L.push('名稱：'+(cur.type||'')+' '+(cur.no||''));
+  L.push('時間：'+(cur.date||'＿')+' '+(cur.time||''));
+  L.push('地點：'+(cur.place||'＿'));
+  L.push('主席：'+(cur.chair||'＿')+'　記錄：'+(cur.rec||'＿'));
+  L.push('');
+  L.push('【議程（含決議草稿，若有）】');
+  var ag=(cur.agenda||[]).filter(function(a){return a.title;});
+  if(ag.length) ag.forEach(function(a,i){ L.push((i+1)+'. ['+a.kind+'] '+a.title+(a.decision?('　〔決議草稿：'+a.decision+'〕'):'')); });
+  else L.push('（未填議程）');
+  L.push('');
+  L.push('【現場零散筆記】');
+  L.push((cur.notes||'').trim()||'（無）');
+  L.push('');
+  L.push('請輸出整理後的正式會議紀錄全文。');
+  return L.join('\n');
 }
 ['m-type','m-no','m-date','m-time','m-place','m-chair','m-rec','m-guest'].forEach(id=>$(id).addEventListener('input',pull));
 
@@ -349,6 +386,13 @@ function updateQuorum(){
 }
 
 /* 儲存／刪除 */
+$('ai-gen').addEventListener('click',()=>{
+  const txt=aiMinutesPrompt();
+  const t=$('ai-toast');
+  function ok(){ if(t){ t.textContent='✅ 已複製，貼到 Claude／ChatGPT 即可整理'; setTimeout(()=>{t.textContent='';},3000);} }
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(ok,()=>{ prompt('複製下面內容貼給 AI：',txt); }); }
+  else { prompt('複製下面內容貼給 AI：',txt); }
+});
 $('save-btn').addEventListener('click',()=>{
   pull(); const idx=meetings.findIndex(m=>m.id===cur.id);
   if(idx>=0) meetings[idx]=cur; else meetings.push(cur);
