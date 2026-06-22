@@ -60,10 +60,32 @@
  .foot{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:1.3rem;line-height:1.8}
  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--green);color:#fff;padding:9px 16px;border-radius:22px;font-size:13px;font-weight:700;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none}
  .toast.show{opacity:1}
+ .lock{position:fixed;inset:0;background:linear-gradient(160deg,#1A3A6B,#0E2347);z-index:300;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+ .lock.hide{display:none}
+ .lock .box{background:#fff;border-radius:16px;padding:1.7rem 1.4rem;max-width:350px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+ .lock h2{font-family:'Noto Serif TC',serif;font-size:19px;color:var(--navy);margin-bottom:6px}
+ .lock p{font-size:12.5px;color:var(--ink-soft);line-height:1.75;margin-bottom:14px}
+ .lock input{width:100%;padding:.7rem .9rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;text-align:center;margin-bottom:10px}
+ .lock button{width:100%;padding:.7rem;font-size:15px;font-weight:700;color:#fff;background:var(--navy);border:none;border-radius:10px;cursor:pointer}
+ .lock .err{color:var(--red);font-size:12.5px;min-height:16px;margin-top:8px}
+ .chpw{background:none;border:none;color:var(--navy2);font-size:12px;text-decoration:underline;cursor:pointer;margin-top:.6rem}
 </style>
 <link rel="stylesheet" href="common.css">
 </head>
 <body data-home="union.html">
+
+<!-- 🔒 隱私鎖（含會員個案資料） -->
+<div class="lock" id="lock">
+  <div class="box">
+    <h2>🔒 會員服務案件台</h2>
+    <p>此區含<b>會員個案資料</b>，為保護當事人隱私，需輸入通行碼。<br>資料只存本機、不上傳。</p>
+    <input id="pw" type="password" inputmode="text" autocomplete="current-password" placeholder="請輸入通行碼" enterkeyhint="go">
+    <button id="unlockBtn">進入</button>
+    <div class="err" id="pwErr"></div>
+    <p style="margin:12px 0 0;font-size:11px;color:#999">預設通行碼 <b>union2026</b>，進入後請點「變更通行碼」改成只有法規幹部知道的密碼。</p>
+  </div>
+</div>
+<script>try{if(sessionStorage.getItem('union_cases_session'))document.getElementById('lock').classList.add('hide');}catch(e){}</script>
 
 <div class="header">
   <h1>📋 會員服務案件台</h1>
@@ -105,7 +127,7 @@
 
   <div id="list"></div>
 
-  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部案件管理<br>⚠ 含會員個資，僅存本機瀏覽器、不上傳；換手機請另行備份。</div>
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部案件管理<br>⚠ 含會員個資，僅存本機瀏覽器、不上傳；換手機請另行備份。<br><button class="chpw" id="chpwBtn">🔑 變更通行碼</button></div>
 </main>
 <div class="toast" id="toast"></div>
 
@@ -244,6 +266,23 @@ var tt;
 function toast(m){ var t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(function(){t.classList.remove('show');},2200); }
 
 fillCatSelects(); renderStats(); renderList();
+
+/* 🔒 隱私鎖：通行碼（雜湊存本機；僅為隱私屏障，非加密，資料仍在本機 localStorage） */
+var PW_KEY='union_cases_pw', SES='union_cases_session', DEF='union2026';
+function pwHash(s){ var h=0; for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))>>>0; } return ''+h; }
+function curHash(){ return localStorage.getItem(PW_KEY) || pwHash(DEF); }
+function tryUnlock(){
+  var v=($('pw').value||'').trim();
+  if(pwHash(v)===curHash()){ try{sessionStorage.setItem(SES,'1');}catch(e){} $('lock').classList.add('hide'); $('pwErr').textContent=''; }
+  else { $('pwErr').textContent='通行碼不對，請再試一次或詢問法規幹部'; }
+}
+$('unlockBtn').addEventListener('click',tryUnlock);
+$('pw').addEventListener('keydown',function(e){ if(e.key==='Enter') tryUnlock(); });
+$('chpwBtn').addEventListener('click',function(){
+  var v=prompt('輸入新通行碼（至少 4 個字）：'); if(v==null) return; v=v.trim();
+  if(v.length<4){ alert('通行碼至少 4 個字'); return; }
+  localStorage.setItem(PW_KEY,pwHash(v)); alert('✅ 已更新通行碼，下次進入請用新碼。');
+});
 </script>
 <script src="common.js" defer></script>
 </body>
