@@ -57,7 +57,7 @@
   .header-label{font-size:11px;letter-spacing:.18em;opacity:.85;margin-bottom:4px;}
   .header h1{font-family:'Noto Serif TC',serif;font-size:23px;font-weight:700;}
   .header-sub{font-size:12.5px;opacity:.9;margin-top:7px;line-height:1.6;}
-  .back{position:absolute;left:12px;top:14px;color:#fff;text-decoration:none;font-size:13px;opacity:.9;background:rgba(255,255,255,.14);padding:4px 10px;border-radius:20px;}
+  .back{position:fixed;top:max(10px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));z-index:9999;background:#fff;color:#333;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:14px;text-decoration:none;padding:7px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer;}
 
   main{max-width:620px;margin:0 auto;padding:1rem 1rem 4rem;}
 
