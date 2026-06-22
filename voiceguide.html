@@ -118,12 +118,17 @@
   // ---- 聲音 ----
   var VK="ebn_voice_name", RK="ebn_voice_rate";
   function variant(v){ var s=(v.lang+" "+v.name); if(/yue|HK|香港|粵|Sin-?ji|Cantonese/i.test(s)) return "粵"; if(/CN|Hans|大陸|普通|Tingting|Ting-?Ting/i.test(s)) return "陸"; if(/TW|Hant|台|臺|Mei-?Jia|Meijia|Yu-?shu/i.test(s)) return "台"; return "中"; }
-  function vLabel(v){ var t={台:"國語（台灣）",陸:"中國大陸口音",粵:"粵語·可能聽不懂",中:"中文"}[variant(v)]; return t; }
+  function gender(v){ var s=(v.name+" "+v.lang);
+    if(/YunJhe|Yun-?Jhe|雲哲|Kangkang|康康|Yunyang|雲揚|Yunxi|雲希|Yunye|Zhiwei|男|male|\bMan\b/i.test(s)) return "男";
+    if(/Mei-?Jia|美佳|HsiaoChen|曉臻|HsiaoYu|曉雨|Huihui|慧慧|Xiaoxiao|曉曉|Tingting|婷婷|Sin-?ji|YaoYao|瑤|女|female|\bWoman\b/i.test(s)) return "女";
+    return "";
+  }
+  function vLabel(v){ var t={台:"國語（台灣）",陸:"中國大陸口音",粵:"粵語·可能聽不懂",中:"中文"}[variant(v)], g=gender(v); return t+(g?"·"+g+"聲":""); }
   function zhVoices(){
     try{
       var vs=(speechSynthesis.getVoices()||[]).filter(function(v){return /zh|cmn|Chinese|TW|HK|Hant|Hans|yue|Cantonese/i.test(v.lang+v.name);});
-      var ord={台:0,中:1,陸:2,粵:3};
-      return vs.sort(function(a,b){ return ord[variant(a)]-ord[variant(b)]; });   // 國語(台灣)排最前、粵語排最後
+      var ord={台:0,中:1,陸:2,粵:3}, gord={男:0,"":1,女:2};   // 台灣最前、粵語最後；同變體「男聲」優先
+      return vs.sort(function(a,b){ var d=ord[variant(a)]-ord[variant(b)]; return d||(gord[gender(a)]-gord[gender(b)]); });
     }catch(e){ return []; }
   }
   function chosen(){ var vs=zhVoices(); if(!vs.length) return null; var n=localStorage.getItem(VK); return vs.filter(function(v){return v.name===n;})[0]||vs[0]; }
@@ -133,7 +138,7 @@
     if(!vs.length){ sel.innerHTML='<option>（這支手機沒有中文聲音）</option>'; if(hint)hint.textContent=""; $("help").classList.add("show"); return; }
     var saved=localStorage.getItem(VK);
     sel.innerHTML=vs.map(function(v,i){ var lbl=vLabel(v)+"｜"+v.name; return '<option value="'+v.name.replace(/"/g,"")+'"'+((saved?v.name===saved:i===0)?' selected':'')+'>'+lbl+'</option>'; }).join("");
-    if(hint) hint.innerHTML="💡 標「粵語」的可能聽不懂，挑「國語（台灣）」最準。<br>想要<b>更多聲音</b>？iPhone：設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文 → 下載；Android：設定 → 文字轉語音 → 安裝中文（台灣）。";
+    if(hint) hint.innerHTML="💡 挑「<b>國語（台灣）</b>」最準；標「男聲／女聲」可自己選；「粵語」可能聽不懂。<br>清單裡<b>沒有男聲</b>？那是手機沒裝——iPhone：設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文，下載含男聲的；Android：設定 → 文字轉語音 → 安裝中文（台灣）後，回來重選。";
   }
   try{ if(window.speechSynthesis){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){ populate(); }; } }catch(e){}
   populate();
