@@ -88,6 +88,29 @@
       speechSynthesis.speak(u);
     } catch (e) { if (onend) onend(); }
   }
+  // 連續播放用：切成短句（逗號/句號都切）→ 一句接一句不留空檔，閉眼聽就好；也避開某些瀏覽器長句被截斷
+  function sentences(t) {
+    t = (t || "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+    var arr = t.split(/([。！？!?；;，,、])/), out = [], cur = "";
+    for (var k = 0; k < arr.length; k++) { cur += arr[k]; if (/[。！？!?；;，,、]/.test(arr[k])) { if (cur.trim()) out.push(cur.trim()); cur = ""; } }
+    if (cur.trim()) out.push(cur.trim());
+    return out;
+  }
+  function speakChain(parts, done) {
+    if (!voice || !window.speechSynthesis || !parts || !parts.length) { if (done) done(); return; }
+    var j = 0;
+    (function nx() {
+      if (ended || !voice) return;
+      if (j >= parts.length) { if (done) done(); return; }
+      try {
+        var u = new SpeechSynthesisUtterance(parts[j]);
+        u.lang = "zh-TW"; u.rate = 1; u.pitch = 1; var v = pickVoice(); if (v) u.voice = v;
+        u.onend = function () { j++; nx(); };
+        u.onerror = function () { j++; nx(); };
+        speechSynthesis.speak(u);
+      } catch (e) { j++; nx(); }
+    })();
+  }
 
   function build() {
     injectCSS();
@@ -132,7 +155,7 @@
     tip.innerHTML =
       '<div class="tt">' + (s.title || "") + '</div>' +
       '<div class="tx">' + (s.text || "") + '</div>' +
-      '<div class="pg">' + (i + 1) + ' / ' + steps.length + (auto ? '　·　自動展示中' : '') + '</div>' +
+      '<div class="pg">' + (i + 1) + ' / ' + steps.length + (auto ? '　·　自動展示中' : (voice ? '　·　🔊 連續播放中（聽就好，不用看）' : '')) + '</div>' +
       '<div class="bz">' +
         '<button class="ebnt-ico' + (voice ? ' on' : '') + '" data-a="voice" title="語音">🔊</button>' +
         '<button class="ebnt-ico' + (auto ? ' on' : '') + '" data-a="auto" title="自動播放">' + (auto ? '⏸' : '▶') + '</button>' +
@@ -141,11 +164,20 @@
         '<button class="ebnt-skip" data-a="skip">跳過</button>' +
       '</div>';
     place();
-    // 語音 + 自動推進
     clearTimeout(autoTimer);
-    var advance = function () { if (auto && !ended) { if (typeof s.demo === "function") { try { s.demo(); } catch (e) {} } autoTimer = setTimeout(next, 700); } };
-    if (voice) { speak((s.title || "") + "。" + (s.text || ""), function () { advance(); }); }
-    else if (auto) { if (typeof s.demo === "function") { try { s.demo(); } catch (e) {} } var ms = 2200 + (s.text || "").length * 55; autoTimer = setTimeout(next, Math.min(ms, 8000)); }
+    if (voice) {
+      // 連續語音：本步唸完「立刻」接下一步，整段順順播完，不用看螢幕
+      try { if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel(); } catch (e) {}
+      if (typeof s.demo === "function") { try { s.demo(); } catch (e) {} }
+      var parts = sentences((s.title ? s.title + "。" : "") + (s.text || ""));
+      setTimeout(function () {
+        if (ended || !voice) return;
+        speakChain(parts, function () { if (ended || !voice) return; if (i < steps.length - 1) { i++; render(); } else finish(); });
+      }, 50);
+    } else if (auto) {
+      if (typeof s.demo === "function") { try { s.demo(); } catch (e) {} }
+      var ms = 2200 + (s.text || "").length * 55; autoTimer = setTimeout(next, Math.min(ms, 8000));
+    }
   }
 
   function next() { if (i < steps.length - 1) { i++; render(); } else finish(); }
