@@ -468,7 +468,7 @@ $('ag-seed').addEventListener('click',()=>{ const t=$('m-type').value; const tpl
 /* 簽到 */
 function renderSign(){
   const mem=activeMembers(), wrap=$('sign-wrap');
-  if(!mem.length){ wrap.innerHTML='<div class="empty" style="padding:1.2rem">名冊尚無「在會」會員。<br>可先到「會員名冊」建立，或於下方列席欄手動補。</div>'; updateQuorum(0,0); return; }
+  if(!mem.length){ wrap.innerHTML='<div class="empty" style="padding:1.2rem">名冊尚無「在會」會員。<br>請先到 <a href="roster.html" style="color:#1A3A6B;font-weight:700">📋 會員名冊</a> 建立（一次建好，每場會議自動帶入點名），或於下方列席欄手動補。</div>'; updateQuorum(0,0); return; }
   wrap.innerHTML='<div class="signbox">'+mem.map(m=>`<label class="srow">
       <input type="checkbox" data-mid="${m.id}" ${cur.present[m.id]?'checked':''}>
       <span class="sn">${esc(m.name)}</span><span class="sd">${esc([m.dept,m.title].filter(Boolean).join(' '))}</span>
