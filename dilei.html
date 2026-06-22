@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#7B1818">
+<meta name="apple-mobile-web-app-title" content="避坑清單">
+<title>避坑清單＋待表決事項｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--red:#C0392B;--red-deep:#7B1818;--navy:#1A3A6B;--navy-deep:#122A4F;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#FAF6F5;--card:#fff;--border:#E6DAD7;--gold:#B7860B;--green:#1A7A4A;--green-deep:#0F5C36;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.85;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#7B1818,#4A0E0E);color:#fff;padding:1.7rem 1.25rem 1.3rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:19px;}
+  .header p{font-size:12.5px;opacity:.92;margin-top:6px;line-height:1.7;}
+  main{max-width:660px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:#FFF3F2;border:1px solid #F0C5C2;border-radius:12px;padding:.8rem 1rem;font-size:13px;color:#5A1010;margin-bottom:1rem;line-height:1.8;}
+  .prog{font-size:13px;color:var(--red-deep);font-weight:700;margin:.2rem 0 .8rem;}
+  h2.sec{font-family:'Noto Serif TC',serif;font-size:17px;color:var(--navy-deep);margin:1.4rem 0 .5rem;border-bottom:2px solid var(--border);padding-bottom:.25rem;}
+  .item{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:.8rem .9rem;margin-bottom:.7rem;border-left:5px solid var(--gold);}
+  .item.hi{border-left-color:var(--red);}
+  .item .row{display:flex;gap:9px;align-items:flex-start;}
+  .item input[type=checkbox]{width:20px;height:20px;flex:none;margin-top:3px;}
+  .item .t{font-weight:700;font-size:14.5px;color:var(--ink);}
+  .badge{font-size:11px;font-weight:700;color:#fff;border-radius:20px;padding:1px 8px;margin-left:6px;vertical-align:middle;}
+  .badge.hi{background:var(--red);} .badge.mid{background:var(--gold);}
+  .item .d{font-size:13px;color:var(--ink-mid);margin-top:3px;line-height:1.75;}
+  .item .fix{font-size:12.8px;color:var(--green-deep);background:#EAFAF1;border:1px solid #BFE3CF;border-radius:8px;padding:.4rem .6rem;margin-top:.45rem;}
+  .vote{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:.85rem .95rem;margin-bottom:.7rem;border-top:4px solid var(--navy);}
+  .vote .q{font-weight:700;font-size:14.5px;color:var(--navy-deep);}
+  .vote .who{font-size:12px;color:var(--ink-soft);margin:.15rem 0 .5rem;}
+  .opt{display:flex;align-items:flex-start;gap:8px;background:#F7F9FC;border:1.5px solid var(--border);border-radius:10px;padding:.5rem .7rem;margin-bottom:6px;cursor:pointer;font-size:13.5px;line-height:1.6;}
+  .opt:has(input:checked){background:#EAF0FA;border-color:var(--navy);}
+  .opt input{width:auto;margin-top:3px;flex:none;}
+  .decided{font-size:12.5px;color:var(--green-deep);font-weight:700;margin-top:3px;}
+  a{color:var(--navy);font-weight:700;}
+  .btnbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem;}
+  .btn{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:.6rem .9rem;font-weight:700;font-size:13.5px;cursor:pointer;}
+  .btn.ghost{background:#EAF0FA;color:var(--navy-deep);border:1.5px solid var(--navy);}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.3rem;line-height:1.8;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="union.html">
+
+<div class="header">
+  <h1>🧨 避坑清單 ＋ 待表決事項</h1>
+  <p>先看懂每個坑的嚴重性，再帶到理事會／會員大會一起表決</p>
+</div>
+
+<main>
+  <div class="topnote">📌 這頁兩個用途：<b>① 上半部</b>讓每位幹部看懂「踩下去會多痛」，看完打勾。<b>② 下半部</b>是「需要大家<b>投票決定</b>的事項」，把選項先攤開，正式表決請於<b>理事會／會員大會</b>進行（可用本站「會議文件」做議程與紀錄）。打勾與選擇只存本機。</div>
+
+  <div class="prog" id="prog"></div>
+
+  <h2 class="sec">一、避坑清單（看懂＋打勾）</h2>
+  <div id="pits"></div>
+
+  <h2 class="sec">二、需要大家投票決定的事項</h2>
+  <div class="topnote" style="background:#EAF0FA;border-color:#C2D2E8;color:#1A3A6B">下面先選「<b>目前傾向</b>」方便討論；<b>正式結果以會議表決為準</b>，會後可把決議記到會議紀錄。</div>
+  <div id="votes"></div>
+
+  <div class="btnbar">
+    <a class="btn" href="meeting.html">📋 開會議程／紀錄</a>
+    <a class="btn ghost" href="huizhi.html">🏠 會址解法</a>
+    <button class="btn ghost" id="reset" type="button">重設本機勾選</button>
+  </div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部後台 · 僅存本機<br>稅務細節請以國稅局／記帳士為準（⚠待核對）</div>
+</main>
+
+<div id="verBadge"></div>
+<script src="tour.js" defer></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var PITS=[
+    {k:"p1",hi:1,t:"扣繳沒辦＝被罰",d:"工會有統編就是「扣繳單位」。發講師費、工讀費、出席費、租金給人，依法要扣繳並申報扣（免）繳憑單，漏報會罰。",fix:"發錢給個人前先確認要不要扣繳；建議由記帳士協助年度申報。"},
+    {k:"p2",hi:1,t:"用個人帳戶收會費",d:"用幹部個人帳戶收會費＝帳目混用、被懷疑挪用，最傷信任，也有稅務麻煩。",fix:"開「工會」名義專戶；理事長、會計、出納分權，大額不經單一人。"},
+    {k:"p3",hi:1,t:"會址用理事長住家",d:"住家當會址會牽動房屋稅、地價稅，連日後賣屋的土增稅/房地合一優惠都可能沒了。",fix:"用借址登記或非自住物件；先打1999問勞工局。詳見『會址解法』。"},
+    {k:"p4",hi:0,t:"工會免稅≠不用報",d:"工會多可免所得稅，但該辦的申報還是要辦，不辦會被罰。",fix:"確認免稅資格與申報義務（問國稅局/記帳士）。"},
+    {k:"p5",hi:0,t:"銀行利息被扣10%沒退",d:"工會帳戶利息會被扣繳，若免稅其實可申請退還。",fix:"年度時一併處理退稅。 ⚠待核對"},
+    {k:"p6",hi:0,t:"政府補助沒專款專用",d:"補助款要專用、留核銷憑證，否則要繳回甚至追究。",fix:"補助單獨記帳、保留所有憑證與結報。"},
+    {k:"p7",hi:1,t:"連署收身分證影本(個資)",d:"沒加註用途、沒裁切，違反個資法、易被盜用。",fix:"用站上『證件加註工具』蓋『僅供連署、他用無效』並裁切。"},
+    {k:"p8",hi:1,t:"入會資格搞錯",d:"公務員身分不能當正式會員(只能贊助)；代表雇主行使管理權的主管不得加入。搞錯影響資格與選舉效力。",fix:"入會前先確認身分別。 ⚠待核對"},
+    {k:"p9",hi:0,t:"成立大會後逾期登記",d:"成立大會後須於30日內向勞工局登記，逾期要補正/重來。",fix:"成立大會排定後就把登記文件備齊。 ⚠待核對"},
+    {k:"p10",hi:1,t:"把個資/名冊 commit 或發布上線",d:"網站repo公開、public.json任何人看得到；放上會員名單、身分證、電話、密碼會外洩。",fix:"名冊/案件只存本機；發布public.json前再掃一眼有沒有個資。"},
+    {k:"p11",hi:0,t:"本機資料換手機就不見",d:"localStorage資料清快取/換機會消失。",fix:"定期用名冊『匯出』備份；密碼與救援碼另外存好。"},
+    {k:"p12",hi:0,t:"活動沒保險、幹部過勞",d:"辦聚餐/活動有意外責任風險；事情集中一人易爆。",fix:"活動投公共意外責任險；幹部分工輪替。"}
+  ];
+  var VOTES=[
+    {k:"v1",q:"會址要用哪一種？",who:"理事會決定",opts:["借址登記地址（虛擬辦公室，月租約500~1500）","借幹部/會員『非自住』物件（免費）","先問勞工局再決定","其他（會議討論）"]},
+    {k:"v2",q:"經費專戶開哪家銀行？由誰當出納？",who:"理事會決定",opts:["郵局","在地銀行（會議指定）","其他","待定"]},
+    {k:"v3",q:"要不要編預算聘記帳士／會計師（處理免稅、扣繳、決算）？",who:"會員大會/理事會",opts:["要，編列預算","先免費諮詢一次再說","暫不","待定"]},
+    {k:"v4",q:"會費金額（入會費／常年會費）？",who:"會員大會表決",opts:["入會費200＋常月200","入會費100＋常月100","其他金額","待會員大會定"]},
+    {k:"v5",q:"幹部出席費／交通費發不發？(發要扣繳)",who:"理事會決定",opts:["不發（最單純）","象徵性發、依法扣繳","實報實銷交通","待定"]},
+    {k:"v6",q:"活動要不要投公共意外責任險？",who:"理事會決定",opts:["要","視活動規模","暫不","待定"]}
+  ];
+  var RK="dilei_read_v1", VKK="dilei_vote_v1";
+  var read={}, votes={};
+  try{ read=JSON.parse(localStorage.getItem(RK))||{}; }catch(e){}
+  try{ votes=JSON.parse(localStorage.getItem(VKK))||{}; }catch(e){}
+  function esc(s){return String(s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}
+
+  function renderPits(){
+    $("pits").innerHTML=PITS.map(function(p){
+      return '<div class="item'+(p.hi?' hi':'')+'"><div class="row">'+
+        '<input type="checkbox" data-k="'+p.k+'"'+(read[p.k]?' checked':'')+'>'+
+        '<div><div class="t">'+esc(p.t)+'<span class="badge '+(p.hi?'hi':'mid')+'">'+(p.hi?'高':'中')+'</span></div>'+
+        '<div class="d">'+esc(p.d)+'</div><div class="fix">✅ 怎麼避：'+esc(p.fix)+'</div></div></div></div>';
+    }).join("");
+  }
+  function renderVotes(){
+    $("votes").innerHTML=VOTES.map(function(v){
+      var cur=votes[v.k];
+      return '<div class="vote"><div class="q">'+esc(v.q)+'</div><div class="who">由：'+esc(v.who)+'（先選傾向，正式以會議表決為準）</div>'+
+        v.opts.map(function(o,i){ return '<label class="opt"><input type="radio" name="'+v.k+'" value="'+i+'"'+(cur==String(i)?' checked':'')+'> '+esc(o)+'</label>'; }).join("")+
+        (cur!=null?'<div class="decided">目前傾向：'+esc(v.opts[cur])+'</div>':'')+'</div>';
+    }).join("");
+  }
+  function prog(){ var n=PITS.filter(function(p){return read[p.k];}).length; $("prog").textContent="已了解 "+n+" / "+PITS.length+" 項坑"; }
+  function save(){ try{ localStorage.setItem(RK,JSON.stringify(read)); localStorage.setItem(VKK,JSON.stringify(votes)); }catch(e){} }
+
+  renderPits(); renderVotes(); prog();
+  $("pits").addEventListener("change",function(e){ var b=e.target.closest&&e.target.closest("input[data-k]"); if(!b)return; read[b.dataset.k]=b.checked; save(); prog(); });
+  $("votes").addEventListener("change",function(e){ var r=e.target.closest&&e.target.closest("input[type=radio]"); if(!r)return; votes[r.name]=r.value; save(); renderVotes(); });
+  $("reset").addEventListener("click",function(){ if(confirm("重設本機所有勾選與傾向？")){ read={}; votes={}; save(); renderPits(); renderVotes(); prog(); } });
+
+  window.addEventListener("load",function(){
+    if(!window.EBNTour) return;
+    EBNTour.attach([
+      { title:"這頁要做什麼", text:"先讓每位幹部<b>看懂每個坑有多嚴重</b>，看完打勾；再對下面要決定的事<b>一起投票</b>。" },
+      { sel:".item.hi", title:"紅色＝高風險", text:"紅色是<b>會痛</b>的坑（罰錢、傷信任、害到屋主）。每條都有『怎麼避』。" },
+      { sel:"#votes", title:"需要大家決定的事", text:"先選『目前傾向』方便討論；<b>正式結果以理事會/會員大會表決為準</b>。" },
+      { title:"接著怎麼做", text:"把這些帶到會議表決，用『開會議程／紀錄』做成議程與決議。會址細節點『會址解法』。" }
+    ], {});
+  });
+})();
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
