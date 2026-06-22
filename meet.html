@@ -52,11 +52,11 @@
 
 <div class="header">
   <h1>🖥️ 線上會議室</h1>
-  <p>沒辦法到現場？用手機或電腦一起線上參與<br>免下載 App、免註冊帳號，點一下就進去</p>
+  <p>沒辦法到現場？用手機或電腦，透過 <b>Google Meet</b> 一起線上參與</p>
 </div>
 
 <main>
-  <div class="topnote">📌 工會是「<b>大家一起經營</b>」的，不是繳了會費問題就會自動消失。<b>最需要你出席的就是這兩場會</b>——來認識工會、一起把規則和幹部選出來。真的到不了現場，就用下面的線上會議室一起參加。</div>
+  <div class="topnote">📌 工會是<b>大家一起經營</b>的，繳了費問題不會自動消失。<b>最需要你出席的就是這兩場會</b>；到不了現場，就用下面的線上會議室一起參加。</div>
 
   <!-- 近期會議 -->
   <div class="card">
@@ -68,7 +68,7 @@
       <div class="when">🗓 日期：<b id="d-prep">（待幹部填入）</b>　🕒 時間：<b id="t-prep">—</b></div>
       <div class="when">📍 地點：<span id="p-prep">實體會場＋線上同步</span></div>
       <div class="why">為什麼要來：這場主要是讓大家<b>搞懂「工會是什麼、怎麼運作」</b>、了解籌備進度、把你的疑問當場問清楚。先弄懂了，之後才不會覺得「跟想像差很多」。</div>
-      <a class="join" id="join-prep" href="#" target="_blank" rel="noopener">🔵 進入發起人會議線上會議室</a>
+      <a class="join" id="join-prep" href="#" target="_blank" rel="noopener">🟢 進入 Google Meet（發起人會議）</a>
       <button class="copy" data-target="prep">📋 複製這場的會議連結</button>
       <div class="lnk" id="lnk-prep"></div>
     </div>
@@ -78,7 +78,7 @@
       <div class="when">🗓 日期：<b id="d-found">（待幹部填入）</b>　🕒 時間：<b id="t-found">—</b></div>
       <div class="when">📍 地點：<span id="p-found">實體會場＋線上同步</span></div>
       <div class="why">為什麼要來：這場要<b>通過章程、選出理事監事</b>，工會正式誕生。章程和幹部會直接影響你的權益，<b>每一票都算數</b>，能到盡量到。</div>
-      <a class="join" id="join-found" href="#" target="_blank" rel="noopener">🟢 進入成立大會線上會議室</a>
+      <a class="join" id="join-found" href="#" target="_blank" rel="noopener">🟢 進入 Google Meet（成立大會）</a>
       <button class="copy" data-target="found">📋 複製這場的會議連結</button>
       <div class="lnk" id="lnk-found"></div>
     </div>
@@ -88,13 +88,25 @@
   <!-- 怎麼加入 -->
   <div class="card">
     <h2>📱 怎麼加入（超簡單）</h2>
-    <div class="sub">手機、平板、電腦都可以；不用安裝、不用帳號</div>
+    <div class="sub">手機、平板、電腦都可以</div>
     <ol class="steps">
-      <li>到了開會時間，點上面那顆<b>綠色「進入線上會議室」</b>按鈕。</li>
-      <li>瀏覽器問你「要不要用麥克風／鏡頭」→ 想發言就<b>允許</b>（只想聽可以都不開）。</li>
-      <li>輸入<b>你的真實姓名</b>（方便點名、簽到），按加入就進去了。</li>
-      <li>進不去？把下面的<b>會議連結複製</b>，貼到 Safari／Chrome 網址列再開一次。</li>
+      <li>到開會時間，點上面<b>綠色「進入 Google Meet」</b>按鈕。</li>
+      <li>手機若問要不要開 <b>Google Meet App</b> 就允許；沒裝也可選<b>「用瀏覽器加入」</b>。</li>
+      <li>填<b>你的真實姓名</b>，按「<b>要求加入</b>」，主持人會放你進來。</li>
+      <li>允許<b>麥克風／鏡頭</b>（只想聽可以都不開）。</li>
     </ol>
+  </div>
+
+  <!-- 幹部：怎麼產生連結 -->
+  <div class="card" style="border-top-color:#1E73C8">
+    <h2 style="color:#1A4E8A">👮 幹部：怎麼產生 Google Meet 連結</h2>
+    <div class="sub">建立一次就好，兩場會議各一條</div>
+    <ol class="steps">
+      <li>用工會的 Google 帳號開 <b>meet.google.com</b>。</li>
+      <li>點<b>「發起新會議」→「建立會議以供日後使用」</b>，會給你一條 <b>meet.google.com/xxx-…</b> 連結。</li>
+      <li>把連結貼到<b>本頁設定區</b>（請維護者填入），或直接貼到 <b>LINE 群組</b>公告。</li>
+    </ol>
+    <div class="hint" style="font-size:12.5px;color:var(--ink-soft);margin-top:6px">與會者免帳號，用瀏覽器「要求加入」、主持人按允許即可。</div>
   </div>
 
   <!-- 參與須知 -->
@@ -136,32 +148,42 @@ const MEET = {
   prep:  { date:"", time:"", place:"實體會場＋線上同步" },   // 發起人會議
   found: { date:"", time:"", place:"實體會場＋線上同步" }    // 成立大會
 };
-// 線上會議室連結（用免費的 Jitsi Meet，免下載免註冊、手機可用）。
-// 想換房間：把房名改掉即可（建議用不容易被猜到的字串，並在會議中由主持人開啟「等候室／密碼」）。
+// 線上會議用 Google Meet。幹部先建立會議、取得連結，貼到這裡（兩場各一條）。
+// 怎麼建立：開 https://meet.google.com →「發起新會議」→「建立會議以供日後使用」→ 複製連結貼上來。
+// 例：prep: "https://meet.google.com/abc-defg-hij"
+// 留空的話，按鈕會帶到 Google Meet 首頁並提示「連結尚未設定」。
 const MEET_URL = {
-  prep:  "https://meet.jit.si/GaoRongUnion-Prep-2026",
-  found: "https://meet.jit.si/GaoRongUnion-Founding-2026"
+  prep:  "",
+  found: ""
 };
 /* ============================================================ */
 (function(){
   var $=function(id){return document.getElementById(id);};
+  var labels={prep:"發起人會議", found:"成立大會"};
   function fill(k){
     var m=MEET[k]||{};
     if($("d-"+k)) $("d-"+k).textContent = m.date ? m.date : "（待幹部填入）";
     if($("t-"+k)) $("t-"+k).textContent = m.time ? m.time : "—";
     if($("p-"+k)) $("p-"+k).textContent = m.place || "實體會場＋線上同步";
-    var url=MEET_URL[k]||"#";
-    var a=$("join-"+k); if(a) a.href=url;
-    var l=$("lnk-"+k); if(l) l.textContent=url;
+    var url=(MEET_URL[k]||"").trim();
+    var a=$("join-"+k), l=$("lnk-"+k);
+    if(url){
+      if(a){ a.href=url; a.textContent="🟢 進入 Google Meet（"+labels[k]+"）"; a.style.opacity="1"; }
+      if(l) l.textContent=url;
+    } else {
+      // 還沒設定連結：按鈕帶到 Google Meet 首頁，並清楚說明
+      if(a){ a.href="https://meet.google.com/"; a.textContent="📅 會議連結尚未設定（幹部點此建立）"; a.style.background="#8A8F94"; }
+      if(l) l.textContent="幹部建立 Google Meet 會議後，把連結貼到本頁設定區或 LINE 群組";
+    }
   }
   fill("prep"); fill("found");
 
   var toast=$("toast");
-  function showToast(t){ if(toast){ toast.textContent=t; setTimeout(function(){ toast.textContent=""; },2600); } }
+  function showToast(t){ if(toast){ toast.textContent=t; setTimeout(function(){ toast.textContent=""; },2800); } }
   document.querySelectorAll(".copy").forEach(function(b){
     b.addEventListener("click",function(){
-      var url=MEET_URL[b.dataset.target]||"";
-      if(!url) return;
+      var url=(MEET_URL[b.dataset.target]||"").trim();
+      if(!url){ showToast("⚠ 連結尚未設定，請幹部先建立 Google Meet"); return; }
       if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ showToast("✅ 連結已複製，貼到 LINE 給同事就行"); },function(){ showToast("請長按連結複製"); }); }
       else { showToast("請長按連結複製"); }
     });
