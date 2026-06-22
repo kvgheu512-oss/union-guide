@@ -539,7 +539,7 @@ async function viewReceipt(rcptId){
   const w=window.open('','_blank');
   const im=safeImg(r.img);
   const html=`<!DOCTYPE html><meta charset=utf-8><title>單據 ${esc(r.date)}</title><body style="margin:0;background:#222;text-align:center;font-family:sans-serif"><div style="color:#ccc;padding:8px;font-size:13px">${esc(r.sum||r.cat)} · ${fmt(r.amt)} · ${esc(r.date)} · 憑證保存至 ${(+(''+(r.date||'2026')).slice(0,4))+5} 年（§27）${r.hash?'<br>數位指紋 '+esc((''+r.hash).slice(0,32))+'…':''}</div>${im?`<img src="${im}" style="max-width:100%">`:'<p style="color:#ccc">（此單據無照片）</p>'}</body>`;
-  if(w){w.document.write(html);w.document.close();}
+  if(w){w.document.write(html);w.document.close();ebnDocBack(w);}
 }
 async function verifyReceipt(rcptId){
   const r=await IDB.get(rcptId);
@@ -1042,7 +1042,8 @@ function docShell(docType, subtitle, inner, fname){
 </div></body></html>`;
   openDoc(html,fname);
 }
-function openDoc(html,fname){ const w=window.open('','_blank'); if(w){ w.document.write(html); w.document.close(); } else { const b=new Blob([html],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=fname; a.click(); } }
+function ebnDocBack(w){ try{ if(!w||!w.document||!w.document.body) return; var u=location.protocol+'//'+location.host+location.pathname; var st=w.document.createElement('style'); st.textContent='@media print{.ebnbk{display:none!important}}'; (w.document.head||w.document.body).appendChild(st); var b=w.document.createElement('button'); b.className='ebnbk'; b.textContent='‹ 返回'; b.setAttribute('onclick',"window.close();setTimeout(function(){location.href='"+u+"'},150)"); b.style.cssText='position:fixed;top:8px;left:8px;z-index:99999;background:#1A3A6B;color:#fff;border:0;border-radius:18px;padding:8px 14px;font-size:14px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.3)'; w.document.body.appendChild(b); }catch(e){} }
+function openDoc(html,fname){ const w=window.open('','_blank'); if(w){ w.document.write(html); w.document.close(); ebnDocBack(w); } else { const b=new Blob([html],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=fname; a.click(); } }
 function roc(y){ return '中華民國 '+(y-1911)+' 年'; }
 
 /* ===================== 決算書（正式格式 §6·§13）===================== */

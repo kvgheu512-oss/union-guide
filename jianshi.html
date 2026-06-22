@@ -651,7 +651,7 @@ document.querySelectorAll('#tpl-pick button').forEach(b=>b.addEventListener('cli
 }));
 $('tpl-gen').addEventListener('click',genTpl);
 $('tpl-copy').addEventListener('click',()=>{ const t=$('tpl-out'); t.select(); try{document.execCommand('copy');}catch(_){} if(navigator.clipboard)navigator.clipboard.writeText(t.value); toast('已複製，可貼到 Word/Line'); });
-$('tpl-print').addEventListener('click',()=>{ const w=window.open('','_blank'); w.document.write('<pre style="font-family:\'Noto Sans TC\',sans-serif;font-size:14px;line-height:1.9;white-space:pre-wrap;padding:24px">'+esc($('tpl-out').value)+'</pre>'); w.document.close(); w.print(); });
+$('tpl-print').addEventListener('click',()=>{ const w=window.open('','_blank'); if(!w) return; w.document.write('<pre style="font-family:\'Noto Sans TC\',sans-serif;font-size:14px;line-height:1.9;white-space:pre-wrap;padding:24px 24px 80px">'+esc($('tpl-out').value)+'</pre>'); w.document.close(); try{ var u=location.protocol+'//'+location.host+location.pathname; var st=w.document.createElement('style'); st.textContent='@media print{.ebnbk{display:none!important}}'; (w.document.head||w.document.body).appendChild(st); var b=w.document.createElement('button'); b.className='ebnbk'; b.textContent='‹ 返回'; b.setAttribute('onclick',"window.close();setTimeout(function(){location.href='"+u+"'},150)"); b.style.cssText='position:fixed;top:8px;left:8px;z-index:99999;background:#1A3A6B;color:#fff;border:0;border-radius:18px;padding:8px 14px;font-size:14px;font-weight:700'; w.document.body.appendChild(b); }catch(e){} });
 
 /* ============================================================
    分頁切換 / toast / init

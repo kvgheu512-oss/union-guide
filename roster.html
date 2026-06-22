@@ -297,7 +297,9 @@ function shareBackup(){
       return;
     }
   }catch(e){}
-  exportJSON(); // 後備：直接下載
+  exportJSON(); // 後備：直接下載（iPhone Safari 不支援分享檔案時走這）
+  var h=document.getElementById('bk-hint');
+  if(h) h.innerHTML='📥 <b>備份檔已產生（這就是你的名冊備份！）</b><br><b>iPhone</b>：在跳出的檔案畫面按「<b>更多…</b>」→「<b>儲存到檔案</b>」→ 選「<b>iCloud 雲碟</b>」就永久保存了；或之後到「<b>檔案 App → 下載項目</b>」也找得到。';
 }
 function updateBkStatus(){
   var st=document.getElementById('bk-status'), bind=document.getElementById('bk-bind'), resume=document.getElementById('bk-resume'), hint=document.getElementById('bk-hint');
@@ -314,7 +316,7 @@ function updateBkStatus(){
     else { if(st)st.textContent=' · 用「雲端／檔案」備份'; if(resume)resume.style.display='none'; }
     if(hint) hint.textContent = pc
       ? '電腦：選一個檔當「儲存點」，之後改名冊就自動寫入該檔。手機：用「雲端／檔案」存到 iCloud／雲端硬碟。'
-      : '手機系統不允許網頁自動寫檔；按「雲端／檔案」一鍵存到 iCloud／雲端硬碟／檔案 App（最durable）。';
+      : '手機系統不允許網頁自動寫檔。按「雲端／檔案」會產生備份檔 → iPhone 在跳出畫面按「更多…→儲存到檔案→iCloud 雲碟」即永久保存（或到「檔案 App→下載項目」找）。';
   });
 }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
@@ -429,7 +431,7 @@ function exportJSON(){
   const blob=new Blob([JSON.stringify(members,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='會員名冊備份_'+curMonth()+'.json'; a.click();
   try{ localStorage.setItem('roster_lastbackup_v1', new Date().toISOString()); }catch(_){}
-  toast('已匯出備份，請妥善保管');
+  toast('✅ 備份檔已產生（iPhone 請按 更多…→儲存到檔案→iCloud）');
 }
 $('export-btn').addEventListener('click',exportJSON);
 var _wbk=document.getElementById('warn-bk'); if(_wbk) _wbk.addEventListener('click',exportJSON);

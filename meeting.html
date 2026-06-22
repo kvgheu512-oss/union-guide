@@ -373,7 +373,7 @@ function openDoc(title,bodyHTML){
     .sign-line{margin-top:2.5rem;} @media print{button{display:none;}}
     button{margin:1rem .3rem;padding:.5rem 1.2rem;font-size:14px;cursor:pointer;}
     </style></head><body>${bodyHTML}
-    <div style="text-align:center"><button onclick="window.print()">🖨 列印 / 存 PDF</button><button onclick="window.close()">關閉</button></div>
+    <div style="text-align:center"><button onclick="window.print()">🖨 列印 / 存 PDF</button><button onclick="window.close();setTimeout(function(){location.href='${location.protocol}//${location.host}${location.pathname}'},150)">‹ 返回</button></div>
     </body></html>`);
   w.document.close();
 }
