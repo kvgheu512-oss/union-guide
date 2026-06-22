@@ -118,12 +118,12 @@
 window.addEventListener("load", function(){
   if(!window.EBNTour) return;
   EBNTour.attach([
-    { title:"公文文號流水簿", text:"幫你自動編公文文號、自動留底，不用再手記『○字第○號』。" },
-    { sel:"#nextNo", title:"下一個文號", text:"這是下一件會用到的文號（字別＋年＋三碼流水），設定在『基本資料中心』。" },
-    { sel:"#subject", title:"填主旨再取號", text:"填這份公文的主旨，方便日後在發文簿查。", demo:function(){ var e=document.getElementById("subject"); if(e) e.value="函報成立大會選舉結果"; } },
-    { sel:"#issue", title:"取號發文", text:"按下去就用掉這個號、流水號自動 +1，並寫進下方發文簿。" },
-    { sel:"#logWrap", title:"發文簿（自動留底）", text:"每次取號都會列在這裡，可刪單筆、匯出 CSV 或列印存查。" },
-    { title:"完成！", text:"沒看到文號？先到『基本資料中心』填字別與民國年即可。" }
+    { title:"幫公文編號的本子", text:"發公文要編號，這個會<b>自動幫你編</b>，還會自己<b>記起來</b>，不用手寫。" },
+    { sel:"#nextNo", title:"下一個號碼", text:"這是<b>下一張公文</b>要用的號碼。" },
+    { sel:"#subject", title:"寫一下這份在講什麼", text:"簡單寫這份公文的<b>主題</b>，方便以後找。", demo:function(){ var e=document.getElementById("subject"); if(e) e.value="報告成立大會結果"; } },
+    { sel:"#issue", title:"按一下拿號碼", text:"按下去就<b>拿到號碼</b>，下一個號碼會自己往後加一個。" },
+    { sel:"#logWrap", title:"都會記在這裡", text:"每次拿的號碼都會<b>列在這裡</b>，可以存檔或印出來。" },
+    { title:"好了！", text:"看不到號碼？先去『工會基本資料』填一下公文的字和年份。" }
   ], {});
 });
 </script>

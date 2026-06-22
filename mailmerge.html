@@ -196,12 +196,12 @@
 window.addEventListener("load", function(){
   if(!window.EBNTour) return;
   EBNTour.attach([
-    { title:"合併列印怎麼用", text:"它會把<b>會員名冊</b>和<b>工會基本資料</b>合起來，一次產生每人一份文件。我帶你看一遍。" },
-    { sel:"#tmpls", title:"① 選範本", text:"選要產生哪種文件：開會通知、繳費收據、委託書、入會歡迎函。" },
-    { sel:"#extra", title:"填這份文件的資訊", text:"依範本填需要的欄位，例如開會通知要填會議名稱、時間、地點。", demo:function(){ var e=document.getElementById("x-mName"); if(e){ e.value="第一屆第一次會員大會"; } } },
-    { sel:"#mlist", title:"② 勾選會員", text:"從名冊抓出來的會員清單，預設全選，可搜尋或單獨勾選要產生的人。" },
-    { sel:"#gen", title:"③ 一鍵產生", text:"按下去就一次生成『每人一份』，跳出列印畫面可直接印或選『儲存成 PDF』。抬頭和文號會自動套上。" },
-    { title:"完成！", text:"還沒有會員？先到『會員名冊』新增或匯入；抬頭沒帶入？先到『基本資料中心』填一次。" }
+    { title:"一次印很多份文件", text:"這個工具可以<b>一次幫每個會員各做一份</b>文件，不用一張一張慢慢做。" },
+    { sel:"#tmpls", title:"先選要做哪一種", text:"選你要的：<b>開會通知、收據、委託書，或歡迎信</b>。" },
+    { sel:"#extra", title:"填要寫的東西", text:"照上面選的，填一下需要的資料，例如<b>開會的時間、地點</b>。", demo:function(){ var e=document.getElementById("x-mName"); if(e){ e.value="第一次會員大會"; } } },
+    { sel:"#mlist", title:"勾要做給誰", text:"下面是會員名單，<b>預設全部都勾</b>，你可以把不要的取消。" },
+    { sel:"#gen", title:"按一下就全部做好", text:"按下去就<b>一次做好每人一份</b>，可以印出來，或存成檔案。" },
+    { title:"好了！", text:"名單是空的？先去『會員名冊』加人。沒有工會名字？先去填『工會基本資料』。" }
   ], {});
 });
 </script>

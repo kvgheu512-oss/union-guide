@@ -140,12 +140,12 @@
 window.addEventListener("load", function(){
   if(!window.EBNTour) return;
   EBNTour.attach([
-    { title:"批次收據怎麼用", text:"一次貼上多筆繳費，就能批次產生收據和一張收費彙總表。" },
-    { sel:"#year", title:"① 共同欄位", text:"填年度、費別、預設金額（沒填金額的人就用這個）、收據起始編號。" },
-    { sel:"#lines", title:"② 貼上名單", text:"一行一人『姓名 金額』；只填姓名就用預設金額。也可按上面『從名冊帶入姓名』。", demo:function(){ var e=document.getElementById("lines"); if(e){ e.value="王小明 200\n李小華\n陳大文 500"; e.dispatchEvent(new Event("input",{bubbles:true})); } } },
-    { sel:"#sum", title:"即時統計", text:"這裡即時顯示筆數與合計金額，產生前先核對。" },
-    { sel:"#gen", title:"③ 產生收據＋彙總表", text:"按下去批次產生每人一張收據（自動編號）外加一張彙總表，可列印或存 PDF。" },
-    { title:"完成！", text:"收據抬頭、理事長會自動帶入『基本資料中心』的資料。" }
+    { title:"一次開很多張收據", text:"收會費的時候，<b>一次貼上好幾個人</b>，就能一起把收據做好。" },
+    { sel:"#year", title:"先填共同的資料", text:"填<b>年度、是什麼費、一個人收多少錢</b>。" },
+    { sel:"#lines", title:"貼上名單", text:"<b>一行一個人</b>，寫名字和錢。只寫名字就用上面的預設金額。也可以從名冊帶進來。", demo:function(){ var e=document.getElementById("lines"); if(e){ e.value="王小明 200\n李小華\n陳大文 500"; e.dispatchEvent(new Event("input",{bubbles:true})); } } },
+    { sel:"#sum", title:"這裡會幫你算", text:"這裡會顯示<b>總共幾個人、收了多少錢</b>，做之前先看一下對不對。" },
+    { sel:"#gen", title:"按一下全部做好", text:"按下去就把<b>每個人的收據</b>和<b>一張總表</b>做好，可以印或存檔。" },
+    { title:"好了！", text:"收據上面的工會名字、理事長，會自動帶『工會基本資料』裡的。" }
   ], {});
 });
 </script>
