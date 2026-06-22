@@ -128,18 +128,27 @@
    ・首頁目標：<body data-home="union.html"> 可覆寫，預設 index.html（對外首頁）。
    ・不想要鈕的頁（例如對外首頁本身）：<body data-nonav>。 */
 (function(){
-  // 🔙 全站共用「可靠返回」：history.back() 在手機常按了沒反應（第一筆是 about:blank、或上一頁是別站）。
-  // 改用 referrer 判斷：上一頁是「本站頁面」就回上一頁；否則直接回對應首頁（幹部→union、會員→index）。永遠有反應、不會跳空白。
+  // 🔙 全站可靠返回 — 多頁網站正規做法：用 sessionStorage 自建「麵包屑導覽堆疊」記錄站內走過的頁，
+  // 返回＝回堆疊上一頁（可多層）。只有「外部直接開、站內無上一頁」時才回對應首頁。永遠有反應、不跳空白。
+  var NK="ebn_nav_v1";
+  function getStack(){ try{ return JSON.parse(sessionStorage.getItem(NK)||"[]"); }catch(e){ return []; } }
+  function setStack(s){ try{ sessionStorage.setItem(NK, JSON.stringify(s.slice(-30))); }catch(e){} }
+  (function recordNav(){
+    var here=location.href.split("#")[0], s=getStack();
+    if(s.length && s[s.length-1]===here){ /* 重整：不動 */ }
+    else if(s.length>=2 && s[s.length-2]===here){ s.pop(); }   // 使用者往回 → 退一層
+    else { s.push(here); }                                      // 前進新頁 → 推入
+    setStack(s);
+  })();
   window.ebnBack=function(home, ev){
     try{ if(ev&&ev.preventDefault) ev.preventDefault(); }catch(_){}
     home = home || (document.body&&document.body.getAttribute("data-home")) || "index.html";
+    var s=getStack();
+    if(s.length>=2){ location.href=s[s.length-2]; return false; }   // 回站內上一頁
+    // 堆疊沒有上一頁 → 試 referrer（本站）→ 否則回對應首頁
     var ref=document.referrer||"";
-    var sameSite=false;
-    try{ sameSite = ref && (new URL(ref).origin===location.origin); }catch(_){}
-    // 上一頁是本站、且不是「自己這頁」（避免重整原地不動）→ 回上一頁；否則回對應首頁
-    if(sameSite && ref.split("#")[0]!==location.href.split("#")[0]){ location.href=ref; }
-    else { location.href=home; }
-    return false;
+    try{ if(ref && new URL(ref).origin===location.origin && ref.split("#")[0]!==location.href.split("#")[0]){ location.href=ref; return false; } }catch(_){}
+    location.href=home; return false;
   };
   function build(){
     var b=document.body; if(!b) return;
