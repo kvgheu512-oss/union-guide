@@ -144,8 +144,16 @@
     try{ if(ev&&ev.preventDefault) ev.preventDefault(); }catch(_){}
     home = home || (document.body&&document.body.getAttribute("data-home")) || "index.html";
     var s=getStack();
-    if(s.length>=2){ location.href=s[s.length-2]; return false; }   // 回站內上一頁
-    // 堆疊沒有上一頁 → 試 referrer（本站）→ 否則回對應首頁
+    if(s.length>=2){
+      // 有站內上一頁 → 優先用瀏覽器返回（走 bfcache、秒回、不卡）；
+      // 若沒真的離開（例如只退了錨點），450ms 後再強制導向上一頁。
+      var prev=s[s.length-2], gone=false;
+      try{ window.addEventListener("pagehide",function(){ gone=true; },{once:true}); }catch(_){}
+      var t=setTimeout(function(){ if(!gone) location.href=prev; }, 450);
+      try{ history.back(); }catch(e){ clearTimeout(t); location.href=prev; }
+      return false;
+    }
+    // 沒有站內上一頁（從外部直接開）→ referrer 是本站就回，否則回對應首頁
     var ref=document.referrer||"";
     try{ if(ref && new URL(ref).origin===location.origin && ref.split("#")[0]!==location.href.split("#")[0]){ location.href=ref; return false; } }catch(_){}
     location.href=home; return false;
