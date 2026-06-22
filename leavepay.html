@@ -104,6 +104,37 @@
     <details><summary>看法源重點</summary><div class="law"><b>§39</b>：國定假日工資雇主<b>照給</b>；經同意<b>出勤者「工資加倍發給」</b>。<br>月薪制：放假當天工資已含在月薪裡，所以出勤要<b>另外再加給 1 日工資</b>（8 小時內，不論時數多寡）。<br>超過 8 小時部分：依 <b>§24</b> 延長工時加給（前 2 時 ×1⅓、再 2 時 ×1⅔，以時薪計）——本表為<b>估算</b>。</div></details>
   </div>
 
+  <!-- C 高榮加班費結算的兩個問題 -->
+  <div class="card" style="border-top-color:#C0392B">
+    <h2 style="color:#7B1818">③ 高榮加班費「拖到 12 月＋÷31」的兩個違法點</h2>
+    <div class="sub">把惡劣做法記下來、證據留好，年底結算（或離職）時一起討</div>
+
+    <div class="out" style="background:#FDECEA;border-color:#F3C9C4">
+      <div style="font-weight:700;color:#7B1818">問題①：1～11 月的加班費，拖到 12 月才一次發</div>
+      <div style="font-size:13px;margin:.2rem 0 .6rem">工資（含加班費）依 <b>勞基法 §23</b> 應「<b>每月至少定期發給二次</b>」並附計算明細。累積大半年才發＝<b>遲延給付工資</b> → 你可請求<b>遲延利息（年息 5%，民法 §203、§233）</b>，自每月原本該發那天起算。</div>
+      <div style="font-weight:700;color:#7B1818">問題②：一律用 ÷31 計算</div>
+      <div style="font-size:13px;margin:.2rem 0 0">加班費的時薪應以「平日每小時工資額」計（標準 <b>月薪÷30÷8</b>）。用 12 月的 ÷31（＝月薪÷248）<b>稀釋了時薪、每小時少給</b>；而且各月加班本應以<b>該月</b>計，不該用 12 月一刀切。<b>§24</b> 訂的加成（前 2 時 ×1⅓、再 2 時 ×1⅔）也要逐月足額。</div>
+    </div>
+
+    <div style="font-weight:700;color:var(--green-deep);margin:.9rem 0 .3rem">📎 證據清單（邊存邊勾，存本機）</div>
+    <div class="chk" id="otchk" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:.3rem .4rem">
+      <label><input type="checkbox" data-k="o1"> 每月<b>出勤／打卡紀錄、班表</b>（證明實際加班的日期與時數）</label>
+      <label><input type="checkbox" data-k="o2"> <b>加班申請單／簽核紀錄</b>（證明是經同意的加班）</label>
+      <label><input type="checkbox" data-k="o3"> <b>12 月那張加班費結算薪資明細</b>（證明用 ÷31、且集中一次發）</label>
+      <label><input type="checkbox" data-k="o4"> 任何寫明「<b>加班費年底統一結算</b>」的公告／LINE／email（證明是制度性做法）</label>
+      <label><input type="checkbox" data-k="o5"> 自己<b>每月記一筆加班時數</b>（手機備忘也行，跟出勤紀錄對得起來）</label>
+    </div>
+    <div class="hint">⚖️ <b>勞動事件法 §38</b>：出勤紀錄記載的時間<b>推定</b>為工作時間；§35～36 雇主有提出紀錄義務 → 舉證對你有利。<b>加班費 5 年內都可追（民法 §126）</b>。</div>
+
+    <div style="font-weight:700;color:var(--green-deep);margin:.9rem 0 .3rem">🧠 一鍵生成主張（貼給 AI 律師或附在申請書）</div>
+    <textarea id="otClaim" readonly style="width:100%;min-height:150px;background:#0A111C;color:#D7E2EF;border:1px solid #28384E;border-radius:9px;padding:.7rem;font-size:12px;line-height:1.7;font-family:inherit"></textarea>
+    <div style="display:flex;gap:8px;margin-top:.5rem;flex-wrap:wrap">
+      <button id="otCopy" style="flex:1;min-width:130px;background:#1E73C8;color:#fff;border:0;border-radius:9px;padding:.6rem;font-weight:700;cursor:pointer">📋 複製主張</button>
+      <a href="lawyer.html" style="flex:1;min-width:130px;text-align:center;background:#13A36B;color:#fff;border-radius:9px;padding:.6rem;font-weight:700;text-decoration:none">⚖️ 開 AI 律師 →</a>
+    </div>
+    <div id="otToast" style="color:var(--green-deep);font-size:12px;min-height:16px;margin-top:6px;text-align:center;font-weight:700"></div>
+  </div>
+
   <div class="ask">不確定醫院給的對不對？把<b>薪資明細（哪些算進月薪、折算多少）</b>給工會幹部，或用 <a href="lawyer.html">⚖️ AI 律師</a> 做個案分析、列出可主張的差額與證據。</div>
 
   <div class="foot">資料來源：全國法規資料庫（勞動基準法 §37／§38／§39／§24、施行細則 §24-1）· 高雄榮民總醫院企業工會（籌備中）</div>
@@ -164,6 +195,40 @@
   $("sen").addEventListener("change",function(){ $("unused").value=this.value; calc(); });
   ["salary","dv","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
   calc();
+})();
+(function(){
+  // 證據清單存本機
+  var EK="leavepay_otchk_v1", saved={};
+  try{ saved=JSON.parse(localStorage.getItem(EK))||{}; }catch(e){}
+  var boxes=document.querySelectorAll("#otchk input");
+  boxes.forEach(function(b){
+    if(saved[b.dataset.k]) b.checked=true;
+    b.addEventListener("change",function(){ saved[b.dataset.k]=b.checked; try{localStorage.setItem(EK,JSON.stringify(saved));}catch(e){} });
+  });
+  // 一鍵主張
+  var CLAIM=[
+"【加班費爭議主張】（高雄榮民總醫院）",
+"",
+"一、事實：本院將 1～11 月之加班（延長工時）費用累積至 12 月才一次結算發給，且一律以「÷31」計算時薪。",
+"",
+"二、主張：",
+"1. 工資（含加班費）依《勞動基準法》§23 應每月至少定期發給二次並附計算明細；累積大半年才發屬遲延給付。",
+"2. 遲延給付之加班費，得請求遲延利息：自各月原應發放日之翌日起，按法定利率年息 5% 計算（民法 §233、§203）。",
+"3. 加班費時薪應以「平日每小時工資額」（標準為月薪÷30÷8）計，並以各該加班月份之工資為準；以 12 月之 ÷31 一律計算，稀釋時薪、低於法定，差額應補。",
+"4. 加班費加成依《勞基法》§24（前2時×1⅓、再2時×1⅔）逐月足額計給。",
+"5. 上開請求權時效為 5 年（民法 §126）；出勤紀錄依《勞動事件法》§38 推定為工作時間，雇主依 §35、§36 有提出義務。",
+"",
+"三、請求：請補發各月加班費差額及自各應發日起算之年息 5% 遲延利息。",
+"",
+"（請補上：你的月薪組成、各月加班時數、12 月實際結算金額，以便精算差額。）"
+].join("\n");
+  var ta=document.getElementById("otClaim"); if(ta) ta.value=CLAIM;
+  var btn=document.getElementById("otCopy"), t=document.getElementById("otToast");
+  if(btn) btn.addEventListener("click",function(){
+    function ok(){ if(t){t.textContent="✅ 已複製，貼到 AI 律師或附在申請書即可"; setTimeout(function(){t.textContent="";},2800);} }
+    if(navigator.clipboard){ navigator.clipboard.writeText(CLAIM).then(ok,function(){ta.select();document.execCommand("copy");ok();}); }
+    else { ta.select(); document.execCommand("copy"); ok(); }
+  });
 })();
 </script>
 <script src="law-tips.js" defer></script>
