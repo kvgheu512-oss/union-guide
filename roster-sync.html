@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<title>名冊 QR 同步 · 高榮企業工會</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  :root{--navy:#1A3A6B;--green:#0F5C36;--bg:#F7F6F3;--card:#fff;--bd:#E6E1D8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans TC',system-ui,sans-serif;background:var(--bg);color:#1A1A1A;font-size:15px;line-height:1.8}
+  .hd{background:var(--navy);color:#fff;padding:1.6rem 1.2rem 1.2rem;text-align:center}
+  .hd h1{font-size:19px;font-weight:800;letter-spacing:.02em}
+  .hd p{font-size:12px;opacity:.85;margin-top:4px}
+  main{max-width:520px;margin:0 auto;padding:1rem 1rem 6rem}
+  .tabs{display:flex;border:1.5px solid var(--bd);border-radius:10px;overflow:hidden;margin:1rem 0}
+  .tabs button{flex:1;padding:.75rem;border:none;background:#fff;font:600 14px/1 'Noto Sans TC',sans-serif;cursor:pointer;color:#555;transition:.15s}
+  .tabs button.on{background:var(--navy);color:#fff}
+  .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:1.1rem 1.2rem;margin-bottom:1rem}
+  .card h2{font-size:15px;font-weight:700;margin-bottom:.5rem}
+  .note{font-size:12.5px;color:#888;margin:.3rem 0 .8rem;line-height:1.65}
+  .btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:.8rem 1rem;border-radius:10px;border:none;font:700 15px/1 'Noto Sans TC',sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:.15s}
+  .btn:active{transform:scale(.97)}
+  .btn-navy{background:var(--navy);color:#fff}
+  .btn-green{background:var(--green);color:#fff}
+  .btn-ghost{background:#f0ede8;color:#444;border:1px solid var(--bd);margin-top:.5rem}
+  #qr-box{display:flex;justify-content:center;padding:1rem 0}
+  #qr-box canvas,#qr-box img{border:6px solid #fff;box-shadow:0 2px 14px rgba(0,0,0,.14);border-radius:6px}
+  .prog-bar{height:7px;background:#e4e0d8;border-radius:99px;overflow:hidden;margin:.5rem 0}
+  .prog-fill{height:100%;background:var(--navy);border-radius:99px;transition:width .35s}
+  .nav-row{display:flex;gap:8px;margin-top:.8rem}
+  .nav-row .btn{flex:1;padding:.65rem;font-size:14px}
+  .smsg{font-size:13px;text-align:center;padding:.6rem .8rem;border-radius:8px;margin:.5rem 0;line-height:1.6}
+  .smsg-ok{background:#EAF7F0;color:#0F5C36}
+  .smsg-warn{background:#FEF9E7;color:#7A5800}
+  .smsg-err{background:#FDECEA;color:#7B1818}
+  video{width:100%;border-radius:10px;background:#111;display:block;max-height:280px;object-fit:cover}
+  .badges{display:flex;flex-wrap:wrap;gap:6px;margin:.5rem 0}
+  .badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;background:#e8e4de;color:#555}
+  .badge.ok{background:#EAF7F0;color:#0F5C36}
+  .warn-box{background:#FFF3E0;border:1px solid #FFB74D;border-radius:10px;padding:.75rem 1rem;font-size:13px;margin-bottom:.8rem;color:#7A4400;line-height:1.65}
+</style>
+</head>
+<body data-home="roster.html">
+
+<div class="hd">
+  <h1>📱 名冊 QR 碼同步</h1>
+  <p>裝置對裝置傳送 · 不上傳伺服器 · 個資不離本機</p>
+</div>
+
+<main>
+  <div class="warn-box">⚠️ 名冊含會員個資，請在<b>安全場合</b>（非公開場所）操作。掃碼後資料直接匯入本機，不會傳到任何伺服器。</div>
+
+  <div class="tabs">
+    <button id="tab-send" class="on">📤 傳送（產生 QR）</button>
+    <button id="tab-recv">📥 接收（掃描 QR）</button>
+  </div>
+
+  <!-- ===== 傳送 ===== -->
+  <div id="panel-send">
+    <div class="card">
+      <h2>📤 傳送名冊</h2>
+      <p class="note">在<b>舊裝置或桌機</b>上操作。把名冊資料壓縮成 QR 碼，讓新手機依序掃描後匯入。<br>名冊越大張數越多（通常 2–6 張），掃完才能匯入。</p>
+      <button class="btn btn-navy" id="gen-btn">🔄 產生 QR 碼</button>
+    </div>
+    <div class="card" id="qr-card" style="display:none">
+      <div style="text-align:center;font-weight:700;font-size:16px;margin-bottom:.4rem" id="qr-label"></div>
+      <div class="prog-bar"><div class="prog-fill" id="qr-fill"></div></div>
+      <div id="qr-box"></div>
+      <p style="text-align:center;font-size:12.5px;color:#888;margin:.2rem 0 .6rem" id="qr-hint"></p>
+      <div class="nav-row">
+        <button class="btn btn-ghost" id="qr-prev" style="margin-top:0" disabled>← 上一張</button>
+        <button class="btn btn-ghost" id="qr-next" style="margin-top:0">下一張 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 接收 ===== -->
+  <div id="panel-recv" style="display:none">
+    <div class="card">
+      <h2>📥 接收名冊</h2>
+      <p class="note">在<b>新裝置或手機</b>上操作。開啟鏡頭對準 QR 碼，掃到會自動辨識，<b>不用按快門</b>。<br>掃完所有張數後再按「匯入」。</p>
+      <button class="btn btn-green" id="scan-btn">📷 開啟鏡頭掃描</button>
+      <button class="btn btn-ghost" id="stop-btn" style="display:none">⏹ 停止掃描</button>
+    </div>
+    <div class="card" id="cam-card" style="display:none">
+      <video id="cam-video" autoplay playsinline muted></video>
+      <canvas id="cam-canvas" style="display:none"></canvas>
+      <div id="scan-msg" class="smsg" style="display:none"></div>
+    </div>
+    <div class="card" id="progress-card" style="display:none">
+      <h2>掃描進度</h2>
+      <div class="badges" id="badge-list"></div>
+    </div>
+    <div class="card" id="import-card" style="display:none">
+      <div class="smsg smsg-ok">✅ 所有 QR 碼已掃完，可以匯入！</div>
+      <p class="note" style="margin-top:.4rem">匯入後會<b>取代</b>本機現有名冊。若本機有其他資料請先備份。</p>
+      <button class="btn btn-green" id="import-btn" style="margin-top:.2rem">✅ 確認匯入名冊</button>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script>
+const KEY='roster_members_v1';
+const CHUNK=1500; // chars per QR chunk (safe for Level M)
+
+/* ── 壓縮 / 解壓（CompressionStream，瀏覽器內建，無需 CDN） ── */
+async function compress(str){
+  const cs=new CompressionStream('gzip');
+  const w=cs.writable.getWriter();
+  w.write(new TextEncoder().encode(str)); w.close();
+  const parts=[]; const r=cs.readable.getReader();
+  for(;;){const{done,v}=await r.read().then(x=>({done:x.done,v:x.value}));if(done)break;parts.push(v);}
+  const buf=await new Blob(parts).arrayBuffer();
+  const b=new Uint8Array(buf); let s='';
+  for(let i=0;i<b.length;i+=4096) s+=String.fromCharCode.apply(null,b.subarray(i,i+4096));
+  return btoa(s);
+}
+async function decompress(b64){
+  const b=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
+  const ds=new DecompressionStream('gzip');
+  const w=ds.writable.getWriter(); w.write(b); w.close();
+  const parts=[]; const r=ds.readable.getReader();
+  for(;;){const{done,v}=await r.read().then(x=>({done:x.done,v:x.value}));if(done)break;parts.push(v);}
+  const tot=parts.reduce((a,x)=>a+x.length,0);
+  const out=new Uint8Array(tot); let off=0;
+  parts.forEach(p=>{out.set(p,off);off+=p.length;});
+  return new TextDecoder().decode(out);
+}
+
+/* ── Tab 切換 ── */
+function switchTab(t){
+  const isSend=(t==='send');
+  document.getElementById('panel-send').style.display=isSend?'':'none';
+  document.getElementById('panel-recv').style.display=isSend?'none':'';
+  document.getElementById('tab-send').classList.toggle('on',isSend);
+  document.getElementById('tab-recv').classList.toggle('on',!isSend);
+  if(!isSend) resetScan();
+}
+document.getElementById('tab-send').addEventListener('click',()=>switchTab('send'));
+document.getElementById('tab-recv').addEventListener('click',()=>switchTab('recv'));
+
+/* ── 傳送 ── */
+let chunks=[], cur=0;
+
+document.getElementById('gen-btn').addEventListener('click',async function(){
+  const ms=JSON.parse(localStorage.getItem(KEY)||'[]');
+  if(!ms.length){ alert('名冊是空的，沒有資料可傳送。'); return; }
+  const btn=this; btn.disabled=true; btn.textContent='⏳ 壓縮中…';
+  try{
+    const b64=await compress(JSON.stringify(ms));
+    const uid=Math.random().toString(36).slice(2,8);
+    const total=Math.ceil(b64.length/CHUNK);
+    chunks=[];
+    for(let i=0;i<total;i++) chunks.push('EBN:'+uid+':'+total+':'+(i+1)+':'+b64.slice(i*CHUNK,(i+1)*CHUNK));
+    cur=0; showQR(0);
+    document.getElementById('qr-card').style.display='';
+  }catch(e){ alert('壓縮失敗：'+e.message+'\n（請確認瀏覽器支援 CompressionStream）'); }
+  btn.disabled=false; btn.textContent='🔄 重新產生';
+});
+
+function showQR(i){
+  cur=i; const n=chunks.length;
+  document.getElementById('qr-label').textContent='第 '+(i+1)+' 張 / 共 '+n+' 張';
+  document.getElementById('qr-fill').style.width=((i+1)/n*100)+'%';
+  document.getElementById('qr-hint').textContent=(i===n-1)?'✅ 最後一張！接收方掃完後點「匯入」':'掃完這張後，按「下一張」繼續';
+  document.getElementById('qr-prev').disabled=(i===0);
+  document.getElementById('qr-next').disabled=(i===n-1);
+  const box=document.getElementById('qr-box'); box.innerHTML='';
+  if(typeof QRCode==='undefined'){ setTimeout(()=>showQR(cur),400); return; }
+  new QRCode(box,{text:chunks[i],width:240,height:240,correctLevel:QRCode.CorrectLevel.M});
+}
+document.getElementById('qr-prev').addEventListener('click',()=>{ if(cur>0) showQR(cur-1); });
+document.getElementById('qr-next').addEventListener('click',()=>{ if(cur<chunks.length-1) showQR(cur+1); });
+
+/* ── 接收 ── */
+let stream=null, timer=null, got={}, uid=null, total=0;
+
+function resetScan(){
+  clearInterval(timer); timer=null;
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+  got={}; uid=null; total=0;
+  document.getElementById('cam-card').style.display='none';
+  document.getElementById('progress-card').style.display='none';
+  document.getElementById('import-card').style.display='none';
+  document.getElementById('stop-btn').style.display='none';
+  document.getElementById('scan-btn').style.display='';
+}
+
+document.getElementById('scan-btn').addEventListener('click',async function(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    document.getElementById('cam-video').srcObject=stream;
+    document.getElementById('cam-card').style.display='';
+    document.getElementById('stop-btn').style.display='';
+    this.style.display='none';
+    startLoop();
+  }catch(e){ alert('無法開啟鏡頭：'+e.message+'\n請允許相機權限後再試。'); }
+});
+document.getElementById('stop-btn').addEventListener('click', resetScan);
+
+function showMsg(txt,cls){ const el=document.getElementById('scan-msg'); el.textContent=txt; el.className='smsg smsg-'+cls; el.style.display=''; }
+
+function startLoop(){
+  const video=document.getElementById('cam-video');
+  const canvas=document.getElementById('cam-canvas');
+  const ctx=canvas.getContext('2d');
+  let lastCode='', lastAt=0;
+  timer=setInterval(function(){
+    if(!stream || video.readyState<2) return;
+    canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+    if(!canvas.width) return;
+    ctx.drawImage(video,0,0);
+    if(typeof jsQR==='undefined'){ showMsg('jsQR 元件載入中…','warn'); return; }
+    const img=ctx.getImageData(0,0,canvas.width,canvas.height);
+    const res=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
+    if(!res) return;
+    const code=res.data;
+    if(code===lastCode && Date.now()-lastAt<2500) return;
+    lastCode=code; lastAt=Date.now();
+    const m=code.match(/^EBN:([a-z0-9]+):(\d+):(\d+):(.+)$/s);
+    if(!m){ showMsg('⚠️ 不是本系統的 QR 碼，請掃名冊同步頁產生的 QR','warn'); return; }
+    const [,cuid,ctot,cidx,data]=[...m];
+    if(uid && uid!==cuid){ showMsg('⚠️ 這張 QR 碼屬於不同批，請重新掃描','err'); return; }
+    uid=cuid; total=+ctot;
+    const n=+cidx;
+    if(got[n]){ showMsg('第 '+n+' 張已掃過，請掃下一張','warn'); return; }
+    got[n]=data;
+    renderBadges();
+    const done=Object.keys(got).length;
+    showMsg('✅ 第 '+n+' / '+total+' 張掃到！'+(done<total?'請繼續掃下一張。':'全部完成！'),'ok');
+    if(done===total){ clearInterval(timer); timer=null; document.getElementById('import-card').style.display=''; }
+  },200);
+}
+
+function renderBadges(){
+  document.getElementById('progress-card').style.display='';
+  const box=document.getElementById('badge-list'); box.innerHTML='';
+  for(let i=1;i<=total;i++){
+    const s=document.createElement('span');
+    s.className='badge'+(got[i]?' ok':''); s.textContent='第'+i+'張'+(got[i]?' ✓':'…');
+    box.appendChild(s);
+  }
+}
+
+document.getElementById('import-btn').addEventListener('click',async function(){
+  try{
+    const parts=[];
+    for(let i=1;i<=total;i++){
+      if(!got[i]) throw new Error('缺少第 '+i+' 張 QR 碼，請重新掃描');
+      parts.push(got[i]);
+    }
+    const json=await decompress(parts.join(''));
+    const data=JSON.parse(json);
+    if(!Array.isArray(data)) throw new Error('資料格式異常');
+    const exist=JSON.parse(localStorage.getItem(KEY)||'[]');
+    if(exist.length){
+      if(!confirm('本機已有 '+exist.length+' 筆會員資料。\n\n確定→完全取代（匯入 '+data.length+' 筆）\n取消→保留現有')) return;
+    }
+    localStorage.setItem(KEY,JSON.stringify(data));
+    alert('✅ 已匯入 '+data.length+' 筆會員！即將跳回名冊頁。');
+    location.href='roster.html';
+  }catch(e){
+    alert('匯入失敗：'+e.message+'\n請重新掃描所有 QR 碼。');
+    got={}; uid=null; total=0;
+    document.getElementById('import-card').style.display='none';
+    document.getElementById('progress-card').style.display='none';
+    document.getElementById('stop-btn').style.display='none';
+    document.getElementById('scan-btn').style.display='';
+  }
+});
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>

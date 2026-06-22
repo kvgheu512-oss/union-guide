@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<title>🧭 互動導覽｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="common.css">
+<style>
+  :root{--navy:#1A3A6B;--navy-mid:#2E5C8A;--green:#0F5C36;--green-mid:#2D9D6E;--gold:#B7860B;--gold-light:#FEF9E7;--red:#C0392B;--red-deep:#7B1818;--ink:#1A1A1A;--ink-mid:#444;--ink-soft:#777;--bg:#F7F6F3;--card:#fff;--border:#E6E1D8;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;min-height:100vh;}
+  .hd{background:linear-gradient(160deg,#1A3A6B 0%,#0E2347 100%);color:#fff;padding:1.8rem 1.25rem 1.5rem;text-align:center;}
+  .hd h1{font-family:'Noto Serif TC',serif;font-size:22px;}
+  .hd p{font-size:12.5px;opacity:.9;margin-top:5px;}
+  main{max-width:520px;margin:0 auto;padding:1.4rem 1.1rem 4rem;}
+
+  /* ─── 步驟標題 ─── */
+  .step-title{font-family:'Noto Serif TC',serif;font-size:19px;font-weight:700;color:var(--navy);margin-bottom:1.1rem;text-align:center;}
+
+  /* ─── 大按鈕：誰 ─── */
+  .who-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:.5rem;}
+  .who-btn{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:1.5rem 1rem 1.2rem;text-align:center;cursor:pointer;font-family:'Noto Serif TC',serif;font-weight:700;font-size:16px;color:var(--ink);transition:border-color .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent;}
+  .who-btn:active{transform:scale(.97);}
+  .who-btn .emoji{font-size:46px;display:block;margin-bottom:8px;}
+  .who-btn .sub{display:block;font-family:'Noto Sans TC',sans-serif;font-weight:400;font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.5;}
+  .who-btn.m:hover,.who-btn.m:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(15,92,54,.12);}
+  .who-btn.c:hover,.who-btn.c:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,58,107,.12);}
+
+  /* ─── 卡片群 ─── */
+  .cards{display:flex;flex-direction:column;gap:11px;}
+  .card{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem 1.15rem;text-decoration:none;color:var(--ink);transition:box-shadow .15s;border-left:5px solid var(--border);}
+  .card:active{transform:scale(.99);}
+  .card .ci{font-size:32px;flex-shrink:0;width:40px;text-align:center;}
+  .card .ct{font-family:'Noto Serif TC',serif;font-size:15.5px;font-weight:700;line-height:1.3;}
+  .card .cd{font-size:12.5px;color:var(--ink-soft);margin-top:3px;line-height:1.5;}
+  .card .ca{margin-left:auto;font-size:20px;color:var(--ink-soft);flex-shrink:0;}
+  .card.gr{border-left-color:var(--green);} .card.gr .ct{color:var(--green);}
+  .card.nv{border-left-color:var(--navy);} .card.nv .ct{color:var(--navy);}
+  .card.gd{border-left-color:var(--gold);} .card.gd .ct{color:var(--gold);}
+  .card.rd{border-left-color:var(--red);} .card.rd .ct{color:var(--red);}
+
+  /* ─── 幹部選人網格 ─── */
+  .cadre-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+  .cadre-btn{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:.95rem .85rem;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s,box-shadow .15s;}
+  .cadre-btn:active{transform:scale(.97);}
+  .cadre-btn .cname{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;color:var(--navy);}
+  .cadre-btn .crole{font-size:12px;color:var(--ink-soft);margin-top:4px;}
+  .cadre-btn.active,.cadre-btn:hover{border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,58,107,.12);}
+  .cadre-btn.full{grid-column:1/-1;}
+
+  /* ─── 返回鈕 ─── */
+  .back-btn{display:inline-flex;align-items:center;gap:6px;margin-bottom:1.1rem;background:none;border:none;font-size:14px;color:var(--navy);cursor:pointer;padding:.3rem .1rem;-webkit-tap-highlight-color:transparent;}
+  .back-btn:active{opacity:.7;}
+
+  /* ─── 記憶提示 ─── */
+  .mem-note{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:1.2rem;line-height:1.7;}
+  .mem-note button{background:none;border:none;color:var(--navy-mid);cursor:pointer;font-size:12px;text-decoration:underline;}
+
+  /* ─── 幹部個人標題列 ─── */
+  .person-hd{display:flex;align-items:center;gap:12px;background:var(--gold-light);border:1px solid #EAD67A;border-radius:14px;padding:.95rem 1.1rem;margin-bottom:1rem;}
+  .person-hd .av{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;}
+  .person-hd .av.r-chair{background:var(--red);}
+  .person-hd .av.r-fin{background:var(--green);}
+  .person-hd .av.r-sup{background:#2E5C8A;}
+  .person-hd .av.r-doc{background:var(--gold);}
+  .person-hd .av.r-wel{background:#7A4F9D;}
+  .person-hd .av.r-all{background:var(--navy);}
+  .person-hd .pn{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;}
+  .person-hd .pr{font-size:12.5px;color:#5C4000;margin-top:3px;}
+</style>
+</head>
+<body data-nonav>
+
+<div class="hd">
+  <h1>🧭 互動導覽</h1>
+  <p>高雄榮民總醫院企業工會（籌備中）</p>
+</div>
+
+<main>
+  <!-- ══ Step 1：你是誰 ══ -->
+  <div id="s-who">
+    <p class="step-title" style="margin-top:.3rem;">你是誰？</p>
+    <div class="who-grid">
+      <button class="who-btn m" onclick="goMember()">
+        <span class="emoji">👤</span>
+        我是會員
+        <span class="sub">或想了解、加入工會</span>
+      </button>
+      <button class="who-btn c" onclick="goCadre()">
+        <span class="emoji">🛡️</span>
+        我是幹部
+        <span class="sub">找自己負責的工具</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ Step 2a：會員導覽 ══ -->
+  <div id="s-member" hidden>
+    <button class="back-btn" onclick="goBack('s-who')">‹ 返回</button>
+    <p class="step-title">👤 會員導覽</p>
+    <div class="cards">
+      <a class="card gr" href="index.html">
+        <span class="ci">🏠</span><div><div class="ct">工會首頁</div><div class="cd">工會在做什麼、為何要加入、目前籌備進度</div></div><span class="ca">→</span>
+      </a>
+      <a class="card gr" href="index.html#join">
+        <span class="ci">📝</span><div><div class="ct">如何加入工會</div><div class="cd">資格確認、連署、入會步驟說明</div></div><span class="ca">→</span>
+      </a>
+      <a class="card gd" href="jiaban.html">
+        <span class="ci">💰</span><div><div class="ct">加班費計算機</div><div class="cd">輸入時數自動算出應領加班費</div></div><span class="ca">→</span>
+      </a>
+      <a class="card nv" href="leavepay.html">
+        <span class="ci">🏖</span><div><div class="ct">特休薪資試算</div><div class="cd">特休未休工資、年資計算</div></div><span class="ca">→</span>
+      </a>
+      <a class="card nv" href="qingjia.html">
+        <span class="ci">📆</span><div><div class="ct">請假規則速查</div><div class="cd">各假別天數、有薪/無薪、法規依據</div></div><span class="ca">→</span>
+      </a>
+      <a class="card rd" href="evidence.html">
+        <span class="ci">📂</span><div><div class="ct">蒐證與維權指南</div><div class="cd">遇到不合理對待怎麼辦、怎麼留證據</div></div><span class="ca">→</span>
+      </a>
+      <a class="card nv" href="charter.html">
+        <span class="ci">📖</span><div><div class="ct">工會章程</div><div class="cd">組織、職權、會費等章程條文</div></div><span class="ca">→</span>
+      </a>
+      <a class="card gr" href="index.html#faq">
+        <span class="ci">❓</span><div><div class="ct">常見問答</div><div class="cd">問 AI 小幫手，馬上回答勞動法問題</div></div><span class="ca">→</span>
+      </a>
+    </div>
+    <p class="mem-note">已記住「我是會員」，下次直接顯示此頁。<button onclick="clearMem()">清除記憶</button></p>
+  </div>
+
+  <!-- ══ Step 2b：幹部選人 ══ -->
+  <div id="s-cadre" hidden>
+    <button class="back-btn" onclick="goBack('s-who')">‹ 返回</button>
+    <p class="step-title">🛡️ 我是哪位幹部？</p>
+    <div class="cadre-grid" id="cadre-grid"></div>
+    <p class="mem-note" style="margin-top:.5rem;">選人後記住，下次直接顯示你的工具。</p>
+  </div>
+
+  <!-- ══ Step 3：幹部個人工具 ══ -->
+  <div id="s-person" hidden>
+    <button class="back-btn" onclick="goBack('s-cadre')">‹ 換人</button>
+    <div class="person-hd" id="person-hd"></div>
+    <div class="cards" id="person-cards"></div>
+    <p class="mem-note">已記住你的身份，下次直接到這裡。<button onclick="clearMem()">清除記憶</button></p>
+  </div>
+</main>
+
+<script>
+var NAV_KEY = 'union_nav_pref_v1';
+
+var CADRES = [
+  { key:'chair', name:'楊淯涵', role:'理事長', av:'長', cls:'r-chair',
+    desc:'綜理會務 · 對外代表 · 召集會議',
+    links:[
+      {ci:'📋', ct:'幹部功能表', cd:'所有工具總覽', href:'union.html', cl:'nv'},
+      {ci:'📄', ct:'對外公文 / 函稿', cd:'開會通知、陳情、函報機關', href:'gongwen.html', cl:'rd'},
+      {ci:'🗳️', ct:'會議文件 & 簽到', cd:'議程、紀錄、出席掃碼', href:'meeting.html', cl:'nv'},
+      {ci:'👥', ct:'會員名冊', cd:'新增、搜尋、列印名冊', href:'roster.html', cl:'gr'},
+      {ci:'📅', ct:'年度工作計畫', cd:'草案範本、下載 Word', href:'workplan.html', cl:'gr'},
+      {ci:'🏗', ct:'籌備進度 & 書表', cd:'逐步勾選、連署→成立→登記', href:'founding.html', cl:'rd'},
+    ]
+  },
+  { key:'fin', name:'莊瑋聆', role:'總務', av:'財', cls:'r-fin',
+    desc:'年度預算 · 收支記帳 · 決算',
+    links:[
+      {ci:'💰', ct:'透明帳本', cd:'收支登錄、分類統計', href:'finance.html', cl:'gr'},
+      {ci:'📊', ct:'年度預算草案', cd:'草案範本、下載 Word', href:'budget-draft.html', cl:'gd'},
+      {ci:'📅', ct:'年度工作計畫', cd:'草案範本、下載 Word', href:'workplan.html', cl:'gr'},
+      {ci:'👥', ct:'會員名冊', cd:'查看會費繳納狀況', href:'roster.html', cl:'gr'},
+      {ci:'🧾', ct:'收據產生器', cd:'工會收費、費用報銷收據', href:'receipt.html', cl:'gd'},
+    ]
+  },
+  { key:'doc', name:'巫小華', role:'法規', av:'法', cls:'r-doc',
+    desc:'章程 · 申報 · 法規諮詢',
+    links:[
+      {ci:'✅', ct:'成立排雷檢核表', cd:'照流程勾選，不怕漏送', href:'checklist.html', cl:'gd'},
+      {ci:'📋', ct:'官方書表 & 法令', cd:'勞動部、勞工局官方頁面', href:'official-forms.html', cl:'nv'},
+      {ci:'📖', ct:'工會章程', cd:'草案條文閱覽', href:'charter.html', cl:'nv'},
+      {ci:'🗳️', ct:'會議文件 & 紀錄', cd:'章程條文審議、選舉紀錄', href:'meeting.html', cl:'nv'},
+      {ci:'🏗', ct:'籌備進度 & 書表', cd:'申報籌備、登記流程', href:'founding.html', cl:'rd'},
+    ]
+  },
+  { key:'wel', name:'妍妍', role:'文宣', av:'宣', cls:'r-wel',
+    desc:'文宣 · 社群 · 形象設計',
+    links:[
+      {ci:'🏠', ct:'工會首頁', cd:'對外說明、連署入口', href:'index.html', cl:'gr'},
+      {ci:'📋', ct:'幹部功能表', cd:'所有幹部工具總覽', href:'union.html', cl:'nv'},
+      {ci:'👥', ct:'會員名冊', cd:'招募現況、名單', href:'roster.html', cl:'gr'},
+      {ci:'🏗', ct:'籌備進度', cd:'目前走到哪一步', href:'founding.html', cl:'rd'},
+    ]
+  },
+  { key:'sup', name:'陳依婷', role:'監事', av:'監', cls:'r-sup',
+    desc:'財務稽核 · 會議監察 · 申訴',
+    links:[
+      {ci:'💰', ct:'透明帳本（稽核）', cd:'查閱收支、核對憑證', href:'finance.html', cl:'gr'},
+      {ci:'✅', ct:'成立排雷檢核', cd:'確認各流程合法合規', href:'checklist.html', cl:'gd'},
+      {ci:'📊', ct:'年度預算草案', cd:'核閱、提意見', href:'budget-draft.html', cl:'gd'},
+      {ci:'🗳️', ct:'會議文件', cd:'監察議事程序', href:'meeting.html', cl:'nv'},
+    ]
+  },
+  { key:'all', name:'全部工具', role:'', av:'全', cls:'r-all', full:true,
+    desc:'',
+    links:[
+      {ci:'📋', ct:'幹部功能表', cd:'所有工具入口', href:'union.html', cl:'nv'},
+      {ci:'📄', ct:'公文 / 函稿', cd:'', href:'gongwen.html', cl:'rd'},
+      {ci:'🗳️', ct:'會議文件', cd:'', href:'meeting.html', cl:'nv'},
+      {ci:'👥', ct:'會員名冊', cd:'', href:'roster.html', cl:'gr'},
+      {ci:'💰', ct:'透明帳本', cd:'', href:'finance.html', cl:'gr'},
+      {ci:'📊', ct:'年度預算', cd:'', href:'budget-draft.html', cl:'gd'},
+      {ci:'📅', ct:'工作計畫', cd:'', href:'workplan.html', cl:'gr'},
+      {ci:'✅', ct:'排雷檢核表', cd:'', href:'checklist.html', cl:'gd'},
+      {ci:'🏗', ct:'籌備進度', cd:'', href:'founding.html', cl:'rd'},
+      {ci:'🧾', ct:'收據產生器', cd:'', href:'receipt.html', cl:'gd'},
+    ]
+  }
+];
+
+function show(id){
+  ['s-who','s-member','s-cadre','s-person'].forEach(function(x){
+    document.getElementById(x).hidden = (x !== id);
+  });
+}
+
+function goMember(){
+  try{ localStorage.setItem(NAV_KEY, JSON.stringify({role:'member'})); }catch(e){}
+  show('s-member');
+}
+
+function goCadre(){
+  try{ localStorage.setItem(NAV_KEY, JSON.stringify({role:'cadre'})); }catch(e){}
+  buildCadreGrid();
+  show('s-cadre');
+}
+
+function buildCadreGrid(){
+  var g = document.getElementById('cadre-grid');
+  if(g.children.length) return;
+  CADRES.forEach(function(c){
+    var btn = document.createElement('button');
+    btn.className = 'cadre-btn' + (c.full?' full':'');
+    btn.innerHTML = '<div class="cname">' + c.name + '</div><div class="crole">' + (c.role||'所有幹部工具') + '</div>';
+    btn.onclick = function(){ choosePerson(c.key); };
+    g.appendChild(btn);
+  });
+}
+
+function choosePerson(key){
+  var c = CADRES.find(function(x){ return x.key===key; });
+  if(!c) return;
+  try{ localStorage.setItem(NAV_KEY, JSON.stringify({role:'cadre', person:key})); }catch(e){}
+
+  var hd = document.getElementById('person-hd');
+  hd.innerHTML = '<div class="av '+c.cls+'">'+c.av+'</div>'
+    +'<div><div class="pn">'+c.name+(c.role?' （'+c.role+'）':'')+'</div>'
+    +(c.desc?'<div class="pr">'+c.desc+'</div>':'')+'</div>';
+
+  var cs = document.getElementById('person-cards');
+  cs.innerHTML = c.links.map(function(l){
+    return '<a class="card '+(l.cl||'nv')+'" href="'+l.href+'">'
+      +'<span class="ci">'+l.ci+'</span>'
+      +'<div><div class="ct">'+l.ct+'</div>'+(l.cd?'<div class="cd">'+l.cd+'</div>':'')+'</div>'
+      +'<span class="ca">→</span>'
+      +'</a>';
+  }).join('');
+
+  show('s-person');
+}
+
+function goBack(to){
+  if(to === 's-who'){
+    try{ localStorage.removeItem(NAV_KEY); }catch(e){}
+  }
+  if(to === 's-cadre'){ buildCadreGrid(); }
+  show(to);
+}
+
+function clearMem(){
+  try{ localStorage.removeItem(NAV_KEY); }catch(e){}
+  show('s-who');
+}
+
+/* 還原上次記憶 */
+window.addEventListener('DOMContentLoaded', function(){
+  try{
+    var p = JSON.parse(localStorage.getItem(NAV_KEY)||'null');
+    if(!p) return;
+    if(p.role === 'member'){ show('s-member'); return; }
+    if(p.role === 'cadre' && p.person){ buildCadreGrid(); choosePerson(p.person); return; }
+    if(p.role === 'cadre'){ goCadre(); return; }
+  }catch(e){}
+});
+</script>
+
+<script src="common.js" defer></script>
+</body>
+</html>
