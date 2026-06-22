@@ -104,7 +104,7 @@
 <link rel="stylesheet" href="common.css">
 </head>
 <body data-home="union.html">
-<a class="back" href="union.html" onclick="if(history.length>1){history.back();return false;}">‹ 功能表</a>
+<a class="back" href="union.html" onclick="return ebnBack(this.getAttribute('href'),event)">‹ 功能表</a>
 
 <div class="header">
   <h1>🏗 工會籌備進度</h1>
@@ -454,6 +454,7 @@
   updateBadge();
 })();
 </script>
+<script src="photocap.js" defer></script>
 <script src="law-tips.js" defer></script>
 <script src="common.js" defer></script>
 </body>

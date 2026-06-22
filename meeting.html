@@ -415,7 +415,7 @@ $('new-btn').addEventListener('click',()=>{
 });
 $('back').addEventListener('click',e=>{
   if($('view-edit').classList.contains('on')){ e.preventDefault(); load(); renderList(); showView('list'); return; }
-  if(history.length>1){ e.preventDefault(); history.back(); } // 清單頁返回功能表：用 bfcache 秒回
+  if(window.ebnBack){ ebnBack($('back').getAttribute('href')||'union.html', e); }   // 可靠返回（沒離開就強制回功能表）
 });
 
 /* 編輯填表 */

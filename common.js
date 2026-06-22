@@ -128,6 +128,19 @@
    ・首頁目標：<body data-home="union.html"> 可覆寫，預設 index.html（對外首頁）。
    ・不想要鈕的頁（例如對外首頁本身）：<body data-nonav>。 */
 (function(){
+  // 🔙 全站共用「可靠返回」：history.back() 在手機常按了沒反應（第一筆是 about:blank、或上一頁是別站）。
+  // 改用 referrer 判斷：上一頁是「本站頁面」就回上一頁；否則直接回對應首頁（幹部→union、會員→index）。永遠有反應、不會跳空白。
+  window.ebnBack=function(home, ev){
+    try{ if(ev&&ev.preventDefault) ev.preventDefault(); }catch(_){}
+    home = home || (document.body&&document.body.getAttribute("data-home")) || "index.html";
+    var ref=document.referrer||"";
+    var sameSite=false;
+    try{ sameSite = ref && (new URL(ref).origin===location.origin); }catch(_){}
+    // 上一頁是本站、且不是「自己這頁」（避免重整原地不動）→ 回上一頁；否則回對應首頁
+    if(sameSite && ref.split("#")[0]!==location.href.split("#")[0]){ location.href=ref; }
+    else { location.href=home; }
+    return false;
+  };
   function build(){
     var b=document.body; if(!b) return;
     if(b.hasAttribute("data-nonav")) return;
@@ -135,8 +148,7 @@
     var home=b.getAttribute("data-home")||"index.html";
     var back=document.createElement("a");
     back.id="ebnBack"; back.className="noprint"; back.href=home; back.textContent="← 返回";
-    // 有上一頁就回上一頁；直接開啟（無瀏覽紀錄）則退回首頁，永遠不會「按了沒反應」。
-    back.addEventListener("click",function(e){ if(history.length>1){ e.preventDefault(); history.back(); } });
+    back.addEventListener("click",function(e){ ebnBack(home, e); });
     var hm=document.createElement("a");
     hm.id="ebnHome"; hm.className="noprint"; hm.href=home; hm.textContent="🏠 工會首頁";
     b.appendChild(back); b.appendChild(hm);

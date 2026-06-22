@@ -159,7 +159,7 @@
 
 <div id="app" style="display:none">
   <header class="header">
-    <a class="back" href="union.html" onclick="if(history.length>1){history.back();return false;}">‹ 功能表</a>
+    <a class="back" href="union.html" onclick="return ebnBack(this.getAttribute('href'),event)">‹ 功能表</a>
     <div class="header-label">高榮企業工會 · 理事會</div>
     <h1>📅 年度計畫與預算</h1>
     <div class="header-sub">工作計畫 ＋ 經費收支預算，供會員大會審議</div>
