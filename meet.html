@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A7A4A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="線上會議室">
+<title>線上會議室（沒到現場也能參加）｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#1A7A4A;--green-deep:#0F5C36;--green-light:#EAFAF1;--gold:#B7860B;--gold-light:#FEF9E7;--gold-line:#EAD67A;--red-deep:#7B1818;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F3F8F4;--card:#fff;--border:#DCE6DF;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#1A7A4A,#0F5C36);color:#fff;padding:1.9rem 1.25rem 1.5rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:21px;}
+  .header p{font-size:12.8px;opacity:.92;margin-top:7px;line-height:1.7;}
+  main{max-width:640px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:var(--gold-light);border:1px solid var(--gold-line);border-radius:10px;padding:.8rem 1rem;font-size:13px;color:#5C4000;margin-bottom:1rem;line-height:1.8;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.15rem;margin-bottom:1.05rem;border-top:4px solid var(--green);}
+  .card h2{font-family:'Noto Serif TC',serif;color:var(--green-deep);font-size:17px;margin-bottom:.35rem;}
+  .card .sub{font-size:12px;color:var(--ink-soft);margin-bottom:.6rem;}
+  .meet{border:1px solid var(--border);border-radius:13px;padding:.9rem 1rem;margin-bottom:.8rem;background:#FBFDFB;}
+  .meet.prep{border-left:5px solid var(--gold);}
+  .meet.found{border-left:5px solid var(--green);}
+  .meet h3{font-size:15.5px;color:var(--ink);margin-bottom:.2rem;}
+  .meet .when{font-size:13px;color:var(--ink-mid);margin:.15rem 0;}
+  .meet .when b{color:var(--green-deep);}
+  .meet .why{font-size:13px;color:var(--ink-mid);background:#fff;border:1px dashed var(--border);border-radius:9px;padding:.5rem .7rem;margin-top:.5rem;line-height:1.75;}
+  .join{display:block;text-align:center;background:#1A7A4A;color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:.85rem;border-radius:12px;margin-top:.7rem;-webkit-tap-highlight-color:transparent;}
+  .join:active{background:var(--green-deep);}
+  .copy{display:block;width:100%;text-align:center;background:#EAFAF1;color:var(--green-deep);border:1.5px solid var(--green);border-radius:11px;padding:.6rem;font-weight:700;font-size:14px;cursor:pointer;margin-top:.5rem;}
+  .lnk{font-size:11.5px;color:var(--ink-soft);word-break:break-all;margin-top:6px;text-align:center;}
+  .steps{list-style:none;counter-reset:s;}
+  .steps li{position:relative;padding:.45rem 0 .45rem 2.1rem;font-size:14px;border-bottom:1px solid #EEF3EF;}
+  .steps li:last-child{border-bottom:none;}
+  .steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:.5rem;width:24px;height:24px;background:var(--green-light);color:var(--green-deep);border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .rules{list-style:none;}
+  .rules li{font-size:13.5px;padding:.3rem 0 .3rem 1.5rem;position:relative;color:var(--ink-mid);}
+  .rules li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700;}
+  .why-box{background:var(--green-light);border:1px solid #BFE3CF;border-radius:12px;padding:.9rem 1rem;font-size:13.5px;line-height:1.85;color:#16502F;}
+  .why-box b{color:var(--red-deep);}
+  .why-box .q{font-weight:700;color:var(--green-deep);margin-top:.5rem;}
+  .toast{color:var(--green-deep);font-size:12.5px;text-align:center;min-height:16px;margin-top:6px;font-weight:700;}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.4rem;line-height:1.8;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="index.html">
+
+<div class="header">
+  <h1>🖥️ 線上會議室</h1>
+  <p>沒辦法到現場？用手機或電腦一起線上參與<br>免下載 App、免註冊帳號，點一下就進去</p>
+</div>
+
+<main>
+  <div class="topnote">📌 工會是「<b>大家一起經營</b>」的，不是繳了會費問題就會自動消失。<b>最需要你出席的就是這兩場會</b>——來認識工會、一起把規則和幹部選出來。真的到不了現場，就用下面的線上會議室一起參加。</div>
+
+  <!-- 近期會議 -->
+  <div class="card">
+    <h2>📅 近期重要會議</h2>
+    <div class="sub">時間、地點由幹部更新；先把日期記下來</div>
+
+    <div class="meet prep">
+      <h3>① 發起人會議</h3>
+      <div class="when">🗓 日期：<b id="d-prep">（待幹部填入）</b>　🕒 時間：<b id="t-prep">—</b></div>
+      <div class="when">📍 地點：<span id="p-prep">實體會場＋線上同步</span></div>
+      <div class="why">為什麼要來：這場主要是讓大家<b>搞懂「工會是什麼、怎麼運作」</b>、了解籌備進度、把你的疑問當場問清楚。先弄懂了，之後才不會覺得「跟想像差很多」。</div>
+      <a class="join" id="join-prep" href="#" target="_blank" rel="noopener">🔵 進入發起人會議線上會議室</a>
+      <button class="copy" data-target="prep">📋 複製這場的會議連結</button>
+      <div class="lnk" id="lnk-prep"></div>
+    </div>
+
+    <div class="meet found">
+      <h3>② 成立大會</h3>
+      <div class="when">🗓 日期：<b id="d-found">（待幹部填入）</b>　🕒 時間：<b id="t-found">—</b></div>
+      <div class="when">📍 地點：<span id="p-found">實體會場＋線上同步</span></div>
+      <div class="why">為什麼要來：這場要<b>通過章程、選出理事監事</b>，工會正式誕生。章程和幹部會直接影響你的權益，<b>每一票都算數</b>，能到盡量到。</div>
+      <a class="join" id="join-found" href="#" target="_blank" rel="noopener">🟢 進入成立大會線上會議室</a>
+      <button class="copy" data-target="found">📋 複製這場的會議連結</button>
+      <div class="lnk" id="lnk-found"></div>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <!-- 怎麼加入 -->
+  <div class="card">
+    <h2>📱 怎麼加入（超簡單）</h2>
+    <div class="sub">手機、平板、電腦都可以；不用安裝、不用帳號</div>
+    <ol class="steps">
+      <li>到了開會時間，點上面那顆<b>綠色「進入線上會議室」</b>按鈕。</li>
+      <li>瀏覽器問你「要不要用麥克風／鏡頭」→ 想發言就<b>允許</b>（只想聽可以都不開）。</li>
+      <li>輸入<b>你的真實姓名</b>（方便點名、簽到），按加入就進去了。</li>
+      <li>進不去？把下面的<b>會議連結複製</b>，貼到 Safari／Chrome 網址列再開一次。</li>
+    </ol>
+  </div>
+
+  <!-- 參與須知 -->
+  <div class="card">
+    <h2>🙋 線上參與小提醒</h2>
+    <ul class="rules">
+      <li>沒發言時請<b>把麥克風關靜音</b>，減少雜音。</li>
+      <li>顯示名稱用<b>真實姓名</b>，方便確認出席、線上簽到。</li>
+      <li>要表決／選舉時，依主持人指示用<b>舉手或聊天室</b>表示。</li>
+      <li>網路不穩可<b>只開聲音、關鏡頭</b>，比較順。</li>
+      <li>用耳機可避免回音。</li>
+    </ul>
+  </div>
+
+  <!-- 為什麼一定要參與（北榮經驗） -->
+  <div class="card" style="border-top-color:var(--gold)">
+    <h2 style="color:#8A6309">💡 入會前，請先懂這三件事</h2>
+    <div class="sub">這是其他醫院工會走過的經驗，先講清楚，省得以後失望</div>
+    <div class="why-box">
+      <div class="q">1. 工會是「工具」，不是許願池</div>
+      連署、繳會費只是<b>開始</b>。職場上的問題<b>不會自己變不見</b>——要靠大家<b>一起把工會用起來</b>：把問題講出來、提供資料、一起想辦法。
+      <div class="q">2. 一定要看群組／網站的資訊</div>
+      很多人因為<b>沒參與過程、沒看群組</b>，工會成立後才發現「跟我想的不一樣」就退會了。其實只要<b>來開會、看公告</b>，就會清楚工會在做什麼、能做到什麼。
+      <div class="q">3. 有勞動問題，主動找工會「一起」處理</div>
+      別以為「繳了費，事情工會自己會搞定」。遇到加班費、排班、被刁難等問題，<b>主動告訴幹部</b>，工會才能陪你一起爭取。👉 之後可由幹部協助登記與追蹤。
+    </div>
+  </div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 線上會議室<br>會議連結僅供受邀同仁使用，請勿外流</div>
+</main>
+
+<script>
+/* ============================================================
+   設定區 — 幹部只要改這幾行就好
+   ============================================================ */
+// 會議的日期／時間（直接打中文即可；留空就顯示「待填」）
+const MEET = {
+  prep:  { date:"", time:"", place:"實體會場＋線上同步" },   // 發起人會議
+  found: { date:"", time:"", place:"實體會場＋線上同步" }    // 成立大會
+};
+// 線上會議室連結（用免費的 Jitsi Meet，免下載免註冊、手機可用）。
+// 想換房間：把房名改掉即可（建議用不容易被猜到的字串，並在會議中由主持人開啟「等候室／密碼」）。
+const MEET_URL = {
+  prep:  "https://meet.jit.si/GaoRongUnion-Prep-2026",
+  found: "https://meet.jit.si/GaoRongUnion-Founding-2026"
+};
+/* ============================================================ */
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function fill(k){
+    var m=MEET[k]||{};
+    if($("d-"+k)) $("d-"+k).textContent = m.date ? m.date : "（待幹部填入）";
+    if($("t-"+k)) $("t-"+k).textContent = m.time ? m.time : "—";
+    if($("p-"+k)) $("p-"+k).textContent = m.place || "實體會場＋線上同步";
+    var url=MEET_URL[k]||"#";
+    var a=$("join-"+k); if(a) a.href=url;
+    var l=$("lnk-"+k); if(l) l.textContent=url;
+  }
+  fill("prep"); fill("found");
+
+  var toast=$("toast");
+  function showToast(t){ if(toast){ toast.textContent=t; setTimeout(function(){ toast.textContent=""; },2600); } }
+  document.querySelectorAll(".copy").forEach(function(b){
+    b.addEventListener("click",function(){
+      var url=MEET_URL[b.dataset.target]||"";
+      if(!url) return;
+      if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ showToast("✅ 連結已複製，貼到 LINE 給同事就行"); },function(){ showToast("請長按連結複製"); }); }
+      else { showToast("請長按連結複製"); }
+    });
+  });
+})();
+</script>
+<div id="verBadge"></div>
+<script src="common.js" defer></script>
+</body>
+</html>
