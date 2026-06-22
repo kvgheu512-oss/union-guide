@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A7A4A">
+<title>特休折算＋國定假日加班費 試算｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#1A7A4A;--green-deep:#0F5C36;--green-light:#EAFAF1;--red:#C0392B;--red-deep:#7B1818;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F3F8F4;--card:#fff;--border:#DCE6DF;--gold-light:#FEF9E7;--gold-line:#EAD67A;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#1A7A4A,#0F5C36);color:#fff;padding:1.9rem 1.25rem 1.5rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:20px;}
+  .header p{font-size:12.5px;opacity:.92;margin-top:6px;}
+  main{max-width:640px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:var(--gold-light);border:1px solid var(--gold-line);border-radius:10px;padding:.75rem .95rem;font-size:12.5px;color:#5C4000;margin-bottom:1rem;line-height:1.75;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.1rem;margin-bottom:1.1rem;border-top:4px solid var(--green);}
+  .card h2{font-family:'Noto Serif TC',serif;color:var(--green-deep);font-size:17px;margin-bottom:.3rem;}
+  .card .sub{font-size:12px;color:var(--ink-soft);margin-bottom:.7rem;}
+  label{display:block;font-size:13px;font-weight:700;color:var(--green-deep);margin:.7rem 0 .25rem;}
+  label .opt{color:var(--ink-soft);font-weight:400;}
+  input,select{width:100%;padding:.65rem .8rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;background:#fff;}
+  input:focus,select:focus{outline:none;border-color:var(--green);}
+  .hint{font-size:11.5px;color:var(--ink-soft);margin-top:4px;line-height:1.6;}
+  .out{background:var(--green-light);border:1px solid #Bfe3cf;border-radius:12px;padding:.85rem 1rem;margin-top:.9rem;font-size:14px;line-height:1.9;}
+  .out .big{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;color:var(--green-deep);}
+  .out .row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed #C5E0CF;padding:3px 0;}
+  .out .row:last-child{border-bottom:none;}
+  .diff{margin-top:.7rem;border-radius:10px;padding:.6rem .8rem;font-size:13.5px;font-weight:700;}
+  .diff.short{background:#FDECEA;border:1px solid #F3C9C4;color:var(--red-deep);}
+  .diff.ok{background:#E9F6EF;border:1px solid #Bfe3cf;color:var(--green-deep);}
+  details{margin-top:.4rem;} summary{cursor:pointer;color:var(--green-deep);font-size:13px;font-weight:600;}
+  .law{margin-top:.5rem;background:var(--bg);border-radius:8px;padding:.6rem .75rem;font-size:12.5px;color:var(--ink-mid);line-height:1.85;}
+  .ask{background:var(--card);border:1px solid var(--border);border-left:5px solid var(--green);border-radius:12px;padding:.85rem 1rem;font-size:13.5px;line-height:1.8;margin-top:.4rem;}
+  .ask a{color:var(--green-deep);font-weight:700;}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.4rem;line-height:1.8;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<a class="noprint" href="gaorong.html" onclick="if(history.length>1){history.back();return false;}" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;background:#fff;color:#0F5C36;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">← 返回</a>
+<a class="noprint" href="gaorong.html" style="position:fixed;top:max(10px,env(safe-area-inset-top));right:10px;z-index:9999;background:#1A7A4A;color:#fff;font-weight:600;font-size:13px;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.28);">🏠 工會首頁</a>
+
+<div class="header">
+  <h1>🧮 特休折算 ＋ 國定假日加班費 試算</h1>
+  <p>輸入數字自動算「你應領多少」，還能跟醫院實發對照</p>
+</div>
+
+<main>
+  <div class="topnote">📌 試算為整理參考、非正式法律意見。<b>關鍵：月薪基數要含「經常性給與」</b>（全勤獎金、固定伙食津貼、固定津貼…屬「工資」的都算），<b>不是只有本薪</b>——這是醫院最常少給的地方。實際個案可洽工會或勞工局 <b>1955</b>。</div>
+
+  <!-- 共用月薪 -->
+  <div class="card" style="border-top-color:#B7860B">
+    <label>你的月薪（<b>含經常性給與</b>，新臺幣元）</label>
+    <input id="salary" type="number" inputmode="numeric" value="40000" min="0">
+    <div class="hint">＝ 本薪＋全勤＋固定津貼等「工資」項目總和。一日工資＝月薪 ÷ 30；一小時工資＝月薪 ÷ 240。</div>
+    <div class="out" id="base"></div>
+  </div>
+
+  <!-- A 特休折算 -->
+  <div class="card">
+    <h2>① 特休未休 折算工資</h2>
+    <div class="sub">勞基法 §38 ＋ 施行細則 §24-1</div>
+    <label>年資（幫你查今年「應有」幾天特休）</label>
+    <select id="sen">
+      <option value="0">未滿 6 個月（0 天）</option>
+      <option value="3">滿 6 個月～未滿 1 年（3 天）</option>
+      <option value="7">滿 1 年～未滿 2 年（7 天）</option>
+      <option value="10">滿 2 年～未滿 3 年（10 天）</option>
+      <option value="14" selected>滿 3 年～未滿 5 年（14 天）</option>
+      <option value="15">滿 5 年～未滿 10 年（15 天）</option>
+      <option value="16">滿 10 年（16 天）</option>
+      <option value="17">滿 11 年（17 天）</option>
+      <option value="20">滿 14 年（20 天）</option>
+      <option value="25">滿 19 年（25 天）</option>
+      <option value="30">滿 24 年以上（30 天上限）</option>
+    </select>
+    <label>今年<b>沒休完</b>的特休天數</label>
+    <input id="unused" type="number" inputmode="decimal" value="3" min="0" step="0.5">
+    <label>醫院實際折算給你多少？<span class="opt">（選填，用來對照）</span></label>
+    <input id="actLeave" type="number" inputmode="numeric" placeholder="例：4000" min="0">
+    <div class="out" id="outLeave"></div>
+    <div id="diffLeave"></div>
+    <details><summary>看法源重點</summary><div class="law"><b>§38 Ⅳ</b>：特休因年度終結未休之日數，雇主<b>應發給工資</b>（不發＝違法；要遞延須雙方協商）。<br><b>細則 §24-1</b>：一日工資＝年度結束前最近一個月<b>正常工作時間工資 ÷ 30</b>，乘以未休天數。<br>💡 折算是 <b>1 日工資/天</b>（不是 ×2）；但因月薪本來照領，這筆是<b>額外</b>多給，對沒休的那幾天等於拿到雙份價值。</div></details>
+  </div>
+
+  <!-- B 國定假日加班費 -->
+  <div class="card">
+    <h2>② 國定假日 出勤加班費</h2>
+    <div class="sub">勞基法 §37（國定假日）＋ §39（加倍發給）</div>
+    <label>國定假日<b>出勤天數</b>（當天工作 8 小時內）</label>
+    <input id="holi" type="number" inputmode="decimal" value="1" min="0" step="0.5">
+    <label>當天有超過 8 小時嗎？<b>總超時時數</b> <span class="opt">（選填）</span></label>
+    <input id="otHr" type="number" inputmode="decimal" placeholder="例：2" min="0" step="0.5">
+    <label>醫院實際給的國定假日加班費？<span class="opt">（選填，對照）</span></label>
+    <input id="actHoli" type="number" inputmode="numeric" placeholder="例：1333" min="0">
+    <div class="out" id="outHoli"></div>
+    <div id="diffHoli"></div>
+    <details><summary>看法源重點</summary><div class="law"><b>§39</b>：國定假日工資雇主<b>照給</b>；經同意<b>出勤者「工資加倍發給」</b>。<br>月薪制：放假當天工資已含在月薪裡，所以出勤要<b>另外再加給 1 日工資</b>（8 小時內，不論時數多寡）。<br>超過 8 小時部分：依 <b>§24</b> 延長工時加給（前 2 時 ×1⅓、再 2 時 ×1⅔，以時薪計）——本表為<b>估算</b>。</div></details>
+  </div>
+
+  <div class="ask">不確定醫院給的對不對？把<b>薪資明細（哪些算進月薪、折算多少）</b>給工會幹部，或用 <a href="lawyer.html">⚖️ AI 律師</a> 做個案分析、列出可主張的差額與證據。</div>
+
+  <div class="foot">資料來源：全國法規資料庫（勞動基準法 §37／§38／§39／§24、施行細則 §24-1）· 高雄榮民總醫院企業工會（籌備中）</div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(id){return document.getElementById(id);};
+  function num(id){ var v=parseFloat($(id).value); return isNaN(v)?0:v; }
+  function money(n){ return "NT$ "+Math.round(n).toLocaleString("en-US"); }
+
+  function calc(){
+    var sal=num("salary");
+    var day=sal/30, hr=sal/240;
+    $("base").innerHTML='<div class="row"><span>一日工資（月薪÷30）</span><b>'+money(day)+'</b></div>'+
+                        '<div class="row"><span>一小時工資（月薪÷240）</span><b>'+money(hr)+'</b></div>';
+
+    // ① 特休
+    var unused=num("unused"), leavePay=unused*day;
+    $("outLeave").innerHTML='<div class="row"><span>未休天數</span><b>'+unused+' 天</b></div>'+
+      '<div class="row"><span>一日工資</span><b>'+money(day)+'</b></div>'+
+      '<div class="row"><span>應折算工資</span><span class="big">'+money(leavePay)+'</span></div>';
+    var aL=$("actLeave").value, dL=$("diffLeave");
+    if(aL!==""&&!isNaN(parseFloat(aL))){
+      var diff=leavePay-parseFloat(aL);
+      if(diff>1){ dL.className="diff short"; dL.textContent="⚠ 醫院可能少給約 "+money(diff)+"（多半是基數只算本薪、沒含經常性給與）。建議核對。"; }
+      else if(diff<-1){ dL.className="diff ok"; dL.textContent="✓ 醫院給的比法定下限還多（"+money(-diff)+"），沒問題。"; }
+      else { dL.className="diff ok"; dL.textContent="✓ 與法定金額相符。"; }
+    } else { dL.className=""; dL.textContent=""; }
+
+    // ② 國定假日
+    var holi=num("holi"), ot=num("otHr");
+    var base8=holi*day;                 // 8 小時內：每天加 1 日工資
+    var otPay=0;                        // 超時估算（§24）
+    if(ot>0){ var f2=Math.min(ot,2), rest=Math.max(ot-2,0); otPay=f2*hr*(4/3)+rest*hr*(5/3); }
+    var holiTotal=base8+otPay;
+    $("outHoli").innerHTML='<div class="row"><span>出勤 '+holi+' 天 × 1 日工資</span><b>'+money(base8)+'</b></div>'+
+      (ot>0?'<div class="row"><span>超時 '+ot+' 小時加給（估）</span><b>'+money(otPay)+'</b></div>':'')+
+      '<div class="row"><span>應加給合計</span><span class="big">'+money(holiTotal)+'</span></div>'+
+      '<div style="font-size:11.5px;color:#777;margin-top:4px">＝ 這是月薪以外「<b>額外</b>」該領的（放假當天工資已含在月薪）。</div>';
+    var aH=$("actHoli").value, dH=$("diffHoli");
+    if(aH!==""&&!isNaN(parseFloat(aH))){
+      var d2=holiTotal-parseFloat(aH);
+      if(d2>1){ dH.className="diff short"; dH.textContent="⚠ 醫院可能少給約 "+money(d2)+"。國定假日出勤 8 小時內，應額外加給整整 1 日工資。"; }
+      else if(d2<-1){ dH.className="diff ok"; dH.textContent="✓ 醫院給的比法定下限多（"+money(-d2)+"）。"; }
+      else { dH.className="diff ok"; dH.textContent="✓ 與法定金額相符。"; }
+    } else { dH.className=""; dH.textContent=""; }
+  }
+
+  // 選年資時，自動把「未休天數」帶成該年應有天數（方便、仍可手動改）
+  $("sen").addEventListener("change",function(){ $("unused").value=this.value; calc(); });
+  ["salary","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
+  calc();
+})();
+</script>
+<script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
+</body>
+</html>
