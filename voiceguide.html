@@ -49,8 +49,9 @@
   <div class="topnote">📌 先在下面<b>挑一個你順耳的聲音</b>（有的偏女聲、有的偏男聲，按「試聽」比較看看），再按「全部播放」。沒聲音先檢查手機<b>靜音鍵／音量</b>。</div>
 
   <div class="card">
-    <label>🎚️ 選聲音</label>
+    <label>🎚️ 選聲音（試聽挑順耳的）</label>
     <select id="voiceSel"></select>
+    <div id="vhint" style="font-size:11.5px;color:#777;margin-top:5px;line-height:1.65"></div>
     <label style="margin-top:.6rem">語速</label>
     <select id="rateSel">
       <option value="1">正常</option>
@@ -88,17 +89,20 @@
   var $=function(id){return document.getElementById(id);};
   var CADRE=/[?&]for=cadre/.test(location.search);   // 幹部功能表進來＝幹部篇；否則會員篇
   var ALL=[
-    {cat:"會員篇",nm:"認識工會",s:"工會，是大家一起為自己爭取合理勞動條件的團體。湊滿三十人連署就能成立。記住：工會是工具，不是許願池，要來開會，有問題主動找幹部。"},
-    {cat:"會員篇",nm:"加班費試算機",s:"幫你算三種錢：平日加班、國定假日上班、還有沒休的特休。填月薪和加班時數，就知道醫院有沒有少給你。"},
-    {cat:"會員篇",nm:"入會划不划算",s:"輸入月薪和每月加班時數，就看得出，能拿回的加班費和特休，常常遠遠超過一年的會費。"},
-    {cat:"會員篇",nm:"加班費補發",s:"以前沒領到的加班費，五年內可以追。畫面有倒數，越早辦越好，照清單準備資料就行。"},
-    {cat:"會員篇",nm:"線上會議室",s:"用手機就能線上開會。點進 Google Meet，填真名、按加入。想講話再開麥克風，只想聽就關著。"},
-    {cat:"幹部篇",nm:"工會基本資料",s:"幹部先在這裡填一次工會資料，之後做文件會自動帶入。只存手機；公開的按發布，大家就看得到。"},
-    {cat:"幹部篇",nm:"合併列印",s:"勾選會員、選範本，一次幫每個人做一份通知或收據，印出來或存檔。"},
-    {cat:"幹部篇",nm:"公文文號簿",s:"公文自動編號、自動記錄，不用手寫。"},
-    {cat:"幹部篇",nm:"批次收據",s:"一次貼上多人姓名和金額，幫每個人開收據，外加一張總表。"},
-    {cat:"幹部篇",nm:"會址怎麼辦（重要）",s:"別用理事長家當會址，會影響房屋稅、地價稅，連賣房優惠都沒了。改租借址登記，或借非自住的房子，先打一九九九問勞工局。"},
-    {cat:"幹部篇",nm:"避坑清單",s:"成立工會有些坑：沒辦扣繳會被罰、用個人帳戶收費傷信任、會址用住家害屋主、個資別放公開網站。看完打勾，重要的事帶到會議投票。"}
+    // 會員篇：像聽小說、溫暖、有起承轉合（約 2～2.5 分）
+    {cat:"會員篇",nm:"認識工會",s:"嗨，歡迎你。先花一點時間，認識我們的工會。你有沒有過這種感覺——加班費怪怪的，班表說改就改，想反映，卻不知道找誰。工會，就是把大家集合起來，一起為自己講話的地方。一個人講，沒人理；一群人一起講，老闆，就得坐下來談。我們只要先湊滿三十人連署，工會就能成立。記得三件事：工會是工具，不是許願池；要看群組、要來開會；有問題，主動找幹部，一起想辦法。"},
+    {cat:"會員篇",nm:"加班費，有沒有被少算",s:"接下來這個很實用。你的加班費，到底算對了沒有。我們做了一台小工具，幫你把三種錢分開算清楚。第一種，平常上班日的加班。第二種，國定假日還被叫來上班，這天老闆要多給你一份錢。第三種，年底沒休完的特休，要折成錢還你。你只要輸入月薪，再填那天加了幾小時，答案馬上出來，還能跟醫院實際發的對照，有沒有少給，一眼就知道。"},
+    {cat:"會員篇",nm:"入會，到底划不划算",s:"很多人會問，繳會費，划得來嗎。這裡，花你一分鐘就好。輸入月薪，還有每個月大概加班幾小時。你會發現，光是被少算的加班費，加上沒休的特休，常常，就遠遠超過一整年的會費。算過一次，你心裡，就有底了。"},
+    {cat:"會員篇",nm:"別忘了，加班費可以追回來",s:"如果你以前是約用人員，有一筆錢，千萬別忘記。以前沒領到的加班費，五年之內，都還可以追回來。畫面上，有一個倒數，時間一過，就追不回了，所以，越早辦，越好。把出勤紀錄、薪資單，準備好，跟著清單，一步一步來，其實，不難。"},
+    {cat:"會員篇",nm:"開會，用手機就行",s:"最後告訴你，開會，不一定要到現場。用手機，就能線上參加。點進 Google Meet，填上你的真實姓名，按加入，就好。想發言，再打開麥克風；只想安靜聽，就都關著。工會，是大家的，記得常常來看看，一起參與。我們，等你加入。"}
+  ,
+    // 幹部篇：生動、活潑、快抓重點、國小二年級也懂
+    {cat:"幹部篇",nm:"先做這個最省事：基本資料",s:"幹部們，先做這一件，最省事！打開『基本資料』，把工會的名字、理事長、會址，填一次就好。填完，神奇的事發生了——之後做公文、通知、收據，通通自動帶進去，不用再一頁一頁重打。記得喔，資料只存你手機；要公開的，按一下發布，大家就看得到。"},
+    {cat:"幹部篇",nm:"一次做一堆：合併列印",s:"要做一大疊文件？別再一張一張慢慢打了！勾一勾要發的會員，選個範本——開會通知、收據、委託書、歡迎信，按下去，每人一份，一次全部搞定，要印、要存檔，都行。輕鬆。"},
+    {cat:"幹部篇",nm:"公文編號免手寫",s:"發公文，還在手寫『某字第幾號』嗎？交給它就好！自動幫你編號，自動記在簿子裡，要查、要匯出，一鍵搞定，不會再漏號、記錯。"},
+    {cat:"幹部篇",nm:"收會費：批次收據",s:"收會費的時候，一次把一串名字和金額貼上去，每個人的收據，加上一張總表，馬上做好。本來要一個下午，現在，幾分鐘。"},
+    {cat:"幹部篇",nm:"最重要：會址別用理事長家",s:"這一條，請一定記牢——千萬別用理事長家，當會址！用住家，會害到房屋稅、地價稅，連以後賣房子的優惠，都飛了，這可不是小錢。改用『用租的登記地址』，月租才幾百塊；或者，借別人不是自住的房子。不確定，先打一九九九，問勞工局。"},
+    {cat:"幹部篇",nm:"幾個坑，別踩：避坑清單",s:"最後，提醒幾個坑，別踩。發錢給人沒報稅，會被罰；用個人帳戶收會費，會被誤會；會員的個資，千萬別放到公開網頁。每一條，都有怎麼避，看完打勾。重要的事，帶到會議，讓大家一起投票決定。穩穩來，工會，才走得遠。"}
   ];
   var SECS=ALL.filter(function(x){ return CADRE ? x.cat==="幹部篇" : x.cat==="會員篇"; });
   // 標題依對象切換
@@ -113,14 +117,23 @@
 
   // ---- 聲音 ----
   var VK="ebn_voice_name", RK="ebn_voice_rate";
-  function zhVoices(){ try{ return (speechSynthesis.getVoices()||[]).filter(function(v){return /zh|cmn|Chinese|TW|HK|Hant|Hans/i.test(v.lang+v.name);}); }catch(e){ return []; } }
+  function variant(v){ var s=(v.lang+" "+v.name); if(/yue|HK|香港|粵|Sin-?ji|Cantonese/i.test(s)) return "粵"; if(/CN|Hans|大陸|普通|Tingting|Ting-?Ting/i.test(s)) return "陸"; if(/TW|Hant|台|臺|Mei-?Jia|Meijia|Yu-?shu/i.test(s)) return "台"; return "中"; }
+  function vLabel(v){ var t={台:"國語（台灣）",陸:"中國大陸口音",粵:"粵語·可能聽不懂",中:"中文"}[variant(v)]; return t; }
+  function zhVoices(){
+    try{
+      var vs=(speechSynthesis.getVoices()||[]).filter(function(v){return /zh|cmn|Chinese|TW|HK|Hant|Hans|yue|Cantonese/i.test(v.lang+v.name);});
+      var ord={台:0,中:1,陸:2,粵:3};
+      return vs.sort(function(a,b){ return ord[variant(a)]-ord[variant(b)]; });   // 國語(台灣)排最前、粵語排最後
+    }catch(e){ return []; }
+  }
   function chosen(){ var vs=zhVoices(); if(!vs.length) return null; var n=localStorage.getItem(VK); return vs.filter(function(v){return v.name===n;})[0]||vs[0]; }
   function chosenRate(){ var r=parseFloat(localStorage.getItem(RK)); return isNaN(r)?1:r; }
   function populate(){
-    var vs=zhVoices(), sel=$("voiceSel");
-    if(!vs.length){ sel.innerHTML='<option>（這支手機沒有中文聲音）</option>'; $("help").classList.add("show"); return; }
+    var vs=zhVoices(), sel=$("voiceSel"), hint=$("vhint");
+    if(!vs.length){ sel.innerHTML='<option>（這支手機沒有中文聲音）</option>'; if(hint)hint.textContent=""; $("help").classList.add("show"); return; }
     var saved=localStorage.getItem(VK);
-    sel.innerHTML=vs.map(function(v,i){ var lbl=v.name+"（"+v.lang+"）"; return '<option value="'+v.name.replace(/"/g,"")+'"'+((saved?v.name===saved:i===0)?' selected':'')+'>'+lbl+'</option>'; }).join("");
+    sel.innerHTML=vs.map(function(v,i){ var lbl=vLabel(v)+"｜"+v.name; return '<option value="'+v.name.replace(/"/g,"")+'"'+((saved?v.name===saved:i===0)?' selected':'')+'>'+lbl+'</option>'; }).join("");
+    if(hint) hint.innerHTML="💡 標「粵語」的可能聽不懂，挑「國語（台灣）」最準。<br>想要<b>更多聲音</b>？iPhone：設定 → 輔助使用 → 朗讀內容 → 聲音 → 中文 → 下載；Android：設定 → 文字轉語音 → 安裝中文（台灣）。";
   }
   try{ if(window.speechSynthesis){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){ populate(); }; } }catch(e){}
   populate();
@@ -130,12 +143,17 @@
 
   function sentences(t){ t=(t||"").replace(/\s+/g," ").trim(); var a=t.split(/([。！？!?；;，,、])/),o=[],c=""; for(var k=0;k<a.length;k++){ c+=a[k]; if(/[。！？!?；;，,、]/.test(a[k])){ if(c.trim())o.push(c.trim()); c=""; } } if(c.trim())o.push(c.trim()); return o; }
   var cur=-1, playingAll=false, stopped=true;
+  // 抑揚頓挫：會員＝像聽小說(稍慢、起伏大、句末停久)；幹部＝生動快節奏(略快、有精神、停短)
+  var MODE = CADRE ? {pitches:[1.07,1.0,1.10,1.02], rateMul:1.05, gap:70, end:170}
+                   : {pitches:[1.0,1.10,0.94,1.05,0.98], rateMul:0.95, gap:150, end:330};
   function chain(parts, done){
     if(!window.speechSynthesis||!parts.length){ if(done)done(); return; }
     var v=chosen(), rt=chosenRate(), j=0;
     (function nx(){ if(stopped)return; if(j>=parts.length){ if(done)done(); return; }
-      try{ var u=new SpeechSynthesisUtterance(parts[j]); u.lang="zh-TW"; u.rate=rt; if(v)u.voice=v;
-        u.onend=function(){ j++; nx(); }; u.onerror=function(){ j++; nx(); };
+      var part=parts[j];
+      try{ var u=new SpeechSynthesisUtterance(part); u.lang="zh-TW"; u.rate=rt*MODE.rateMul; u.pitch=MODE.pitches[j%MODE.pitches.length]; if(v)u.voice=v;
+        u.onend=function(){ var pause=/[。！？!?]$/.test(part)?MODE.end:MODE.gap; j++; setTimeout(nx,pause); };
+        u.onerror=function(){ j++; setTimeout(nx,MODE.gap); };
         speechSynthesis.speak(u);
       }catch(e){ j++; nx(); }
     })();
