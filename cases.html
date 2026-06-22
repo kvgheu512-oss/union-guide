@@ -161,7 +161,7 @@
 
   <div id="list"></div>
 
-  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部案件管理<br>🔐 案件以 AES-GCM 加密存本機、不上傳；換手機請另行備份。<br>
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部案件管理<br>🔐 案件以 AES-GCM 加密存本機、不上傳；<b>閒置 5 分鐘自動上鎖</b>；換手機請另行備份。<br>
     <button class="lk" id="chpwBtn">🔑 變更通行碼</button>·<button class="lk" id="regenBtn">♻️ 重新產生救回碼</button>·<button class="lk" id="lockNowBtn">🔒 立即上鎖</button>
   </div>
 </main>
@@ -253,7 +253,15 @@ async function tryResume(){
 
 /* ───────── 鎖 UI ───────── */
 function panel(id){ ['setup','reckey','unlock','recover','nocrypto'].forEach(function(x){ $('pnl-'+x).classList.toggle('on',x===id); }); }
-function enterApp(){ $('lock').classList.add('hide'); fillCatSelects(); renderStats(); renderList(); }
+var idleTimer=null, idleBound=false;
+function startIdle(){
+  var ms=5*60000;            // 閒置 5 分鐘自動上鎖
+  function reset(){ clearTimeout(idleTimer); idleTimer=setTimeout(lockNow,ms); }
+  if(!idleBound){ ['click','keydown','touchstart','mousemove','scroll'].forEach(function(ev){ document.addEventListener(ev,reset,{passive:true}); }); idleBound=true; }
+  reset();
+}
+function lockNow(){ try{sessionStorage.removeItem(SK);}catch(_){} dekKey=null; data=[]; location.reload(); }
+function enterApp(){ $('lock').classList.add('hide'); fillCatSelects(); renderStats(); renderList(); startIdle(); }
 
 (async function initLock(){
   if(!C){ panel('nocrypto'); return; }
@@ -302,10 +310,7 @@ $('regenBtn').addEventListener('click',async function(){
   if(!confirm('重新產生救回碼？舊的救回碼將立即失效。')) return;
   try{ var rec=await regenRecovery(); window.prompt('新的救回碼（請抄下來，舊碼已失效）：',rec); }catch(e){ alert('失敗：'+e.message); }
 });
-$('lockNowBtn').addEventListener('click',function(){
-  try{sessionStorage.removeItem(SK);}catch(_){}
-  dekKey=null; data=[]; location.reload();
-});
+$('lockNowBtn').addEventListener('click',lockNow);
 
 /* ───────── 案件 App ───────── */
 var CATS=[

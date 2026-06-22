@@ -105,7 +105,14 @@
     document.body.appendChild(d);
   }
   function panel(id){ ['setup','reckey','unlock','recover','nocrypto'].forEach(function(x){ var el=$('sl-'+x); if(el) el.classList.toggle('on',x===id); }); }
-  function enter(){ $('seclock').classList.add('hide'); if(typeof cfg.onUnlock==='function') cfg.onUnlock(dataObj); }
+  var idleTimer=null, idleBound=false;
+  function startIdle(){
+    var mins=cfg.idleMin||5, ms=mins*60000;
+    function reset(){ clearTimeout(idleTimer); idleTimer=setTimeout(function(){ API.lockNow(); }, ms); }
+    if(!idleBound){ ['click','keydown','touchstart','mousemove','scroll'].forEach(function(ev){ document.addEventListener(ev,reset,{passive:true}); }); idleBound=true; }
+    reset();
+  }
+  function enter(){ $('seclock').classList.add('hide'); startIdle(); if(typeof cfg.onUnlock==='function') cfg.onUnlock(dataObj); }
 
   function wire(){
     $('sl-su-btn').addEventListener('click',async function(){
