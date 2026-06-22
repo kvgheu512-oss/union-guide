@@ -1,7 +1,7 @@
 {
   "name": "高榮企業工會",
   "short_name": "高榮工會",
-  "start_url": "gaorong.html",
+  "start_url": "index.html",
   "scope": ".",
   "display": "standalone",
   "background_color": "#F6F3EF",
