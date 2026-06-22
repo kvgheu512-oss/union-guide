@@ -266,8 +266,10 @@
           <button class="btn navy sm" data-doc="notice">📄 開會通知／議程</button>
           <button class="btn green sm" data-doc="sign">✍ 簽到表</button>
           <button class="btn sm" data-doc="minutes">📝 會議紀錄</button>
+          <button class="btn navy sm" data-doc="proxy">📝 委託書</button>
+          <button class="btn navy sm" data-doc="roster">📋 理監事當選名冊</button>
         </div>
-        <p class="law" style="margin-top:.7rem">點選後開新視窗，可直接列印或存成 PDF。會議紀錄會帶入各議程的決議內容。</p>
+        <p class="law" style="margin-top:.7rem">點選後開新視窗，可直接列印或存成 PDF。會議紀錄會帶入各議程的決議內容。<b>委託書</b>供會員無法親自出席成立／會員大會時使用（委託不得逾親自出席 1/3）；<b>理監事當選名冊</b>由選舉結果自動帶入，登記送件用。</p>
       </div>
 
       <div class="card">
@@ -715,6 +717,37 @@ function electHTML(){
   if(e.supchair) inter+='<p>第一屆第一次監事會：經監事互選，<b>'+esc(e.supchair)+'</b> 當選常務監事。</p>';
   return '<div class="h2">選舉結果</div>'+body+inter;
 }
+function docProxy(){
+  return header()+`<div class="sub">${esc(cur.type||'會員大會')}　委託出席同意書</div>
+    <div class="meta" style="margin-top:1rem;line-height:2.4">
+      茲因故無法親自出席本會「${esc(cur.type||'○○大會')}」（開會日期：${rocDate(cur.date)}），
+      特委託下列會員代理出席並行使表決權，特立此書。
+    </div>
+    <div class="meta" style="margin-top:1.5rem;line-height:3">
+      委　託　人（簽章）：＿＿＿＿＿＿＿＿　　會員編號：＿＿＿＿＿<br>
+      受託人姓名（簽章）：＿＿＿＿＿＿＿＿　　會員編號：＿＿＿＿＿<br>
+      中　華　民　國　＿＿＿　年　＿＿　月　＿＿　日
+    </div>
+    <div class="meta" style="margin-top:1.6rem;font-size:12px;color:#555;line-height:1.9">
+      ※ 依《工會會員大會委託出席辦法》：一、每一會員以受託一人為限。二、受託代理之人數，不得超過親自出席人數之三分之一。三、本委託書應於開會前繳交大會工作人員查驗。
+    </div>`;
+}
+function docElectRoster(){
+  var e=cur.election||{rows:[]}; var rows=e.rows||[];
+  var body = rows.length
+    ? '<table><thead><tr><th style="width:3em">編號</th><th>職稱</th><th>姓名</th><th>性別</th><th>出生年月</th><th>部門／現職</th><th>得票</th><th>聯絡電話</th></tr></thead><tbody>'+
+      rows.map(function(r,i){ return '<tr><td class="c">'+(i+1)+'</td><td>'+esc(r.role)+'</td><td>'+esc(r.name)+'</td><td>＿</td><td>＿＿＿</td><td>'+esc(r.dept||'')+'</td><td class="c">'+esc(r.votes||'')+'</td><td>＿＿＿＿</td></tr>'; }).join('')+
+      '</tbody></table>'
+    : '<p>（請先於編輯頁「🗳️ 選舉結果」填入當選名單）</p>';
+  var inter='';
+  if(e.chair) inter+='<p style="margin-top:.8rem">理事長（理事互選）：<b>'+esc(e.chair)+'</b></p>';
+  if(e.supchair) inter+='<p>常務監事（監事互選）：<b>'+esc(e.supchair)+'</b></p>';
+  return header()+`<div class="sub">${esc(cur.type||'成立大會')}　第一屆理事、監事當選名冊</div>
+    <div class="meta"><b>選任日期</b>：${rocDate(cur.date)}</div>
+    ${body}${inter}
+    <div class="meta" style="margin-top:1rem;font-size:12px;color:#555;line-height:1.9">※ 性別、出生年月、聯絡電話請列印後補填（或由名冊匯入）。本名冊連同章程、會員名冊、成立大會紀錄，於成立之日起 30 日內函報主管機關登記。</div>
+    <div class="sign-line">理事長：＿＿＿＿＿＿　　　承辦：＿＿＿＿＿＿</div>`;
+}
 function docSignedRoster(){
   const a=cur.signatures||[];
   const rows=a.length?a.map((s,i)=>`<tr><td class="c">${i+1}</td><td>${esc(s.n)}</td><td>${esc(s.u||'')}</td><td class="c"><img src="${s.sig}" style="height:46px"></td><td style="font-size:11px">${esc((s.at||'').replace('T',' ').slice(0,16))}</td></tr>`).join(''):'<tr><td colspan="5" class="c">（尚無簽到）</td></tr>';
@@ -732,6 +765,8 @@ document.querySelectorAll('[data-doc]').forEach(b=>b.addEventListener('click',()
   if(d==='notice') openDoc('開會通知',docNotice());
   else if(d==='sign') openDoc('簽到表',docSign());
   else if(d==='signed') openDoc('簽到簿（手寫）',docSignedRoster());
+  else if(d==='proxy') openDoc('委託書',docProxy());
+  else if(d==='roster') openDoc('理監事當選名冊',docElectRoster());
   else openDoc('會議紀錄',docMinutes());
 }));
 
