@@ -90,7 +90,7 @@
       <div class="hint" style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.55rem .75rem;color:#5C4000;margin:.5rem 0;font-size:12.5px;line-height:1.8">
         照你薪資單上的項目，把<b>金額</b>填進去；<b>打勾</b>的項目會被加總成「月薪基數」。<br>
         🔸 <b>團體績效</b>：只有<b>特殊單位</b>才有，不是每個單位都領。<br>
-        🔸 <b>架別代理</b>：<b>不是每個月都有</b>，有領的月份再填、再勾。<br>
+        🔸 <b>假別代理</b>：<b>不是每個月都有</b>，有領的月份再填、再勾。<br>
         🔸 不確定某項算不算？先把<b>每個月固定都領的</b>勾起來；有疑問問工會或打 <b>1955</b>。<br>
         💾 填的內容只<b>存在你自己手機</b>，不會上傳。
       </div>
@@ -365,7 +365,7 @@
     {name:"工作獎金（點值制）", amt:"", on:true},
     {name:"夜班費", amt:"", on:false},
     {name:"工作獎金—團體績效（特殊單位才有）", amt:"", on:false},
-    {name:"架別代理（非每月）", amt:"", on:false}
+    {name:"假別代理（非每月）", amt:"", on:false}
   ];
   function money(n){ return "NT$ "+Math.round(n).toLocaleString("en-US"); }
   function rowHTML(it){
