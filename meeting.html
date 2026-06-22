@@ -170,6 +170,33 @@
       </div>
 
       <div class="card">
+        <h3>🔗 即時簽到／共筆（Google）</h3>
+        <p class="law" style="margin-top:0">大家用<b>大螢幕／投影機</b>看，手機只拿來「掃碼簽到」。共筆文件多人同編、自動存，散會就有初稿。連結存本機，會跟著這場會議。</p>
+        <label>簽到表單連結（Google 表單「填寫」連結）</label>
+        <input id="g-form" placeholder="https://forms.gle/...　或　docs.google.com/forms/.../viewform">
+        <div id="g-qr" style="text-align:center;margin:.6rem 0"></div>
+        <label>共筆文件連結（Google 文件，設為「可編輯」）</label>
+        <input id="g-doc" placeholder="https://docs.google.com/document/...">
+        <label>簽到名單連結（Google 試算表，選填）</label>
+        <input id="g-sheet" placeholder="https://docs.google.com/spreadsheets/...">
+        <div class="btn-row" style="margin-top:.6rem">
+          <button class="btn navy sm" id="g-open-doc">📝 開共筆文件</button>
+          <button class="btn green sm" id="g-open-sheet">📊 看簽到名單</button>
+          <button class="btn ghost sm" id="g-open-form">🖊 開簽到表單</button>
+        </div>
+        <details style="margin-top:.6rem"><summary style="cursor:pointer;color:var(--gold-deep);font-weight:700;font-size:13.5px">📖 怎麼設定（第一次，10 分鐘）</summary>
+        <div class="law" style="border:none;padding-left:0">
+          <b>① 簽到表單（Google 表單）</b><br>
+          到 forms.google.com 新建 → 加兩題短答：「<b>姓名</b>」「<b>單位／科別</b>」（都設必填）→ 右上「<b>傳送</b>」→ 取「<b>🔗 連結</b>」(可縮短) 貼到上面「簽到表單連結」。<br>
+          表單上方「<b>回應</b>」分頁 →「<b>連結至試算表</b>」→ 產生的試算表連結貼到「簽到名單連結」（就能<b>即時看到誰簽了</b>）。一般人填表<b>不需登入</b>。<br><br>
+          <b>② 共筆文件（Google 文件）</b><br>
+          到 docs.google.com 新建一份「○○會議紀錄」→ 右上「<b>共用</b>」→「<b>知道連結的任何人</b>」改成「<b>編輯者</b>」→ 複製連結貼到「共筆文件連結」。開會時<b>投影這份</b>，記錄／理事可同時編。<br><br>
+          <b>③ 開會時</b>：投影機投「共筆文件」；會員<b>掃上面 QR 簽到</b>；散會用下方「🧠 複製給 AI 整理」把共筆內容整理成正式紀錄。<br>
+          <span style="color:#7B1818">⚠ 正式大會的「簽到簿」建議仍備一份<b>紙本親簽</b>存查、報主管機關；Google 簽到當即時人數與名單用。</span>
+        </div></details>
+      </div>
+
+      <div class="card">
         <h3>產出文件</h3>
         <div class="btn-row">
           <button class="btn navy sm" data-doc="notice">📄 開會通知／議程</button>
@@ -316,12 +343,30 @@ function fillForm(){
   $('m-time').value=cur.time||''; $('m-place').value=cur.place||''; $('m-chair').value=cur.chair||'';
   $('m-rec').value=cur.rec||''; $('m-guest').value=cur.guest||'';
   var n=$('m-notes'); if(n) n.value=cur.notes||'';
+  if($('g-form')) $('g-form').value=cur.gForm||'';
+  if($('g-doc')) $('g-doc').value=cur.gDoc||'';
+  if($('g-sheet')) $('g-sheet').value=cur.gSheet||'';
+  renderFormQR();
   renderAgenda(); renderSign();
 }
 function pull(){
   cur.type=$('m-type').value; cur.no=$('m-no').value.trim(); cur.date=$('m-date').value; cur.time=$('m-time').value;
   cur.place=$('m-place').value.trim(); cur.chair=$('m-chair').value.trim(); cur.rec=$('m-rec').value.trim(); cur.guest=$('m-guest').value.trim();
   var n=$('m-notes'); if(n) cur.notes=n.value;
+  if($('g-form')) cur.gForm=$('g-form').value.trim();
+  if($('g-doc')) cur.gDoc=$('g-doc').value.trim();
+  if($('g-sheet')) cur.gSheet=$('g-sheet').value.trim();
+}
+/* 簽到表單 QR（會員掃碼即時簽到） */
+function renderFormQR(){
+  var box=$('g-qr'); if(!box) return; box.innerHTML='';
+  var u=($('g-form')&&$('g-form').value.trim())||'';
+  if(!/^https?:\/\//.test(u)){ box.innerHTML='<span style="font-size:12px;color:#999">（填上「簽到表單連結」後，這裡會出現掃碼簽到 QR）</span>'; return; }
+  function draw(){ if(typeof QRCode==='undefined'){ draw._n=(draw._n||0)+1; if(draw._n<25) return setTimeout(draw,300); box.innerHTML='<span style="font-size:12px;color:#999">QR 元件載入中…可改用「開簽到表單」分享連結</span>'; return; }
+    box.innerHTML=''; new QRCode(box,{text:u,width:168,height:168,correctLevel:QRCode.CorrectLevel.M});
+    var c=document.createElement('div'); c.style.cssText='font-size:12px;color:var(--ink-soft);margin-top:6px'; c.textContent='📲 會員掃這個 QR 即可簽到'; box.appendChild(c);
+  }
+  draw();
 }
 /* 🧠 產生「給 AI 整理會議紀錄」的提示詞 */
 function aiMinutesPrompt(){
@@ -386,6 +431,13 @@ function updateQuorum(){
 }
 
 /* 儲存／刪除 */
+(function(){
+  var gf=$('g-form'); if(gf) gf.addEventListener('input',()=>{ renderFormQR(); });
+  function openOr(id,label){ var v=$(id)&&$(id).value.trim(); if(/^https?:\/\//.test(v)) window.open(v,'_blank'); else toast('請先貼上'+label+'連結'); }
+  if($('g-open-doc')) $('g-open-doc').addEventListener('click',()=>openOr('g-doc','共筆文件'));
+  if($('g-open-sheet')) $('g-open-sheet').addEventListener('click',()=>openOr('g-sheet','簽到名單'));
+  if($('g-open-form')) $('g-open-form').addEventListener('click',()=>openOr('g-form','簽到表單'));
+})();
 $('ai-gen').addEventListener('click',()=>{
   const txt=aiMinutesPrompt();
   const t=$('ai-toast');
@@ -481,6 +533,7 @@ else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
 
 </script>
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js"></script>
 <script src="law-tips.js" defer></script>
 <script src="common.js" defer></script>
 </body>
