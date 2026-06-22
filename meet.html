@@ -97,16 +97,16 @@
     </ol>
   </div>
 
-  <!-- 幹部：怎麼產生連結 -->
+  <!-- 幹部：第一次怎麼開會議 -->
   <div class="card" style="border-top-color:#1E73C8">
-    <h2 style="color:#1A4E8A">👮 幹部：怎麼產生 Google Meet 連結</h2>
-    <div class="sub">建立一次就好，兩場會議各一條</div>
+    <h2 style="color:#1A4E8A">👮 幹部：第一次開會這樣做</h2>
+    <div class="sub">不用改網頁、不用設定，當天自己開一個就好</div>
     <ol class="steps">
-      <li>用工會的 Google 帳號開 <b>meet.google.com</b>。</li>
-      <li>點<b>「發起新會議」→「建立會議以供日後使用」</b>，會給你一條 <b>meet.google.com/xxx-…</b> 連結。</li>
-      <li>把連結貼到<b>本頁設定區</b>（請維護者填入），或直接貼到 <b>LINE 群組</b>公告。</li>
+      <li>用<b>任何一個 Google 帳號</b>，手機或電腦開 <b>meet.google.com</b>。</li>
+      <li>點<b>「發起新會議」→「立即發起會議」</b>，馬上得到一條 <b>meet.google.com/xxx-…</b> 連結。</li>
+      <li>把連結<b>貼到 LINE 群組公告</b>，大家點進來就能一起開會。</li>
     </ol>
-    <div class="hint" style="font-size:12.5px;color:var(--ink-soft);margin-top:6px">與會者免帳號，用瀏覽器「要求加入」、主持人按允許即可。</div>
+    <div class="hint" style="font-size:12.5px;color:var(--ink-soft);margin-top:6px">與會者免帳號，用瀏覽器「要求加入」、主持人按允許即可。<br>💡 想讓連結固定顯示在這一頁，再請網站維護者幫忙填入即可（非必要）。</div>
   </div>
 
   <!-- 參與須知 -->
@@ -172,8 +172,8 @@ const MEET_URL = {
       if(l) l.textContent=url;
     } else {
       // 還沒設定連結：按鈕帶到 Google Meet 首頁，並清楚說明
-      if(a){ a.href="https://meet.google.com/"; a.textContent="📅 會議連結尚未設定（幹部點此建立）"; a.style.background="#8A8F94"; }
-      if(l) l.textContent="幹部建立 Google Meet 會議後，把連結貼到本頁設定區或 LINE 群組";
+      if(a){ a.href="https://meet.google.com/"; a.textContent="📅 當天連結看 LINE 群組（幹部點此開會議）"; a.style.background="#8A8F94"; }
+      if(l) l.textContent="開會前，幹部會把當天的 Google Meet 連結貼到 LINE 群組";
     }
   }
   fill("prep"); fill("found");
