@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#7B1818">
+<title>🛡️ 蒐證指南｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+ :root{--ac:#7B1818;--ac2:#C0392B;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F7F6F3;--card:#fff;--border:#E6E1D8;--gold-light:#FEF9E7;--green:#0F5C36;--green-light:#E9F6EF;}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8}
+ .header{background:linear-gradient(160deg,#7B1818,#4A0E0E);color:#fff;padding:1.8rem 1.25rem 1.4rem;text-align:center}
+ .header h1{font-family:'Noto Serif TC',serif;font-size:21px}
+ .header p{font-size:12.5px;opacity:.92;margin-top:6px;line-height:1.7}
+ main{max-width:680px;margin:0 auto;padding:1.1rem 1.05rem 4rem}
+ .principle{background:var(--gold-light);border:1px solid #EAD67A;border-radius:12px;padding:.85rem 1rem;font-size:13px;color:#5C4000;line-height:1.85;margin-bottom:1.1rem}
+ .principle b{color:var(--ac)}
+ .cat-pick{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1rem}
+ .cat-pick button{font-size:13px;padding:.5rem .8rem;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--ac);cursor:pointer;font-family:inherit}
+ .cat-pick button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+ .cat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.15rem;margin-bottom:1rem}
+ .cat h2{font-family:'Noto Serif TC',serif;font-size:17px;color:var(--ac);margin-bottom:.2rem}
+ .cat .law{font-size:12px;color:var(--ink-soft);margin-bottom:.7rem}
+ .prog{height:8px;background:#EFEAE2;border-radius:99px;overflow:hidden;margin:.5rem 0 .9rem}
+ .prog>span{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
+ .prog-label{font-size:12px;color:var(--green);font-weight:700;margin-bottom:.5rem}
+ label.item{display:flex;gap:10px;align-items:flex-start;padding:.55rem .2rem;border-bottom:1px solid #F2EEE7;cursor:pointer}
+ label.item:last-child{border-bottom:none}
+ label.item input{margin-top:3px;width:20px;height:20px;flex-shrink:0;accent-color:var(--green)}
+ label.item .t{font-size:14px}
+ label.item .why{display:block;font-size:12px;color:var(--ink-soft);margin-top:2px;line-height:1.6}
+ label.item.done .t{color:var(--ink-soft);text-decoration:line-through}
+ .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:.8rem}
+ .btn{flex:1;min-width:130px;text-align:center;border:none;border-radius:10px;padding:.7rem;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+ .btn.copy{background:var(--ac);color:#fff}
+ .btn.reset{background:#fff;border:1.5px solid var(--border);color:var(--ink-mid)}
+ .toast{text-align:center;font-size:13px;color:var(--green);font-weight:700;min-height:18px;margin-top:8px}
+ .tip{background:var(--green-light);border:1px solid #BFE3CF;border-radius:10px;padding:.7rem .85rem;font-size:12.5px;color:var(--green);line-height:1.8;margin-top:.6rem}
+ .more{display:block;margin-top:.6rem;font-size:13px;color:var(--ac);font-weight:700;text-decoration:none}
+ .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.4rem;line-height:1.8}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="index.html">
+
+<div class="header">
+  <h1>🛡️ 蒐證指南</h1>
+  <p>遇到不合理對待，先別衝突——把證據留好。<br>選你的情況，照著打勾完成蒐證。</p>
+</div>
+
+<main>
+  <div class="principle">
+    📌 <b>蒐證四原則</b>：①<b>即時記錄</b>（時間、地點、人、事，當天就寫）。②<b>保留原始檔</b>（截圖＋原訊息都留，別只留截圖）。③<b>多備份</b>（雲端＋手機＋email 給自己一份）。④<b>你是對話的一方，可以合法錄音</b>；但別打草驚蛇、先別起衝突。<br>⚠️ 加班費等請求權<b>5 年內</b>都可追（民法§126）；不當勞動行為裁決應自知悉起<b>90 日內</b>提出。
+  </div>
+
+  <div class="cat-pick" id="cat-pick"></div>
+  <div id="cat-box"></div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 勾選紀錄只存在你的手機，不上傳</div>
+</main>
+
+<script>
+var CATS=[
+ { id:'unfair', name:'因工會被報復', icon:'🛡️',
+   law:'工會法 §35（不當勞動行為）· 裁決應自知悉起 90 日內提出',
+   tip:'這類最重要的是「時間先後」：證明你先參與工會、雇主才對你不利。把兩條時間軸對起來。',
+   more:{t:'用公文工具寫裁決申請',u:'gongwen.html'},
+   items:[
+    ['你參與工會的證明','入會申請書、連署書、工會 LINE 群、活動照片／簽到'],
+    ['雇主知道你參與工會','約談紀錄、主管訊息、被「關心」的對話'],
+    ['不利對待的書面','解僱／調職／減薪／考績／改排班的通知或公告'],
+    ['時間軸對照','把「參與工會」與「被不利對待」的日期一條條列出'],
+    ['雇主的言論','要你別參加、威脅、暗示後果的訊息或錄音'],
+    ['證人','願意作證的同事（記下姓名、可聯絡方式）'],
+   ]},
+ { id:'ot', name:'加班費／工時', icon:'⏱',
+   law:'勞基法 §24（延長工時加給）· §23（按時發薪）',
+   tip:'核心是「實際工時」與「雇主怎麼給／怎麼算」。出勤紀錄依勞動事件法§38推定為工作時間，對你有利。',
+   more:{t:'加班費試算工具',u:'leavepay.html'},
+   items:[
+    ['出勤／打卡紀錄、班表','證明實際上下班、加班的日期與時數'],
+    ['加班申請單／主管簽核','證明是經同意的加班'],
+    ['薪資明細','看加班費怎麼算、基數含哪些項目'],
+    ['自己每日加班時數紀錄','手機備忘也行，要能跟出勤對得起來'],
+    ['公告／LINE／email','要求加班、年底統一結算等制度性訊息'],
+   ]},
+ { id:'holiday', name:'國定假日／特休／調休', icon:'📅',
+   law:'勞基法 §37 §38 §39（假日出勤加倍、特休未休工資）',
+   tip:'重點：假日有沒有出勤、有沒有給加倍工資或只給調休。月薪制只給調休＝少給 1 日工資。',
+   more:{t:'特休／國定假日試算',u:'leavepay.html'},
+   items:[
+    ['班表顯示國定假日出勤','證明當天有上班'],
+    ['調休／補休的通知或申請','證明是誰決定調休、換掉加班費'],
+    ['特休未休天數紀錄','年度結束沒休完的天數'],
+    ['薪資明細','看假日工資、特休折算有沒有給足'],
+   ]},
+ { id:'injury', name:'職災／職傷／公傷', icon:'🦺',
+   law:'職業安全衛生法 · 勞保職災給付 · 勞基法 §59',
+   tip:'就醫紀錄與「事故當下」最關鍵。被職安室擋公傷時，所有往來都要留。',
+   more:{t:'職災公傷維權專區',u:'zhizai.html'},
+   items:[
+    ['就醫紀錄、診斷證明','含初診日期、傷病與工作相關的描述'],
+    ['事故當下證據','現場照片／影片、機台或環境狀況'],
+    ['通報紀錄','向主管／職安室通報的時間與內容'],
+    ['與職安室／主管的對話','申請公傷時的往來訊息、被刁難的紀錄'],
+    ['證人','目擊同事'],
+   ]},
+ { id:'fire', name:'解僱／資遣／調職', icon:'📄',
+   law:'勞基法 §11 §16 §17（資遣）· 調職五原則',
+   tip:'拿到任何「通知」先別簽字確認同意，先拍照留存、諮詢工會或勞工局。',
+   more:null,
+   items:[
+    ['解僱／資遣／調職通知書','原件拍照，注意日期與理由'],
+    ['非自願離職證明','請領失業給付要用'],
+    ['資遣費／預告工資計算','對照年資是否給足'],
+    ['解僱理由相關文件','雇主主張的依據'],
+    ['你的工作表現紀錄','考績、獎勵、感謝信等反證'],
+   ]},
+ { id:'bully', name:'霸凌／不當管理／申訴', icon:'🗣',
+   law:'職安法 §6（職場不法侵害預防）· 性平／申訴管道',
+   tip:'每次事件當天就記：時間、地點、在場的人、說了做了什麼。零散也要記，累積成模式。',
+   more:null,
+   items:[
+    ['事件經過紀錄','逐次記時間、地點、在場者、言行'],
+    ['對話訊息／錄音','你是對話一方可合法錄音'],
+    ['證人','在場同事'],
+    ['申訴往來紀錄','向院方申訴的書面與回覆'],
+    ['身心影響佐證','就醫紀錄（如因此就醫）'],
+   ]},
+];
+
+var KEY='shouzheng_v1';
+var state={}; try{ state=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){} }
+var cur=CATS[0].id;
+var $=function(id){return document.getElementById(id);};
+function esc(s){return (s||'').replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+
+function renderPick(){
+  $('cat-pick').innerHTML=CATS.map(function(c){
+    return '<button data-id="'+c.id+'"'+(c.id===cur?' class="on"':'')+'>'+c.icon+' '+esc(c.name)+'</button>';
+  }).join('');
+  Array.prototype.forEach.call($('cat-pick').querySelectorAll('button'),function(b){
+    b.addEventListener('click',function(){ cur=b.dataset.id; renderPick(); renderCat(); window.scrollTo({top:0,behavior:'smooth'}); });
+  });
+}
+function key(cid,i){ return cid+':'+i; }
+function renderCat(){
+  var c=CATS.find(function(x){return x.id===cur;});
+  var total=c.items.length, done=c.items.reduce(function(n,_,i){return n+(state[key(c.id,i)]?1:0);},0);
+  var pct=Math.round(done/total*100);
+  var html='<div class="cat"><h2>'+c.icon+' '+esc(c.name)+'</h2><div class="law">'+esc(c.law)+'</div>'+
+    '<div class="prog-label">已蒐集 '+done+' / '+total+'　('+pct+'%)</div>'+
+    '<div class="prog"><span style="width:'+pct+'%"></span></div>';
+  html+=c.items.map(function(it,i){
+    var on=!!state[key(c.id,i)];
+    return '<label class="item'+(on?' done':'')+'"><input type="checkbox" data-i="'+i+'"'+(on?' checked':'')+'>'+
+      '<span><span class="t">'+esc(it[0])+'</span><span class="why">'+esc(it[1])+'</span></span></label>';
+  }).join('');
+  if(c.tip) html+='<div class="tip">💡 '+esc(c.tip)+'</div>';
+  if(c.more) html+='<a class="more" href="'+c.more.u+'">→ '+esc(c.more.t)+'</a>';
+  html+='<div class="btns"><button class="btn copy" id="cp">📋 複製這份清單（給幹部／律師）</button>'+
+    '<button class="btn reset" id="rs">清除本類勾選</button></div><div class="toast" id="tt"></div></div>';
+  $('cat-box').innerHTML=html;
+  Array.prototype.forEach.call($('cat-box').querySelectorAll('input'),function(inp){
+    inp.addEventListener('change',function(){ state[key(c.id,inp.dataset.i)]=inp.checked; save(); renderCat(); });
+  });
+  $('cp').addEventListener('click',function(){ copyList(c); });
+  $('rs').addEventListener('click',function(){ c.items.forEach(function(_,i){ delete state[key(c.id,i)]; }); save(); renderCat(); });
+}
+function copyList(c){
+  var L=['【蒐證清單】'+c.name+'（'+c.law+'）',''];
+  c.items.forEach(function(it,i){ L.push((state[key(c.id,i)]?'✅ ':'⬜ ')+it[0]+'　— '+it[1]); });
+  L.push('','（高榮企業工會蒐證指南產生；✅＝已備齊，⬜＝待補。）');
+  var txt=L.join('\n');
+  function ok(){ var t=$('tt'); if(t){ t.textContent='✅ 已複製，貼到 LINE 給幹部或附給律師'; setTimeout(function(){t.textContent='';},3000);} }
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(ok,function(){fb(txt);ok();}); } else { fb(txt); ok(); }
+  function fb(t){ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); }
+}
+renderPick(); renderCat();
+</script>
+<script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
+</body>
+</html>
