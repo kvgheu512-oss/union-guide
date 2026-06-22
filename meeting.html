@@ -137,7 +137,7 @@
         <div class="grid2">
           <div><label>會議種類</label>
             <select id="m-type">
-              <option>籌備會議</option><option>成立大會</option>
+              <option>發起人會議</option><option>籌備會議</option><option>成立大會</option>
               <option>會員大會</option><option>會員代表大會</option><option>理事會</option>
               <option>監事會</option><option>理監事聯席會議</option><option>臨時會議</option>
             </select></div>
@@ -212,14 +212,20 @@ function rocDate(ds){ if(!ds) return '中華民國　年　月　日'; const p=d
 const $=id=>document.getElementById(id);
 const AG_KINDS=['報告事項','討論事項','選舉事項','臨時動議'];
 const SEEDS={
- '籌備會議':[
-  {kind:'報告事項',title:'連署及籌備進度報告',decision:''},
-  {kind:'討論事項',title:'推選籌備委員、組織籌備會案',decision:''},
+ '發起人會議':[
+  {kind:'報告事項',title:'連署及發起經過報告',decision:''},
+  {kind:'說明事項',title:'本次以實到發起人開會、未到者補簽到；尚無主體故不用委託書',decision:''},
+  {kind:'討論事項',title:'推選籌備委員、組織「籌備委員會」案',decision:''},
   {kind:'討論事項',title:'推選籌備會主任委員案',decision:''},
-  {kind:'討論事項',title:'籌備工作分配案',decision:''},
+  {kind:'討論事項',title:'籌備工作分配（章程、徵求會員、財務、文宣等）案',decision:''},
+  {kind:'討論事項',title:'公開徵求會員方式及成立大會時程案',decision:''},
+  {kind:'臨時動議',title:'',decision:''}],
+ '籌備會議':[
+  {kind:'報告事項',title:'連署及會員入會進度報告',decision:''},
+  {kind:'討論事項',title:'審查會員入會資格案',decision:''},
   {kind:'討論事項',title:'擬定章程草案（含入會費及經常會費）案',decision:''},
   {kind:'討論事項',title:'製作入會申請書、公開徵求會員案',decision:''},
-  {kind:'討論事項',title:'成立大會日期、地點及分工案',decision:''},
+  {kind:'討論事項',title:'成立大會議程、書表及日期地點分工案',decision:''},
   {kind:'臨時動議',title:'',decision:''}],
  '成立大會':[
   {kind:'報告事項',title:'籌備經過報告',decision:''},
