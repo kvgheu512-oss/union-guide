@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<meta name="apple-mobile-web-app-title" content="合併列印">
+<title>合併列印（名冊×範本 批次產生）｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#1A3A6B;--navy-deep:#122A4F;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F4F6FA;--card:#fff;--border:#D8E0EC;--gold-light:#FEF9E7;--gold-line:#EAD67A;--green:#1A7A4A;--green-deep:#0F5C36;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#1A3A6B,#122A4F);color:#fff;padding:1.7rem 1.25rem 1.3rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:19px;}
+  .header p{font-size:12.5px;opacity:.92;margin-top:6px;}
+  main{max-width:640px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:var(--gold-light);border:1px solid var(--gold-line);border-radius:10px;padding:.75rem .95rem;font-size:12.8px;color:#5C4000;margin-bottom:1rem;line-height:1.75;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.05rem 1.1rem;margin-bottom:1rem;border-top:4px solid var(--navy);}
+  .card h2{font-family:'Noto Serif TC',serif;color:var(--navy-deep);font-size:16px;margin-bottom:.5rem;}
+  label{display:block;font-size:13px;font-weight:700;color:var(--navy-deep);margin:.6rem 0 .25rem;}
+  input,select{width:100%;padding:.6rem .75rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;background:#fff;}
+  .tmpls{display:flex;flex-wrap:wrap;gap:8px;}
+  .tmpls label{flex:1;min-width:130px;margin:0;display:flex;align-items:center;gap:7px;background:#F7F9FC;border:1.5px solid var(--border);border-radius:10px;padding:.55rem .7rem;cursor:pointer;font-weight:500;font-size:14px;}
+  .tmpls label:has(input:checked){background:#EAF0FA;border-color:var(--navy);}
+  .mlist{max-height:230px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:.3rem .5rem;background:#fff;}
+  .mlist label{display:flex;align-items:center;gap:8px;font-weight:400;font-size:14px;margin:.15rem 0;color:var(--ink-mid);}
+  .mlist input{width:auto;}
+  .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:.4rem 0;}
+  .btn{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:.6rem .9rem;font-weight:700;font-size:14px;cursor:pointer;}
+  .btn.ghost{background:#EAF0FA;color:var(--navy-deep);border:1.5px solid var(--navy);}
+  .btn.go{background:var(--green);width:100%;padding:.85rem;font-size:16px;}
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.6;}
+  .warn{background:#FDECEA;border:1px solid #F3C9C4;color:#7B1818;border-radius:10px;padding:.7rem .9rem;font-size:13px;}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.2rem;}
+  /* 列印區：螢幕隱藏，列印時每人一頁 */
+  #sheets{display:none;}
+  @media print{
+    body{background:#fff;}
+    .noprint{display:none!important;}
+    main{padding:0;max-width:none;}
+    #sheets{display:block;}
+    .sheet{page-break-after:always;padding:2.2cm 2cm;font-size:15px;line-height:2;color:#000;}
+    .sheet:last-child{page-break-after:auto;}
+    .sheet h3{font-family:'Noto Serif TC',serif;font-size:20px;text-align:center;margin-bottom:1rem;}
+    .sheet .right{text-align:right;} .sheet .mt{margin-top:1.4rem;} .sheet .center{text-align:center;}
+    .sheet table{width:100%;border-collapse:collapse;margin:.6rem 0;} .sheet td{border:1px solid #000;padding:8px;}
+  }
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="union.html">
+
+<div class="header">
+  <h1>🖨️ 合併列印（名冊 × 範本）</h1>
+  <p>勾選會員 ＋ 選範本 → 一次產生每人一份，批次列印／存 PDF</p>
+</div>
+
+<main>
+  <div class="topnote noprint">📌 從<b>會員名冊</b>抓人、套上<b>工會基本資料</b>，一次生成 N 份文件。資料全在本機、不上傳。<br>還沒填基本資料？先到 <b>🏛️ 工會基本資料中心</b>建一次，抬頭才會自動帶入。</div>
+
+  <div class="card noprint">
+    <h2>① 選範本</h2>
+    <div class="tmpls" id="tmpls">
+      <label><input type="radio" name="tpl" value="notice" checked> 開會通知</label>
+      <label><input type="radio" name="tpl" value="receipt"> 繳費收據</label>
+      <label><input type="radio" name="tpl" value="proxy"> 委託書</label>
+      <label><input type="radio" name="tpl" value="welcome"> 入會歡迎函</label>
+    </div>
+    <div id="extra"></div>
+  </div>
+
+  <div class="card noprint">
+    <h2>② 選會員 <span id="cnt" style="font-weight:400;font-size:12px;color:var(--ink-soft)"></span></h2>
+    <div class="bar">
+      <button class="btn ghost" id="all" type="button">全選</button>
+      <button class="btn ghost" id="none" type="button">全不選</button>
+      <input id="filter" placeholder="搜尋姓名／部門" style="flex:1;min-width:120px">
+    </div>
+    <div class="mlist" id="mlist"></div>
+    <div id="empty" class="warn" style="display:none">名冊目前沒有會員。請先到「會員名冊」新增或匯入，再回來合併列印。</div>
+  </div>
+
+  <button class="btn go noprint" id="gen" type="button">🖨️ 產生並列印 / 存 PDF</button>
+  <div class="hint noprint" id="genhint" style="text-align:center"></div>
+
+  <div class="foot noprint">高雄榮民總醫院企業工會（籌備中）· 幹部後台 · 資料僅存本機</div>
+
+  <div id="sheets"></div>
+</main>
+
+<div id="verBadge" class="noprint"></div>
+<script src="org.js" defer></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function members(){ try{ return JSON.parse(localStorage.getItem("roster_members_v1"))||[]; }catch(e){ return []; } }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+
+  // 各範本的額外欄位
+  var EXTRA={
+    notice:[["mName","會議名稱","例：第一屆第一次會員大會"],["mWhen","開會時間",""],["mWhere","開會地點",""],["mUseNo","__chk__","編正式公文文號（會 +1 並留底）"]],
+    receipt:[["rYear","年度","例：115"],["rType","費別","入會費／常年會費"],["rAmt","金額（每人）","例：200"]],
+    proxy:[["pName","會議名稱","例：第一屆第一次會員大會"],["pDate","會議日期",""]],
+    welcome:[]
+  };
+  function curTpl(){ var r=document.querySelector('input[name=tpl]:checked'); return r?r.value:"notice"; }
+  function renderExtra(){
+    var t=curTpl(), box=$("extra"), defs=EXTRA[t]||[];
+    box.innerHTML=defs.map(function(d){
+      if(d[1]==="__chk__") return '<label style="display:flex;gap:8px;align-items:center;font-weight:500;margin-top:.7rem"><input type="checkbox" id="x-'+d[0]+'" style="width:auto">'+d[2]+'</label>';
+      return '<label>'+d[1]+'</label><input id="x-'+d[0]+'" type="text" placeholder="'+(d[2]||"")+'">';
+    }).join("")||'<div class="hint">這個範本不需要額外填寫，直接選會員產生即可。</div>';
+  }
+  function xval(k){ var el=$("x-"+k); return el?(el.type==="checkbox"?el.checked:el.value.trim()):""; }
+
+  // 會員清單
+  function renderList(){
+    var box=$("mlist"), ms=members(), f=($("filter").value||"").trim();
+    var shown=ms.filter(function(m){ return !f || (m.name+(m.dept||"")).indexOf(f)>=0; });
+    $("empty").style.display=ms.length?"none":"block";
+    box.innerHTML=shown.map(function(m){
+      return '<label><input type="checkbox" class="mck" value="'+esc(m.id)+'" checked> '+esc(m.name)+(m.dept?' <span style="color:#9aa">· '+esc(m.dept)+'</span>':'')+'</label>';
+    }).join("")||'<div class="hint">（沒有符合的會員）</div>';
+    updCnt();
+  }
+  function checkedIds(){ return Array.prototype.map.call(document.querySelectorAll(".mck:checked"),function(c){return c.value;}); }
+  function updCnt(){ $("cnt").textContent="已選 "+checkedIds().length+" 人"; }
+
+  // 產生每人一份
+  function build(){
+    var o=(window.EBNOrg?EBNOrg.get():{}), t=curTpl();
+    var ids=checkedIds(), ms=members().filter(function(m){return ids.indexOf(m.id)>=0;});
+    if(!ms.length){ $("genhint").textContent="請至少勾選一位會員"; return; }
+    var org=o.fullName||"（請先到基本資料中心填工會全名）";
+    var chair=o.chair||"____", addr=o.addr||"", tel=o.tel||"";
+    var docNo="";
+    if(t==="notice" && xval("mUseNo") && window.EBNOrg){ docNo=EBNOrg.nextDocNo(xval("mName")||"開會通知"); }
+    else if(t==="notice" && window.EBNOrg){ docNo=EBNOrg.peekDocNo(); }
+
+    var html=ms.map(function(m){
+      var name=esc(m.name);
+      if(t==="notice"){
+        return '<div class="sheet"><h3>'+esc(org)+' 開會通知</h3>'+
+          (docNo?'<div class="right">'+esc(docNo)+'</div>':'')+
+          '<p>受文者：'+name+' 君</p>'+
+          '<p>開會事由：'+esc(xval("mName")||"（會議名稱）")+'</p>'+
+          '<p>開會時間：'+esc(xval("mWhen")||"____")+'</p>'+
+          '<p>開會地點：'+esc(xval("mWhere")||"____")+'</p>'+
+          '<p class="mt">敬請  撥冗出席。</p>'+
+          '<p class="right mt">'+esc(org)+'　理事長　'+esc(chair)+'　敬啟</p>'+
+          (addr?'<p class="hint">會址：'+esc(addr)+(tel?'　電話：'+esc(tel):'')+'</p>':'')+'</div>';
+      }
+      if(t==="receipt"){
+        var amt=xval("rAmt")||"____";
+        return '<div class="sheet"><h3>'+esc(org)+' 收據</h3>'+
+          '<p>茲收到　<b>'+name+'</b>　君 繳納 '+esc(xval("rYear")||"___")+' 年度 '+esc(xval("rType")||"會費")+'</p>'+
+          '<p>新臺幣 <b>'+esc(amt)+'</b> 元整。</p>'+
+          '<table><tr><td>繳款人</td><td>'+name+'</td><td>金額</td><td>NT$ '+esc(amt)+'</td></tr></table>'+
+          '<p class="right mt">'+esc(org)+'（蓋章）</p>'+
+          '<p class="right">理事長 '+esc(chair)+'　　經手人 ____</p></div>';
+      }
+      if(t==="proxy"){
+        return '<div class="sheet"><h3>'+esc(org)+' 出席委託書</h3>'+
+          '<p>本人 <b>'+name+'</b>（會員）因故不克出席「'+esc(xval("pName")||"（會議名稱）")+'」'+
+          '（'+esc(xval("pDate")||"____")+'），茲委託下列會員代理出席並行使表決權：</p>'+
+          '<p class="mt">受託人（代理人）：________________　簽章：____________</p>'+
+          '<p class="mt">委託人：'+name+'　　簽章：____________</p>'+
+          '<p class="hint">※ 依章程，每一會員受託代理以一人為限。</p></div>';
+      }
+      // welcome
+      return '<div class="sheet"><h3>歡迎加入 '+esc(org)+'</h3>'+
+        '<p>'+name+' 君，您好：</p>'+
+        '<p class="mt">歡迎您加入 '+esc(org)+'！您的支持，讓我們更有力量為全體會員爭取合理的勞動條件。</p>'+
+        '<p class="mt">工會是「大家一起經營」的工具——遇到加班費、排班、職場問題，歡迎主動與幹部聯繫，我們一起處理。</p>'+
+        '<p class="right mt">'+esc(org)+'　理事長　'+esc(chair)+'　敬上</p>'+
+        (addr?'<p class="hint">會址：'+esc(addr)+(tel?'　電話：'+esc(tel):'')+'</p>':'')+'</div>';
+    }).join("");
+    $("sheets").innerHTML=html;
+    $("genhint").textContent="已產生 "+ms.length+" 份，開啟列印視窗中…";
+    setTimeout(function(){ window.print(); $("genhint").textContent="已產生 "+ms.length+" 份（在列印畫面可選『儲存成 PDF』）"; },200);
+  }
+
+  document.querySelectorAll('input[name=tpl]').forEach(function(r){ r.addEventListener("change",renderExtra); });
+  $("filter").addEventListener("input",renderList);
+  $("mlist").addEventListener("change",updCnt);
+  $("all").addEventListener("click",function(){ document.querySelectorAll(".mck").forEach(function(c){c.checked=true;}); updCnt(); });
+  $("none").addEventListener("click",function(){ document.querySelectorAll(".mck").forEach(function(c){c.checked=false;}); updCnt(); });
+  $("gen").addEventListener("click",build);
+  renderExtra(); renderList();
+})();
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>

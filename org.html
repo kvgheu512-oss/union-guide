@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<meta name="apple-mobile-web-app-title" content="工會基本資料">
+<title>工會基本資料中心（建一次、全站帶入）｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#1A3A6B;--navy-deep:#122A4F;--navy-mid:#2E5C8A;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F4F6FA;--card:#fff;--border:#D8E0EC;--gold-light:#FEF9E7;--gold-line:#EAD67A;--green:#1A7A4A;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#1A3A6B,#122A4F);color:#fff;padding:1.9rem 1.25rem 1.5rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:20px;}
+  .header p{font-size:12.5px;opacity:.92;margin-top:6px;line-height:1.7;}
+  main{max-width:620px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:var(--gold-light);border:1px solid var(--gold-line);border-radius:10px;padding:.8rem 1rem;font-size:13px;color:#5C4000;margin-bottom:1rem;line-height:1.8;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.15rem;margin-bottom:1.1rem;border-top:4px solid var(--navy);}
+  label{display:block;font-size:13px;font-weight:700;color:var(--navy-deep);margin:.8rem 0 .25rem;}
+  input{width:100%;padding:.65rem .8rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;background:#fff;}
+  input:focus{outline:none;border-color:var(--navy);}
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:3px;line-height:1.6;}
+  .save{display:block;width:100%;background:var(--navy);color:#fff;border:0;border-radius:12px;padding:.85rem;font-weight:700;font-size:16px;cursor:pointer;margin-top:1.1rem;}
+  .save:active{background:var(--navy-deep);}
+  .toast{text-align:center;color:var(--green);font-weight:700;font-size:13.5px;min-height:18px;margin-top:8px;}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.4rem;line-height:1.8;}
+  .uses{font-size:12.5px;color:var(--ink-mid);background:#EEF3FA;border:1px solid #C2D2E8;border-radius:10px;padding:.7rem .9rem;line-height:1.8;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="union.html">
+
+<div class="header">
+  <h1>🏛️ 工會基本資料中心</h1>
+  <p>建一次，公文／通知／收據／會議／合併列印<b>全站自動帶入</b></p>
+</div>
+
+<main>
+  <div class="topnote">📌 這裡填一次工會的基本資料，之後做各種文件時<b>自動帶入</b>，不用每頁重打、也不會打錯不一致。<br>💾 只<b>存在這支裝置</b>、不會上傳。換手機請用名冊頁的備份或重填。</div>
+
+  <div class="card">
+    <div id="fields"></div>
+    <button class="save" id="saveBtn" type="button">💾 儲存基本資料</button>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <div class="card" style="border-top-color:var(--green)">
+    <div class="uses">
+      <b>哪裡會用到？</b><br>
+      • 公文／函稿、開會通知：自動帶入工會全名、理事長、會址、文號<br>
+      • 繳費收據、批次收據：帶入工會全名、收款帳戶<br>
+      • 合併列印（名冊×範本）：每份文件自動套上工會抬頭<br>
+      • 公文文號流水簿：「字別＋年＋流水號」自動產生、發文後自動 +1
+    </div>
+  </div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部後台 · 資料僅存本機</div>
+</main>
+
+<div id="verBadge"></div>
+<script src="org.js" defer></script>
+<script>
+(function(){
+  function build(){
+    var box=document.getElementById("fields"); if(!box||!window.EBNOrg) { setTimeout(build,30); return; }
+    var o=EBNOrg.get();
+    box.innerHTML=EBNOrg.FIELDS.map(function(f){
+      var k=f[0],label=f[1],hint=f[2]||"";
+      var v=(o[k]!=null?String(o[k]):"").replace(/"/g,"&quot;");
+      var im=(k==="tel"||k==="docYear"||k==="docSeq"||k==="taxId")?' inputmode="tel"':'';
+      return '<label>'+label+'</label>'+
+             '<input id="org-'+k+'" type="text"'+im+' value="'+v+'">'+
+             (hint?'<div class="hint">'+hint+'</div>':'');
+    }).join("");
+    document.getElementById("saveBtn").addEventListener("click",function(){
+      var o2=EBNOrg.get();
+      EBNOrg.FIELDS.forEach(function(f){ var el=document.getElementById("org-"+f[0]); if(el) o2[f[0]]=el.value.trim(); });
+      EBNOrg.set(o2);
+      var t=document.getElementById("toast"); t.textContent="✅ 已儲存，其他文件頁會自動帶入這些資料";
+      setTimeout(function(){ t.textContent=""; },3000);
+    });
+  }
+  build();
+})();
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
