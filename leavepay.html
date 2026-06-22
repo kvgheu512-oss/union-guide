@@ -36,6 +36,14 @@
   .ask{background:var(--card);border:1px solid var(--border);border-left:5px solid var(--green);border-radius:12px;padding:.85rem 1rem;font-size:13.5px;line-height:1.8;margin-top:.4rem;}
   .ask a{color:var(--green-deep);font-weight:700;}
   .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.4rem;line-height:1.8;}
+  .rg{display:flex;gap:8px;flex-wrap:wrap;margin:.4rem 0 .65rem}
+  .rb{display:flex;align-items:center;gap:6px;background:#F7F9F7;border:1.5px solid var(--border);border-radius:10px;padding:.45rem .8rem;cursor:pointer;font-size:13.5px;flex:1;min-width:140px;-webkit-tap-highlight-color:transparent}
+  .rb:has(input:checked){background:var(--green-light);border-color:var(--green)}
+  .vb{border-radius:12px;padding:.85rem 1rem;margin:.6rem 0;font-size:13.5px;line-height:1.85}
+  .vb-red{background:#FDF3F2;border:1.5px solid #F0C5C2;color:#3A1010}
+  .vb-yellow{background:#FFFAED;border:1.5px solid #E8D58A;color:#4A3500}
+  .vb-title{font-family:'Noto Serif TC',serif;font-weight:700;font-size:15px;margin-bottom:.55rem}
+  .vb-body p{margin:.2rem 0}
 </style>
 <link rel="stylesheet" href="common.css">
 </head>
@@ -98,6 +106,19 @@
     <input id="otHr" type="number" inputmode="decimal" placeholder="例：2" min="0" step="0.5">
     <label>醫院實際給的國定假日加班費？<span class="opt">（選填，對照）</span></label>
     <input id="actHoli" type="number" inputmode="numeric" placeholder="例：1333" min="0">
+    <label style="margin-top:.85rem">醫院有以「<b>調休</b>」代替這天的加班費嗎？</label>
+    <div class="rg">
+      <label class="rb"><input type="radio" name="hm" value="pay" checked onchange="hdChg()"> 有給加班費（正常）</label>
+      <label class="rb"><input type="radio" name="hm" value="comp" onchange="hdChg()"> 只給調休，未給加班費</label>
+    </div>
+    <div id="ci-wrap" hidden>
+      <label>調休是<b>誰的決定</b>？</label>
+      <div class="rg">
+        <label class="rb"><input type="radio" name="ci" value="me" onchange="hdChg()"> 我主動要求調休</label>
+        <label class="rb"><input type="radio" name="ci" value="hosp" checked onchange="hdChg()"> 醫院單方決定</label>
+      </div>
+    </div>
+    <div id="holi-verdict"></div>
     <div class="out" id="outHoli"></div>
     <div id="diffHoli"></div>
     <details><summary>看法源重點</summary><div class="law"><b>§39</b>：國定假日工資雇主<b>照給</b>；經同意<b>出勤者「工資加倍發給」</b>。<br>月薪制：放假當天工資已含在月薪裡，所以出勤要<b>另外再加給 1 日工資</b>（8 小時內，不論時數多寡）。<br>超過 8 小時部分：依 <b>§24</b> 延長工時加給（前 2 時 ×1⅓、再 2 時 ×1⅔，以時薪計）——本表為<b>估算</b>。</div></details>
@@ -229,6 +250,41 @@
     else { ta.select(); document.execCommand("copy"); ok(); }
   });
 })();
+
+function hdChg(){
+  var mode=document.querySelector('input[name="hm"]:checked');
+  if(!mode) return;
+  var ciWrap=document.getElementById('ci-wrap');
+  var verdict=document.getElementById('holi-verdict');
+  if(mode.value==='pay'){ ciWrap.hidden=true; verdict.innerHTML=''; return; }
+  ciWrap.hidden=false;
+  var ci=document.querySelector('input[name="ci"]:checked');
+  var byHosp=!ci||ci.value==='hosp';
+  if(byHosp){
+    verdict.innerHTML='<div class="vb vb-red"><div class="vb-title">⚖️ 法規研判：可能構成雙重違法</div><div class="vb-body">'
+      +'<p><b>① 未徵得勞工同意即排班出勤</b></p>'
+      +'<p style="font-size:13px;margin:.1rem 0 .5rem">勞基法 §39：「雇主<b>經徵得勞工同意</b>於休假日工作者，工資應加倍發給。」'
+      +'醫院自行排定國定假日班又單方決定調休，「同意」要件即有疑義。</p>'
+      +'<p><b>② 雇主不得單方以調休取代加倍工資</b></p>'
+      +'<p style="font-size:13px;margin:.1rem 0 .5rem">§39 明文「工資應加倍發給」，<b>條文無「補休可替代」例外</b>（§36 休息日才有明文）。'
+      +'月薪制：假日工資已含於月薪，出勤的「加倍」＝<b>月薪外額外再付 1 日工資</b>。'
+      +'給調休 1 天→月薪不變，額外補償實為零，少給整整 <b>1 日工資</b>。</p>'
+      +'<p style="font-size:12px">📎 <b>法條：勞基法 §37、§39</b>｜追溯期 <b>5 年（民法 §126）</b>｜'
+      +'建議蒐集：班表、出勤紀錄、調休單（或通知截圖）</p>'
+      +'</div></div>';
+  } else {
+    verdict.innerHTML='<div class="vb vb-yellow"><div class="vb-title">⚠️ 法規研判：主動要求調休，仍可能有差額</div><div class="vb-body">'
+      +'<p>勞動部函釋允許<b>勞工主動申請</b>以補休替代假日出勤加班費，但月薪制有一個關鍵盲點：</p>'
+      +'<p style="font-size:13px;margin:.3rem 0">補休 1 天 → 你少上班 1 天，月薪<b>不減</b>，實質額外收益等於 0。<br>'
+      +'§39「加倍」＝ 假日基礎工資（已在月薪）＋<b>額外 1 日工資</b>（這筆才是補償出勤的部分）。<br>'
+      +'補休 1 天，只是「還你本來不用上班的那天」，額外的那份工資<b>從未出現</b>。</p>'
+      +'<p style="font-size:13px"><b>真正等值應是補休 2 天</b>（1 天還假日性質＋1 天頂替加倍工資）；'
+      +'或補休 1 天＋另給 1 日工資。若只補 1 天，差額約等於「出勤天數 × 1 日工資」。</p>'
+      +'<p style="font-size:12px;margin-top:.4rem">📎 <b>勞基法 §39</b>｜建議取得書面補休協議、確認天數比例'
+      +'｜如有爭議洽勞工局 <b>1955</b> 或工會</p>'
+      +'</div></div>';
+  }
+}
 </script>
 <script src="law-tips.js" defer></script>
 <script src="common.js" defer></script>
