@@ -91,6 +91,31 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('joinroi 空白輸入安全', async p => { await go(p, 'joinroi.html'); await p.fill('#salary', '').catch(() => {}); await p.fill('#otHr', '').catch(() => {}); await p.waitForTimeout(150);
     p.__err.length === 0 ? ok('空白安全') : bad('joinroi-empty', 'err'); });
 
+  console.log('\n========== F. 幹部文書工具（帶入／批次） ==========');
+  await T('基本資料中心 儲存持久化', async p => { await p.goto(BASE + 'org.html', { waitUntil: 'domcontentloaded' }); await p.evaluate(() => localStorage.clear()); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
+    await p.fill('#org-fullName', '測試工會'); await p.fill('#org-chair', '測試長'); await p.click('#saveBtn'); await p.waitForTimeout(150);
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
+    (await p.inputValue('#org-chair')) === '測試長' ? ok('基本資料重開保留') : bad('org', 'not persisted'); });
+  await T('合併列印 批次產生N份+帶入抬頭', async p => { await p.goto(BASE + 'mailmerge.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { localStorage.setItem('ebn_org_v1', JSON.stringify({ fullName: '測試工會', chair: '測試長', docWord: '測', docYear: '115', docSeq: '1' })); localStorage.setItem('roster_members_v1', JSON.stringify([{ id: 'a', name: '甲' }, { id: 'b', name: '乙' }])); });
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.evaluate(() => { window.print = () => {}; }); await p.waitForTimeout(200);
+    await p.click('#gen'); await p.waitForTimeout(300);
+    const n = await p.$$eval('#sheets .sheet', e => e.length); const t = await p.textContent('#sheets');
+    (n === 2 && t.includes('測試工會') && t.includes('甲') && t.includes('乙')) ? ok('2份+抬頭+姓名') : bad('mailmerge', 'n=' + n); });
+  await T('文號流水簿 取號+1並留底', async p => { await p.goto(BASE + 'wenhao.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => localStorage.setItem('ebn_org_v1', JSON.stringify({ docWord: '測', docYear: '115', docSeq: '7' })));
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
+    await p.click('#issue'); await p.waitForTimeout(150);
+    const next = (await p.textContent('#nextNo')).trim();
+    (next.includes('008')) ? ok('取號後+1=008並留底') : bad('wenhao', 'next=' + next); });
+  await T('批次收據 多筆+彙總+合計', async p => { await p.goto(BASE + 'receipt-batch.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(150);
+    await p.evaluate(() => { window.print = () => {}; });
+    await p.fill('#year', '115'); await p.fill('#defAmt', '200'); await p.fill('#startNo', '1');
+    await p.fill('#lines', '甲 200\n乙\n丙 500'); await p.waitForTimeout(120);
+    await p.click('#gen'); await p.waitForTimeout(300);
+    const rc = await p.$$eval('#sheets .rcpt', e => e.length); const t = await p.textContent('#sheets');
+    (rc === 3 && t.includes('900') && t.includes('115-003')) ? ok('3收據+合計900') : bad('receipt-batch', 'rc=' + rc); });
+
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);
   if (fails.length) { console.log('--- 失敗項目 ---'); fails.forEach(f => console.log(' • ' + f)); }

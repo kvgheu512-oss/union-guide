@@ -62,7 +62,8 @@
     return no;
   }
   function getLog() { try { return JSON.parse(localStorage.getItem(LOG) || "[]"); } catch (e) { return []; } }
+  function setLog(arr) { try { localStorage.setItem(LOG, JSON.stringify(arr || [])); } catch (e) {} }
 
-  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, FIELDS: FIELDS, KEY: KEY, LOG: LOG };
+  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, FIELDS: FIELDS, KEY: KEY, LOG: LOG };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { fill(); }); else fill();
 })();

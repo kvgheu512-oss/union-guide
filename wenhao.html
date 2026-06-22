@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<meta name="apple-mobile-web-app-title" content="文號流水簿">
+<title>公文文號流水簿（自動遞增＋留底）｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#1A3A6B;--navy-deep:#122A4F;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F4F6FA;--card:#fff;--border:#D8E0EC;--gold-light:#FEF9E7;--gold-line:#EAD67A;--green:#1A7A4A;--green-deep:#0F5C36;--red-deep:#7B1818;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#1A3A6B,#122A4F);color:#fff;padding:1.7rem 1.25rem 1.3rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:19px;}
+  .header p{font-size:12.5px;opacity:.92;margin-top:6px;}
+  main{max-width:620px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:var(--gold-light);border:1px solid var(--gold-line);border-radius:10px;padding:.75rem .95rem;font-size:12.8px;color:#5C4000;margin-bottom:1rem;line-height:1.75;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.05rem 1.1rem;margin-bottom:1rem;border-top:4px solid var(--navy);}
+  .card h2{font-family:'Noto Serif TC',serif;color:var(--navy-deep);font-size:16px;margin-bottom:.5rem;}
+  .next{text-align:center;background:#EAF0FA;border:1px solid #C2D2E8;border-radius:12px;padding:1rem;margin:.4rem 0;}
+  .next .lbl{font-size:12px;color:var(--ink-soft);}
+  .next .no{font-family:'Noto Serif TC',serif;font-size:26px;font-weight:700;color:var(--navy-deep);margin-top:3px;}
+  label{display:block;font-size:13px;font-weight:700;color:var(--navy-deep);margin:.6rem 0 .25rem;}
+  input{width:100%;padding:.6rem .75rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;background:#fff;}
+  .btn{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:.75rem;font-weight:700;font-size:15px;cursor:pointer;width:100%;margin-top:.6rem;}
+  .btn.ghost{background:#EAF0FA;color:var(--navy-deep);border:1.5px solid var(--navy);width:auto;padding:.45rem .8rem;font-size:13px;margin:0;}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:.5rem;}
+  th,td{border:1px solid var(--border);padding:7px 8px;text-align:left;vertical-align:top;}
+  th{background:#EAF0FA;color:var(--navy-deep);}
+  .del{background:#FDECEA;color:#7B1818;border:1px solid #F0C5C2;border-radius:7px;padding:2px 8px;font-size:12px;cursor:pointer;}
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.6;}
+  .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:.5rem;}
+  .toast{text-align:center;color:var(--green-deep);font-weight:700;font-size:13px;min-height:16px;margin-top:6px;}
+  a.lnk{color:var(--navy);font-weight:700;}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.2rem;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="union.html">
+
+<div class="header">
+  <h1>📑 公文文號流水簿</h1>
+  <p>文號自動「字別＋年＋流水」遞增、發文自動留底</p>
+</div>
+
+<main>
+  <div class="topnote">📌 文號的<b>字別、年、目前流水號</b>在 <a class="lnk" href="org.html">🏛️ 工會基本資料中心</a> 設定。在這裡<b>取號（發文）</b>會自動把流水號 +1 並寫進下方發文簿。資料只存本機、不上傳。</div>
+
+  <div class="card">
+    <h2>下一個可用文號</h2>
+    <div class="next"><div class="lbl">取號後會用這個號，並自動 +1</div><div class="no" id="nextNo">—</div></div>
+    <label>發文主旨（留底用）</label>
+    <input id="subject" type="text" placeholder="例：函報成立大會選舉結果">
+    <button class="btn" id="issue" type="button">📌 取號發文（流水號 +1 並留底）</button>
+    <div class="toast" id="toast"></div>
+    <div class="hint">沒設定字別／年？先去基本資料中心填「公文文號字別、民國年、目前流水號」。</div>
+  </div>
+
+  <div class="card">
+    <h2>發文簿 <span id="cnt" style="font-weight:400;font-size:12px;color:var(--ink-soft)"></span></h2>
+    <div id="logWrap"></div>
+    <div class="bar">
+      <button class="btn ghost" id="csv" type="button">⬇ 匯出 CSV</button>
+      <button class="btn ghost" id="print" type="button">🖨 列印 / PDF</button>
+    </div>
+  </div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部後台 · 資料僅存本機</div>
+</main>
+
+<div id="verBadge"></div>
+<script src="org.js" defer></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+  function ready(fn){ if(window.EBNOrg) fn(); else setTimeout(function(){ready(fn);},30); }
+
+  ready(function(){
+    function refresh(){
+      $("nextNo").textContent=EBNOrg.peekDocNo();
+      var log=EBNOrg.getLog().slice().reverse();
+      $("cnt").textContent="共 "+log.length+" 筆";
+      if(!log.length){ $("logWrap").innerHTML='<div class="hint">還沒有發文紀錄。上面取號後會自動列在這裡。</div>'; return; }
+      $("logWrap").innerHTML='<table><tr><th>文號</th><th>日期</th><th>主旨</th><th></th></tr>'+
+        log.map(function(e){ return '<tr><td>'+esc(e.no)+'</td><td>'+esc(e.date)+'</td><td>'+esc(e.subject||'')+'</td>'+
+          '<td><button class="del" data-no="'+esc(e.no)+'">刪</button></td></tr>'; }).join("")+'</table>';
+    }
+    $("issue").addEventListener("click",function(){
+      var o=EBNOrg.get();
+      if(!o.docWord||!o.docYear){ $("toast").textContent="⚠ 請先到基本資料中心填「字別」與「年」"; setTimeout(function(){$("toast").textContent="";},3000); return; }
+      var no=EBNOrg.nextDocNo($("subject").value.trim());
+      $("subject").value="";
+      $("toast").textContent="✅ 已取號："+no+"（已 +1 並留底）";
+      setTimeout(function(){$("toast").textContent="";},3500);
+      refresh();
+    });
+    $("logWrap").addEventListener("click",function(e){
+      var btn=e.target.closest&&e.target.closest(".del"); if(!btn) return;
+      var no=btn.getAttribute("data-no");
+      var log=EBNOrg.getLog().filter(function(x){ return x.no!==no; });
+      EBNOrg.setLog(log); refresh();
+    });
+    $("csv").addEventListener("click",function(){
+      var log=EBNOrg.getLog();
+      var csv="﻿文號,日期,主旨\n"+log.map(function(e){ return '"'+(e.no||'')+'","'+(e.date||'')+'","'+String(e.subject||'').replace(/"/g,'""')+'"'; }).join("\n");
+      var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download="發文簿.csv"; a.click();
+    });
+    $("print").addEventListener("click",function(){ window.print(); });
+    refresh();
+  });
+})();
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
