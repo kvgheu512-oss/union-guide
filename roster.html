@@ -181,10 +181,35 @@
         <div><label>姓名 *</label><input id="f-name" placeholder="王小明"></div>
         <div><label>工號／員編</label><input id="f-no" placeholder="選填"></div>
       </div>
-      <div class="grid2">
-        <div><label>單位／科別</label><input id="f-dept" placeholder="例：護理部 5A"></div>
-        <div><label>職稱</label><input id="f-title" placeholder="例：護理師"></div>
+      <div>
+        <label>單位／科別</label>
+        <div style="display:flex;gap:5px;margin-bottom:4px">
+          <select id="f-dept-grp" style="flex:1">
+            <option value="">大類…</option>
+            <option value="護理部">護理部</option>
+            <option value="急診部（ER）">急診部（ER）</option>
+            <option value="骨科部">骨科部</option>
+            <option value="泌尿外科">泌尿外科</option>
+            <option value="放射腫瘤科">放射腫瘤科</option>
+            <option value="健檢中心">健檢中心</option>
+            <option value="門診（OPD）">門診（OPD）</option>
+            <option value="總務室">總務室</option>
+          </select>
+          <select id="f-dept-sub" style="flex:1;display:none">
+            <option value="">細分…</option>
+          </select>
+        </div>
+        <div id="f-aicu-row" style="display:none;margin-bottom:4px">
+          <select id="f-dept-aicu">
+            <option value="">AICU 區別（選填）</option>
+            <option value="01區">01區</option>
+            <option value="13區">13區</option>
+            <option value="31區">31區</option>
+          </select>
+        </div>
+        <input id="f-dept" placeholder="或直接輸入單位">
       </div>
+      <div><label>職稱</label><input id="f-title" placeholder="例：護理師"></div>
       <div class="grid2">
         <div><label>會員身分</label>
           <select id="f-type"><option value="full">正式會員</option><option value="sponsor">贊助會員</option></select></div>
@@ -488,6 +513,7 @@ function openForm(m){
   $('form').classList.add('show');
   $('f-id').value=m?m.id:''; $('f-name').value=m?m.name:''; $('f-no').value=m?(m.no||''):'';
   $('f-dept').value=m?(m.dept||''):'護理部／'; $('f-title').value=m?(m.title||''):'護理師';
+  if(window._syncDeptCascade) window._syncDeptCascade($('f-dept').value);
   $('f-type').value=m?(m.type||'full'):'full'; $('f-status').value=m?m.status:'applicant';
   $('f-join').value=m?(m.join||''):''; $('f-fee').value=m?(m.feeTo||''):'';
   $('f-phone').value=m?(m.phone||''):''; $('f-contact').value=m?(m.contact||''):''; $('f-note').value=m?(m.note||''):'';
@@ -672,6 +698,69 @@ function init(){
 if(!LOCK){ showApp(); }
 else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
+
+/* 單位／科別 級聯快選（大類→細分→AICU分區，或直接在文字框輸入） */
+(function(){
+  var SUBS=[
+    ['病房',['護理部／W31','護理部／W32','護理部／W51','護理部／W55','護理部／W62',
+             '護理部／W75','護理部／W91','護理部／W92','護理部／W101','護理部／W102']],
+    ['加護病房',['護理部／AICU','護理部／BICU','護理部／EMCU']],
+    ['特殊單位',['護理部／血液透析室（HDU）','護理部／RCC','護理部／EW01',
+                '護理部／GW07','護理部／尊榮病房','護理部／癌症中心']],
+  ];
+  var grp=$('f-dept-grp'),sub=$('f-dept-sub'),dep=$('f-dept');
+  var aicuRow=$('f-aicu-row'),aicuSel=$('f-dept-aicu');
+  if(!grp||!sub||!dep) return;
+
+  function buildSubs(){
+    sub.innerHTML='<option value="">細分…</option>';
+    SUBS.forEach(function(g){
+      var og=document.createElement('optgroup'); og.label=g[0];
+      g[1].forEach(function(v){
+        var op=document.createElement('option'); op.value=v;
+        op.textContent=v.replace('護理部／',''); og.appendChild(op);
+      });
+      sub.appendChild(og);
+    });
+  }
+
+  grp.addEventListener('change',function(){
+    var v=grp.value; aicuRow.style.display='none';
+    if(v==='護理部'){ buildSubs(); sub.style.display=''; sub.value=''; }
+    else{ sub.style.display='none'; if(v) dep.value=v; }
+  });
+  sub.addEventListener('change',function(){
+    var v=sub.value; if(!v) return;
+    dep.value=v;
+    if(v==='護理部／AICU'){ aicuRow.style.display=''; aicuSel.value=''; }
+    else{ aicuRow.style.display='none'; }
+  });
+  aicuSel.addEventListener('change',function(){
+    dep.value='護理部／AICU'+(aicuSel.value||'');
+  });
+  dep.addEventListener('input',function(){
+    grp.value=''; sub.style.display='none'; aicuRow.style.display='none';
+  });
+
+  window._syncDeptCascade=function(v){
+    aicuRow.style.display='none';
+    if(!v||v==='護理部／'){
+      grp.value='護理部'; buildSubs(); sub.style.display=''; sub.value=''; return;
+    }
+    if(v.indexOf('護理部')===0){
+      grp.value='護理部'; buildSubs(); sub.style.display='';
+      if(v.indexOf('護理部／AICU')===0){
+        sub.value='護理部／AICU';
+        var zone=v.replace('護理部／AICU','').trim();
+        aicuRow.style.display=''; aicuSel.value=zone||'';
+      } else {
+        sub.value=v;
+      }
+    } else {
+      grp.value=v; sub.style.display='none';
+    }
+  };
+})();
 
 </script>
 <script src="law-tips.js" defer></script>
