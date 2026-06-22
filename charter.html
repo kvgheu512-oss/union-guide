@@ -57,8 +57,8 @@
    <div style="font-size:13.5px;color:#333">
 
      <div style="margin:.5rem 0">
-       📍 <b>§5 會址</b>　高雄市仁武區……
-       <input id="ch-addr" type="text" placeholder="○○路○號" style="display:block;width:100%;box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 10px;font-size:15px;background:#FEF9E7;margin-top:4px;font-family:inherit">
+       📍 <b>§5 會址</b>（理事長住址）　<span style="font-size:12px;color:#7A5600">選縣市→區自動帶郵遞區號，只需打路名門牌</span>
+       <div id="ch-addr-pick" style="margin-top:5px"></div>
      </div>
 
      <div style="margin:.7rem 0">
@@ -270,6 +270,7 @@
 
  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 幹部範本</div>
 </main>
+<script src="tw-area.js"></script>
 <script>
 (function(){
   document.querySelectorAll(".apx-cp").forEach(function(btn){
@@ -284,13 +285,18 @@
 })();
 
 // ── 章程填空：localStorage 持久化
+window._chAddr = null;
 (function(){
-  var CK='charter_fill_v1';
-  var IDS=['ch-addr','ch-board','ch-join','ch-monthly','ch-year','ch-month','ch-day'];
+  var CK='charter_fill_v1', AK='charter_addr_v1';
+  var IDS=['ch-board','ch-join','ch-monthly','ch-year','ch-month','ch-day'];
   function save(){
     var d={};
     IDS.forEach(function(id){var el=document.getElementById(id);if(el)d[id]=el.value;});
     try{localStorage.setItem(CK,JSON.stringify(d));}catch(e){}
+  }
+  function saveAddr(){
+    if(!window._chAddr) return;
+    try{localStorage.setItem(AK,JSON.stringify(window._chAddr.getParts()));}catch(e){}
   }
   function load(){
     try{
@@ -300,11 +306,32 @@
   }
   load();
   IDS.forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',save);});
+
+  // 地址選擇器（會址）
+  var mount=document.getElementById('ch-addr-pick');
+  if(mount && typeof buildAddressPicker==='function'){
+    var saved={}; try{ saved=JSON.parse(localStorage.getItem(AK)||'{}'); }catch(e){}
+    window._chAddr = buildAddressPicker({
+      mount: mount,
+      defaultCity: saved.city || '高雄市',
+      defaultDist: saved.dist || '仁武區',
+      onChange: saveAddr
+    });
+    if(saved && (saved.zip2||saved.road||saved.rest)) window._chAddr.set(saved);
+  }
 })();
 
 // ── 複製完整章程
 function copyCharter(){
-  var addr=document.getElementById('ch-addr').value.trim()||'【○○路○號】';
+  var ap=window._chAddr;
+  var apParts=ap?ap.getParts():null;
+  var addr;
+  if(apParts && (apParts.road||apParts.rest)){
+    var zip=apParts.zip3?(apParts.zip3+(apParts.zip2||'')):'';
+    addr=(zip?zip+' ':'')+(apParts.city||'')+(apParts.dist||'')+apParts.road+apParts.rest;
+  } else {
+    addr='【○○路○號】';
+  }
   var board=document.getElementById('ch-board').value||'【五至九】';
   var supMap={'5':'一','7':'二','9':'三'};
   var sup=supMap[document.getElementById('ch-board').value]||'【一至三】';
@@ -322,7 +349,7 @@ function copyCharter(){
 '第二條　本會以保障勞工權益、增進勞工知能、發展生產事業、改善勞工生活為宗旨。',
 '第三條　本會之任務如下：一、團體協約之締結、修改或廢止。二、勞資爭議之處理。三、勞動條件、勞工安全衛生及會員福利事項之促進。四、勞工政策與法令之制（訂）定及修正之推動。五、勞工教育之舉辦。六、會員就業之協助。七、會員康樂事項之舉辦。八、工會或會員糾紛事件之調處。九、依法令從事事業之舉辦。十、勞工家庭生計之調查及勞工統計之編製。十一、其他合於本會宗旨及法律規定之事項。',
 '第四條　本會之組織區域為高雄榮民總醫院。',
-'第五條　本會會址設於高雄市仁武區'+addr+'。',
+'第五條　本會會址設於'+addr+'。',
 '',
 '第二章　會員',
 '第六條　凡在本會組織區域內，年滿十六歲、受僱於高雄榮民總醫院之勞工（含約用、契約、派遣等受僱身分），且無其他企業工會會員身分者，均得申請加入本會為會員。',
