@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1A7A4A">
-<title>特休折算＋國定假日加班費 試算｜高榮企業工會</title>
+<title>加班費＋特休折算 試算（平日／國定假日／特休 三種分開算）｜高榮企業工會</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{--green:#1A7A4A;--green-deep:#0F5C36;--green-light:#EAFAF1;--red:#C0392B;--red-deep:#7B1818;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F3F8F4;--card:#fff;--border:#DCE6DF;--gold-light:#FEF9E7;--gold-line:#EAD67A;}
@@ -51,12 +51,33 @@
 
 
 <div class="header">
-  <h1>🧮 特休折算 ＋ 國定假日加班費 試算</h1>
-  <p>輸入數字自動算「你應領多少」，還能跟醫院實發對照</p>
+  <h1>🧮 加班費 ＋ 特休折算 試算機</h1>
+  <p>三種錢「分開算」：平日加班費、國定假日加班費、特休未休折算——不要搞混</p>
 </div>
 
 <main>
   <div class="topnote">📌 試算為整理參考、非正式法律意見。<b>關鍵：月薪基數要含「經常性給與」</b>（全勤獎金、固定伙食津貼、固定津貼…屬「工資」的都算），<b>不是只有本薪</b>——這是醫院最常少給的地方。實際個案可洽工會或勞工局 <b>1955</b>。</div>
+
+  <!-- 三種錢的差別：先講清楚再算 -->
+  <div class="card" style="border-top-color:#1E73C8">
+    <h2 style="color:#1A4E8A">📊 先搞懂：這是「三種不一樣的錢」</h2>
+    <div class="sub">很多人把它們混在一起，結果該領的少領了。先分清楚再往下算。</div>
+    <div style="display:flex;flex-direction:column;gap:.55rem;margin-top:.3rem">
+      <div style="background:#EFF5FC;border:1px solid #C9DCF0;border-left:5px solid #1E73C8;border-radius:10px;padding:.6rem .8rem;font-size:13px;line-height:1.75">
+        <b style="color:#1A4E8A">① 一般（平日）加班費</b>　<span style="color:#777">勞基法 §24</span><br>
+        平常上班日，下班後「<b>多做的時數</b>」。前 2 小時 <b>×1⅓</b>（≈1.34）、第 3 小時起 <b>×1⅔</b>（≈1.67），<b>以時薪計</b>。
+      </div>
+      <div style="background:#FEF6EC;border:1px solid #F0D9B5;border-left:5px solid #B7860B;border-radius:10px;padding:.6rem .8rem;font-size:13px;line-height:1.75">
+        <b style="color:#8A6D0B">② 國定假日加班費</b>　<span style="color:#777">勞基法 §37、§39</span><br>
+        碰到<b>國定假日（紅字）還要上班</b>。當天 8 小時內，月薪以外<b>再加給整整 1 日工資</b>（加倍）；超過 8 小時才再按 §24 加成。
+      </div>
+      <div style="background:#EAFAF1;border:1px solid #BFE3CF;border-left:5px solid #1A7A4A;border-radius:10px;padding:.6rem .8rem;font-size:13px;line-height:1.75">
+        <b style="color:#0F5C36">③ 特休未休 折算工資</b>　<span style="color:#777">勞基法 §38、細則 §24-1</span><br>
+        年度結束<b>特休沒休完</b>，雇主要把沒休的天數<b>折成錢發給</b>（每天 1 日工資，÷30）。這不是「加班」，是<b>沒放到的假換成錢</b>。
+      </div>
+    </div>
+    <div class="hint" style="margin-top:.6rem">👇 下面三張卡片<b>對應這三種錢、各算各的</b>。先填一次月薪，三張都會用到。</div>
+  </div>
 
   <!-- 共用月薪 -->
   <div class="card" style="border-top-color:#B7860B">
@@ -69,36 +90,26 @@
     <div class="out" id="base"></div>
   </div>
 
-  <!-- A 特休折算 -->
+  <!-- ① 一般（平日）加班費 -->
   <div class="card">
-    <h2>① 特休未休 折算工資</h2>
-    <div class="sub">勞基法 §38 ＋ 施行細則 §24-1</div>
-    <label>年資（幫你查今年「應有」幾天特休）</label>
-    <select id="sen">
-      <option value="0">未滿 6 個月（0 天）</option>
-      <option value="3">滿 6 個月～未滿 1 年（3 天）</option>
-      <option value="7">滿 1 年～未滿 2 年（7 天）</option>
-      <option value="10">滿 2 年～未滿 3 年（10 天）</option>
-      <option value="14" selected>滿 3 年～未滿 5 年（14 天）</option>
-      <option value="15">滿 5 年～未滿 10 年（15 天）</option>
-      <option value="16">滿 10 年（16 天）</option>
-      <option value="17">滿 11 年（17 天）</option>
-      <option value="20">滿 14 年（20 天）</option>
-      <option value="25">滿 19 年（25 天）</option>
-      <option value="30">滿 24 年以上（30 天上限）</option>
-    </select>
-    <label>今年<b>沒休完</b>的特休天數</label>
-    <input id="unused" type="number" inputmode="decimal" value="3" min="0" step="0.5">
-    <label>醫院實際折算給你多少？<span class="opt">（選填，用來對照）</span></label>
-    <input id="actLeave" type="number" inputmode="numeric" placeholder="例：4000" min="0">
-    <div class="out" id="outLeave"></div>
-    <div id="diffLeave"></div>
-    <details><summary>看法源重點</summary><div class="law"><b>§38 Ⅳ</b>：特休因年度終結未休之日數，雇主<b>應發給工資</b>（不發＝違法；要遞延須雙方協商）。<br><b>細則 §24-1</b>：一日工資＝年度結束前最近一個月<b>正常工作時間工資 ÷ 30</b>，乘以未休天數。<br>💡 折算是 <b>1 日工資/天</b>（不是 ×2）；但因月薪本來照領，這筆是<b>額外</b>多給，對沒休的那幾天等於拿到雙份價值。</div></details>
+    <h2>① 一般（平日）加班費</h2>
+    <div class="sub">勞基法 §24：平常上班日，正常工時（8 小時）以外的延長工作</div>
+    <label>前 2 小時的加班時數（<b>×1⅓</b>）</label>
+    <input id="wkF" type="number" inputmode="decimal" value="0" min="0" step="0.5">
+    <div class="hint">每天下班後<b>最先 2 小時</b>，×1⅓（≈1.34）。要算整個月，就把各天「前 2 小時」加總填這裡。</div>
+    <label>超過 2 小時之後的加班時數（<b>×1⅔</b>）</label>
+    <input id="wkR" type="number" inputmode="decimal" value="0" min="0" step="0.5">
+    <div class="hint">每天<b>第 3 小時起</b>，×1⅔（≈1.67）。</div>
+    <label>醫院實際給的平日加班費？<span class="opt">（選填，對照）</span></label>
+    <input id="actWk" type="number" inputmode="numeric" placeholder="例：900" min="0">
+    <div class="out" id="outWk"></div>
+    <div id="diffWk"></div>
+    <details><summary>看法源重點</summary><div class="law"><b>§24 Ⅰ</b>：延長工作時間在 2 小時以內者，按平日每小時工資額<b>加給 1/3 以上</b>（即 ×1⅓）；再延長者<b>加給 2/3 以上</b>（即 ×1⅔）。<br>平日每小時工資額（時薪）標準＝<b>月薪 ÷ 30 ÷ 8</b>。<br>💡 這是「<b>平常上班日</b>」多做的錢，跟國定假日（②）、特休折算（③）<b>完全不同</b>，別混在一起。<br>⚠️ 高榮把整年加班費拖到 12 月、又用 ÷31 算時薪的問題，見下方 <b>④</b>。</div></details>
   </div>
 
-  <!-- B 國定假日加班費 -->
-  <div class="card">
-    <h2>② 國定假日 出勤加班費</h2>
+  <!-- ② 國定假日加班費 -->
+  <div class="card" style="border-top-color:#B7860B">
+    <h2 style="color:#8A6D0B">② 國定假日 出勤加班費</h2>
     <div class="sub">勞基法 §37（國定假日）＋ §39（加倍發給）</div>
     <label>國定假日<b>出勤天數</b>（當天工作 8 小時內）</label>
     <input id="holi" type="number" inputmode="decimal" value="1" min="0" step="0.5">
@@ -124,10 +135,37 @@
     <details><summary>看法源重點</summary><div class="law"><b>§39</b>：國定假日工資雇主<b>照給</b>；經同意<b>出勤者「工資加倍發給」</b>。<br>月薪制：放假當天工資已含在月薪裡，所以出勤要<b>另外再加給 1 日工資</b>（8 小時內，不論時數多寡）。<br>超過 8 小時部分：依 <b>§24</b> 延長工時加給（前 2 時 ×1⅓、再 2 時 ×1⅔，以時薪計）——本表為<b>估算</b>。</div></details>
   </div>
 
-  <!-- C 高榮加班費結算的兩個問題 -->
+  <!-- ③ 特休折算 -->
+  <div class="card">
+    <h2>③ 特休未休 折算工資</h2>
+    <div class="sub">勞基法 §38 ＋ 施行細則 §24-1（這不是加班，是「沒放到的假換成錢」）</div>
+    <label>年資（幫你查今年「應有」幾天特休）</label>
+    <select id="sen">
+      <option value="0">未滿 6 個月（0 天）</option>
+      <option value="3">滿 6 個月～未滿 1 年（3 天）</option>
+      <option value="7">滿 1 年～未滿 2 年（7 天）</option>
+      <option value="10">滿 2 年～未滿 3 年（10 天）</option>
+      <option value="14" selected>滿 3 年～未滿 5 年（14 天）</option>
+      <option value="15">滿 5 年～未滿 10 年（15 天）</option>
+      <option value="16">滿 10 年（16 天）</option>
+      <option value="17">滿 11 年（17 天）</option>
+      <option value="20">滿 14 年（20 天）</option>
+      <option value="25">滿 19 年（25 天）</option>
+      <option value="30">滿 24 年以上（30 天上限）</option>
+    </select>
+    <label>今年<b>沒休完</b>的特休天數</label>
+    <input id="unused" type="number" inputmode="decimal" value="3" min="0" step="0.5">
+    <label>醫院實際折算給你多少？<span class="opt">（選填，用來對照）</span></label>
+    <input id="actLeave" type="number" inputmode="numeric" placeholder="例：4000" min="0">
+    <div class="out" id="outLeave"></div>
+    <div id="diffLeave"></div>
+    <details><summary>看法源重點</summary><div class="law"><b>§38 Ⅳ</b>：特休因年度終結未休之日數，雇主<b>應發給工資</b>（不發＝違法；要遞延須雙方協商）。<br><b>細則 §24-1</b>：一日工資＝年度結束前最近一個月<b>正常工作時間工資 ÷ 30</b>，乘以未休天數。<br>💡 折算是 <b>1 日工資/天</b>（不是 ×2）；但因月薪本來照領，這筆是<b>額外</b>多給，對沒休的那幾天等於拿到雙份價值。</div></details>
+  </div>
+
+  <!-- ④ 高榮加班費結算的兩個問題 -->
   <div class="card" style="border-top-color:#C0392B">
-    <h2 style="color:#7B1818">③ 高榮加班費「拖到 12 月＋÷31」的兩個違法點</h2>
-    <div class="sub">把惡劣做法記下來、證據留好，年底結算（或離職）時一起討</div>
+    <h2 style="color:#7B1818">④ 高榮平日加班費「拖到 12 月＋÷31」的兩個違法點</h2>
+    <div class="sub">這是針對上面 <b>① 平日加班費</b> 的兩個具體爭點——把做法記下來、證據留好，年底結算（或離職）時一起討</div>
 
     <div class="out" style="background:#FDECEA;border-color:#F3C9C4">
       <div style="font-weight:700;color:#7B1818">問題①：1～11 月的加班費，拖到 12 月才一次發</div>
@@ -172,9 +210,26 @@
     var dv=num("dv")||30;
     var day=sal/dv, hr=sal/(dv*8);
     var legalDay=sal/30;                 // 特休法定基準：固定 ÷30
+    var legalHr=sal/240;                 // 平日加班法定時薪：固定 月薪÷30÷8
     $("base").innerHTML='<div class="row"><span>一日工資（月薪÷'+dv+'）</span><b>'+money(day)+'</b></div>'+
                         '<div class="row"><span>一小時工資（月薪÷'+(dv*8)+'）</span><b>'+money(hr)+'</b></div>'+
-                        (dv!=30?'<div class="row"><span>※ 特休法定一日（÷30）</span><b>'+money(legalDay)+'</b></div>':'');
+                        (dv!=30?'<div class="row"><span>※ 法定時薪（÷30÷8）</span><b>'+money(legalHr)+'</b></div>':'');
+
+    // ① 平日加班費（§24：前2時×1⅓、再2時×1⅔；時薪法定 ÷30÷8）
+    var wkF=num("wkF"), wkR=num("wkR");
+    var wkPay=wkF*legalHr*(4/3)+wkR*legalHr*(5/3);
+    $("outWk").innerHTML=(wkF>0?'<div class="row"><span>前 2 時 '+wkF+' 小時 ×1⅓</span><b>'+money(wkF*legalHr*(4/3))+'</b></div>':'')+
+      (wkR>0?'<div class="row"><span>超過 2 時 '+wkR+' 小時 ×1⅔</span><b>'+money(wkR*legalHr*(5/3))+'</b></div>':'')+
+      '<div class="row"><span>平日加班費 應領</span><span class="big">'+money(wkPay)+'</span></div>'+
+      (dv>30?'<div style="font-size:12px;color:#7B1818;margin-top:5px;font-weight:700">⚠ 高榮用 ÷'+dv+' 算時薪（月薪÷'+(dv*8)+'＝'+money(hr)+'），比法定 ÷240（'+money(legalHr)+'）每小時少給；逐時累積差額可主張（見 ④）。</div>':'')+
+      (wkF<=0&&wkR<=0?'<div style="font-size:11.5px;color:#777">填入加班時數即自動試算。</div>':'');
+    var aW=$("actWk").value, dW=$("diffWk");
+    if(aW!==""&&!isNaN(parseFloat(aW))){
+      var d0=wkPay-parseFloat(aW);
+      if(d0>1){ dW.className="diff short"; dW.textContent="⚠ 醫院可能少給約 "+money(d0)+"（常見原因：時薪用 ÷31 稀釋、或加成不足）。"; }
+      else if(d0<-1){ dW.className="diff ok"; dW.textContent="✓ 醫院給的比法定下限多（"+money(-d0)+"）。"; }
+      else { dW.className="diff ok"; dW.textContent="✓ 與法定金額相符。"; }
+    } else { dW.className=""; dW.textContent=""; }
 
     // ① 特休（法定固定 ÷30；同時顯示你填的除數算法以便對照高榮）
     var unused=num("unused");
@@ -213,11 +268,11 @@
 
   // 選年資時，自動把「未休天數」帶成該年應有天數（方便、仍可手動改）
   $("sen").addEventListener("change",function(){ $("unused").value=this.value; calc(); });
-  ["salary","dv","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
+  ["salary","dv","wkF","wkR","actWk","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
 
   // 🛟 整頁暫存：含預設值的欄位＋調休單選鈕，重開自動還原（本機，不上傳）
   var PK="leavepay_state_v1";
-  var FIELDS=["salary","dv","sen","unused","actLeave","holi","otHr","actHoli"];
+  var FIELDS=["salary","dv","wkF","wkR","actWk","sen","unused","actLeave","holi","otHr","actHoli"];
   function saveState(){
     var d={};
     FIELDS.forEach(function(id){ var el=$(id); if(el) d[id]=el.value; });
