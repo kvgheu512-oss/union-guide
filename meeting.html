@@ -100,7 +100,18 @@
 <link rel="stylesheet" href="common.css">
 <!-- 已解鎖就讓內容第一畫面就顯示，消除返回/進入時的空白閃爍 -->
 <script>try{if(sessionStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
-<style>html.u #app{display:block!important}html.u #gate{display:none!important}</style>
+<style>html.u #app{display:block!important}html.u #gate{display:none!important}
+  /* 參加者掃碼入口頁 */
+  #join-view{min-height:100vh;background:var(--bg);}
+  .jwrap{max-width:480px;margin:0 auto;padding:1.1rem 1rem 3rem;}
+  .jcard{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.2rem;margin-bottom:12px;}
+  .jhead{background:linear-gradient(160deg,#1A3A6B 0%,#0E2347 100%);color:#fff;text-align:center;border:none;}
+  .jh{font-family:'Noto Serif TC',serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:4px;}
+  .jcard ol{margin:.2rem 0 .7rem 1.3rem;} .jcard li{margin-bottom:.3rem;font-size:14px;line-height:1.7;}
+  .jbtn{display:block;text-align:center;text-decoration:none;background:var(--green);color:#fff;font-weight:700;font-size:16px;border-radius:12px;padding:.95rem;box-shadow:0 3px 10px rgba(0,0,0,.15);}
+  .jbtn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--navy);box-shadow:none;font-size:15px;}
+  .jnote{font-size:13.5px;color:var(--ink-mid);line-height:1.8;background:var(--gold-light);border:1px solid #EAD67A;border-radius:10px;padding:.8rem .9rem;}
+  .jfoot{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:.8rem;line-height:1.7;}</style>
 </head>
 <body>
 
@@ -217,6 +228,17 @@
       </div>
 
       <div class="card">
+        <h3>📲 參加者掃碼入口（投影／傳給大家）</h3>
+        <p class="law" style="margin-top:0">產生一個 QR：會員<b>掃一下 → 直接打開這場會議的「參加者頁」</b>（會議標題、時間地點、流程議程），頁面上一鍵「<b>線上簽到</b>」走你上面設定的 Google 表單（即時進主辦試算表＝<b>自動報到</b>）。<br>👉 <b>請先把上面「Google 簽到表單連結」填好</b>，掃碼簽到才完整。</p>
+        <div id="join-qr" style="text-align:center;margin:.4rem 0"></div>
+        <div class="btn-row" style="margin-top:.4rem">
+          <button class="btn navy sm" id="join-gen">🔄 產生／更新 QR</button>
+          <button class="btn ghost sm" id="join-copy">🔗 複製參加者連結</button>
+        </div>
+        <p class="law" style="margin-top:.5rem;font-size:12px;color:var(--ink-soft)">提醒：QR 會把這場會議的標題／時間／議程包進連結，掃碼者免裝任何東西、免登入即可看；簽到才需開 Google 表單。正式大會仍建議備紙本親簽存查。</p>
+      </div>
+
+      <div class="card">
         <h3>產出文件</h3>
         <div class="btn-row">
           <button class="btn navy sm" data-doc="notice">📄 開會通知／議程</button>
@@ -246,6 +268,7 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="join-view" style="display:none"></div>
 
 <script>
 /* 密碼鎖（共用通行碼 gaorong2026） */
@@ -595,9 +618,67 @@ document.querySelectorAll('[data-doc]').forEach(b=>b.addEventListener('click',()
 }));
 
 let toastT; function toast(m){ const e=$('toast'); e.textContent=m; e.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>e.classList.remove('show'),1900); }
+
+/* ===== 參加者掃碼入口（Google 雲端報到） ===== */
+function b64urlEncode(s){ return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function b64urlDecode(s){ s=s.replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4)s+='='; return decodeURIComponent(escape(atob(s))); }
+function joinURL(){
+  var data={ t:cur.type||'會議', no:cur.no||'', d:cur.date||'', tm:cur.time||'', p:cur.place||'',
+    ag:(cur.agenda||[]).filter(a=>a&&a.title).map(a=>({k:a.kind||'討論事項',t:a.title})),
+    gf:cur.gForm||'', gd:cur.gDoc||'' };
+  return location.protocol+'//'+location.host+location.pathname+'#join='+b64urlEncode(JSON.stringify(data));
+}
+function drawJoinQR(){
+  var box=$('join-qr'); if(!box) return; pull(); var url=joinURL(); box.innerHTML='';
+  (function draw(){ if(typeof QRCode==='undefined'){ draw._n=(draw._n||0)+1; if(draw._n<25) return setTimeout(draw,300);
+      box.innerHTML='<span style="font-size:12px;color:#999">QR 元件載入中…可改用「複製參加者連結」分享</span>'; return; }
+    box.innerHTML=''; new QRCode(box,{text:url,width:200,height:200,correctLevel:QRCode.CorrectLevel.L});
+    var c=document.createElement('div'); c.style.cssText='font-size:12px;color:var(--ink-soft);margin-top:6px'; c.textContent='📲 投影或傳給大家掃；掃了直接進這場會議'; box.appendChild(c);
+  })();
+}
+(function(){
+  var g=$('join-gen'); if(g) g.addEventListener('click',function(){ if(!($('g-form')&&$('g-form').value.trim())) toast('建議先填「Google 簽到表單連結」'); drawJoinQR(); });
+  var c=$('join-copy'); if(c) c.addEventListener('click',function(){ pull(); var u=joinURL();
+    if(navigator.clipboard){ navigator.clipboard.writeText(u).then(()=>toast('✓ 已複製參加者連結'),()=>prompt('複製連結：',u)); } else prompt('複製連結：',u); });
+})();
+function renderJoinView(data){
+  document.documentElement.classList.remove('u');
+  var app=$('app'); if(app) app.style.display='none';
+  var gt=$('gate'); if(gt){ gt.classList.remove('show'); gt.style.display='none'; }
+  var v=$('join-view'); v.style.display='block';
+  var kinds=['報告事項','說明事項','討論事項','選舉事項','臨時動議'], ag='';
+  (data.ag||[]).slice().sort((a,b)=>{var ia=kinds.indexOf(a.k),ib=kinds.indexOf(b.k);return (ia<0?9:ia)-(ib<0?9:ib);});
+  kinds.forEach(function(k){ var items=(data.ag||[]).filter(a=>a.k===k); if(items.length){ ag+='<div class="jh">'+esc(k)+'</div><ol>'+items.map(a=>'<li>'+esc(a.t)+'</li>').join('')+'</ol>'; } });
+  var others=(data.ag||[]).filter(a=>kinds.indexOf(a.k)<0); if(others.length){ ag+='<ol>'+others.map(a=>'<li>'+esc(a.t)+'</li>').join('')+'</ol>'; }
+  if(!ag) ag='<p style="color:#888;font-size:14px">（議程待主辦補上）</p>';
+  var when=((data.d?rocDate(data.d):'')+' '+(data.tm||'')).trim();
+  var ok=/^https?:\/\//;
+  var signBtn= ok.test(data.gf||'') ? '<a class="jbtn" href="'+esc(data.gf)+'" target="_blank" rel="noopener">✍ 線上簽到（Google 表單）</a><div class="jfoot" style="margin-top:.5rem">填完即完成報到，會即時進主辦的簽到名單。</div>'
+    : '<div class="jnote">本場採<b>現場簽到</b>：請依主辦指示以<b>紙本親簽</b>或<b>手機傳著手寫簽到</b>完成報到。</div>';
+  var docBtn= ok.test(data.gd||'') ? '<a class="jbtn ghost" href="'+esc(data.gd)+'" target="_blank" rel="noopener" style="margin-top:8px">📝 開啟會議共筆紀錄</a>' : '';
+  v.innerHTML='<div class="jwrap">'
+    +'<div class="jcard jhead">'
+      +'<img src="assets/union-logo.png" alt="" style="width:56px;height:56px;border-radius:12px;background:#fff;padding:5px;display:block;margin:0 auto 8px" onerror="this.style.display=\'none\'">'
+      +'<div style="font-size:12px;letter-spacing:.12em;opacity:.85">高雄榮民總醫院企業工會</div>'
+      +'<h1 style="font-family:\'Noto Serif TC\',serif;font-size:20px;margin:5px 0 2px">'+esc(data.t||'會議')+(data.no?'　'+esc(data.no):'')+'</h1>'
+      +'<div style="font-size:13px;opacity:.95;margin-top:4px">📅 '+esc(when||'時間另定')+'</div>'
+      +'<div style="font-size:13px;opacity:.95">📍 '+esc(data.p||'地點另定')+'</div>'
+    +'</div>'
+    +'<div class="jcard">'+signBtn+docBtn+'</div>'
+    +'<div class="jcard"><div class="jh">📋 會議流程／議程</div>'+ag+'</div>'
+    +'<div class="jfoot">本頁為參加者檢視，資訊由主辦的 QR 提供。</div>'
+    +'</div>';
+  window.scrollTo({top:0});
+}
+
 function init(){ load(); renderList(); showView('list'); }
 
-if(!LOCK){ showApp(); }
+if(location.hash.indexOf('#join=')===0){
+  try{ sessionStorage.setItem('lawtip_seen_v1','1'); }catch(_){}  /* 參加者頁不彈法律小知識 */
+  try{ renderJoinView(JSON.parse(b64urlDecode(location.hash.slice(6)))); }
+  catch(e){ document.documentElement.classList.remove('u'); var jv=$('join-view'); jv.style.display='block'; jv.innerHTML='<div class="jwrap"><div class="jcard">⚠ 這個參加者 QR／連結無法解讀，請向主辦索取最新的連結。</div></div>'; var ap=$('app'); if(ap) ap.style.display='none'; }
+}
+else if(!LOCK){ showApp(); }
 else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
 
