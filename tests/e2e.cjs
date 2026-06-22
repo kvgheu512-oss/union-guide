@@ -116,6 +116,15 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const rc = await p.$$eval('#sheets .rcpt', e => e.length); const t = await p.textContent('#sheets');
     (rc === 3 && t.includes('900') && t.includes('115-003')) ? ok('3收據+合計900') : bad('receipt-batch', 'rc=' + rc); });
 
+  await T('自動導覽 可開啟並前進', async p => { await p.goto(BASE + 'leavepay.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    if (!await p.$('#ebntour-launch')) return bad('tour', '沒有導覽啟動鈕');
+    await p.click('#ebntour-launch'); await p.waitForTimeout(120);
+    await p.click('#ebntour-menu button[data-m="text"]'); await p.waitForTimeout(400);
+    const on = await p.$eval('#ebntour-ov', e => e.classList.contains('on'));
+    await p.click('#ebntour-tip .ebnt-next', { force: true }); await p.waitForTimeout(220);
+    const pg = await p.textContent('#ebntour-tip .pg');
+    (on && /2 \/ 7/.test(pg)) ? ok('導覽開啟並前進到 2/7') : bad('tour', 'on=' + on + ' pg=' + pg); });
+
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);
   if (fails.length) { console.log('--- 失敗項目 ---'); fails.forEach(f => console.log(' • ' + f)); }

@@ -113,6 +113,20 @@
   });
 })();
 </script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load", function(){
+  if(!window.EBNTour) return;
+  EBNTour.attach([
+    { title:"公文文號流水簿", text:"幫你自動編公文文號、自動留底，不用再手記『○字第○號』。" },
+    { sel:"#nextNo", title:"下一個文號", text:"這是下一件會用到的文號（字別＋年＋三碼流水），設定在『基本資料中心』。" },
+    { sel:"#subject", title:"填主旨再取號", text:"填這份公文的主旨，方便日後在發文簿查。", demo:function(){ var e=document.getElementById("subject"); if(e) e.value="函報成立大會選舉結果"; } },
+    { sel:"#issue", title:"取號發文", text:"按下去就用掉這個號、流水號自動 +1，並寫進下方發文簿。" },
+    { sel:"#logWrap", title:"發文簿（自動留底）", text:"每次取號都會列在這裡，可刪單筆、匯出 CSV 或列印存查。" },
+    { title:"完成！", text:"沒看到文號？先到『基本資料中心』填字別與民國年即可。" }
+  ], {});
+});
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

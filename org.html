@@ -85,6 +85,21 @@
   build();
 })();
 </script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load", function(){
+  if(!window.EBNTour) return;
+  function setv(sel,v){ var e=document.querySelector(sel); if(e){ e.value=v; e.dispatchEvent(new Event("input",{bubbles:true})); } }
+  EBNTour.attach([
+    { title:"工會基本資料中心", text:"這是所有文書工具的<b>共同資料源</b>。在這裡填一次，公文、通知、收據、合併列印就會自動帶入，不用每頁重打。" },
+    { sel:"#org-fullName", title:"工會全名", text:"填工會的正式全名，會出現在每份文件的抬頭。", demo:function(){ setv("#org-fullName","高雄榮民總醫院企業工會"); } },
+    { sel:"#org-chair", title:"理事長", text:"理事長姓名，會自動出現在公文、通知、收據的署名處。", demo:function(){ setv("#org-chair","（理事長姓名）"); } },
+    { sel:"#org-docWord", title:"公文文號設定", text:"填『字別、民國年、目前流水號』，文號流水簿就會自動產生『○字第○號』並自動 +1。", demo:function(){ setv("#org-docWord","高榮工"); } },
+    { sel:"#saveBtn", title:"按下儲存", text:"按儲存後，這些資料只存在你這支手機（不上傳）。之後做任何文件都會自動帶入。" },
+    { title:"完成！", text:"接著就可以去『合併列印、文號流水簿、批次收據』，它們都會用到這裡的資料。" }
+  ], {});
+});
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

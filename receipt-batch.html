@@ -135,6 +135,20 @@
   updSum();
 })();
 </script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load", function(){
+  if(!window.EBNTour) return;
+  EBNTour.attach([
+    { title:"批次收據怎麼用", text:"一次貼上多筆繳費，就能批次產生收據和一張收費彙總表。" },
+    { sel:"#year", title:"① 共同欄位", text:"填年度、費別、預設金額（沒填金額的人就用這個）、收據起始編號。" },
+    { sel:"#lines", title:"② 貼上名單", text:"一行一人『姓名 金額』；只填姓名就用預設金額。也可按上面『從名冊帶入姓名』。", demo:function(){ var e=document.getElementById("lines"); if(e){ e.value="王小明 200\n李小華\n陳大文 500"; e.dispatchEvent(new Event("input",{bubbles:true})); } } },
+    { sel:"#sum", title:"即時統計", text:"這裡即時顯示筆數與合計金額，產生前先核對。" },
+    { sel:"#gen", title:"③ 產生收據＋彙總表", text:"按下去批次產生每人一張收據（自動編號）外加一張彙總表，可列印或存 PDF。" },
+    { title:"完成！", text:"收據抬頭、理事長會自動帶入『基本資料中心』的資料。" }
+  ], {});
+});
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>
