@@ -187,8 +187,23 @@
       </div>
       <div class="grid2">
         <div><label>手機</label><input id="f-phone" inputmode="tel" placeholder="09xx-xxx-xxx"></div>
-        <div><label>Line / Email</label><input id="f-contact" placeholder="選填"></div>
+        <div><label>Line / Email</label><input id="f-contact" placeholder="選填" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
       </div>
+      <div id="mailchips">
+        <span class="mc-label">信箱常用結尾（點一下接上去）：</span>
+        <button type="button" class="mailchip" data-dom="@gmail.com">@gmail.com</button>
+        <button type="button" class="mailchip" data-dom="@yahoo.com.tw">@yahoo.com.tw</button>
+        <button type="button" class="mailchip" data-dom="@hotmail.com">@hotmail.com</button>
+        <button type="button" class="mailchip" data-dom="@icloud.com">@icloud.com</button>
+        <button type="button" class="mailchip" data-dom="@outlook.com">@outlook.com</button>
+        <button type="button" class="mailchip" data-dom="@msn.com">@msn.com</button>
+      </div>
+      <style>
+      #mailchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 2px 8px}
+      #mailchips .mc-label{font-size:11px;color:var(--ink-soft,#777)}
+      .mailchip{font-size:12px;padding:4px 9px;border:1px solid var(--border,#ddd);background:#fff;border-radius:14px;color:#1A3A6B;cursor:pointer;-webkit-tap-highlight-color:transparent}
+      .mailchip:active{transform:scale(.95);background:#f2f5fa}
+      </style>
       <label>備註</label>
       <textarea id="f-note" style="min-height:48px" placeholder="選填"></textarea>
       <div class="btn-row" style="margin-top:.7rem">
@@ -402,6 +417,14 @@ function openForm(m){
   $('f-phone').value=m?(m.phone||''):''; $('f-contact').value=m?(m.contact||''):''; $('f-note').value=m?(m.note||''):'';
   $('form').scrollIntoView({behavior:'smooth',block:'center'}); $('f-name').focus();
 }
+/* 信箱常用結尾一鍵帶入：取 @ 前面的帳號，接上所點的網域（已有 @ 則取代後面） */
+(function(){ var box=$('mailchips'); if(!box) return;
+  box.addEventListener('click',function(e){ var b=e.target.closest('[data-dom]'); if(!b) return; e.preventDefault();
+    var inp=$('f-contact'), v=(inp.value||'').trim(), at=v.indexOf('@');
+    inp.value=(at>=0?v.slice(0,at):v)+b.getAttribute('data-dom'); inp.focus();
+    try{ inp.dispatchEvent(new Event('input',{bubbles:true})); }catch(_){}
+  });
+})();
 $('add-btn').addEventListener('click',()=>openForm(null));
 $('f-cancel').addEventListener('click',()=>$('form').classList.remove('show'));
 $('f-save').addEventListener('click',()=>{
