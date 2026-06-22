@@ -25,24 +25,28 @@ self.addEventListener("activate", e => {
   );
 });
 
+// 收到頁面要求立即換新版：放行等待中的新 SW
+self.addEventListener("message", e => { if (e.data === "skipWaiting") self.skipWaiting(); });
+
 self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
-  if (url.pathname.endsWith("/ver.txt") || url.pathname.endsWith("ver.txt")) return; // 版本檔不攔，永遠走網路
-  if (url.pathname.endsWith("/laws.json") || url.pathname.endsWith("laws.json")) return; // 法規檔不攔，永遠拿最新官方版
-  if (url.pathname.endsWith("laws-extra.json")) return; // 擴充法庫不攔，永遠拿最新
+  // 版本檔／法規檔：完全不攔，永遠走網路拿最新
+  if (/(^|\/)(ver\.txt|laws\.json|laws-extra\.json)$/.test(url.pathname)) return;
 
-  // HTML / 導覽：快取優先「秒開」(stale-while-revalidate)——立即用快取顯示、背景抓最新更新快取；
-  // 真正有新版時由 ver.txt 比對跳「立即更新」橫幅。沒快取才等網路（離線也能開）。
-  if (req.mode === "navigate" || req.destination === "document") {
+  // 網頁與「核心程式碼」：網路優先（線上永遠最新、改了立刻看得到；離線才退回快取）。
+  // version.js/common.js/common.css 也走網路優先，否則快取住舊版會讓「有新版」橫幅一直跳又更新不掉。
+  const fresh = req.mode === "navigate" || req.destination === "document"
+    || /(^|\/)(version|common|law-tips|finance-law)\.js$/.test(url.pathname)
+    || /(^|\/)common\.css$/.test(url.pathname);
+  if (fresh) {
     e.respondWith(
-      caches.match(req).then(cached => {
-        const net = fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return r; })
-          .catch(() => cached || caches.match(url.pathname.indexOf("lawyer") >= 0 ? "./lawyer.html"
-            : url.pathname.indexOf("search") >= 0 ? "./search.html" : "./evidence.html"));
-        return cached || net;
-      })
+      fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return r; })
+        .catch(() => caches.match(req).then(m => m || caches.match(
+          url.pathname.indexOf("lawyer") >= 0 ? "./lawyer.html"
+          : url.pathname.indexOf("search") >= 0 ? "./search.html"
+          : url.pathname.indexOf("evidence") >= 0 ? "./evidence.html" : "./union.html")))
     );
     return;
   }

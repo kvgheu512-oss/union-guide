@@ -555,7 +555,7 @@ function checkUpdate(manual){
 (function(){
   checkUpdate(false);
   const cb=document.getElementById("checkupd-btn"); if(cb)cb.addEventListener("click",e=>{e.preventDefault();checkUpdate(true);});
-  const ub=document.getElementById("updbtn"); if(ub)ub.addEventListener("click",()=>{ location.replace(location.pathname+"?v="+Date.now()); });
+  const ub=document.getElementById("updbtn"); if(ub)ub.addEventListener("click",async()=>{ ub.textContent="更新中…"; ub.disabled=true; try{ if(window.caches){ const ks=await caches.keys(); await Promise.all(ks.map(k=>caches.delete(k))); } }catch(_){} try{ if(navigator.serviceWorker){ const rs=await navigator.serviceWorker.getRegistrations(); for(const r of rs){ try{ if(r.waiting)r.waiting.postMessage("skipWaiting"); await r.update(); }catch(e){} } } }catch(_){} location.replace(location.pathname+"?v="+Date.now()); });
   const ux=document.getElementById("updbanner-x"); if(ux)ux.addEventListener("click",()=>{ const b=document.getElementById("updbanner"); if(b)b.classList.remove("show"); });
 })();
 
