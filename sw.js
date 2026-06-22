@@ -35,19 +35,32 @@ self.addEventListener("fetch", e => {
   // 版本檔／法規檔：完全不攔，永遠走網路拿最新
   if (/(^|\/)(ver\.txt|laws\.json|laws-extra\.json)$/.test(url.pathname)) return;
 
-  // 網頁與「核心程式碼」：網路優先（線上永遠最新、改了立刻看得到；離線才退回快取）。
-  // version.js/common.js/common.css 也走網路優先，否則快取住舊版會讓「有新版」橫幅一直跳又更新不掉。
+  // 網頁與「核心程式碼」：網路優先 ＋「逾時退快取」。先抓網路（快就用最新、改了立刻看得到）；
+  // 但網路超過 ~1.2 秒就先秒開快取版（避免 4G 慢時整頁卡 3-5 秒），網路回來仍背景更新快取。
+  // ver.txt 永不攔（上方已 return）→ 版本檢查照常偵測新版、跳更新橫幅，所以不會「更新不掉」。
   const fresh = req.mode === "navigate" || req.destination === "document"
     || /(^|\/)(version|common|law-tips|finance-law)\.js$/.test(url.pathname)
     || /(^|\/)common\.css$/.test(url.pathname);
   if (fresh) {
-    e.respondWith(
-      fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return r; })
-        .catch(() => caches.match(req).then(m => m || caches.match(
-          url.pathname.indexOf("lawyer") >= 0 ? "./lawyer.html"
-          : url.pathname.indexOf("search") >= 0 ? "./search.html"
-          : url.pathname.indexOf("evidence") >= 0 ? "./evidence.html" : "./union.html")))
-    );
+    e.respondWith((async () => {
+      const cached = await caches.match(req);
+      const net = fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return r; });
+      if (!cached) {
+        // 沒有快取（第一次）→ 只能等網路；失敗才退回對應首頁
+        try { return await net; }
+        catch (_) {
+          return (await caches.match(req)) || caches.match(
+            url.pathname.indexOf("lawyer") >= 0 ? "./lawyer.html"
+            : url.pathname.indexOf("search") >= 0 ? "./search.html"
+            : url.pathname.indexOf("evidence") >= 0 ? "./evidence.html" : "./union.html");
+        }
+      }
+      // 有快取 → 網路與「1.2 秒逾時」賽跑：誰快用誰；網路即使較慢仍會背景更新快取
+      return Promise.race([
+        net.catch(() => cached),
+        new Promise(res => setTimeout(() => res(cached), 1200))
+      ]);
+    })());
     return;
   }
 
