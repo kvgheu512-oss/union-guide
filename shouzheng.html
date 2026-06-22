@@ -15,8 +15,9 @@
  .header h1{font-family:'Noto Serif TC',serif;font-size:21px}
  .header p{font-size:12.5px;opacity:.92;margin-top:6px;line-height:1.7}
  main{max-width:680px;margin:0 auto;padding:1.1rem 1.05rem 4rem}
- .principle{background:var(--gold-light);border:1px solid #EAD67A;border-radius:12px;padding:.85rem 1rem;font-size:13px;color:#5C4000;line-height:1.85;margin-bottom:1.1rem}
+ .principle{background:var(--gold-light);border:1px solid #EAD67A;border-radius:12px;padding:.85rem 1rem;font-size:13px;color:#5C4000;line-height:1.85;margin-bottom:1rem}
  .principle b{color:var(--ac)}
+ .goal{background:var(--green-light);border:1px solid #BFE3CF;border-radius:12px;padding:.7rem .95rem;font-size:12.5px;color:var(--green);line-height:1.8;margin-bottom:1.1rem;font-weight:500}
  .cat-pick{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1rem}
  .cat-pick button{font-size:13px;padding:.5rem .8rem;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--ac);cursor:pointer;font-family:inherit}
  .cat-pick button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
@@ -26,19 +27,28 @@
  .prog{height:8px;background:#EFEAE2;border-radius:99px;overflow:hidden;margin:.5rem 0 .9rem}
  .prog>span{display:block;height:100%;background:var(--green);width:0;transition:width .3s}
  .prog-label{font-size:12px;color:var(--green);font-weight:700;margin-bottom:.5rem}
- label.item{display:flex;gap:10px;align-items:flex-start;padding:.55rem .2rem;border-bottom:1px solid #F2EEE7;cursor:pointer}
+ .warn{background:#FDECEA;border:1.5px solid #F0C5C2;border-radius:10px;padding:.7rem .85rem;font-size:13px;color:#7B1818;line-height:1.8;margin-bottom:.8rem}
+ .warn b{font-weight:700}
+ .tier{font-family:'Noto Serif TC',serif;font-weight:700;font-size:14px;margin:.7rem 0 .2rem;display:flex;align-items:center;gap:6px}
+ .tier.must{color:var(--ac2)} .tier.sub{color:var(--ink-mid)}
+ .tier .tag{font-family:'Noto Sans TC';font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:99px}
+ .tier.must .tag{background:#FDECEA;color:#C0392B;border:1px solid #F0C5C2}
+ .tier.sub .tag{background:#F0EEEA;color:#777;border:1px solid var(--border)}
+ label.item{display:flex;gap:10px;align-items:flex-start;padding:.5rem .2rem;border-bottom:1px solid #F2EEE7;cursor:pointer}
  label.item:last-child{border-bottom:none}
  label.item input{margin-top:3px;width:20px;height:20px;flex-shrink:0;accent-color:var(--green)}
  label.item .t{font-size:14px}
+ label.item.must .t{font-weight:600}
  label.item .why{display:block;font-size:12px;color:var(--ink-soft);margin-top:2px;line-height:1.6}
- label.item.done .t{color:var(--ink-soft);text-decoration:line-through}
- .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:.8rem}
+ label.item.done .t{color:var(--ink-soft);text-decoration:line-through;font-weight:400}
+ .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:.9rem}
  .btn{flex:1;min-width:130px;text-align:center;border:none;border-radius:10px;padding:.7rem;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
  .btn.copy{background:var(--ac);color:#fff}
  .btn.reset{background:#fff;border:1.5px solid var(--border);color:var(--ink-mid)}
  .toast{text-align:center;font-size:13px;color:var(--green);font-weight:700;min-height:18px;margin-top:8px}
- .tip{background:var(--green-light);border:1px solid #BFE3CF;border-radius:10px;padding:.7rem .85rem;font-size:12.5px;color:var(--green);line-height:1.8;margin-top:.6rem}
+ .tip{background:var(--green-light);border:1px solid #BFE3CF;border-radius:10px;padding:.7rem .85rem;font-size:12.5px;color:var(--green);line-height:1.8;margin-top:.7rem}
  .more{display:block;margin-top:.6rem;font-size:13px;color:var(--ac);font-weight:700;text-decoration:none}
+ .vflag{color:#B7860B;font-size:11px}
  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.4rem;line-height:1.8}
 </style>
 <link rel="stylesheet" href="common.css">
@@ -52,91 +62,142 @@
 
 <main>
   <div class="principle">
-    📌 <b>蒐證四原則</b>：①<b>即時記錄</b>（時間、地點、人、事，當天就寫）。②<b>保留原始檔</b>（截圖＋原訊息都留，別只留截圖）。③<b>多備份</b>（雲端＋手機＋email 給自己一份）。④<b>你是對話的一方，可以合法錄音</b>；但別打草驚蛇、先別起衝突。<br>⚠️ 加班費等請求權<b>5 年內</b>都可追（民法§126）；不當勞動行為裁決應自知悉起<b>90 日內</b>提出。
+    📌 <b>蒐證四原則</b>：①<b>即時記錄</b>（時間、地點、人、事，當天就寫）。②<b>保留原始檔</b>（截圖＋原訊息都留）。③<b>多備份</b>（雲端＋手機＋email 給自己一份）。④<b>你是對話的一方可合法錄音</b>；但別打草驚蛇、先別起衝突。
   </div>
+  <div class="goal">🎯 <b>用法</b>：先把<span style="color:var(--ac2);font-weight:700">必要證據</span>收齊（非有不可），再補次要證據，然後按「複製清單」拿給幹部——<b>自己先收好證據、掌握時效</b>，才不會錯過 90 天裁決、5 年加班費等期限而影響權益。</div>
 
   <div class="cat-pick" id="cat-pick"></div>
   <div id="cat-box"></div>
 
-  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 勾選紀錄只存在你的手機，不上傳</div>
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 勾選紀錄只存在你的手機，不上傳<br><span class="vflag">⚠ 法條與時效為一般整理，個案請洽工會幹部或勞工局 1955 確認</span></div>
 </main>
 
 <script>
+/* 每類：must=必要證據, sub=次要證據；warn=最重要提醒 */
 var CATS=[
  { id:'unfair', name:'因工會被報復', icon:'🛡️',
-   law:'工會法 §35（不當勞動行為）· 裁決應自知悉起 90 日內提出',
-   tip:'這類最重要的是「時間先後」：證明你先參與工會、雇主才對你不利。把兩條時間軸對起來。',
+   law:'工會法 §35（不當勞動行為）',
+   warn:'⏰ <b>時效最緊</b>：不當勞動行為裁決應自知悉雇主不利對待之日起 <b>90 日內</b>提出。一發現就先收證、立刻找幹部，別拖。',
+   tip:'核心是「時間先後」：證明你先參與工會、雇主才對你不利。把兩條時間軸對起來最有力。',
    more:{t:'用公文工具寫裁決申請',u:'gongwen.html'},
-   items:[
-    ['你參與工會的證明','入會申請書、連署書、工會 LINE 群、活動照片／簽到'],
+   must:[
+    ['你參與工會的證明','入會申請書、連署書、工會 LINE 群、活動簽到／照片'],
     ['雇主知道你參與工會','約談紀錄、主管訊息、被「關心」的對話'],
-    ['不利對待的書面','解僱／調職／減薪／考績／改排班的通知或公告'],
-    ['時間軸對照','把「參與工會」與「被不利對待」的日期一條條列出'],
+    ['不利對待的書面','解僱／調職／減薪／考績／改排班的通知或公告（原件拍照）'],
+    ['時間軸對照','把「參與工會日」與「被不利對待日」一條條列出'],
+   ],
+   sub:[
     ['雇主的言論','要你別參加、威脅、暗示後果的訊息或錄音'],
-    ['證人','願意作證的同事（記下姓名、可聯絡方式）'],
+    ['證人','願意作證的同事（姓名、可聯絡方式）'],
    ]},
  { id:'ot', name:'加班費／工時', icon:'⏱',
-   law:'勞基法 §24（延長工時加給）· §23（按時發薪）',
-   tip:'核心是「實際工時」與「雇主怎麼給／怎麼算」。出勤紀錄依勞動事件法§38推定為工作時間，對你有利。',
+   law:'勞基法 §24（加給）· §23（按時發薪）· 追溯 5 年（民法§126）',
+   warn:'📌 <b>加班費被駁回</b>時：務必把「<b>駁回的書面／訊息／理由</b>」「原加班申請單」「主管對話」都留下——這正是後續向勞工局申訴／調解的關鍵證據。',
+   tip:'出勤紀錄依勞動事件法§38推定為工作時間，對你有利；雇主有提出出勤紀錄的義務。',
    more:{t:'加班費試算工具',u:'leavepay.html'},
-   items:[
-    ['出勤／打卡紀錄、班表','證明實際上下班、加班的日期與時數'],
-    ['加班申請單／主管簽核','證明是經同意的加班'],
+   must:[
+    ['出勤／打卡紀錄、班表','證明實際上下班與加班的日期、時數'],
     ['薪資明細','看加班費怎麼算、基數含哪些項目'],
+    ['加班申請單／主管簽核','證明是經同意的加班'],
+   ],
+   sub:[
     ['自己每日加班時數紀錄','手機備忘也行，要能跟出勤對得起來'],
-    ['公告／LINE／email','要求加班、年底統一結算等制度性訊息'],
+    ['公告／LINE／email','要求加班、年底統一結算等訊息'],
+    ['駁回紀錄（若被駁回）','駁回的理由、書面或對話截圖'],
    ]},
  { id:'holiday', name:'國定假日／特休／調休', icon:'📅',
-   law:'勞基法 §37 §38 §39（假日出勤加倍、特休未休工資）',
-   tip:'重點：假日有沒有出勤、有沒有給加倍工資或只給調休。月薪制只給調休＝少給 1 日工資。',
+   law:'勞基法 §37 §38 §39',
+   warn:'📌 月薪制：國定假日出勤只給「<b>調休</b>」而沒給加倍工資，等於少給 1 日工資；把調休的通知留好。',
+   tip:'重點：假日有沒有出勤、雇主有沒有給加倍工資或只給調休。',
    more:{t:'特休／國定假日試算',u:'leavepay.html'},
-   items:[
-    ['班表顯示國定假日出勤','證明當天有上班'],
-    ['調休／補休的通知或申請','證明是誰決定調休、換掉加班費'],
+   must:[
+    ['班表／出勤顯示假日出勤','證明國定假日當天有上班'],
+    ['薪資明細','看假日工資、特休折算給付情形'],
+   ],
+   sub:[
+    ['調休／補休的通知或申請','證明是誰決定、用調休換掉加班費'],
     ['特休未休天數紀錄','年度結束沒休完的天數'],
-    ['薪資明細','看假日工資、特休折算有沒有給足'],
    ]},
  { id:'injury', name:'職災／職傷／公傷', icon:'🦺',
-   law:'職業安全衛生法 · 勞保職災給付 · 勞基法 §59',
-   tip:'就醫紀錄與「事故當下」最關鍵。被職安室擋公傷時，所有往來都要留。',
-   more:{t:'職災公傷維權專區',u:'zhizai.html'},
-   items:[
-    ['就醫紀錄、診斷證明','含初診日期、傷病與工作相關的描述'],
-    ['事故當下證據','現場照片／影片、機台或環境狀況'],
-    ['通報紀錄','向主管／職安室通報的時間與內容'],
-    ['與職安室／主管的對話','申請公傷時的往來訊息、被刁難的紀錄'],
+   law:'勞基法 §59 · 職安法 · 勞保職災給付',
+   warn:'🚨 <b>受傷當下一定要用「職業傷害／職災」身分就醫掛號，千萬不要用「健保」身分！</b>用健保掛號會影響職災認定與後續給付權益。就醫時主動告訴醫護「<b>這是工作（或通勤）受傷</b>」，請開立載明與工作相關的診斷證明。',
+   tip:'事故「當下」與「就醫身分」最關鍵。被職安室擋公傷時，所有往來都要留紀錄。',
+   more:{t:'職災公傷維權專區（接招步驟）',u:'zhizai.html'},
+   must:[
+    ['職災身分就醫的診斷證明','掛號即用職傷／職災身分；診斷書載明與工作相關'],
+    ['事故當下證據','現場照片／影片、機台或環境狀況、發生時間'],
+    ['向主管／職安通報的紀錄','通報時間、對象、內容（書面或訊息）'],
+   ],
+   sub:[
+    ['與職安室／主管的對話','申請公傷往來、被刁難或要求改健保的紀錄'],
+    ['出勤／班表','證明事故發生在工作時間或通勤途中'],
     ['證人','目擊同事'],
+   ]},
+ { id:'parental', name:'育嬰留停', icon:'👶',
+   law:'性別平等工作法 §16 §21 · 就業保險育嬰留職停薪津貼',
+   warn:'📌 受僱滿 6 個月、於子女滿 3 歲前得申請；雇主<b>不得拒絕</b>，也<b>不得因申請而為不利對待（§21）</b>。被拒、被刁難或復職受阻，務必留書面證據。 <span class="vflag">⚠待核對</span>',
+   tip:'申請與復職都要「書面」往來；口頭核准日後難舉證。',
+   more:null,
+   must:[
+    ['育嬰留停申請書','你向雇主提出的書面（含申請日期、起迄期間）'],
+    ['雇主收件／核准紀錄','收文、簽核、人資回覆的書面或訊息'],
+    ['子女年齡證明','出生證明或戶口名簿（證明未滿 3 歲）'],
+   ],
+   sub:[
+    ['復職申請與雇主回覆','期滿前申請復職的書面與對方回覆'],
+    ['津貼申請資料','向勞保局申請育嬰留停津貼的紀錄'],
+    ['被刁難／拒絕的證據','拒絕、減薪、調職、不准復職的對話或公文'],
+   ]},
+ { id:'publicleave', name:'公假／會務／受訓', icon:'📚',
+   law:'工會法 §36（會務公假）· 勞工請假規則（公假）',
+   warn:'📌 工會理事、監事於工作時間辦理會務，依工會法 §36 得有一定時數<b>公假</b>（時數依約定／章程）。被當成事假、特休或<b>扣薪</b>，要留薪資明細與准假紀錄。 <span class="vflag">⚠待核對</span>',
+   tip:'公假的「依據」最重要：是會務、政府召集、還是教育訓練？把通知與派令留好。',
+   more:null,
+   must:[
+    ['公假申請／派令','你提出的公假申請、或主管核准的書面'],
+    ['公假事由的證明','開會通知、政府召集函、上課／受訓通知'],
+   ],
+   sub:[
+    ['出席／簽到證明','實際參加的簽到、結業證明'],
+    ['被扣薪或不准假紀錄','薪資明細、駁回對話（用以主張權益）'],
    ]},
  { id:'fire', name:'解僱／資遣／調職', icon:'📄',
    law:'勞基法 §11 §16 §17（資遣）· 調職五原則',
-   tip:'拿到任何「通知」先別簽字確認同意，先拍照留存、諮詢工會或勞工局。',
+   warn:'📌 拿到任何「通知」<b>先別簽「同意」</b>，先拍照留存、諮詢工會或勞工局 1955 再回應。',
+   tip:'資遣要看年資、預告、資遣費是否給足；調職要看是否違反調職五原則。',
    more:null,
-   items:[
+   must:[
     ['解僱／資遣／調職通知書','原件拍照，注意日期與理由'],
     ['非自願離職證明','請領失業給付要用'],
+   ],
+   sub:[
     ['資遣費／預告工資計算','對照年資是否給足'],
     ['解僱理由相關文件','雇主主張的依據'],
     ['你的工作表現紀錄','考績、獎勵、感謝信等反證'],
    ]},
- { id:'bully', name:'霸凌／不當管理／申訴', icon:'🗣',
-   law:'職安法 §6（職場不法侵害預防）· 性平／申訴管道',
-   tip:'每次事件當天就記：時間、地點、在場的人、說了做了什麼。零散也要記，累積成模式。',
+ { id:'bully', name:'霸凌／不當管理', icon:'🗣',
+   law:'職安法 §6（職場不法侵害預防）· 申訴／性平管道',
+   warn:'📌 你是對話的一方，<b>可合法錄音</b>；每次事件<b>當天就記</b>，零散也要記，累積成模式才有力。',
+   tip:'逐次記下時間、地點、在場的人、說了做了什麼；身心受影響有就醫也留紀錄。',
    more:null,
-   items:[
-    ['事件經過紀錄','逐次記時間、地點、在場者、言行'],
+   must:[
+    ['事件經過逐次紀錄','每次記：時間、地點、在場者、言行'],
     ['對話訊息／錄音','你是對話一方可合法錄音'],
+   ],
+   sub:[
     ['證人','在場同事'],
     ['申訴往來紀錄','向院方申訴的書面與回覆'],
-    ['身心影響佐證','就醫紀錄（如因此就醫）'],
+    ['身心影響佐證','因此就醫的診斷或紀錄'],
    ]},
 ];
 
-var KEY='shouzheng_v1';
+var KEY='shouzheng_v2';
 var state={}; try{ state=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){} }
 var cur=CATS[0].id;
 var $=function(id){return document.getElementById(id);};
 function esc(s){return (s||'').replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function k(cid,tier,i){ return cid+':'+tier+':'+i; }
 
 function renderPick(){
   $('cat-pick').innerHTML=CATS.map(function(c){
@@ -146,34 +207,44 @@ function renderPick(){
     b.addEventListener('click',function(){ cur=b.dataset.id; renderPick(); renderCat(); window.scrollTo({top:0,behavior:'smooth'}); });
   });
 }
-function key(cid,i){ return cid+':'+i; }
-function renderCat(){
-  var c=CATS.find(function(x){return x.id===cur;});
-  var total=c.items.length, done=c.items.reduce(function(n,_,i){return n+(state[key(c.id,i)]?1:0);},0);
-  var pct=Math.round(done/total*100);
-  var html='<div class="cat"><h2>'+c.icon+' '+esc(c.name)+'</h2><div class="law">'+esc(c.law)+'</div>'+
-    '<div class="prog-label">已蒐集 '+done+' / '+total+'　('+pct+'%)</div>'+
-    '<div class="prog"><span style="width:'+pct+'%"></span></div>';
-  html+=c.items.map(function(it,i){
-    var on=!!state[key(c.id,i)];
-    return '<label class="item'+(on?' done':'')+'"><input type="checkbox" data-i="'+i+'"'+(on?' checked':'')+'>'+
+function itemsHTML(c,tier){
+  var arr=c[tier]||[];
+  return arr.map(function(it,i){
+    var on=!!state[k(c.id,tier,i)];
+    return '<label class="item '+tier+(on?' done':'')+'"><input type="checkbox" data-tier="'+tier+'" data-i="'+i+'"'+(on?' checked':'')+'>'+
       '<span><span class="t">'+esc(it[0])+'</span><span class="why">'+esc(it[1])+'</span></span></label>';
   }).join('');
+}
+function renderCat(){
+  var c=CATS.find(function(x){return x.id===cur;});
+  var all=(c.must||[]).length+(c.sub||[]).length;
+  var done=0; (c.must||[]).forEach(function(_,i){if(state[k(c.id,'must',i)])done++;}); (c.sub||[]).forEach(function(_,i){if(state[k(c.id,'sub',i)])done++;});
+  var mustDone=(c.must||[]).reduce(function(n,_,i){return n+(state[k(c.id,'must',i)]?1:0);},0);
+  var pct=Math.round(done/all*100);
+  var html='<div class="cat"><h2>'+c.icon+' '+esc(c.name)+'</h2><div class="law">'+esc(c.law)+'</div>';
+  if(c.warn) html+='<div class="warn">'+c.warn+'</div>';
+  html+='<div class="prog-label">必要證據 '+mustDone+'/'+(c.must||[]).length+'　·　全部 '+done+'/'+all+'　('+pct+'%)</div>'+
+    '<div class="prog"><span style="width:'+pct+'%"></span></div>';
+  html+='<div class="tier must">🔴 必要證據 <span class="tag">非有不可</span></div>'+itemsHTML(c,'must');
+  if((c.sub||[]).length) html+='<div class="tier sub">⚪ 次要證據 <span class="tag">加分／補強</span></div>'+itemsHTML(c,'sub');
   if(c.tip) html+='<div class="tip">💡 '+esc(c.tip)+'</div>';
   if(c.more) html+='<a class="more" href="'+c.more.u+'">→ '+esc(c.more.t)+'</a>';
   html+='<div class="btns"><button class="btn copy" id="cp">📋 複製這份清單（給幹部／律師）</button>'+
     '<button class="btn reset" id="rs">清除本類勾選</button></div><div class="toast" id="tt"></div></div>';
   $('cat-box').innerHTML=html;
   Array.prototype.forEach.call($('cat-box').querySelectorAll('input'),function(inp){
-    inp.addEventListener('change',function(){ state[key(c.id,inp.dataset.i)]=inp.checked; save(); renderCat(); });
+    inp.addEventListener('change',function(){ state[k(c.id,inp.dataset.tier,inp.dataset.i)]=inp.checked; save(); renderCat(); });
   });
   $('cp').addEventListener('click',function(){ copyList(c); });
-  $('rs').addEventListener('click',function(){ c.items.forEach(function(_,i){ delete state[key(c.id,i)]; }); save(); renderCat(); });
+  $('rs').addEventListener('click',function(){ ['must','sub'].forEach(function(t){(c[t]||[]).forEach(function(_,i){delete state[k(c.id,t,i)];});}); save(); renderCat(); });
 }
 function copyList(c){
   var L=['【蒐證清單】'+c.name+'（'+c.law+'）',''];
-  c.items.forEach(function(it,i){ L.push((state[key(c.id,i)]?'✅ ':'⬜ ')+it[0]+'　— '+it[1]); });
-  L.push('','（高榮企業工會蒐證指南產生；✅＝已備齊，⬜＝待補。）');
+  L.push('■ 必要證據（非有不可）');
+  (c.must||[]).forEach(function(it,i){ L.push((state[k(c.id,'must',i)]?'✅ ':'⬜ ')+it[0]+'　— '+it[1]); });
+  if((c.sub||[]).length){ L.push('','■ 次要證據（加分／補強）');
+    (c.sub||[]).forEach(function(it,i){ L.push((state[k(c.id,'sub',i)]?'✅ ':'⬜ ')+it[0]+'　— '+it[1]); }); }
+  L.push('','（高榮企業工會蒐證指南產生；✅＝已備齊，⬜＝待補。請掌握時效，盡早找幹部協助。）');
   var txt=L.join('\n');
   function ok(){ var t=$('tt'); if(t){ t.textContent='✅ 已複製，貼到 LINE 給幹部或附給律師'; setTimeout(function(){t.textContent='';},3000);} }
   if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(ok,function(){fb(txt);ok();}); } else { fb(txt); ok(); }
