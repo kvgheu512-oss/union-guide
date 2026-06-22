@@ -177,6 +177,26 @@
         <div class="note">提示：<b>修改章程、財產處分、合併分立解散、罷免、會員除名</b>等屬重大事項，須較高出席與同意門檻（章程第32條/第24條）。</div>
       </div>
 
+      <div class="card" id="elect-card" style="display:none">
+        <h3>🗳️ 選舉結果（理監事當選名單）</h3>
+        <p class="law" style="margin-top:0">成立大會選出理事、監事後填這裡，會自動排版進<b>會議紀錄</b>（也是登記要交的理監事名冊基礎）。</p>
+        <div class="grid2">
+          <div><label>職稱</label>
+            <select id="el-role"><option>理事</option><option>監事</option><option>候補理事</option><option>候補監事</option></select></div>
+          <div><label>得票數</label><input id="el-votes" type="number" inputmode="numeric" placeholder="票"></div>
+        </div>
+        <div class="grid2">
+          <div><label>姓名</label><input id="el-name" placeholder="○○○"></div>
+          <div><label>部門／現職</label><input id="el-dept" placeholder="例：護理部 護理師"></div>
+        </div>
+        <div class="btn-row"><button class="btn green sm" id="el-add">＋ 加入當選人</button></div>
+        <div id="el-list" style="margin-top:.5rem"></div>
+        <div class="grid2" style="margin-top:.6rem">
+          <div><label>互選理事長</label><input id="el-chair" placeholder="○○○"></div>
+          <div><label>互選常務監事（如設）</label><input id="el-supchair" placeholder="○○○"></div>
+        </div>
+      </div>
+
       <div class="card">
         <h3>簽到 / 出席</h3>
         <div id="sign-wrap"></div>
@@ -399,6 +419,22 @@ function fillForm(){
   if($('g-sheet')) $('g-sheet').value=cur.gSheet||'';
   renderFormQR(); updateFormalReminder(); renderSigList();
   renderAgenda(); renderSign();
+  if(!cur.election) cur.election={rows:[],chair:'',supchair:''};
+  if($('el-chair')) $('el-chair').value=cur.election.chair||'';
+  if($('el-supchair')) $('el-supchair').value=cur.election.supchair||'';
+  renderElect(); updateElectCard();
+}
+/* 🗳️ 選舉結果 */
+function updateElectCard(){ var c=$('elect-card'); if(c) c.style.display=(($('m-type')||{}).value==='成立大會')?'block':'none'; }
+function renderElect(){
+  var box=$('el-list'); if(!box) return;
+  var rows=(cur.election&&cur.election.rows)||[];
+  if(!rows.length){ box.innerHTML='<div class="note" style="margin:0">尚未加入當選人。</div>'; return; }
+  box.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px">'+
+    '<tr style="background:#FEF9E7"><th style="border:1px solid #E6E1D8;padding:5px">職稱</th><th style="border:1px solid #E6E1D8;padding:5px">姓名</th><th style="border:1px solid #E6E1D8;padding:5px">部門／現職</th><th style="border:1px solid #E6E1D8;padding:5px">得票</th><th style="border:1px solid #E6E1D8;padding:5px"></th></tr>'+
+    rows.map(function(r,i){ return '<tr><td style="border:1px solid #E6E1D8;padding:5px">'+esc(r.role)+'</td><td style="border:1px solid #E6E1D8;padding:5px">'+esc(r.name)+'</td><td style="border:1px solid #E6E1D8;padding:5px">'+esc(r.dept||'')+'</td><td style="border:1px solid #E6E1D8;padding:5px;text-align:center">'+esc(r.votes||'')+'</td><td style="border:1px solid #E6E1D8;padding:5px;text-align:center"><button class="el-del" data-i="'+i+'" style="background:none;border:none;color:#C0392B;cursor:pointer;font-size:15px">✕</button></td></tr>'; }).join('')+
+    '</table>';
+  box.querySelectorAll('.el-del').forEach(function(b){ b.addEventListener('click',function(){ cur.election.rows.splice(+b.dataset.i,1); renderElect(); save(); }); });
 }
 /* ✍️ 手寫簽到（單機輪簽）— 電子簽章法，與親簽同等效力 */
 function _cyrb53(str,seed){seed=seed||0;var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return(4294967296*(2097151&h2)+(h1>>>0)).toString(16);}
@@ -470,6 +506,9 @@ function pull(){
   if($('g-form')) cur.gForm=$('g-form').value.trim();
   if($('g-doc')) cur.gDoc=$('g-doc').value.trim();
   if($('g-sheet')) cur.gSheet=$('g-sheet').value.trim();
+  if(!cur.election) cur.election={rows:[],chair:'',supchair:''};
+  if($('el-chair')) cur.election.chair=$('el-chair').value.trim();
+  if($('el-supchair')) cur.election.supchair=$('el-supchair').value.trim();
 }
 /* 簽到表單 QR（會員掃碼即時簽到） */
 function renderFormQR(){
@@ -507,6 +546,15 @@ function aiMinutesPrompt(){
   return L.join('\n');
 }
 ['m-type','m-no','m-date','m-time','m-place','m-chair','m-rec','m-guest'].forEach(id=>$(id).addEventListener('input',pull));
+if($('m-type')) $('m-type').addEventListener('change',updateElectCard);
+['el-chair','el-supchair'].forEach(function(id){ if($(id)) $(id).addEventListener('input',pull); });
+if($('el-add')) $('el-add').addEventListener('click',function(){
+  var name=($('el-name').value||'').trim(); if(!name){ $('el-name').focus(); return; }
+  if(!cur.election) cur.election={rows:[],chair:'',supchair:''};
+  cur.election.rows.push({role:$('el-role').value, name:name, dept:($('el-dept').value||'').trim(), votes:($('el-votes').value||'').trim()});
+  $('el-name').value=''; $('el-dept').value=''; $('el-votes').value='';
+  renderElect();
+});
 
 /* 📍 會議地點：可選的地址選擇器（縣市→區→路，自動帶郵遞區號可留） */
 (function(){
@@ -649,8 +697,23 @@ function docMinutes(){
     const items=cur.agenda.filter(a=>a.kind===k && a.title);
     if(items.length){ html+=`<div class="h2">${k}</div><ol>`+items.map(a=>`<li>${esc(a.title)}${a.decision?`<br><b>決議：</b>${esc(a.decision)}`:'<br>決議：＿＿＿＿＿＿＿＿'}</li>`).join('')+`</ol>`; }
   });
+  html+=electHTML();
   html+=`<div class="sign-line">主席：＿＿＿＿＿＿　　　記錄：＿＿＿＿＿＿</div>`;
   return html;
+}
+function electHTML(){
+  var e=cur.election; if(!e) return '';
+  var rows=e.rows||[];
+  if(!rows.length && !e.chair && !e.supchair) return '';
+  var body = rows.length
+    ? '<table><thead><tr><th>職稱</th><th>姓名</th><th>部門／現職</th><th style="width:5em">得票數</th></tr></thead><tbody>'+
+      rows.map(function(r){ return '<tr><td>'+esc(r.role)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.dept||'')+'</td><td style="text-align:center">'+esc(r.votes||'')+'</td></tr>'; }).join('')+
+      '</tbody></table>'
+    : '<p>（當選名單待補）</p>';
+  var inter='';
+  if(e.chair) inter+='<p>第一屆第一次理事會：經理事互選，<b>'+esc(e.chair)+'</b> 當選理事長。</p>';
+  if(e.supchair) inter+='<p>第一屆第一次監事會：經監事互選，<b>'+esc(e.supchair)+'</b> 當選常務監事。</p>';
+  return '<div class="h2">選舉結果</div>'+body+inter;
 }
 function docSignedRoster(){
   const a=cur.signatures||[];
