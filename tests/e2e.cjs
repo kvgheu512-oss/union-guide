@@ -161,6 +161,16 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('送出鈕在手機畫面內可見', async p => { await p.setViewportSize({ width: 390, height: 844 }); await go(p, 'help.html'); await p.waitForTimeout(300);
     const v = await p.$eval('#jbot-send', e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.top >= 0 && r.bottom <= 844; }).catch(() => false);
     v ? ok('送出鈕在視窗內') : bad('sendbtn', '送出鈕不在視窗內'); });
+  await T('小幫手能接資方刁難（接招話術）', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
+    await p.fill('#jbot-in', '叫我簽自願離職書'); await p.click('#jbot-send'); await p.waitForTimeout(250);
+    const t = await p.textContent('#jbot-log');
+    (/當場.*不簽|簽名前先問工會/.test(t) && !/一時對不到/.test(t)) ? ok('資方話術有接招') : bad('counter', t.slice(-60)); });
+  await T('被醫院刁難常見問題不落空', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
+    const qs = ['主管說加班是我自願的不給錢', '威脅把我調到最遠的單位', '站太久得靜脈曲張算職業病嗎', '我好怕不敢跟主管講話', '他們不發離職證明'];
+    let missed = [];
+    for (const q of qs) { await p.evaluate(() => { document.getElementById('jbot-log').innerHTML = ''; }); await p.fill('#jbot-in', q); await p.click('#jbot-send'); await p.waitForTimeout(160);
+      const t = await p.textContent('#jbot-log'); if (/一時對不到/.test(t)) missed.push(q); }
+    missed.length === 0 ? ok('5 題刁難全有回應') : bad('counter', '落空:' + missed.join('|')); });
 
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);

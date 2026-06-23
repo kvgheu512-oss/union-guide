@@ -42,6 +42,21 @@
   .steps li b{color:var(--ink);}
   .eg{background:#EAF5EE;border:1px solid #C9E4D3;border-radius:10px;padding:.6rem .75rem;font-size:13px;color:#235C3C;line-height:1.85;margin-top:.6rem;}
   .eg .tag{display:inline-block;background:var(--green);color:#fff;border-radius:6px;font-size:11.5px;font-weight:700;padding:1px 8px;margin-right:5px;}
+  .jbot{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.1rem;}
+  .jbot-top{background:linear-gradient(135deg,#8A6309,#B7860B);color:#fff;padding:.85rem 1.1rem;display:flex;align-items:center;gap:10px;}
+  .jbot-top .ava{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:17px;}
+  .jbot-top .nm{font-weight:600;font-size:14.5px;}
+  .jbot-top .tg{font-size:11.5px;opacity:.9;margin-top:1px;}
+  .jbot-log{padding:1rem;display:flex;flex-direction:column;gap:9px;background:#FBF7EC;max-height:60vh;overflow-y:auto;}
+  .jbot-log .b{max-width:90%;padding:.65rem .9rem;border-radius:14px;font-size:13.5px;line-height:1.82;}
+  .jbot-log .b.bot{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--ink-mid);}
+  .jbot-log .b.me{align-self:flex-end;background:var(--gold);color:#fff;border-bottom-right-radius:4px;}
+  .jbot-log .b.bot b{color:#8A6309;}
+  .jbot-chips{display:flex;flex-wrap:wrap;gap:8px;padding:.85rem 1rem;border-top:1px solid var(--border);background:#fff;}
+  .jbot-chips button{font-size:13px;background:var(--gold-light);color:#8A6309;border:1.5px solid #EAD67A;border-radius:20px;padding:.55rem .9rem;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .jbot-chips button:active{background:#F6ECC2;}
+  .jbot-chips a{font-size:13px;background:var(--gold);color:#fff;border:none;border-radius:20px;padding:.55rem .9rem;text-decoration:none;font-weight:700;-webkit-tap-highlight-color:transparent;}
+  .jbot-chips button.again{background:#fff;color:var(--ink-soft);border-color:var(--border);}
 </style>
 <link rel="stylesheet" href="common.css">
 </head>
@@ -56,6 +71,15 @@
   <div class="topnote">📌 本頁是<b>幹部（管錢）內部參考</b>，不是給會員看的「工會很有錢」。下面是<b>勞動部</b>對新工會最相關的幾筆補助，附官方申請頁。<br>⚠️ 申請大多<b>有時效</b>（辦活動前 20～30 天提出）、要備<b>計畫書＋預算表＋登記證影本</b>。金額與規定以官方公告為準（<b>待核對</b>）。</div>
 
   <div class="topnote" style="background:#FDECEA;border-color:#F3C9C4;color:#7B1818">🧮 <b>編預算請務必保守，別把補助當定存：</b><br>① <b>第二筆 10 萬門檻很高</b>（成立 2 年內會員過半），<b>不一定拿得到</b>，不能先花。<br>② 補助多是<b>「核銷制」</b>——先自己墊、辦完核銷才撥款，<b>不是先給你一筆</b>。<br>③ <b>成立本身就有實際支出</b>（協助／顧問酬勞、場地、文書等），這些常<b>大於</b>第一筆能領的。<br>👉 結論：補助是<b>補貼會務</b>用的，<b>會費仍是工會的根本財源</b>，兩者不能互相取代。</div>
+
+  <div class="jbot" id="jbot">
+    <div class="jbot-top">
+      <div class="ava">🤖</div>
+      <div><div class="nm">補助申請小幫手（幹部用）</div><div class="tg">點問題，我一步步教你怎麼申請、核銷、編預算</div></div>
+    </div>
+    <div class="jbot-log" id="jbot-log"></div>
+    <div class="jbot-chips" id="jbot-chips"></div>
+  </div>
 
   <div class="card big">
     <h2>🏆 獎勵工會成立 <span class="amt">最高 10萬＋10萬</span></h2>
@@ -145,6 +169,84 @@
 </main>
 
 <div id="verBadge"></div>
+<script>
+(function(){
+  "use strict";
+  var NODES={
+    start:{say:["我是<b>補助申請小幫手</b>🤖，幫管錢的幹部把補助這件事弄懂。<b>想先了解哪個？</b>"],
+      chips:[
+        {t:"我們籌備中，先申請哪個？",to:"order"},
+        {t:"獎勵成立（第一筆 10 萬）怎麼申請",to:"first"},
+        {t:"第二筆 10 萬的條件？",to:"second"},
+        {t:"🎓 教育訓練補助",to:"train"},
+        {t:"🛠 籌組輔導補助",to:"found"},
+        {t:"補助是先給還是後給？",to:"reimburse"},
+        {t:"要準備哪些文件？",to:"docs"},
+        {t:"🏛 在地（高雄）補助",to:"local"},
+        {t:"💡 編預算要注意什麼",to:"budget"}
+      ]},
+    order:{say:["<b>路線圖（照順序走）：</b>",
+      "① 現在<b>籌備中</b> → 先用<b>籌組輔導補助</b>（成立大會前 20 天提）。",
+      "② 工會<b>一成立</b> → 申請<b>獎勵成立第一筆（最高 10 萬）</b>。",
+      "③ 成立後辦課程 → <b>教育訓練補助</b>（活動前 30 天提）。",
+      "④ 2 年內衝<b>會員過半</b> → 才拿得到<b>第二筆 10 萬</b>。"],
+      chips:[{t:"籌組輔導怎麼用",to:"found"},{t:"第一筆怎麼申請",to:"first"},{t:"↩︎ 回主選單",to:"start"}]},
+    first:{say:["<b>獎勵工會成立・第一筆（最高 10 萬）</b>",
+      "工會成立後就能申請。備齊：<b>工會登記證影本＋實施計畫書＋經費預算表</b>，向勞動部提出。",
+      "⚠️ 多為<b>核銷制</b>，金額<b>以官方核定為準</b>，別當定存先花。"],
+      chips:[{t:"看官方申請頁",href:"https://www.mol.gov.tw/service/18394/18395/39393/"},{t:"要準備哪些文件",to:"docs"},{t:"核銷怎麼運作",to:"reimburse"},{t:"↩︎ 回主選單",to:"start"}]},
+    second:{say:["<b>第二筆（最高 10 萬）門檻很高：</b>成立<b>2 年內，會員達『可入會人數的一半以上』</b>。",
+      "老實說<b>不一定拿得到</b>，<b>千萬不要先把它列進預算花掉</b>。衝會員的攻略，在上面「獎勵工會成立」卡片裡點開看。"],
+      chips:[{t:"看獎勵成立卡片",scroll:".card.big"},{t:"編預算注意",to:"budget"},{t:"↩︎ 回主選單",to:"start"}]},
+    train:{say:["<b>新工會教育訓練補助</b>：辦勞動法、會務、團體協商等課程的費用補助。",
+      "<b>辦理日 30 天前</b>提出；備計畫書＋預算表。辦完<b>拍照、簽到、收據</b>留好核銷。"],
+      chips:[{t:"看這張卡片",scroll:"#card-train"},{t:"要準備哪些文件",to:"docs"},{t:"↩︎ 回主選單",to:"start"}]},
+    found:{say:["<b>輔導籌組工會補助</b>：還沒成立、在籌備也能用，補助籌備說明會、成立大會輔導。<b>最適合我們現在。</b>",
+      "<b>辦理日 20 天前</b>提出。"],
+      chips:[{t:"看官方申請頁",href:"https://www.mol.gov.tw/service/18394/18395/36206/"},{t:"要準備哪些文件",to:"docs"},{t:"↩︎ 回主選單",to:"start"}]},
+    reimburse:{say:["<b>大多是「核銷制」</b>，流程是：事前核准 → 你<b>先自己墊錢</b>辦 → 留<b>收據、簽到、照片</b> → 事後核銷 → 政府才<b>撥款</b>。",
+      "所以<b>帳上要先有周轉金</b>，不是政府先給你一筆。"],
+      chips:[{t:"要準備哪些文件",to:"docs"},{t:"編預算注意",to:"budget"},{t:"↩︎ 回主選單",to:"start"}]},
+    docs:{say:["<b>申請／核銷常用文件：</b>",
+      "① <b>實施計畫書</b>（主題、對象、時間、講師、流程）",
+      "② <b>經費預算表</b>",
+      "③ <b>工會登記證影本</b>",
+      "④ 核銷時：<b>領據／收據、簽到表、活動照片</b>",
+      "正式清單以各補助公告為準（<b>待核對</b>）。"],
+      chips:[{t:"↩︎ 回主選單",to:"start"}]},
+    local:{say:["<b>高雄市政府勞工局</b>也常有勞工教育、職工福利、活動補助。",
+      "撥 <b>1999</b> 轉勞工局，或上官網查公告專區最準。"],
+      chips:[{t:"☎️ 打 1999",href:"tel:1999"},{t:"看勞工局卡片",scroll:"#card-local"},{t:"↩︎ 回主選單",to:"start"}]},
+    budget:{say:["<b>編預算三個保守原則：</b>",
+      "① <b>第二筆 10 萬不一定拿到</b> → 不要先列成收入。",
+      "② 補助是<b>核銷制</b>（先墊後撥）→ 帳上要留周轉金。",
+      "③ <b>成立本身就有支出</b>（協助／顧問酬勞、場地、文書）→ 常大於第一筆能領的。",
+      "👉 結論：<b>會費才是工會根本財源</b>，補助只是補貼，不能取代。"],
+      chips:[{t:"↩︎ 回主選單",to:"start"}]}
+  };
+  var jlog=document.getElementById("jbot-log"), jchips=document.getElementById("jbot-chips");
+  function bub(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);jlog.scrollTop=jlog.scrollHeight;}
+  function go(key,skipScroll){
+    var n=NODES[key]; if(!n) return;
+    n.say.forEach(function(s){bub(s,"bot");});
+    jchips.innerHTML="";
+    n.chips.forEach(function(c){
+      var el;
+      if(c.href){el=document.createElement("a");el.href=c.href;el.textContent=c.t;
+        if(/^https?:|^tel:/.test(c.href)){el.target="_blank";el.rel="noopener";}}
+      else{el=document.createElement("button");el.type="button";el.textContent=c.t;if(c.to==="start")el.className="again";
+        el.addEventListener("click",function(){
+          bub(c.t,"me");
+          if(c.scroll){var t=document.querySelector(c.scroll); if(t) t.scrollIntoView({behavior:"smooth",block:"center"});}
+          if(c.to) go(c.to);
+        });}
+      jchips.appendChild(el);
+    });
+    if(!skipScroll){ try{ requestAnimationFrame(function(){ jchips.scrollIntoView({behavior:"smooth",block:"nearest"}); }); }catch(e){} }
+  }
+  go("start",true);
+})();
+</script>
 <script src="tour.js" defer></script>
 <script>
 window.addEventListener("load",function(){ if(!window.EBNTour) return;
