@@ -354,6 +354,14 @@ else { showGate(); }
 
 </script>
 <script src="law-tips.js" defer></script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
+    { text:"這頁幫你做正式公文、函稿。" },
+    { text:"選一個類型，像開會通知、陳情、或函報機關，填一填，就成一份正式公文。" },
+    { text:"可以列印，或存成 PDF，文號還會自動編。不會寫沒關係，範本都幫你寫好了。" }
+  ], {}); });
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

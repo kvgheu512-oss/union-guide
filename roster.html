@@ -765,6 +765,13 @@ else { showGate(); }
 
 </script>
 <script src="law-tips.js" defer></script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
+    { text:"這是會員名冊。可以新增會員、搜尋、看會費繳了沒、還能列印。" },
+    { text:"最重要的一件事：名冊是個資，只存在這支手機、不會上傳，請小心保管，千萬別外流。" }
+  ], {}); });
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

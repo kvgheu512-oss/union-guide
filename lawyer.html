@@ -1128,6 +1128,13 @@ document.getElementById("relay-apply").addEventListener("click",()=>{
 });
 </script>
 <script src="law-tips.js" defer></script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
+    { text:"這是 AI 律師。把你的勞動問題打進去，它會用法條，給你分析和建議。" },
+    { text:"記住：這是參考，正式的問題，還是要找勞工局，或律師。" }
+  ], {}); });
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

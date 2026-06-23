@@ -425,6 +425,14 @@ $('saveBtn').addEventListener('click',function(){
 $('fCat').addEventListener('change',function(){ filter.cat=this.value; renderList(); });
 $('fSearch').addEventListener('input',function(){ filter.q=this.value.trim(); renderList(); });
 </script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
+    { text:"會員來求助，就登記在這個案件台。" },
+    { text:"每個案子，時效快到了它會提醒你，一個都不會漏掉。" },
+    { text:"資料只存這支手機；需要的話，還可以另外上鎖，保護當事人。" }
+  ], {}); });
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

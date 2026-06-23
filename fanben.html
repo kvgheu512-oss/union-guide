@@ -216,6 +216,13 @@ async function renderBacklog(){
 
 renderPick(); render(); renderBacklog();
 </script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
+    { text:"各種文件範本，都收在這個範本庫。" },
+    { text:"需要什麼，來這裡找、下載；好用的範本，也可以上傳分享給大家。" }
+  ], {}); });
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

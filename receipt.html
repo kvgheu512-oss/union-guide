@@ -356,6 +356,13 @@ function exportCSV(){
 
 </script>
 <script src="law-tips.js" defer></script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
+    { text:"要開收據嗎？填上金額和用途，馬上產生一張收據，可以列印或存檔。" },
+    { text:"收會費、報帳都用得上。要一次開很多張，就用批次收據。" }
+  ], {}); });
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>
