@@ -135,28 +135,39 @@
   function place() {
     var s = steps[i]; if (!s) return;
     var el = s.sel ? document.querySelector(s.sel) : null;
-    if (el) { try { el.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {} }
-    // 等捲動稍微到位再量位置
-    setTimeout(function () {
-      var pad = 6, r;
+    if (el) {
+      try {
+        // 用「瞬間」捲動（不是 smooth），位置才會立刻定下來，量測不會抓到捲動中的中間值。
+        // 大元素（>畫面 55% 高）捲到「頂端」，讓重點欄位露出來；一般元素置中。
+        var hpre = el.getBoundingClientRect().height;
+        el.scrollIntoView({ block: hpre > window.innerHeight * 0.55 ? "start" : "center" });
+      } catch (e) {}
+    }
+    // 捲動已定，下一個 frame 量測＋擺放
+    var doPlace = function () {
+      var pad = 6, r, vw = innerWidth, vh = innerHeight;
+      var th = tip.offsetHeight || 160, tw = tip.offsetWidth || 300;
       if (el) { r = el.getBoundingClientRect(); spot.style.display = "block";
         spot.style.left = (r.left - pad) + "px"; spot.style.top = (r.top - pad) + "px";
         spot.style.width = (r.width + pad * 2) + "px"; spot.style.height = (r.height + pad * 2) + "px";
       } else { spot.style.display = "block"; spot.style.left = "50%"; spot.style.top = "50%"; spot.style.width = "0px"; spot.style.height = "0px"; }
-      // tooltip 位置：元素下方優先，否則上方，否則置中
-      var th = tip.offsetHeight || 160, tw = tip.offsetWidth || 300, vw = innerWidth, vh = innerHeight;
+      // tooltip：先試元素「下方」、再試「上方」（兩者都不會蓋到元素）；
+      // 都塞不下整個說明框時（元素太高），貼到離重點較遠的螢幕邊緣，絕不置中蓋住示範。
       var top, left;
       if (el && r) {
         left = Math.min(Math.max(8, r.left), vw - tw - 8);
-        if (r.bottom + th + 14 < vh) top = r.bottom + 12;
-        else if (r.top - th - 14 > 0) top = r.top - th - 12;
-        else top = Math.max(8, (vh - th) / 2);
+        var spaceBelow = vh - r.bottom, spaceAbove = r.top;
+        if (spaceBelow >= th + 16) top = r.bottom + 12;
+        else if (spaceAbove >= th + 16) top = r.top - th - 12;
+        else if (r.height > vh * 0.7) top = vh - th - 10;        // 超大元素：貼底（上方重點露出）
+        else top = (r.top + r.height / 2 < vh / 2) ? (vh - th - 10) : 10;
       } else { left = (vw - tw) / 2; top = (vh - th) / 2; }
-      // 夾在畫面內，避免按鈕跑到螢幕外（小螢幕也安全）
       top = Math.max(8, Math.min(top, vh - th - 8));
       left = Math.max(8, Math.min(left, vw - tw - 8));
       tip.style.left = left + "px"; tip.style.top = top + "px";
-    }, el ? 280 : 0);
+    };
+    if (window.requestAnimationFrame) requestAnimationFrame(function () { requestAnimationFrame(doPlace); });
+    else setTimeout(doPlace, 60);
   }
 
   function render() {
