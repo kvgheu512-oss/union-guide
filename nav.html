@@ -71,6 +71,7 @@
   .person-hd .pn{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;}
   .person-hd .pr{font-size:12.5px;color:#5C4000;margin-top:3px;}
   .vtag{display:inline-block;font-size:11px;color:#fff;background:#5B3B8C;border-radius:10px;padding:1px 8px;margin-left:6px;font-weight:700;vertical-align:middle;white-space:nowrap;}
+  .vtag.r-chair{background:var(--red);} .vtag.r-fin{background:var(--green);} .vtag.r-sup{background:#2E5C8A;} .vtag.r-doc{background:var(--gold);} .vtag.r-wel{background:#7A4F9D;} .vtag.r-all{background:#5B3B8C;}
 </style>
 </head>
 <body data-nonav>
@@ -296,12 +297,12 @@ function choosePerson(key){
 
   var cs = document.getElementById('person-cards');
   var VOICED={"index.html":1,"leavepay.html":1,"jiaban.html":1,"joinroi.html":1,"meet.html":1,"org.html":1,"mailmerge.html":1,"wenhao.html":1,"receipt-batch.html":1,"union.html":1,"dilei.html":1,"huizhi.html":1,"qingjia.html":1,"shouzheng.html":1,"gongfang.html":1,"zhizai.html":1,"charter.html":1,"gongwen.html":1,"meeting.html":1,"roster.html":1,"finance.html":1,"receipt.html":1,"budget-draft.html":1,"workplan.html":1,"cases.html":1,"checklist.html":1,"official-forms.html":1,"founding.html":1,"fanben.html":1,"activity.html":1,"gongwu.html":1,"lawyer.html":1,"id-mark.html":1};
-  function vtag(h){var f=(h||'').split('#')[0];return VOICED[f]?' <span class="vtag">🔊 語音</span>':'';}
+  function vtag(h,cls){var f=(h||'').split('#')[0];return VOICED[f]?' <span class="vtag '+(cls||'')+'">🔊 語音</span>':'';}
   function withTour(h){var f=(h||'').split('#')[0];if(!VOICED[f]||/voiceguide/.test(f))return h;var a=h.indexOf('#'),hash=a>=0?h.slice(a):'',base=a>=0?h.slice(0,a):h;return base+(base.indexOf('?')>=0?'&':'?')+'tour=open'+hash;}
   cs.innerHTML = c.links.map(function(l){
     return '<a class="card '+(l.cl||'nv')+'" href="'+withTour(l.href)+'">'
       +'<span class="ci">'+l.ci+'</span>'
-      +'<div><div class="ct">'+l.ct+vtag(l.href)+'</div>'+(l.cd?'<div class="cd">'+l.cd+'</div>':'')+'</div>'
+      +'<div><div class="ct">'+l.ct+vtag(l.href,c.cls)+'</div>'+(l.cd?'<div class="cd">'+l.cd+'</div>':'')+'</div>'
       +'<span class="ca">→</span>'
       +'</a>';
   }).join('');
