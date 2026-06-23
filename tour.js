@@ -235,6 +235,18 @@
       if (m === "voice" && !voiceReady()) { voiceHelp(stepList); return; }   // 沒中文語音→先教學/改用其它
       start(stepList, { voice: m === "voice", auto: m === "auto" });
     });
+
+    // 從導覽清單帶 ?tour=open / voice / auto 進來 → 等「法律小抄」淡出後，自動跳出導覽
+    var am = (location.search.match(/[?&]tour=(voice|auto|open)/) || [])[1];
+    if (am) {
+      var tries = 0;
+      (function waitSplash() {
+        var sp = document.getElementById("lawtip");
+        if ((!sp || sp.offsetParent === null) || tries > 20) {
+          start(stepList, { voice: am === "voice", auto: am === "auto" });
+        } else { tries++; setTimeout(waitSplash, 300); }
+      })();
+    }
   }
 
   window.EBNTour = { start: start, attach: attach, finish: finish };
