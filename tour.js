@@ -34,6 +34,7 @@
     + "#ebntour-menu.on{display:block;}"
     + "#ebntour-menu button{display:flex;align-items:center;gap:9px;width:210px;background:none;border:0;border-radius:10px;padding:.6rem .7rem;font:600 14px/1.3 'Noto Sans TC',system-ui,sans-serif;color:#222;cursor:pointer;text-align:left;}"
     + "#ebntour-menu button:hover{background:#F0F2F7;}#ebntour-menu .e{font-size:19px;}"
+    + "html.ebnt-has .header{padding-top:58px!important;}"   // 有導覽鈕：標題往下挪，空出最上面那條給返回/導覽/首頁，手機才不會疊在一起
     + "@media print{#ebntour-ov,#ebntour-launch,#ebntour-menu{display:none!important;}}";
 
   function injectCSS() { if (document.getElementById("ebntour-css")) return; var s = document.createElement("style"); s.id = "ebntour-css"; s.textContent = CSS; document.head.appendChild(s); }
@@ -214,6 +215,7 @@
   function attach(stepList, opts) {
     opts = opts || {};
     injectCSS();
+    try { document.documentElement.classList.add("ebnt-has"); } catch (e) {}   // 讓有導覽鈕的頁面標題往下挪，避免手機上與按鈕重疊
     if (document.getElementById("ebntour-launch")) return;
     var btn = document.createElement("button"); btn.id = "ebntour-launch"; btn.className = "noprint"; btn.textContent = "🎬 導覽";
     var menu = document.createElement("div"); menu.id = "ebntour-menu"; menu.className = "noprint";
