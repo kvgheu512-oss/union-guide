@@ -94,13 +94,13 @@
   // 💰 薪水 / 加班費
   {id:"ot_day",cat:"pay",t:"平日加班費怎麼算",k:["加班費","平日加班","加班怎麼算","加班錢","延長工時","加班費怎麼算","加班費怎麼計算"],
     a:[A("平日加班：前 2 小時 × <b>1.34 倍</b>、第 3 小時起 × <b>1.67 倍</b>（底是「時薪」＝月薪 ÷ 30 ÷ 8）。","勞基法 §24。","別自己硬算，<b>試算頁用小白方式</b>，輸入月薪和那天加幾小時就自動算，還能跟實領對照。")],
-    go:[{t:"➡️ 加班費試算",href:"leavepay.html"}]},
+    go:[{t:"➡️ 直接去算平日加班費",href:"leavepay.html#sec-day"}]},
   {id:"ot_holiday",cat:"pay",t:"國定假日上班的薪水",k:["國定假日","國定假","放假上班","假日上班","國定假日加班","紅字","國定"],
     a:[A("國定假日本來就<b>放假、工資照給</b>；那天被叫來上班，當天工資要<b>加倍發</b>（8 小時內加給一日）。","勞基法 §37、§39。","醫院很常算錯這筆，用試算頁驗一下該領多少。")],
-    go:[{t:"➡️ 國定假日試算",href:"leavepay.html"}]},
+    go:[{t:"➡️ 直接去算國定假日",href:"leavepay.html#sec-holi"}]},
   {id:"annual_cash",cat:"pay",t:"特休沒休完有沒有錢",k:["特休","特別休假","沒休完","特休沒休","休不完","年假","特休折算","特休錢","特休沒休完"],
     a:[A("<b>有！</b>特休沒休完，年度結束或離職時，<b>沒休的天數雇主要折錢給你</b>。","勞基法 §38。","常見糾紛是醫院用 ÷31 天去折、把你少算——<b>不是沒給，是算少了</b>。用試算頁對該領多少。")],
-    go:[{t:"➡️ 特休折算試算",href:"leavepay.html"}]},
+    go:[{t:"➡️ 直接去算特休折錢",href:"leavepay.html#sec-annual"}]},
   {id:"annual_days",cat:"pay",t:"我有幾天特休",k:["特休幾天","幾天特休","特休天數","年資","休假天數","特休多少天"],
     a:[A("看年資：滿半年 3 天、1 年 7 天、2 年 10 天、3 年起每年 14 天、5 年起 15 天、10 年起每年加 1 天到 30 天封頂。","勞基法 §38。","<b>約用、派遣只要受僱、年資到了，一樣有特休。</b>")],
     go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
@@ -110,20 +110,20 @@
 
   // 🏖 請假 / 特休
   {id:"sick",cat:"leave",t:"病假被扣全勤合不合法",k:["病假","全勤","扣全勤","病假扣","生病請假","普通病假","病假薪水","病假被扣"],
-    a:[A("新制：一年<b>病假 10 天內，雇主不得做不利處分</b>；超過也不能只看病假天數打考核，雇主要負舉證責任。病假薪水：一年 30 天內<b>折半發</b>。","勞工請假規則 §4、§9-1。","被亂扣全勤或考核，截圖存證、找工會。")],
+    a:[A("新制：一年<b>病假 10 天內，雇主不得做不利處分</b>；超過也不能只看病假天數打考核，雇主要負舉證責任。病假薪水：一年 30 天內<b>折半發</b>。","勞工請假規則 §4、§9-1。","高榮沒有全勤獎、但會扣績效——被以病假天數扣績效或考核，<b>就違反 §9-1</b>。截圖存證、找工會。")],
     go:[{t:"➡️ 請假權益速查",href:"qingjia.html"}]},
   {id:"marriage",cat:"leave",t:"婚假幾天",k:["婚假","結婚","結婚假","婚假幾天"],
-    a:[A("婚假 <b>8 天、工資照給</b>，雇主<b>不得扣你全勤</b>。","請假規則 §2、§9。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+    a:[A("婚假 <b>8 天、工資照給</b>。","請假規則 §2。","高榮沒有全勤獎，但若因婚假被<b>扣績效／考核</b>，法律對此沒有直接明文——<b>保留紀錄、交工會反映爭取</b>。")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
   {id:"funeral",cat:"leave",t:"喪假幾天",k:["喪假","喪假幾天","親人過世","辦喪事","喪假天數"],
-    a:[A("父母／配偶 <b>8 天</b>；祖父母、子女、配偶父母等 <b>6 天</b>；兄弟姊妹、曾祖父母等 <b>3 天</b>，<b>工資照給、不扣全勤</b>。","請假規則 §3、§9。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+    a:[A("父母／配偶 <b>8 天</b>；祖父母、子女、配偶父母等 <b>6 天</b>；兄弟姊妹、曾祖父母等 <b>3 天</b>，<b>工資照給</b>。","請假規則 §3。","高榮沒有全勤獎，若喪假被<b>扣績效</b>，法律無直接明文，<b>留紀錄、找工會</b>爭取。")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
   {id:"maternity",cat:"leave",t:"產假、陪產假、產檢假",k:["產假","陪產","產檢","生小孩","懷孕","安胎","陪產假","產檢假"],
-    a:[A("產假 <b>8 週</b>；產檢假、陪產檢及陪產假<b>各 7 天</b>。雇主<b>不得拒絕、不得影響全勤與考績</b>。","性別平等工作法 §15、§21。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+    a:[A("產假 <b>8 週</b>；產檢假、陪產檢及陪產假<b>各 7 天</b>。雇主<b>不得拒絕，也不得因此影響你的考績或做不利處分</b>。","性別平等工作法 §15、§21。","高榮若因這些假<b>扣你績效／考核，就違反 §21</b>，可據此爭取。")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
   {id:"period",cat:"leave",t:"生理假",k:["生理假","月經","經期","生理期"],
-    a:[A("每月可請 <b>1 天</b>（全年 3 天不併入病假），薪水減半；<b>不影響全勤與考績</b>。","性平法 §14、§21。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+    a:[A("每月可請 <b>1 天</b>（全年 3 天不併入病假），薪水減半；雇主<b>不得因此影響考績或做不利處分</b>。","性平法 §14、§21。","高榮若因生理假<b>扣績效，違反 §21</b>。")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
   {id:"familycare",cat:"leave",t:"家庭照顧假",k:["家庭照顧假","照顧家人","家人生病","照顧假"],
-    a:[A("全年 <b>7 天</b>（併入事假計），照顧需你親自照料的家人；雇主<b>不得拒絕、不得影響全勤考績</b>。","性平法 §20、§21。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+    a:[A("全年 <b>7 天</b>（併入事假計），照顧需你親自照料的家人；雇主<b>不得拒絕，也不得因此影響考績或做不利處分</b>。","性平法 §20、§21。","高榮若因此<b>扣績效，違反 §21</b>。")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
   {id:"personal",cat:"leave",t:"事假規定",k:["事假","事假幾天","事假扣薪","請事假"],
-    a:[A("全年 <b>14 天</b>、<b>不給薪</b>。但「為照顧家人」的事假，雇主<b>不得扣全勤</b>。","請假規則 §7、§9。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+    a:[A("全年 <b>14 天</b>、<b>不給薪</b>。","請假規則 §7。","高榮沒有全勤獎，但會因事假<b>扣績效</b>；這部分法律沒有直接明文保護，<b>非必要少請、必要時留紀錄交工會</b>。")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
   {id:"training",cat:"leave",t:"醫院要求上課算工時或公假嗎",k:["上課","受訓","訓練","教育訓練","評鑑","繼續教育","在職訓練","研習","上課算工時"],
     a:[A("看是不是「<b>不去會被處分／影響考核／是上班必要</b>」：是的話＝院方要求，這段時間<b>應算工時（薪水照給）或給公假</b>，<b>不能逼你用特休／事假、更不能無薪</b>。純個人進修才自己請假。","請假規則 §8 ＋ 勞基法工時原則。","保留<b>指派通知、課程公告、是否強制</b>的證據，交工會主張。")],
     go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
@@ -230,12 +230,18 @@
   var jlog=document.getElementById("jbot-log"), jchips=document.getElementById("jbot-chips");
   var jin=document.getElementById("jbot-in"), jsend=document.getElementById("jbot-send");
   function bub(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);jlog.scrollTop=jlog.scrollHeight;}
+  // 內頁連結自動帶 ?from=help → 對方頁面右下角的鈕會變成「← 回小幫手」
+  function withFrom(h){
+    if(/^(https?:|tel:|mailto:)/.test(h)) return h;
+    var hash="", hi=h.indexOf("#"); if(hi>=0){hash=h.slice(hi); h=h.slice(0,hi);}
+    return h+(h.indexOf("?")>=0?"&":"?")+"from=help"+hash;
+  }
   // chips：item = {t, id?(看答案) , href?(外連/內頁) , cat?(展開分類) , fn?, cls?}
   function chips(items){
     jchips.innerHTML="";
     items.forEach(function(c){
       var el;
-      if(c.href){el=document.createElement("a");el.href=c.href;el.textContent=c.t;
+      if(c.href){el=document.createElement("a");el.href=withFrom(c.href);el.textContent=c.t;
         if(/^https?:|^tel:/.test(c.href)){el.target="_blank";el.rel="noopener";}}
       else{el=document.createElement("button");el.type="button";el.textContent=c.t;if(c.cls)el.className=c.cls;
         el.addEventListener("click",function(){ if(c.fn){c.fn();} });}

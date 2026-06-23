@@ -177,15 +177,22 @@
    由小幫手一步步導到對的工具頁＋告訴他該找哪位幹部，減少幹部被瑣事打斷。
    ・不想要的頁：<body data-nohelp>（help.html 自己、純導頁等）。 */
 (function(){
+  // 從小幫手點工具連結（帶 ?from=help）來的 → 記住，整趟都顯示「← 回小幫手」
+  var FK="ebn_from_help";
+  try{
+    if(/[?&]from=help(\b|&|=|$)/.test(location.search)) sessionStorage.setItem(FK,"1");
+    if(/help\.html$/.test(location.pathname)) sessionStorage.removeItem(FK);   // 回到小幫手就清掉
+  }catch(e){}
   function build(){
     var b=document.body; if(!b) return;
     if(b.hasAttribute("data-nohelp")) return;
     if(/help\.html$/.test(location.pathname)) return;            // 小幫手頁本身不放
     if(document.getElementById("ebnHelp")) return;               // 冪等
+    var fromHelp=false; try{ fromHelp = sessionStorage.getItem(FK)==="1"; }catch(e){}
     var a=document.createElement("a");
     a.id="ebnHelp"; a.className="noprint"; a.href="help.html";
-    a.setAttribute("aria-label","工會小幫手：我帶你找對地方");
-    a.innerHTML="🤖 小幫手";
+    a.setAttribute("aria-label", fromHelp ? "回到工會小幫手問答頁" : "工會小幫手：我帶你找對地方");
+    a.innerHTML = fromHelp ? "← 回小幫手" : "🤖 小幫手";
     a.style.cssText="position:fixed;right:14px;bottom:16px;z-index:1050;background:linear-gradient(135deg,#1A7A4A,#0F5C36);color:#fff;text-decoration:none;font:700 13.5px/1 'Noto Sans TC',system-ui,sans-serif;padding:.6rem .9rem;border-radius:24px;box-shadow:0 5px 18px rgba(0,0,0,.32);display:flex;align-items:center;gap:5px;-webkit-tap-highlight-color:transparent;";
     b.appendChild(a);
   }

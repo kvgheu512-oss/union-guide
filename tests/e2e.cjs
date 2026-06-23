@@ -148,6 +148,9 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.click('#jbot-chips button'); await p.waitForTimeout(200);
     const ans = await p.$$eval('#jbot-log .b.bot .ans', e => e.length);
     (ans >= 1) ? ok('熱門問題給答案') : bad('help', 'hot no answer'); });
+  await T('從小幫手來的頁面顯示回小幫手鈕', async p => { await p.goto(BASE + 'leavepay.html?from=help#sec-holi', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(400);
+    const t = await p.textContent('#ebnHelp').catch(() => '');
+    (t && t.includes('回小幫手')) ? ok('回小幫手鈕出現') : bad('backbtn', 'ebnHelp=' + t); });
 
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);
