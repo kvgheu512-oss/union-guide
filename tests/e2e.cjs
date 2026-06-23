@@ -137,12 +137,17 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.click('#ebntour-menu button[data-m="text"]'); await p.waitForTimeout(600);
     const w = await p.$eval('#ebntour-spot', e => parseFloat(e.style.width) || 0);
     (w > 0) ? ok('spotlight 有框住元素(' + Math.round(w) + 'px)') : bad('spot', '聚焦框寬度=' + w); });
-  await T('help 工會小幫手分診', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
+  await T('help 自助問答即時回答', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
     const init = await p.$$eval('#jbot-log .b.bot', e => e.length); if (init < 1) return bad('help', 'no greeting');
-    await p.click('#jbot-chips button'); await p.waitForTimeout(200);
+    await p.fill('#jbot-in', '特休沒休完有錢嗎'); await p.click('#jbot-send'); await p.waitForTimeout(250);
     const me = await p.$$eval('#jbot-log .b.me', e => e.length);
-    const bot = await p.$$eval('#jbot-log .b.bot', e => e.length);
-    (me >= 1 && bot > init) ? ok('分診前進(' + bot + 'bot/' + me + 'me)') : bad('help', 'no advance'); });
+    const ans = await p.$$eval('#jbot-log .b.bot .ans', e => e.length);
+    const txt = await p.textContent('#jbot-log');
+    (me >= 1 && ans >= 1 && txt.includes('38')) ? ok('打字即答(' + ans + '答案段)') : bad('help', 'me=' + me + ' ans=' + ans); });
+  await T('help 熱門問題按鈕可答', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
+    await p.click('#jbot-chips button'); await p.waitForTimeout(200);
+    const ans = await p.$$eval('#jbot-log .b.bot .ans', e => e.length);
+    (ans >= 1) ? ok('熱門問題給答案') : bad('help', 'hot no answer'); });
 
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);

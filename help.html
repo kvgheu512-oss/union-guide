@@ -34,6 +34,16 @@
   .jbot-chips a{font-size:13.5px;background:var(--green);color:#fff;border:none;border-radius:20px;padding:.55rem .95rem;cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent;font-weight:700;}
   .jbot-chips a.tel{background:#1A3A6B;}
   .jbot-chips button.again{background:#fff;color:var(--ink-soft);border-color:var(--border);}
+  .jbot-chips button.cat{background:var(--gold-light);color:#8A6300;border-color:#EAD67A;}
+  .jbot-input{display:flex;gap:8px;padding:.8rem 1rem;border-top:1px solid var(--border);background:#fff;}
+  .jbot-input input{flex:1;border:1.5px solid var(--border);border-radius:22px;padding:.6rem 1rem;font-size:16px;font-family:inherit;}
+  .jbot-input input:focus{outline:none;border-color:var(--green);}
+  .jbot-input button{flex-shrink:0;background:var(--green);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;}
+  .jbot-input button:active{background:var(--green-deep);}
+  .ans .lab{display:inline-block;font-size:11.5px;font-weight:700;border-radius:6px;padding:1px 7px;margin-right:5px;}
+  .ans .lab.fa{background:#E9F6EF;color:#1f6b43;}
+  .ans .lab.law{background:#EEF2FB;color:#1A3A6B;}
+  .ans .lab.do{background:var(--gold-light);color:#8A6300;}
   .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.3rem;line-height:1.8;}
 </style>
 <link rel="stylesheet" href="common.css">
@@ -42,22 +52,26 @@
 
 <div class="header">
   <h1>🤖 工會小幫手</h1>
-  <p>不知道從哪找起？點按鈕回答我，<b>一步一步帶你到對的地方</b></p>
+  <p>24 小時自助問答 · <b>打字問我，馬上給你答案＋怎麼處理</b></p>
 </div>
 
 <main>
-  <div class="topnote">📌 看到一堆東西不知道按哪個？正常的。<b>你只要回答我幾個問題</b>，我就帶你到能解決的那一頁，還會告訴你<b>這件事該找哪位幹部</b>。不用先懂法規、也不用先認識每個幹部。</div>
+  <div class="topnote">📌 <b>直接打字問我就好</b>，例如：「特休沒休完有錢嗎」「加班費怎麼算」「被扣全勤合不合法」「約用能不能入會」。我會<b>馬上給你白話答案＋法律依據＋下一步怎麼做</b>，多數問題當場解決，不用等幹部、不用先懂法規。也可以點下面的分類慢慢逛。</div>
 
   <div class="jbot" id="jbot">
     <div class="jbot-top">
       <div class="ava">🤖</div>
-      <div><div class="nm">工會小幫手</div><div class="tg">點按鈕就好，我帶你走（不用打字）</div></div>
+      <div><div class="nm">工會小幫手</div><div class="tg">打字或點按鈕都可以 · 答案即時跳出</div></div>
     </div>
     <div class="jbot-log" id="jbot-log"></div>
     <div class="jbot-chips" id="jbot-chips"></div>
+    <div class="jbot-input">
+      <input id="jbot-in" type="text" placeholder="打字問我，例如：特休沒休完有錢嗎？" enterkeyhint="search" autocomplete="off">
+      <button id="jbot-send" type="button" aria-label="問">➤</button>
+    </div>
   </div>
 
-  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 這個小幫手只幫你「找對地方」，個資不會上傳<br>緊急或拿不定主意，打勞工專線 1955，或在 LINE 群找幹部</div>
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 答案為整理參考、非正式法律意見，正式以法規與官方公告為準<br>個資只存你的裝置、不上傳 · 真的卡關，打勞工專線 1955 或在 LINE 群找幹部</div>
 </main>
 
 <div id="verBadge"></div>
@@ -65,116 +79,235 @@
 <script>
 (function(){
   "use strict";
-  // LINE 群（與首頁一致）
-  var LINE_URL="https://line.me/ti/g/yBNcV4Y8GU";
+  var LINE_URL="https://line.me/ti/g/yBNcV4Y8GU";  // 工會 LINE 群（與首頁一致）
 
-  // ===== 問題分診決策樹：問題 → 帶到對的頁 + 告訴他找哪位幹部 =====
-  var NODES={
-    start:{say:["你好，我是<b>工會小幫手</b>🤖。先別煩惱要點哪裡——<b>你今天想處理什麼？</b>"],
-      chips:[
-        {t:"💰 加班費／薪水算不對",to:"pay"},
-        {t:"🤕 工作受傷／生病（職災）",to:"injury"},
-        {t:"🏖 請假／特休的問題",to:"leave"},
-        {t:"🛡 被主管刁難／權益受損",to:"rights"},
-        {t:"📝 我想加入工會",to:"join"},
-        {t:"🧾 收據／報帳／財務",to:"money"},
-        {t:"💸 工會有沒有補助可領",to:"subsidy"},
-        {t:"🆕 我是新會員，帶我認識",to:"newbie"},
-        {t:"🙋 我不知道該找哪位幹部",to:"who"},
-        {t:"📞 我想直接找人問",to:"contact"}
-      ]},
+  // 答案的標準三段：✅直接回答　📖依據　👉怎麼做（grade-2 白話）
+  function A(fa,law,doo){
+    var s="<div class='ans'><span class='lab fa'>✅ 答案</span>"+fa+"</div>";
+    if(law) s+="<div class='ans' style='margin-top:6px'><span class='lab law'>📖 依據</span>"+law+"</div>";
+    if(doo) s+="<div class='ans' style='margin-top:6px'><span class='lab do'>👉 怎麼做</span>"+doo+"</div>";
+    return s;
+  }
 
-    pay:{say:["加班費、薪水算不對，最常見也最該顧。",
-      "我帶你去<b>加班費試算</b>那頁，裡面用「小白方式」一步步帶你填，還有語音導覽，自己就能算出該領多少。",
-      "<span class='who'>👤 承辦：法規 巫佳容／葉柏宏</span>算完有疑問，找他們。"],
-      chips:[{t:"➡️ 去加班費試算",href:"leavepay.html"},{t:"我要工會幫忙看",to:"help"},{t:"回上一層",to:"start"}]},
+  // ===== 知識庫：會員最常問的問題，當場給答案 =====
+  var KB=[
+  // 💰 薪水 / 加班費
+  {id:"ot_day",cat:"pay",t:"平日加班費怎麼算",k:["加班費","平日加班","加班怎麼算","加班錢","延長工時","加班費怎麼算","加班費怎麼計算"],
+    a:[A("平日加班：前 2 小時 × <b>1.34 倍</b>、第 3 小時起 × <b>1.67 倍</b>（底是「時薪」＝月薪 ÷ 30 ÷ 8）。","勞基法 §24。","別自己硬算，<b>試算頁用小白方式</b>，輸入月薪和那天加幾小時就自動算，還能跟實領對照。")],
+    go:[{t:"➡️ 加班費試算",href:"leavepay.html"}]},
+  {id:"ot_holiday",cat:"pay",t:"國定假日上班的薪水",k:["國定假日","國定假","放假上班","假日上班","國定假日加班","紅字","國定"],
+    a:[A("國定假日本來就<b>放假、工資照給</b>；那天被叫來上班，當天工資要<b>加倍發</b>（8 小時內加給一日）。","勞基法 §37、§39。","醫院很常算錯這筆，用試算頁驗一下該領多少。")],
+    go:[{t:"➡️ 國定假日試算",href:"leavepay.html"}]},
+  {id:"annual_cash",cat:"pay",t:"特休沒休完有沒有錢",k:["特休","特別休假","沒休完","特休沒休","休不完","年假","特休折算","特休錢","特休沒休完"],
+    a:[A("<b>有！</b>特休沒休完，年度結束或離職時，<b>沒休的天數雇主要折錢給你</b>。","勞基法 §38。","常見糾紛是醫院用 ÷31 天去折、把你少算——<b>不是沒給，是算少了</b>。用試算頁對該領多少。")],
+    go:[{t:"➡️ 特休折算試算",href:"leavepay.html"}]},
+  {id:"annual_days",cat:"pay",t:"我有幾天特休",k:["特休幾天","幾天特休","特休天數","年資","休假天數","特休多少天"],
+    a:[A("看年資：滿半年 3 天、1 年 7 天、2 年 10 天、3 年起每年 14 天、5 年起 15 天、10 年起每年加 1 天到 30 天封頂。","勞基法 §38。","<b>約用、派遣只要受僱、年資到了，一樣有特休。</b>")],
+    go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+  {id:"payslip",cat:"pay",t:"薪資明細看不懂、想核對",k:["薪資明細","薪資單","工資清冊","薪水條","明細","本薪","底薪","核對薪水","薪水對不上"],
+    a:[A("雇主<b>應提供工資清冊、列明每個項目</b>。看不懂可用試算頁把本薪、加班、夜班、特休折算一項項對。","勞基法 §23。","對不上的地方就是線索，存好截圖交給工會。")],
+    go:[{t:"➡️ 薪資/加班試算",href:"leavepay.html"}]},
 
-    injury:{say:["工作受傷／生病別自己吞。那一頁有<b>「職災就醫小幫手」</b>，會一步步教你掛號講職災身分、門診單怎麼拿、被職安室擋住怎麼辦。",
-      "<span class='who'>👤 承辦：法規 巫佳容／葉柏宏</span>需要出面協調，理事長 楊淯涵。"],
-      chips:[{t:"➡️ 去職災就醫小幫手",href:"zhizai.html"},{t:"我要工會幫忙",to:"help"},{t:"回上一層",to:"start"}]},
+  // 🏖 請假 / 特休
+  {id:"sick",cat:"leave",t:"病假被扣全勤合不合法",k:["病假","全勤","扣全勤","病假扣","生病請假","普通病假","病假薪水","病假被扣"],
+    a:[A("新制：一年<b>病假 10 天內，雇主不得做不利處分</b>；超過也不能只看病假天數打考核，雇主要負舉證責任。病假薪水：一年 30 天內<b>折半發</b>。","勞工請假規則 §4、§9-1。","被亂扣全勤或考核，截圖存證、找工會。")],
+    go:[{t:"➡️ 請假權益速查",href:"qingjia.html"}]},
+  {id:"marriage",cat:"leave",t:"婚假幾天",k:["婚假","結婚","結婚假","婚假幾天"],
+    a:[A("婚假 <b>8 天、工資照給</b>，雇主<b>不得扣你全勤</b>。","請假規則 §2、§9。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+  {id:"funeral",cat:"leave",t:"喪假幾天",k:["喪假","喪假幾天","親人過世","辦喪事","喪假天數"],
+    a:[A("父母／配偶 <b>8 天</b>；祖父母、子女、配偶父母等 <b>6 天</b>；兄弟姊妹、曾祖父母等 <b>3 天</b>，<b>工資照給、不扣全勤</b>。","請假規則 §3、§9。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+  {id:"maternity",cat:"leave",t:"產假、陪產假、產檢假",k:["產假","陪產","產檢","生小孩","懷孕","安胎","陪產假","產檢假"],
+    a:[A("產假 <b>8 週</b>；產檢假、陪產檢及陪產假<b>各 7 天</b>。雇主<b>不得拒絕、不得影響全勤與考績</b>。","性別平等工作法 §15、§21。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+  {id:"period",cat:"leave",t:"生理假",k:["生理假","月經","經期","生理期"],
+    a:[A("每月可請 <b>1 天</b>（全年 3 天不併入病假），薪水減半；<b>不影響全勤與考績</b>。","性平法 §14、§21。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+  {id:"familycare",cat:"leave",t:"家庭照顧假",k:["家庭照顧假","照顧家人","家人生病","照顧假"],
+    a:[A("全年 <b>7 天</b>（併入事假計），照顧需你親自照料的家人；雇主<b>不得拒絕、不得影響全勤考績</b>。","性平法 §20、§21。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+  {id:"personal",cat:"leave",t:"事假規定",k:["事假","事假幾天","事假扣薪","請事假"],
+    a:[A("全年 <b>14 天</b>、<b>不給薪</b>。但「為照顧家人」的事假，雇主<b>不得扣全勤</b>。","請假規則 §7、§9。","")],go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+  {id:"training",cat:"leave",t:"醫院要求上課算工時或公假嗎",k:["上課","受訓","訓練","教育訓練","評鑑","繼續教育","在職訓練","研習","上課算工時"],
+    a:[A("看是不是「<b>不去會被處分／影響考核／是上班必要</b>」：是的話＝院方要求，這段時間<b>應算工時（薪水照給）或給公假</b>，<b>不能逼你用特休／事假、更不能無薪</b>。純個人進修才自己請假。","請假規則 §8 ＋ 勞基法工時原則。","保留<b>指派通知、課程公告、是否強制</b>的證據，交工會主張。")],
+    go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+  {id:"typhoon",cat:"leave",t:"颱風假要上班嗎、有薪水嗎",k:["颱風","颱風假","天然災害","停班","風災","地震","災害假"],
+    a:[A("天然災害停班<b>不是法定假，雇主可不發當日工資</b>，但<b>不能扣全勤、不能算曠職、不能強迫補班</b>。醫院屬必要出勤單位常要求到班，到班者建議爭取<b>津貼或補休</b>。","勞動部天然災害出勤指引。","")],go:[]},
+  {id:"comp",cat:"leave",t:"加班可以換補休嗎",k:["補休","加班換補休","換休","加班換休","補休時數"],
+    a:[A("可以，但<b>要你同意</b>，且<b>補休時數＝加班時數 1 比 1</b>（不是用倍率換）。補休沒休完，<b>仍要按加班當時的倍率折錢</b>。雇主不能強迫你只能補休。","勞基法 §32-1。","")],go:[]},
 
-    leave:{say:["請假、特休、被卡假，這頁把規則整理成白話＋有語音導覽。",
-      "<span class='who'>👤 承辦：法規 巫佳容／葉柏宏</span>"],
-      chips:[{t:"➡️ 去請假權益說明",href:"qingjia.html"},{t:"我要工會幫忙",to:"help"},{t:"回上一層",to:"start"}]},
+  // 🤕 受傷 / 職災
+  {id:"injury",cat:"injury",t:"工作受傷怎麼就醫（職災）",k:["受傷","職災","職傷","工傷","公傷","工作受傷","就醫","看病","掛號","受傷怎麼辦"],
+    a:[A("<b>掛號時一定要說「用職業傷病（職災）身分就醫」</b>——可免健保部分負擔。回診要再跟單位（人事／職安室）拿『職業傷病門診單』。","勞工職業災害保險及保護法。","那頁有<b>職災就醫小幫手</b>，一步步帶你走，被職安室擋住也有官方三招。")],
+    go:[{t:"➡️ 職災就醫小幫手",href:"zhizai.html"}]},
+  {id:"injury_block",cat:"injury",t:"職安室不認定職災、不給門診單",k:["職安室","不認定","擋公傷","不給門診單","門診單","不給單","刁難職災","認定"],
+    a:[A("認定有<b>法定準則、不是雇主說了算</b>。拿不到門診單三招：① 帶證明去<b>勞保局辦事處</b>當場領；② 職業病給<b>職業醫學科醫師</b>直接開；③ 先自費、<b>6 個月內申請核退</b>。","勞動部・職災醫療書單規定。","雇主依規定<b>應主動填發</b>，不開不合規，必要時工會出面或打 1955。")],
+    go:[{t:"➡️ 職災維權專區",href:"zhizai.html"}]},
 
-    rights:{say:["被主管刁難、權益受損，我幫你分情況。<b>你現在最想做哪件事？</b>"],
-      chips:[
-        {t:"先保留證據（對話、紀錄）",to:"evidence"},
-        {t:"想先問法律怎麼說",to:"lawyer"},
-        {t:"我要正式申訴／檢舉",to:"appeal"},
-        {t:"回上一層",to:"start"}]},
-    evidence:{say:["先把證據留好，之後才站得住腳。這頁教你<b>哪些要存、怎麼存</b>（對話、出勤、診斷、目擊者）。",
-      "<span class='who'>👤 承辦：法規 巫佳容／葉柏宏</span>"],
-      chips:[{t:"➡️ 去蒐證指南",href:"evidence.html"},{t:"我要工會幫忙",to:"help"},{t:"回上一層",to:"rights"}]},
-    lawyer:{say:["想先知道法律怎麼說？本站有<b>AI 律師</b>，把你的狀況貼進去，它幫你看對方哪句話站不住腳、下一步怎麼走。",
-      "<span class='who'>👤 後續：法規 巫佳容／葉柏宏</span>"],
-      chips:[{t:"⚖️ 開 AI 律師",href:"lawyer.html"},{t:"我要工會幫忙",to:"help"},{t:"回上一層",to:"rights"}]},
-    appeal:{say:["要正式申訴／檢舉，<b>監察與申訴</b>是監事的職權，由她協助你走程序、把關。",
-      "<span class='who'>👤 承辦：監事 陳依婷</span>緊急可打勞工專線 <b>1955</b>。",
-      "建議先把證據整理好（我可以帶你去蒐證頁），再交給工會。"],
-      chips:[{t:"先去蒐證",to:"evidence"},{t:"我要工會幫忙",to:"help"},{t:"☎️ 打 1955",href:"tel:1955",tel:true},{t:"回上一層",to:"rights"}]},
+  // 🛡 被刁難 / 權益
+  {id:"bully",cat:"rights",t:"被職場霸凌怎麼辦",k:["霸凌","職場霸凌","欺負","針對","刁難","羞辱","孤立","被罵"],
+    a:[A("先<b>保留證據</b>（對話、錄音、目擊者、時間地點），別硬碰。職場霸凌雇主有<b>防護義務</b>。可走<b>申訴</b>或交工會協助。","職安法 §6；公務員依保障法 §19。","先去蒐證頁把證據整理好，再交工會或申訴。")],
+    go:[{t:"先去蒐證",href:"shouzheng.html"},{t:"⚖️ 問 AI 律師",href:"lawyer.html"}]},
+  {id:"layoff",cat:"rights",t:"被資遣有沒有資遣費、預告",k:["資遣","資遣費","預告","被開除","解僱","裁員","非自願離職","失業給付"],
+    a:[A("合法資遣要<b>符合法定事由＋預告＋給資遣費</b>。預告：滿 3 月～1 年 10 天、1～3 年 20 天、3 年以上 30 天。資遣費（新制）每滿 1 年給 0.5 個月、未滿比例算。還能領<b>失業給付</b>（要非自願離職證明）。","勞基法 §11、§16、勞退條例 §12。","覺得是違法解僱，先蒐證、找工會。")],
+    go:[{t:"先去蒐證",href:"shouzheng.html"},{t:"⚖️ 問 AI 律師",href:"lawyer.html"}]},
+  {id:"insurance",cat:"rights",t:"勞健保高薪低報、沒幫我保",k:["勞保","健保","高薪低報","低報","沒保勞保","投保薪資","勞退","沒保險"],
+    a:[A("雇主<b>必須覈實申報投保薪資</b>，低報會害你日後給付（傷病、失能、老年、失業）縮水，也少提繳勞退。","勞保條例、就保法、勞退條例。","可向<b>勞保局／勞工局檢舉</b>，會追補並罰雇主。先留薪資證明。")],
+    go:[{t:"⚖️ 問 AI 律師",href:"lawyer.html"}]},
+  {id:"schedule",cat:"rights",t:"班表、調班不合理",k:["班表","調班","排班","輪班","換班","間隔","七休一","班表不合理"],
+    a:[A("輪班換班間隔原則<b>至少 11 小時</b>，也有七休一、加班時數上限。長期違法可<b>檢舉勞檢</b>。","勞基法 §34、§36。","先把<b>班表存證</b>，交工會彙整較有力。")],
+    go:[{t:"先去蒐證",href:"shouzheng.html"}]},
+  {id:"appeal",cat:"rights",t:"我要申訴、檢舉",k:["申訴","檢舉","投訴","勞檢","裁決","爭議","告","檢舉雇主"],
+    a:[A("先把<b>證據整理好</b>再出手最有力。管道：勞工打 <b>1955</b>／向<b>勞工局</b>申訴調解；公務員走<b>申訴、復審</b>（監事協助）。工會可以<b>陪你一起</b>。","勞資爭議處理法；公務員保障法。","先去蒐證頁整理證據。")],
+    go:[{t:"先去蒐證",href:"shouzheng.html"},{t:"☎️ 打 1955",href:"tel:1955"}]},
 
-    join:{say:["歡迎加入！不管你是正職、約用還是派遣，<b>都先看「入會划不划算」</b>，再從首頁連署／入會。",
-      "<span class='who'>👤 承辦：文宣 黃淑姸（招募）</span>"],
-      chips:[{t:"➡️ 入會划不划算",href:"joinroi.html"},{t:"🏠 去首頁入會",href:"index.html"},{t:"回上一層",to:"start"}]},
+  // 📝 入會 / 會費
+  {id:"can_join",cat:"join",t:"約用／派遣／契約能不能入會",k:["約用","派遣","契約","能不能加入","可以加入","資格","入會資格","正職","臨時人員"],
+    a:[A("<b>可以！</b>只要在高榮工作、具勞工身分（約用、契約、派遣等）都能加入企業工會。<b>不是只有正職才行。</b>","工會法。","")],
+    go:[{t:"➡️ 入會划不划算",href:"joinroi.html"},{t:"🏠 去首頁入會",href:"index.html"}]},
+  {id:"benefit",cat:"join",t:"入會有什麼好處",k:["好處","划算","為什麼加入","入會好處","加入有什麼用","值得嗎","加入工會好處"],
+    a:[A("集體跟院方協商（薪資、加班費、工時）、加班費／權益有人幫你算幫你爭、免費法律諮詢、會員活動。<b>一個人講沒人理，一群人講才有份量。</b>","","")],
+    go:[{t:"➡️ 入會划不划算",href:"joinroi.html"}]},
+  {id:"how_join",cat:"join",t:"怎麼入會、連署",k:["怎麼加入","怎麼入會","連署","報名加入","入會表","加入工會","入會方式"],
+    a:[A("現在籌備中，<b>先在首頁連署當發起人</b>，後續成立大會再正式入會。流程都在首頁。","","")],
+    go:[{t:"🏠 去首頁連署/入會",href:"index.html"}]},
+  {id:"fee",cat:"join",t:"會費多少",k:["會費","入會費","常年會費","要繳多少","月費","繳費","會費多少"],
+    a:[A("會費金額<b>由成立大會通過的章程決定</b>，目前籌備中尚未定案（<b>待核對</b>）。確定後會公告。一般工會入會費＋常年會費都不高。","工會法 §28。","金額確定前，細節可在 LINE 群問。")],
+    go:[{t:"📱 問工會（LINE）",href:LINE_URL}]},
+  {id:"quit",cat:"join",t:"怎麼退會",k:["退會","退出","不想加入了","退工會","退出工會"],
+    a:[A("入會、退會<b>自由</b>。想退會通常以<b>書面向工會表明</b>即可，已繳會費依章程處理。細節成立後依章程辦。","","")],
+    go:[{t:"📱 問工會（LINE）",href:LINE_URL}]},
+  {id:"what_union",cat:"join",t:"工會到底在做什麼",k:["工會是什麼","工會做什麼","工會幹嘛","工會用途","成立工會","工會有什麼用"],
+    a:[A("工會＝勞工自己的組織，用<b>集體</b>力量跟雇主協商、簽團體協約、爭取與監督權益，也提供諮詢互助。<b>是工具，不是許願池</b>——大家一起參與才有力量。","工會法。","")],
+    go:[{t:"🎧 會員語音導覽",href:"voiceguide.html"}]},
 
-    money:{say:["收據、報帳、會費這類，是<b>財務／總務</b>在管的。我帶你去收據產生器。",
-      "<span class='who'>👤 承辦：總務 莊瑋聆</span>"],
-      chips:[{t:"➡️ 去收據產生器",href:"receipt.html"},{t:"看透明帳本",href:"finance.html"},{t:"回上一層",to:"start"}]},
+  // 🧾 財務 / 補助
+  {id:"receipt",cat:"money",t:"收據、報帳",k:["收據","報帳","報銷","核銷","開收據","請款"],
+    a:[A("收據用<b>收據產生器</b>填一填就好；幹部在外花錢可用<b>單據快拍</b>拍照傳給帳房。","","")],
+    go:[{t:"➡️ 收據產生器",href:"receipt.html"}]},
+  {id:"subsidy",cat:"money",t:"有沒有政府補助可領",k:["補助","政府補助","補助款","申請補助","獎勵","經費","補助金"],
+    a:[A("有！新工會<b>獎勵成立最高 10 萬＋10 萬</b>、教育訓練補助、籌組輔導補助。那頁整理好＋官方連結，還教你一步步拿到。","勞動部補助專區。","")],
+    go:[{t:"➡️ 政府補助查詢",href:"buzhu.html"}]},
 
-    subsidy:{say:["問得好，我們窮歸窮，<b>政府給工會的錢別放著不領</b>。這頁整理了新工會最該申請的補助＋官方連結，還教你一步步拿到。",
-      "<span class='who'>👤 承辦：總務 莊瑋聆</span>"],
-      chips:[{t:"➡️ 去政府補助查詢",href:"buzhu.html"},{t:"回上一層",to:"start"}]},
+  // 🙋 其他
+  {id:"privacy",cat:"misc",t:"我的個資會不會外洩",k:["個資","隱私","資料","外洩","安全","會不會上傳","名冊","資料安全"],
+    a:[A("放心，本站<b>會員個資只存你自己的裝置（本機），絕不上傳</b>；名冊、案件個資也不上線。連署填的聯絡方式只送工會做籌備聯繫，受個資法保護。","個人資料保護法。","")],
+    go:[]},
+  {id:"lawyer",cat:"misc",t:"我想要法律諮詢",k:["律師","法律諮詢","法律","諮詢","打官司","法律問題"],
+    a:[A("本站有<b>AI 律師</b>，把狀況貼進去，幫你看對方哪句話站不住腳、下一步怎麼走。複雜個案再轉真人律師／工會。","","")],
+    go:[{t:"⚖️ 開 AI 律師",href:"lawyer.html"}]},
+  {id:"contact",cat:"misc",t:"我想直接找人問",k:["找人","找幹部","聯絡","line","賴","電話","怎麼聯絡","問人","找工會"],
+    a:[A("最快兩招：① 加入<b>工會 LINE 群</b>把問題丟進去；② 急事打<b>勞工專線 1955</b>。把狀況講清楚（哪天、發生什麼、誰說了什麼）會更快。","","")],
+    go:[{t:"📱 加入 LINE 群",href:LINE_URL},{t:"☎️ 打 1955",href:"tel:1955"}]}
+  ];
 
-    newbie:{say:["第一次來，最輕鬆的方式是<b>用聽的</b>。本站有<b>會員語音導覽</b>，像講故事一樣帶你認識工會在做什麼、對你有什麼好處。",
-      "聽完還想自己逛，再回來問我就好。"],
-      chips:[{t:"🎧 開會員語音導覽",href:"voiceguide.html"},{t:"🏠 先看工會首頁",href:"index.html"},{t:"回上一層",to:"start"}]},
+  var CATS=[
+    {t:"💰 薪水・加班費",ids:["ot_day","ot_holiday","annual_cash","annual_days","payslip"]},
+    {t:"🏖 請假・特休",ids:["sick","marriage","funeral","maternity","period","familycare","personal","training","typhoon","comp"]},
+    {t:"🤕 受傷・職災",ids:["injury","injury_block"]},
+    {t:"🛡 被刁難・權益",ids:["bully","layoff","insurance","schedule","appeal"]},
+    {t:"📝 入會・會費",ids:["can_join","benefit","how_join","fee","quit","what_union"]},
+    {t:"🧾 財務・補助",ids:["receipt","subsidy"]},
+    {t:"🙋 其他・找人",ids:["privacy","lawyer","contact"]}
+  ];
+  var BYID={}; KB.forEach(function(e){BYID[e.id]=e;});
 
-    who:{say:["不知道找誰很正常。<b>一句話分工</b>：",
-      "🟦 <b>理事長・楊淯涵</b>：對外代表、跨部門協調、重大爭議出面。",
-      "🟩 <b>總務・莊瑋聆</b>：財務、收據、報帳、會費、補助。",
-      "🟧 <b>法規・巫佳容／葉柏宏</b>：加班費、請假、職災、勞動法、公文。",
-      "🟪 <b>文宣・黃淑姸</b>：活動、宣傳、招募入會。",
-      "🟥 <b>監事・陳依婷</b>：監察、財務稽核、申訴管道。",
-      "其實你<b>不用記</b>——直接跟我說你的問題，我幫你對到人。"],
-      chips:[{t:"我有問題，幫我對到人",to:"start"},{t:"我想直接找人",to:"contact"}]},
+  // 熱門問題（首屏直接秀，第一眼就擊中）
+  var HOT=["ot_day","annual_cash","sick","injury","can_join","subsidy"];
 
-    contact:{say:["想直接找人，最快兩個方式：",
-      "① <b>加入工會 LINE 群</b>，把問題丟進去，幹部會接。",
-      "② 急事或拿不定主意，打<b>勞工專線 1955</b>（全國・24 小時）。",
-      "把狀況講清楚（哪天、發生什麼、誰說了什麼），會處理得更快。"],
-      chips:[{t:"📱 加入 LINE 群",href:LINE_URL},{t:"☎️ 打 1955",href:"tel:1955",tel:true},{t:"回上一層",to:"start"}]},
-
-    help:{say:["好，工會陪你。先把<b>你的狀況</b>想一下（哪天、發生什麼、對方說了什麼、要你簽什麼）。",
-      "你可以：① 用<b>AI 律師</b>先做初步分析；② 或<b>加入 LINE 群</b>直接找幹部。"],
-      chips:[{t:"⚖️ 開 AI 律師",href:"lawyer.html"},{t:"📱 加入 LINE 群",href:LINE_URL},{t:"🔁 從頭再問",to:"start",again:true}]}
-  };
+  function norm(s){return (s||"").toLowerCase().replace(/[\s,，。、？?！!.~～·・:：；;「」『』（）()]/g,"");}
+  function search(q){
+    var nq=norm(q); if(!nq) return [];
+    var out=KB.map(function(e){
+      var sc=0, nt=norm(e.t);
+      if(nt && nq.indexOf(nt)>=0) sc+=nt.length*2;
+      e.k.forEach(function(key){var nk=norm(key); if(!nk) return;
+        if(nq.indexOf(nk)>=0) sc+=nk.length*3;          // 命中關鍵詞最重要
+        else if(nk.length>=2 && nk.indexOf(nq)>=0 && nq.length>=2) sc+=nq.length;
+      });
+      return {e:e,sc:sc};
+    }).filter(function(x){return x.sc>0;});
+    out.sort(function(a,b){return b.sc-a.sc;});
+    return out;
+  }
 
   var jlog=document.getElementById("jbot-log"), jchips=document.getElementById("jbot-chips");
-  function jbubble(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);jlog.scrollTop=jlog.scrollHeight;}
-  function jgo(key){
-    var n=NODES[key]; if(!n) return;
-    n.say.forEach(function(s){jbubble(s,"bot");});
+  var jin=document.getElementById("jbot-in"), jsend=document.getElementById("jbot-send");
+  function bub(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);jlog.scrollTop=jlog.scrollHeight;}
+  // chips：item = {t, id?(看答案) , href?(外連/內頁) , cat?(展開分類) , fn?, cls?}
+  function chips(items){
     jchips.innerHTML="";
-    n.chips.forEach(function(c){
+    items.forEach(function(c){
       var el;
-      if(c.href){el=document.createElement("a");el.href=c.href;el.textContent=c.t;if(c.tel)el.className="tel";
+      if(c.href){el=document.createElement("a");el.href=c.href;el.textContent=c.t;
         if(/^https?:|^tel:/.test(c.href)){el.target="_blank";el.rel="noopener";}}
-      else{el=document.createElement("button");el.type="button";el.textContent=c.t;if(c.again)el.className="again";
-        el.addEventListener("click",function(){jbubble(c.t,"me");jgo(c.to);});}
+      else{el=document.createElement("button");el.type="button";el.textContent=c.t;if(c.cls)el.className=c.cls;
+        el.addEventListener("click",function(){ if(c.fn){c.fn();} });}
       jchips.appendChild(el);
     });
   }
-  jgo("start");
+  function relatedChips(){
+    return [{t:"📂 看全部分類",cls:"cat",fn:showCats},{t:"🔁 重新開始",cls:"again",fn:greet}];
+  }
+  function answer(e){
+    bub("<b>"+e.t+"</b>","me");
+    e.a.forEach(function(s){bub(s,"bot");});
+    var items=(e.go||[]).slice();
+    // 同分類其它常見問題（讓他順手再解一題），最多 3 個
+    var sib=(CATS.filter(function(c){return c.ids.indexOf(e.id)>=0;})[0]||{ids:[]}).ids
+      .filter(function(id){return id!==e.id;}).slice(0,3)
+      .map(function(id){return {t:BYID[id].t,fn:function(){answer(BYID[id]);}};});
+    items=items.concat(sib);
+    items.push({t:"還是想找人？",fn:function(){answer(BYID["contact"]);}});
+    items.push({t:"📂 其它分類",cls:"cat",fn:showCats});
+    chips(items);
+  }
+  function showCats(){
+    bub("好，<b>選一個分類</b>，或直接打字問我更快：","bot");
+    chips(CATS.map(function(c){return {t:c.t,cls:"cat",fn:function(){showCat(c);}};})
+      .concat([{t:"🔁 重新開始",cls:"again",fn:greet}]));
+  }
+  function showCat(c){
+    bub(c.t+"，<b>常見問題：</b>","bot");
+    chips(c.ids.map(function(id){return {t:BYID[id].t,fn:function(){answer(BYID[id]);}};})
+      .concat([{t:"📂 其它分類",cls:"cat",fn:showCats}]));
+  }
+  function handleType(q){
+    q=(q||"").trim(); if(!q) return;
+    bub(q,"me");
+    var res=search(q);
+    if(!res.length){
+      bub("這題我一時對不到答案😅 但別擔心——你可以<b>選個分類</b>，或直接<b>找工會</b>，把狀況講清楚我們幫你處理。","bot");
+      chips(CATS.map(function(c){return {t:c.t,cls:"cat",fn:function(){showCat(c);}};})
+        .concat([{t:"📱 加入 LINE 群",href:LINE_URL},{t:"☎️ 打 1955",href:"tel:1955"}]));
+      return;
+    }
+    // 信心夠（最高分明顯領先，或只有一個）→ 直接給答案
+    if(res.length===1 || res[0].sc>=res[1].sc*1.6 || res[0].sc>=18){ answer(res[0].e); return; }
+    // 否則列出最像的幾題讓他點
+    bub("你是不是想問這幾個？點一下我馬上回答：","bot");
+    chips(res.slice(0,4).map(function(x){return {t:x.e.t,fn:function(){answer(x.e);}};})
+      .concat([{t:"都不是，看全部分類",cls:"cat",fn:showCats}]));
+  }
+  function greet(){
+    jlog.innerHTML="";
+    bub("你好，我是<b>工會小幫手</b>🤖。<b>直接打字問我</b>就好（例如：特休沒休完有錢嗎、被扣全勤合不合法），我馬上給你答案。","bot");
+    bub("不知道怎麼問？點下面<b>熱門問題</b>，或「看全部分類」：","bot");
+    chips(HOT.map(function(id){return {t:BYID[id].t,fn:function(){answer(BYID[id]);}};})
+      .concat([{t:"📂 看全部分類",cls:"cat",fn:showCats}]));
+  }
+
+  jsend.addEventListener("click",function(){var v=jin.value;jin.value="";handleType(v);});
+  jin.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();var v=jin.value;jin.value="";handleType(v);}});
+  greet();
+
+  // 從別頁帶 ?q=... 進來可直接問（保留擴充用）
+  try{var qq=(location.search.match(/[?&]q=([^&]+)/)||[])[1]; if(qq) handleType(decodeURIComponent(qq));}catch(e){}
 })();
 </script>
 <script>
 window.addEventListener("load",function(){ if(!window.EBNTour) return;
   EBNTour.attach([
-    { sel:".topnote", title:"看到一堆東西不知道按哪？", text:"你好，我是工會小幫手。看到網站一堆東西，不知道從哪下手，很正常。這頁就是來解決這件事的。" },
-    { sel:"#jbot-chips", title:"點按鈕回答就好", text:"你只要點這裡的按鈕，回答我幾個問題：是加班費、是受傷、是請假、還是想入會？我就一步一步，把你帶到能解決的那一頁。" },
-    { sel:"#jbot-log", title:"還會告訴你找哪位幹部", text:"而且，我還會在這裡告訴你，這件事該找哪一位幹部。你不用先認識每個人，也不用先懂法規。" },
-    { sel:"#jbot-chips", title:"不知道找誰也沒關係", text:"如果你不知道該找誰，就選「我不知道找哪位幹部」，我用一句話告訴你每個人管什麼。真的想找人，也能直接帶你加入賴群，或打一九五五。" }
+    { sel:".topnote", title:"24 小時自助問答", text:"你好，我是工會小幫手。看到網站一堆東西，不知道從哪下手，很正常。這頁就是來解決這件事的，二十四小時都在。" },
+    { sel:".jbot-input", title:"打字問我，馬上回答", text:"最快的方式，是在這裡直接打字問我。例如：特休沒休完有沒有錢、加班費怎麼算、被扣全勤合不合法。我會馬上給你白話答案、法律依據，還有下一步怎麼做。" },
+    { sel:"#jbot-chips", title:"不會問？點熱門或分類", text:"不知道怎麼問，也沒關係。點下面的熱門問題，或看全部分類，一樣能找到答案。多數問題，當場就解決，不用等幹部。" },
+    { sel:"#jbot-log", title:"真的卡關才找人", text:"萬一我真的回答不了，我會帶你加入賴群找幹部，或打一九五五。但大部分的事，你在這裡自己就搞定了。" }
   ], {});
 });
 </script>
