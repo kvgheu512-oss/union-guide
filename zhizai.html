@@ -37,6 +37,21 @@
   .flow .res{display:flex;gap:8px;flex-wrap:wrap;margin-top:.6rem;}
   .flow .res a{flex:1;min-width:200px;background:var(--green);color:#fff;text-decoration:none;font-weight:700;font-size:12.8px;padding:.5rem .7rem;border-radius:9px;line-height:1.5;}
   .flow .res a small{display:block;font-weight:400;opacity:.85;font-size:11px;word-break:break-all;margin-top:2px;}
+  .jbot{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.1rem;}
+  .jbot-top{background:linear-gradient(135deg,#1A7A4A,#0F5C36);color:#fff;padding:.8rem 1.1rem;display:flex;align-items:center;gap:9px;}
+  .jbot-top .ava{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:17px;}
+  .jbot-top .nm{font-weight:600;font-size:14.5px;}
+  .jbot-top .tg{font-size:11px;opacity:.88;margin-top:1px;}
+  .jbot-log{padding:1rem;display:flex;flex-direction:column;gap:9px;background:#F4FAF6;max-height:62vh;overflow-y:auto;}
+  .jbot-log .b{max-width:88%;padding:.65rem .85rem;border-radius:14px;font-size:13.5px;line-height:1.78;}
+  .jbot-log .b.bot{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--ink-mid);}
+  .jbot-log .b.me{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px;}
+  .jbot-log .b.bot b{color:var(--green-deep);}
+  .jbot-chips{display:flex;flex-wrap:wrap;gap:8px;padding:.85rem 1rem;border-top:1px solid var(--border);background:#fff;}
+  .jbot-chips button{font-size:13px;background:#EAF5EE;color:#1f6b43;border:1.5px solid #C9E4D3;border-radius:20px;padding:.5rem .9rem;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .jbot-chips button:active{background:#D8EEE0;}
+  .jbot-chips a{font-size:13px;background:var(--green);color:#fff;border:none;border-radius:20px;padding:.5rem .9rem;cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent;}
+  .jbot-chips button.again{background:#fff;color:var(--ink-soft);border-color:var(--border);}
 
   table{width:100%;border-collapse:collapse;font-size:13px;margin:.5rem 0;}
   th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top;}
@@ -123,6 +138,17 @@
       <a href="https://www.bli.gov.tw/0106701.html" target="_blank" rel="noopener">勞保局・職業傷病門診單下載<small>www.bli.gov.tw/0106701.html</small></a>
       <a href="https://www.bli.gov.tw/0106703.html" target="_blank" rel="noopener">勞保局・自墊醫療費用核退申請書<small>www.bli.gov.tw/0106703.html</small></a>
     </div>
+  </div>
+
+  <!-- 職災就醫小幫手（互動問答） -->
+  <h2>🤖 不想看一堆字？讓小幫手帶你走</h2>
+  <div class="jbot" id="jbot">
+    <div class="jbot-top">
+      <div class="ava">🤖</div>
+      <div><div class="nm">職災就醫小幫手</div><div class="tg">點按鈕回答，我一步步教你處理（不用麻煩幹部）</div></div>
+    </div>
+    <div class="jbot-log" id="jbot-log"></div>
+    <div class="jbot-chips" id="jbot-chips"></div>
   </div>
 
   <!-- 對付擋公傷 -->
@@ -232,6 +258,60 @@
     if(navigator.clipboard){navigator.clipboard.writeText(AMM).then(ok,function(){ta.select();document.execCommand("copy");ok();});}
     else{ta.select();document.execCommand("copy");ok();}
   });
+
+  // ===== 職災就醫小幫手（互動決策樹） =====
+  var NODES={
+    start:{say:["你好，我是<b>職災就醫小幫手</b>🤖。我問幾個問題，一步步帶你處理，不用麻煩幹部。",
+                "先問：<b>你現在在哪個階段？</b>"],
+           chips:[{t:"剛受傷，還沒看醫生",to:"first"},{t:"看過了，要回診",to:"ret"},
+                  {t:"已經自己先付了醫藥費",to:"paid"},{t:"職安室不給我門診單",to:"refuse"}]},
+    first:{say:["先去看醫生最重要。<b>掛號時一定要跟櫃台說：「我要用職業傷病（職災）身分就醫」</b>——這樣可免健保部分負擔。",
+                "如果單子還沒拿到、先用健保看了也沒關係：<b>就醫日起 10 天內（不含假日）把『職業傷病門診單』補送到醫院</b>，就退回你付的部分負擔。"],
+           chips:[{t:"門診單要去哪拿？",to:"howget"},{t:"看完之後要回診",to:"ret"}]},
+    howget:{say:["門診單是<b>『投保單位』開的</b>——也就是<b>醫院人事／職安室這個雇主端</b>，不是醫院櫃台、也不是你自己生得出來。",
+                 "跟單位（人事／職安室）說你要『<b>勞工保險職業傷病門診單</b>』，依規定<b>他們本來就該主動幫你開</b>。"],
+            chips:[{t:"他們不肯開怎麼辦",to:"refuse"},{t:"拿到了，回診要注意什麼",to:"ret"}]},
+    ret:{say:["回診重點：<b>每次回診都要帶門診單</b>。一張單通常有使用次數，<b>用完要再跟單位拿新的</b>——這是勞保局訂的正常程序，不是刁難你。",
+              "下次回診前，記得先跟人事／職安室拿好新的一張，免得當天又被收部分負擔。"],
+         chips:[{t:"門診單不夠用了／要再拿",to:"howget"},{t:"職安室不給",to:"refuse"},{t:"我先自費了",to:"paid"},{t:"我大概懂了",to:"done"}]},
+    refuse:{say:["別怕，<b>拿不到單，官方給你三條路</b>👇",
+                 "<b>① 自己去領：</b>帶佐證（職災事故證明、診斷書、勞保局核付公文等）＋身分證，到<b>勞保局各地辦事處</b>，查明後當場發給。",
+                 "<b>② 職業病找專科醫師：</b>給<b>職業醫學科醫師</b>看，若屬職業病，醫師可直接開『職業病門診單』。",
+                 "<b>③ 先自費、事後退：</b>就醫／出院日起<b>6 個月內</b>填『自墊醫療費用核退申請書』向勞保局退錢。",
+                 "而且——雇主依規定<b>『應主動填發』</b>，不開是不合規的。必要時讓<b>工會出面</b>，或打勞工專線 <b>1955</b> 申訴。"],
+            chips:[{t:"看官方連結／表單",to:"links"},{t:"我要工會幫忙",to:"help"},{t:"懂了",to:"done"}]},
+    paid:{say:["已經先付了不要緊，<b>兩條路退錢</b>：",
+               "• <b>10 天內</b>（不含假日）把門診單補送到<b>原來那家醫院</b> → 退回部分負擔（住院還退 30 日內膳食費半數）。",
+               "• 超過 10 天 → <b>6 個月內（特殊情形 5 年）</b>填『自墊醫療費用核退申請書』＋診斷證明，向勞保局申請退回自墊的職災醫療費。"],
+          chips:[{t:"核退表單在哪",to:"links"},{t:"職安室不給門診單",to:"refuse"},{t:"懂了",to:"done"}]},
+    links:{say:["官方連結都在<b>這頁上面那塊綠框</b>裡，點進去最準（勞保局・如何取得書單、勞動部・拿不到的 3 招、核退申請書都有）。",
+                "我幫你把畫面捲上去👆"],
+           chips:[{t:"我要工會幫忙",to:"help"},{t:"懂了",to:"done"}],act:"scrollFlow"},
+    help:{say:["好，先把<b>你的狀況</b>（哪天受傷、看了哪家醫院、職安室說了什麼、要你簽什麼）想一下。",
+               "你可以：① 用本站『AI 律師』先做初步分析；② 或直接找工會幹部，我們陪你處理。"],
+          chips:[{t:"⚖️ 開 AI 律師",href:"lawyer.html"},{t:"懂了",to:"done"}]},
+    done:{say:["👍 記住三句話：<b>掛號講職災身分、回診帶門診單、拿不到就找辦事處或核退</b>。",
+               "這是<b>官方流程</b>，不是醫院或職安室說了算。需要時，<b>工會站你這邊</b>。"],
+          chips:[{t:"🔁 從頭再問一次",to:"start",again:true}]}
+  };
+  var jlog=document.getElementById("jbot-log"), jchips=document.getElementById("jbot-chips");
+  if(jlog&&jchips){
+    function jbubble(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);jlog.scrollTop=jlog.scrollHeight;}
+    function jgo(key){
+      var n=NODES[key]; if(!n) return;
+      n.say.forEach(function(s){jbubble(s,"bot");});
+      if(n.act==="scrollFlow"){var f=document.querySelector(".flow"); if(f) f.scrollIntoView({behavior:"smooth",block:"start"});}
+      jchips.innerHTML="";
+      n.chips.forEach(function(c){
+        var el;
+        if(c.href){el=document.createElement("a");el.href=c.href;el.textContent=c.t;}
+        else{el=document.createElement("button");el.type="button";el.textContent=c.t;if(c.again)el.className="again";
+             el.addEventListener("click",function(){jbubble(c.t,"me");jgo(c.to);});}
+        jchips.appendChild(el);
+      });
+    }
+    jgo("start");
+  }
 })();
 </script>
 <script src="law-tips.js" defer></script>
@@ -242,6 +322,7 @@ window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
     { text:"特別記住一件事：去醫院掛號的時候，一定要跟櫃台說，我要用職業傷病、也就是職災、職傷的身分就醫。這一句話，可以免掉健保的部分負擔，看病不用自己先掏這筆錢。沒講，就被當一般門診收費了。" },
     { text:"免部分負擔，要靠一張「職業傷病門診單」。這張單子，是投保單位、也就是醫院的人事或職安室這個雇主端開的，不是醫院櫃台、也不是職安室嘴巴說了算。下次回診前，記得再跟單位拿一張門診單，這是勞保局訂的正常程序。" },
     { text:"雇主依規定，應該主動幫你填發這張書單。如果職安室拖著不開、要你自己想辦法，那不合規。萬一真的拿不到，官方有三招：自己帶證明去勞保局辦事處當場領、職業病請職業醫學科醫師直接開、或者先自費、六個月內申請核退。記住，這是官方流程，不是醫院或職安室說了算。" },
+    { text:"不想看一堆字，沒關係。頁面上有一個職災就醫小幫手，點點按鈕回答幾個問題，它就一步一步帶你處理，不用麻煩幹部。" },
     { text:"被職安室、或長官擋下來嗎？這裡有一步一步的接招步驟，照著做。" },
     { text:"最重要的是保全證據：受傷的經過、就醫的紀錄、通報的紀錄，通通留好。" },
     { text:"卡關了，就找工會，或打一九五五。" }

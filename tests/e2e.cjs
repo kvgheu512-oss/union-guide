@@ -53,6 +53,12 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('meet 連結未設定狀態正確', async p => { await go(p, 'meet.html');
     const t = await p.textContent('#join-prep'); (t.includes('LINE') || t.includes('尚未') || t.includes('開會議')) ? ok('按鈕顯示待設定提示') : bad('meet', 'btn=' + t); });
   await T('charter 快查卡填寫無錯', async p => { await go(p, 'charter.html'); await p.fill('#ch-year', '115').catch(() => {}); await p.fill('#ch-month', '7').catch(() => {}); await p.fill('#ch-day', '1').catch(() => {}); await p.waitForTimeout(150); ok('填寫不報錯'); });
+  await T('zhizai 職災就醫小幫手互動', async p => { await go(p, 'zhizai.html'); await p.waitForTimeout(300);
+    const init = await p.$$eval('#jbot-log .b.bot', e => e.length); if (init < 1) return bad('jbot', 'no greeting');
+    await p.click('#jbot-chips button'); await p.waitForTimeout(200);
+    const me = await p.$$eval('#jbot-log .b.me', e => e.length);
+    const bot = await p.$$eval('#jbot-log .b.bot', e => e.length);
+    (me >= 1 && bot > init) ? ok('小幫手問答前進(' + bot + 'bot/' + me + 'me)') : bad('jbot', 'no advance'); });
 
   console.log('\n========== C. 功能測試（幹部後台：名冊/案件） ==========');
   const gateShown = p => p.evaluate(() => { const g = document.getElementById('gate'); return !!(g && getComputedStyle(g).display !== 'none'); });
