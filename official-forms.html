@@ -69,8 +69,8 @@
 <script src="tour.js" defer></script>
 <script>
 window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
-    { text:"這頁，直接連到勞動部、勞工局的官方頁面和表格。" },
-    { text:"要查法令、下載正式書表，從這裡去，最準、最不會錯。" }
+    { sel:"h2:first-of-type", title:"官方書表", text:"這頁，直接連到勞動部、勞工局的官方頁面和表格。" },
+    { sel:"a.link.law", title:"法令全文", text:"要查法令、下載正式書表，從這裡去，最準、最不會錯。" }
   ], {}); });
 </script>
 <script src="common.js" defer></script>

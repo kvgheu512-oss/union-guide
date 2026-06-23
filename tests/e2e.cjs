@@ -131,6 +131,19 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const pg = await p.textContent('#ebntour-tip .pg');
     (on && /2 \/ 7/.test(pg)) ? ok('導覽開啟並前進到 2/7') : bad('tour', 'on=' + on + ' pg=' + pg); });
 
+  await T('導覽 spotlight 聚焦實際元素', async p => { await p.goto(BASE + 'zhizai.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    if (!await p.$('#ebntour-launch')) return bad('spot', '沒有導覽啟動鈕');
+    await p.click('#ebntour-launch'); await p.waitForTimeout(120);
+    await p.click('#ebntour-menu button[data-m="text"]'); await p.waitForTimeout(600);
+    const w = await p.$eval('#ebntour-spot', e => parseFloat(e.style.width) || 0);
+    (w > 0) ? ok('spotlight 有框住元素(' + Math.round(w) + 'px)') : bad('spot', '聚焦框寬度=' + w); });
+  await T('help 工會小幫手分診', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
+    const init = await p.$$eval('#jbot-log .b.bot', e => e.length); if (init < 1) return bad('help', 'no greeting');
+    await p.click('#jbot-chips button'); await p.waitForTimeout(200);
+    const me = await p.$$eval('#jbot-log .b.me', e => e.length);
+    const bot = await p.$$eval('#jbot-log .b.bot', e => e.length);
+    (me >= 1 && bot > init) ? ok('分診前進(' + bot + 'bot/' + me + 'me)') : bad('help', 'no advance'); });
+
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);
   if (fails.length) { console.log('--- 失敗項目 ---'); fails.forEach(f => console.log(' • ' + f)); }

@@ -217,8 +217,8 @@ dd.addEventListener("change",calcDDL);calcDDL();
 <script src="tour.js" defer></script>
 <script>
 window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
-    { text:"這是成立工會的流程檢核表。" },
-    { text:"照順序，一項一項打勾，確認每一步都做了、沒漏送，就不怕踩雷。" }
+    { sel:".top h1", title:"排雷檢核表", text:"這是成立工會的流程檢核表。" },
+    { sel:"#list", title:"逐項打勾", text:"照順序，下面這份清單一項一項打勾，確認每一步都做了、沒漏送，就不怕踩雷。" }
   ], {}); });
 </script>
 <script src="common.js" defer></script>

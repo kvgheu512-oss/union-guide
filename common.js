@@ -172,3 +172,22 @@
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", build); else build();
 })();
+
+/* ⑥ 全站「🤖 小幫手」浮鈕（單一真相源）：每頁右下角一顆，帶會員到問題分診頁 help.html，
+   由小幫手一步步導到對的工具頁＋告訴他該找哪位幹部，減少幹部被瑣事打斷。
+   ・不想要的頁：<body data-nohelp>（help.html 自己、純導頁等）。 */
+(function(){
+  function build(){
+    var b=document.body; if(!b) return;
+    if(b.hasAttribute("data-nohelp")) return;
+    if(/help\.html$/.test(location.pathname)) return;            // 小幫手頁本身不放
+    if(document.getElementById("ebnHelp")) return;               // 冪等
+    var a=document.createElement("a");
+    a.id="ebnHelp"; a.className="noprint"; a.href="help.html";
+    a.setAttribute("aria-label","工會小幫手：我帶你找對地方");
+    a.innerHTML="🤖 小幫手";
+    a.style.cssText="position:fixed;right:14px;bottom:16px;z-index:1050;background:linear-gradient(135deg,#1A7A4A,#0F5C36);color:#fff;text-decoration:none;font:700 13.5px/1 'Noto Sans TC',system-ui,sans-serif;padding:.6rem .9rem;border-radius:24px;box-shadow:0 5px 18px rgba(0,0,0,.32);display:flex;align-items:center;gap:5px;-webkit-tap-highlight-color:transparent;";
+    b.appendChild(a);
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", build); else build();
+})();

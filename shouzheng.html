@@ -310,10 +310,10 @@ renderPick(); renderCat();
 <script src="tour.js" defer></script>
 <script>
 window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
-    { text:"遇到不合理的對待，先別跟人衝突，重點是把證據留下來。這頁，教你怎麼蒐證。" },
-    { text:"證據分三種：主要的、次要的、還有補充的。照你的情況分類，一項一項打勾完成。" },
-    { text:"像出勤紀錄、對話截圖、公告、錄音，都可能是證據，越完整，你越有力。" },
-    { text:"蒐證完，找工會，或用 AI 律師，幫你看怎麼主張權益。" }
+    { sel:".header", title:"蒐證指南", text:"遇到不合理的對待，先別跟人衝突，重點是把證據留下來。這頁，教你怎麼蒐證。" },
+    { sel:"#cat-pick", title:"選你的情況", text:"先在這裡照你的情況分類，證據分三種：主要的、次要的、還有補充的。" },
+    { sel:"#cat-box", title:"逐項打勾", text:"像出勤紀錄、對話截圖、公告、錄音，都可能是證據，一項一項打勾完成，越完整你越有力。" },
+    { sel:".goal", title:"複製給幹部", text:"蒐證完，按複製清單，找工會，或用 AI 律師，幫你看怎麼主張權益。" }
   ], {}); });
 </script>
 <script src="common.js" defer></script>

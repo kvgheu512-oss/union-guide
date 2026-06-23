@@ -428,9 +428,9 @@ $('fSearch').addEventListener('input',function(){ filter.q=this.value.trim(); re
 <script src="tour.js" defer></script>
 <script>
 window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
-    { text:"會員來求助，就登記在這個案件台。" },
-    { text:"每個案子，時效快到了它會提醒你，一個都不會漏掉。" },
-    { text:"資料只存這支手機；需要的話，還可以另外上鎖，保護當事人。" }
+    { sel:"#newBtn", title:"登記案件", text:"會員來求助，按這裡就把案件登記進這個案件台。" },
+    { sel:"#stats", title:"時效提醒", text:"上面這排會幫你盯著：每個案子時效快到了就提醒你，一個都不會漏掉。" },
+    { sel:"#enableBtn", title:"加密保護", text:"資料只存這支手機；需要的話，按這裡還可以另外上鎖，保護當事人。" }
   ], {}); });
 </script>
 <script src="common.js" defer></script>

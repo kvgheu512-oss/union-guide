@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0F5C36">
+<meta name="apple-mobile-web-app-title" content="工會小幫手">
+<title>工會小幫手（一步步帶你找對地方）｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#1A7A4A;--green-deep:#0F5C36;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F3F8F4;--card:#fff;--border:#DCE6DF;--gold:#B7860B;--gold-light:#FEF9E7;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.85;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#1A7A4A,#0F5C36);color:#fff;padding:1.7rem 1.25rem 1.3rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:20px;}
+  .header p{font-size:12.8px;opacity:.92;margin-top:6px;line-height:1.7;}
+  main{max-width:640px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:var(--gold-light);border:1px solid #EAD67A;border-radius:10px;padding:.8rem 1rem;font-size:13px;color:#5C4000;margin-bottom:1rem;line-height:1.8;}
+  .jbot{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+  .jbot-top{background:linear-gradient(135deg,#1A7A4A,#0F5C36);color:#fff;padding:.85rem 1.1rem;display:flex;align-items:center;gap:10px;}
+  .jbot-top .ava{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .jbot-top .nm{font-weight:600;font-size:15px;}
+  .jbot-top .tg{font-size:11.5px;opacity:.88;margin-top:1px;}
+  .jbot-log{padding:1rem;display:flex;flex-direction:column;gap:9px;background:#F4FAF6;min-height:200px;max-height:64vh;overflow-y:auto;}
+  .jbot-log .b{max-width:90%;padding:.65rem .9rem;border-radius:14px;font-size:14px;line-height:1.8;}
+  .jbot-log .b.bot{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--ink-mid);}
+  .jbot-log .b.me{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px;}
+  .jbot-log .b.bot b{color:var(--green-deep);}
+  .jbot-log .b.bot .who{display:inline-block;background:var(--gold-light);color:#8A6300;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:6px;margin:2px 0;}
+  .jbot-chips{display:flex;flex-wrap:wrap;gap:8px;padding:.85rem 1rem;border-top:1px solid var(--border);background:#fff;}
+  .jbot-chips button{font-size:13.5px;background:#EAF5EE;color:#1f6b43;border:1.5px solid #C9E4D3;border-radius:20px;padding:.55rem .95rem;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .jbot-chips button:active{background:#D8EEE0;}
+  .jbot-chips a{font-size:13.5px;background:var(--green);color:#fff;border:none;border-radius:20px;padding:.55rem .95rem;cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent;font-weight:700;}
+  .jbot-chips a.tel{background:#1A3A6B;}
+  .jbot-chips button.again{background:#fff;color:var(--ink-soft);border-color:var(--border);}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.3rem;line-height:1.8;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="index.html" data-nohelp>
+
+<div class="header">
+  <h1>🤖 工會小幫手</h1>
+  <p>不知道從哪找起？點按鈕回答我，<b>一步一步帶你到對的地方</b></p>
+</div>
+
+<main>
+  <div class="topnote">📌 看到一堆東西不知道按哪個？正常的。<b>你只要回答我幾個問題</b>，我就帶你到能解決的那一頁，還會告訴你<b>這件事該找哪位幹部</b>。不用先懂法規、也不用先認識每個幹部。</div>
+
+  <div class="jbot" id="jbot">
+    <div class="jbot-top">
+      <div class="ava">🤖</div>
+      <div><div class="nm">工會小幫手</div><div class="tg">點按鈕就好，我帶你走（不用打字）</div></div>
+    </div>
+    <div class="jbot-log" id="jbot-log"></div>
+    <div class="jbot-chips" id="jbot-chips"></div>
+  </div>
+
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）· 這個小幫手只幫你「找對地方」，個資不會上傳<br>緊急或拿不定主意，打勞工專線 1955，或在 LINE 群找幹部</div>
+</main>
+
+<div id="verBadge"></div>
+<script src="tour.js" defer></script>
+<script>
+(function(){
+  "use strict";
+  // LINE 群（與首頁一致）
+  var LINE_URL="https://line.me/ti/g/yBNcV4Y8GU";
+
+  // ===== 問題分診決策樹：問題 → 帶到對的頁 + 告訴他找哪位幹部 =====
+  var NODES={
+    start:{say:["你好，我是<b>工會小幫手</b>🤖。先別煩惱要點哪裡——<b>你今天想處理什麼？</b>"],
+      chips:[
+        {t:"💰 加班費／薪水算不對",to:"pay"},
+        {t:"🤕 工作受傷／生病（職災）",to:"injury"},
+        {t:"🏖 請假／特休的問題",to:"leave"},
+        {t:"🛡 被主管刁難／權益受損",to:"rights"},
+        {t:"📝 我想加入工會",to:"join"},
+        {t:"🧾 收據／報帳／財務",to:"money"},
+        {t:"💸 工會有沒有補助可領",to:"subsidy"},
+        {t:"🆕 我是新會員，帶我認識",to:"newbie"},
+        {t:"🙋 我不知道該找哪位幹部",to:"who"},
+        {t:"📞 我想直接找人問",to:"contact"}
+      ]},
+
+    pay:{say:["加班費、薪水算不對，最常見也最該顧。",
+      "我帶你去<b>加班費試算</b>那頁，裡面用「小白方式」一步步帶你填，還有語音導覽，自己就能算出該領多少。",
+      "<span class='who'>👤 承辦：法規 巫佳容／葉柏宏</span>算完有疑問，找他們。"],
+      chips:[{t:"➡️ 去加班費試算",href:"leavepay.html"},{t:"我要工會幫忙看",to:"help"},{t:"回上一層",to:"start"}]},
+
+    injury:{say:["工作受傷／生病別自己吞。那一頁有<b>「職災就醫小幫手」</b>，會一步步教你掛號講職災身分、門診單怎麼拿、被職安室擋住怎麼辦。",
+      "<span class='who'>👤 承辦：法規 巫佳容／葉柏宏</span>需要出面協調，理事長 楊淯涵。"],
+      chips:[{t:"➡️ 去職災就醫小幫手",href:"zhizai.html"},{t:"我要工會幫忙",to:"help"},{t:"回上一層",to:"start"}]},
+
+    leave:{say:["請假、特休、被卡假，這頁把規則整理成白話＋有語音導覽。",
+      "<span class='who'>👤 承辦：法規 巫佳容／葉柏宏</span>"],
+      chips:[{t:"➡️ 去請假權益說明",href:"qingjia.html"},{t:"我要工會幫忙",to:"help"},{t:"回上一層",to:"start"}]},
+
+    rights:{say:["被主管刁難、權益受損，我幫你分情況。<b>你現在最想做哪件事？</b>"],
+      chips:[
+        {t:"先保留證據（對話、紀錄）",to:"evidence"},
+        {t:"想先問法律怎麼說",to:"lawyer"},
+        {t:"我要正式申訴／檢舉",to:"appeal"},
+        {t:"回上一層",to:"start"}]},
+    evidence:{say:["先把證據留好，之後才站得住腳。這頁教你<b>哪些要存、怎麼存</b>（對話、出勤、診斷、目擊者）。",
+      "<span class='who'>👤 承辦：法規 巫佳容／葉柏宏</span>"],
+      chips:[{t:"➡️ 去蒐證指南",href:"evidence.html"},{t:"我要工會幫忙",to:"help"},{t:"回上一層",to:"rights"}]},
+    lawyer:{say:["想先知道法律怎麼說？本站有<b>AI 律師</b>，把你的狀況貼進去，它幫你看對方哪句話站不住腳、下一步怎麼走。",
+      "<span class='who'>👤 後續：法規 巫佳容／葉柏宏</span>"],
+      chips:[{t:"⚖️ 開 AI 律師",href:"lawyer.html"},{t:"我要工會幫忙",to:"help"},{t:"回上一層",to:"rights"}]},
+    appeal:{say:["要正式申訴／檢舉，<b>監察與申訴</b>是監事的職權，由她協助你走程序、把關。",
+      "<span class='who'>👤 承辦：監事 陳依婷</span>緊急可打勞工專線 <b>1955</b>。",
+      "建議先把證據整理好（我可以帶你去蒐證頁），再交給工會。"],
+      chips:[{t:"先去蒐證",to:"evidence"},{t:"我要工會幫忙",to:"help"},{t:"☎️ 打 1955",href:"tel:1955",tel:true},{t:"回上一層",to:"rights"}]},
+
+    join:{say:["歡迎加入！不管你是正職、約用還是派遣，<b>都先看「入會划不划算」</b>，再從首頁連署／入會。",
+      "<span class='who'>👤 承辦：文宣 黃淑姸（招募）</span>"],
+      chips:[{t:"➡️ 入會划不划算",href:"joinroi.html"},{t:"🏠 去首頁入會",href:"index.html"},{t:"回上一層",to:"start"}]},
+
+    money:{say:["收據、報帳、會費這類，是<b>財務／總務</b>在管的。我帶你去收據產生器。",
+      "<span class='who'>👤 承辦：總務 莊瑋聆</span>"],
+      chips:[{t:"➡️ 去收據產生器",href:"receipt.html"},{t:"看透明帳本",href:"finance.html"},{t:"回上一層",to:"start"}]},
+
+    subsidy:{say:["問得好，我們窮歸窮，<b>政府給工會的錢別放著不領</b>。這頁整理了新工會最該申請的補助＋官方連結，還教你一步步拿到。",
+      "<span class='who'>👤 承辦：總務 莊瑋聆</span>"],
+      chips:[{t:"➡️ 去政府補助查詢",href:"buzhu.html"},{t:"回上一層",to:"start"}]},
+
+    newbie:{say:["第一次來，最輕鬆的方式是<b>用聽的</b>。本站有<b>會員語音導覽</b>，像講故事一樣帶你認識工會在做什麼、對你有什麼好處。",
+      "聽完還想自己逛，再回來問我就好。"],
+      chips:[{t:"🎧 開會員語音導覽",href:"voiceguide.html"},{t:"🏠 先看工會首頁",href:"index.html"},{t:"回上一層",to:"start"}]},
+
+    who:{say:["不知道找誰很正常。<b>一句話分工</b>：",
+      "🟦 <b>理事長・楊淯涵</b>：對外代表、跨部門協調、重大爭議出面。",
+      "🟩 <b>總務・莊瑋聆</b>：財務、收據、報帳、會費、補助。",
+      "🟧 <b>法規・巫佳容／葉柏宏</b>：加班費、請假、職災、勞動法、公文。",
+      "🟪 <b>文宣・黃淑姸</b>：活動、宣傳、招募入會。",
+      "🟥 <b>監事・陳依婷</b>：監察、財務稽核、申訴管道。",
+      "其實你<b>不用記</b>——直接跟我說你的問題，我幫你對到人。"],
+      chips:[{t:"我有問題，幫我對到人",to:"start"},{t:"我想直接找人",to:"contact"}]},
+
+    contact:{say:["想直接找人，最快兩個方式：",
+      "① <b>加入工會 LINE 群</b>，把問題丟進去，幹部會接。",
+      "② 急事或拿不定主意，打<b>勞工專線 1955</b>（全國・24 小時）。",
+      "把狀況講清楚（哪天、發生什麼、誰說了什麼），會處理得更快。"],
+      chips:[{t:"📱 加入 LINE 群",href:LINE_URL},{t:"☎️ 打 1955",href:"tel:1955",tel:true},{t:"回上一層",to:"start"}]},
+
+    help:{say:["好，工會陪你。先把<b>你的狀況</b>想一下（哪天、發生什麼、對方說了什麼、要你簽什麼）。",
+      "你可以：① 用<b>AI 律師</b>先做初步分析；② 或<b>加入 LINE 群</b>直接找幹部。"],
+      chips:[{t:"⚖️ 開 AI 律師",href:"lawyer.html"},{t:"📱 加入 LINE 群",href:LINE_URL},{t:"🔁 從頭再問",to:"start",again:true}]}
+  };
+
+  var jlog=document.getElementById("jbot-log"), jchips=document.getElementById("jbot-chips");
+  function jbubble(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);jlog.scrollTop=jlog.scrollHeight;}
+  function jgo(key){
+    var n=NODES[key]; if(!n) return;
+    n.say.forEach(function(s){jbubble(s,"bot");});
+    jchips.innerHTML="";
+    n.chips.forEach(function(c){
+      var el;
+      if(c.href){el=document.createElement("a");el.href=c.href;el.textContent=c.t;if(c.tel)el.className="tel";
+        if(/^https?:|^tel:/.test(c.href)){el.target="_blank";el.rel="noopener";}}
+      else{el=document.createElement("button");el.type="button";el.textContent=c.t;if(c.again)el.className="again";
+        el.addEventListener("click",function(){jbubble(c.t,"me");jgo(c.to);});}
+      jchips.appendChild(el);
+    });
+  }
+  jgo("start");
+})();
+</script>
+<script>
+window.addEventListener("load",function(){ if(!window.EBNTour) return;
+  EBNTour.attach([
+    { sel:".topnote", title:"看到一堆東西不知道按哪？", text:"你好，我是工會小幫手。看到網站一堆東西，不知道從哪下手，很正常。這頁就是來解決這件事的。" },
+    { sel:"#jbot-chips", title:"點按鈕回答就好", text:"你只要點這裡的按鈕，回答我幾個問題：是加班費、是受傷、是請假、還是想入會？我就一步一步，把你帶到能解決的那一頁。" },
+    { sel:"#jbot-log", title:"還會告訴你找哪位幹部", text:"而且，我還會在這裡告訴你，這件事該找哪一位幹部。你不用先認識每個人，也不用先懂法規。" },
+    { sel:"#jbot-chips", title:"不知道找誰也沒關係", text:"如果你不知道該找誰，就選「我不知道找哪位幹部」，我用一句話告訴你每個人管什麼。真的想找人，也能直接帶你加入賴群，或打一九五五。" }
+  ], {});
+});
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
