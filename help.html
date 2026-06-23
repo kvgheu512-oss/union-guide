@@ -181,9 +181,6 @@
   {id:"receipt",cat:"money",t:"收據、報帳",k:["收據","報帳","報銷","核銷","開收據","請款"],
     a:[A("收據用<b>收據產生器</b>填一填就好；幹部在外花錢可用<b>單據快拍</b>拍照傳給帳房。","","")],
     go:[{t:"➡️ 收據產生器",href:"receipt.html"}]},
-  {id:"subsidy",cat:"money",t:"有沒有政府補助可領",k:["補助","政府補助","補助款","申請補助","獎勵","經費","補助金"],
-    a:[A("有！新工會<b>獎勵成立最高 10 萬＋10 萬</b>、教育訓練補助、籌組輔導補助。那頁整理好＋官方連結，還教你一步步拿到。","勞動部補助專區。","")],
-    go:[{t:"➡️ 政府補助查詢",href:"buzhu.html"}]},
 
   // 🙋 其他
   {id:"privacy",cat:"misc",t:"我的個資會不會外洩",k:["個資","隱私","資料","外洩","安全","會不會上傳","名冊","資料安全"],
@@ -203,13 +200,13 @@
     {t:"🤕 受傷・職災",ids:["injury","injury_block"]},
     {t:"🛡 被刁難・權益",ids:["bully","layoff","insurance","schedule","appeal"]},
     {t:"📝 入會・會費",ids:["can_join","benefit","how_join","fee","quit","what_union"]},
-    {t:"🧾 財務・補助",ids:["receipt","subsidy"]},
+    {t:"🧾 收據",ids:["receipt"]},
     {t:"🙋 其他・找人",ids:["privacy","lawyer","contact"]}
   ];
   var BYID={}; KB.forEach(function(e){BYID[e.id]=e;});
 
   // 熱門問題（首屏直接秀，第一眼就擊中）
-  var HOT=["ot_day","annual_cash","sick","injury","can_join","subsidy"];
+  var HOT=["ot_day","annual_cash","sick","injury","can_join","benefit"];
 
   function norm(s){return (s||"").toLowerCase().replace(/[\s,，。、？?！!.~～·・:：；;「」『』（）()]/g,"");}
   function search(q){
