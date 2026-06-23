@@ -184,6 +184,18 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     for (const q of qs) { await p.evaluate(() => { document.getElementById('jbot-log').innerHTML = ''; }); await p.fill('#jbot-in', q); await p.click('#jbot-send'); await p.waitForTimeout(160);
       const t = await p.textContent('#jbot-log'); if (/一時對不到/.test(t)) missed.push(q); }
     missed.length === 0 ? ok('5 題刁難全有回應') : bad('counter', '落空:' + missed.join('|')); });
+  await T('小幫手可整理案件單交工會', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
+    await p.fill('#jbot-in', '我被資遣了'); await p.click('#jbot-send'); await p.waitForTimeout(250);
+    const btns = await p.$$('#jbot-chips button'); let done = false;
+    for (const b of btns) { const t = await b.textContent(); if (/交給工會/.test(t)) { await b.click(); done = true; break; } }
+    await p.waitForTimeout(200);
+    (done && await p.isVisible('#casebox')) ? ok('案件單表單可開') : bad('casebox', '未開啟'); });
+  await T('案件台 貼上會員案件自動分類帶入', async p => { await go(p, 'cases.html'); await p.waitForTimeout(400);
+    await p.click('#importBtn'); await p.waitForTimeout(150);
+    await p.fill('#imp-text', '【工會案件單】\n分類：加班費／工時\n姓名：陳大文\n聯絡：0912\n問題：國定假日上班只給調休未給加班費');
+    await p.click('#impParse'); await p.waitForTimeout(250);
+    const cat = await p.$eval('#c-cat', e => e.value).catch(() => ''); const nm = await p.$eval('#c-name', e => e.value).catch(() => '');
+    (cat === 'ot' && nm === '陳大文') ? ok('案件自動分類+帶入') : bad('caseimport', 'cat=' + cat + ' nm=' + nm); });
 
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);

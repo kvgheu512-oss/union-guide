@@ -49,6 +49,19 @@
   .ans .lab.fa{background:#E9F6EF;color:#1f6b43;}
   .ans .lab.law{background:#EEF2FB;color:#1A3A6B;}
   .ans .lab.do{background:var(--gold-light);color:#8A6300;}
+  #casebox{display:none;background:#fff;border:2px solid var(--green);border-radius:16px;padding:1rem 1.1rem;margin-top:1rem;}
+  #casebox .cb-h{font-family:'Noto Serif TC',serif;font-weight:700;color:var(--green-deep);font-size:16px;}
+  #casebox .cb-note{font-size:12.5px;color:#5C4000;background:var(--gold-light);border:1px solid #EAD67A;border-radius:9px;padding:.55rem .7rem;margin:.5rem 0 .7rem;line-height:1.7;}
+  #casebox label{display:block;font-size:12.5px;font-weight:700;color:var(--green-deep);margin:.5rem 0 .25rem;}
+  #casebox .cb-opt{color:var(--ink-soft);font-weight:400;margin-left:5px;}
+  #casebox select,#casebox textarea,#casebox input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:.55rem .7rem;font-size:15px;font-family:inherit;background:#fff;}
+  #casebox textarea{min-height:64px;resize:vertical;}
+  #casebox .cb-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  #casebox .cb-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:.8rem;align-items:center;}
+  #casebox .cb-btns a{background:var(--green);color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;padding:.6rem .9rem;border-radius:10px;flex:1;text-align:center;min-width:160px;}
+  #casebox .cb-btns button{background:#EAF5EE;color:#1f6b43;border:1.5px solid #C9E4D3;border-radius:10px;padding:.6rem .9rem;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  #casebox .cb-btns button.cb-cancel{background:#fff;color:var(--ink-soft);border-color:var(--border);}
+  #casebox .cb-toast{font-size:12.5px;color:var(--green-deep);margin-top:7px;min-height:16px;}
   .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.3rem;line-height:1.8;}
 </style>
 <link rel="stylesheet" href="common.css">
@@ -74,6 +87,25 @@
     </div>
     <div class="jbot-log" id="jbot-log"></div>
     <div class="jbot-chips" id="jbot-chips"></div>
+  </div>
+
+  <div id="casebox">
+    <div class="cb-h">📋 整理成「案件單」交給工會</div>
+    <div class="cb-note">小幫手解不了的，<b>填一下、按一下傳給工會</b>，由幹部接手。<b>資料只在你手機，要不要送出你決定（送出＝同意工會為你處理）。</b></div>
+    <label>這是什麼問題？</label>
+    <select id="cb-cat"></select>
+    <label>問題簡述（哪天、發生什麼、誰說了什麼）</label>
+    <textarea id="cb-desc" placeholder="例：113 年國定假日上班，主管說只給調休不給加班費…"></textarea>
+    <div class="cb-row">
+      <div><label>怎麼稱呼你？<span class="cb-opt">選填</span></label><input id="cb-name" placeholder="王小明 / 小王"></div>
+      <div><label>聯絡方式<span class="cb-opt">選填</span></label><input id="cb-contact" placeholder="LINE／電話"></div>
+    </div>
+    <div class="cb-btns">
+      <a id="cb-line" href="#" target="_blank" rel="noopener">📱 複製並傳給工會 LINE</a>
+      <button id="cb-copy" type="button">📋 只複製案件單</button>
+      <button id="cb-close" type="button" class="cb-cancel">收起</button>
+    </div>
+    <div id="cb-toast" class="cb-toast"></div>
   </div>
 
   <div class="foot">高雄榮民總醫院企業工會（籌備中）· 答案為整理參考、非正式法律意見，正式以法規與官方公告為準<br>個資只存你的裝置、不上傳 · 真的卡關，打勞工專線 1955 或在 LINE 群找幹部</div>
@@ -327,7 +359,7 @@
       .filter(function(id){return id!==e.id;}).slice(0,3)
       .map(function(id){return {t:BYID[id].t,fn:function(){answer(BYID[id]);}};});
     items=items.concat(sib);
-    items.push({t:"還是想找人？",fn:function(){answer(BYID["contact"]);}});
+    items.push({t:"📋 還沒解決？交給工會",fn:function(){openCaseBox(CASEMAP[e.id]||"other", LASTQ||e.t);}});
     items.push({t:"📂 其它分類",cls:"cat",fn:showCats});
     chips(items);
   }
@@ -343,12 +375,13 @@
   }
   function handleType(q){
     q=(q||"").trim(); if(!q) return;
-    bub(q,"me");
+    LASTQ=q; bub(q,"me");
     var res=search(q);
     if(!res.length){
-      bub("這題我一時對不到答案😅 但別擔心——你可以<b>選個分類</b>，或直接<b>找工會</b>，把狀況講清楚我們幫你處理。","bot");
-      chips(CATS.map(function(c){return {t:c.t,cls:"cat",fn:function(){showCat(c);}};})
-        .concat([{t:"📱 加入 LINE 群",href:LINE_URL},{t:"☎️ 打 1955",href:"tel:1955"}]));
+      bub("這題我一時對不到答案😅 別擔心——你可以<b>整理成『案件單』交給工會</b>（我幫你帶好），或選個分類看看：","bot");
+      chips([{t:"📋 整理成案件單，交給工會",fn:function(){openCaseBox("other",q);}}]
+        .concat(CATS.map(function(c){return {t:c.t,cls:"cat",fn:function(){showCat(c);}};}))
+        .concat([{t:"📱 加入 LINE 群",href:LINE_URL}]));
       return;
     }
     // 信心夠（最高分明顯領先，或只有一個）→ 直接給答案
@@ -365,6 +398,34 @@
     chips(HOT.map(function(id){return {t:BYID[id].t,fn:function(){answer(BYID[id]);}};})
       .concat([{t:"📂 看全部分類",cls:"cat",fn:showCats}]));
   }
+
+  // ───── 交給工會：整理成「案件單」一鍵傳 LINE（資料只在本機，送出與否由會員決定）─────
+  var LASTQ="";
+  var CASE_CATS=[["ot","加班費／工時"],["holiday","國定假日／特休"],["injury","職災／公傷"],["fire","解僱／資遣／調職"],["bully","霸凌／不當管理"],["unfair","工會打壓／報復"],["parental","育嬰留停"],["publicleave","公假／會務／受訓"],["fee","會費／入會"],["other","其他（含請假等）"]];
+  var CASEMAP={ot_day:"ot",ot_holiday:"ot",payslip:"ot",t_overtime:"ot",annual_cash:"holiday",annual_days:"holiday",injury:"injury",injury_block:"injury",occ_disease:"injury",bully:"bully",layoff:"fire",t_threat:"fire",t_sign:"fire",leave_job:"fire",t_retali:"unfair",can_join:"fee",benefit:"fee",how_join:"fee",fee:"fee",quit:"fee",what_union:"fee",training:"publicleave"};
+  var cbBox=document.getElementById("casebox"),cbCat=document.getElementById("cb-cat"),cbDesc=document.getElementById("cb-desc"),cbName=document.getElementById("cb-name"),cbContact=document.getElementById("cb-contact"),cbToast=document.getElementById("cb-toast"),cbLine=document.getElementById("cb-line");
+  cbCat.innerHTML=CASE_CATS.map(function(c){return '<option value="'+c[0]+'">'+c[1]+'</option>';}).join("");
+  function catText(v){var f=CASE_CATS.filter(function(c){return c[0]===v;})[0];return f?f[1]:"其他";}
+  function caseText(){return "【工會案件單】\n分類："+catText(cbCat.value)+"\n姓名："+(cbName.value.trim()||"（未填）")+"\n聯絡："+(cbContact.value.trim()||"（未填）")+"\n問題："+(cbDesc.value.trim()||"（未填）")+"\n（由工會小幫手協助整理，會員自行傳送）";}
+  function openCaseBox(catV,descPreset){
+    cbCat.value=(catV&&catText(catV)!=="其他")?catV:(catV==="other"?"other":(catV||"other"));
+    if(!cbCat.value) cbCat.value="other";
+    if(descPreset && !cbDesc.value.trim()) cbDesc.value=descPreset;
+    cbBox.style.display="block"; cbToast.textContent="";
+    try{ requestAnimationFrame(function(){ cbBox.scrollIntoView({behavior:"smooth",block:"start"}); }); }catch(e){}
+  }
+  cbLine.setAttribute("href",LINE_URL);
+  document.getElementById("cb-close").addEventListener("click",function(){ cbBox.style.display="none"; });
+  document.getElementById("cb-copy").addEventListener("click",function(){
+    var t=caseText(); function ok(){cbToast.textContent="✅ 已複製，貼到工會 LINE 傳出即可。";}
+    if(navigator.clipboard) navigator.clipboard.writeText(t).then(ok,ok); else ok();
+  });
+  cbLine.addEventListener("click",function(){
+    try{ if(navigator.clipboard) navigator.clipboard.writeText(caseText()); }catch(e){}
+    cbToast.textContent="✅ 已複製案件單，到 LINE 群直接「貼上」就送出。";
+  });
+  // 提供給 chips 用的升級鈕
+  window.__ebnEscalate=function(catV,desc){ openCaseBox(catV||"other", desc||LASTQ||""); };
 
   jsend.addEventListener("click",function(){var v=jin.value;jin.value="";handleType(v);});
   jin.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();var v=jin.value;jin.value="";handleType(v);}});

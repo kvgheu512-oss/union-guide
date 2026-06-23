@@ -132,8 +132,16 @@
 
   <div class="bar">
     <button class="addbtn" id="newBtn">＋ 新增案件</button>
+    <button class="addbtn" id="importBtn" style="background:#0F5C36">📥 貼上會員案件</button>
     <select id="fCat"><option value="">全部分類</option></select>
     <input id="fSearch" placeholder="🔍 搜尋姓名／內容">
+  </div>
+
+  <div class="form" id="impform">
+    <h3>📥 貼上會員傳來的「案件單」</h3>
+    <div class="hint" style="margin-bottom:.5rem">會員用小幫手整理、再用 LINE 傳給你的案件單，<b>整段貼進來</b>，我自動判分類、帶進表單，你確認後存檔。</div>
+    <textarea id="imp-text" style="min-height:120px" placeholder="把會員傳來的整段案件單貼這裡，例如：&#10;【工會案件單】&#10;分類：加班費／工時&#10;姓名：王小明&#10;聯絡：LINE abc&#10;問題：113年國定假日上班只給調休沒給加班費…"></textarea>
+    <div class="frow"><button class="save" id="impParse">解析並帶入</button><button class="cancel" id="impCancel">取消</button></div>
   </div>
 
   <div class="form" id="form">
@@ -409,8 +417,44 @@ function openForm(c){
   updateDueHint(); window.scrollTo({top:0,behavior:'smooth'});
 }
 function updateDueHint(){ var c=CATS.find(function(x){return x.v===$('c-cat').value;}); $('dueHint').innerHTML=c&&c.due?('⏰ '+c.due):''; }
-$('newBtn').addEventListener('click',function(){ openForm(null); });
+$('newBtn').addEventListener('click',function(){ $('impform').classList.remove('show'); openForm(null); });
 $('cancelBtn').addEventListener('click',function(){ $('form').classList.remove('show'); });
+
+/* ───── 貼上會員案件 → 自動分類 → 帶入表單 ───── */
+function detectCat(catT,desc){
+  var s=(catT||'')+' '+(desc||'');
+  var byT=CATS.find(function(c){return catT && (c.t===catT.trim() || c.t.indexOf(catT.trim())>=0 || catT.indexOf(c.t)>=0);});
+  if(byT) return byT.v;
+  if(/加班|工時|時數|延長工作/.test(s)) return 'ot';
+  if(/特休|國定|假日|未休|折算/.test(s)) return 'holiday';
+  if(/職災|職傷|公傷|受傷|針扎|職業病|搬|閃到|久站/.test(s)) return 'injury';
+  if(/育嬰|留停/.test(s)) return 'parental';
+  if(/公假|會務|受訓|教育訓練/.test(s)) return 'publicleave';
+  if(/資遣|解僱|解雇|開除|調職|調單位|不續聘|離職/.test(s)) return 'fire';
+  if(/霸凌|不當|羞辱|刁難|針對/.test(s)) return 'bully';
+  if(/工會|報復|秋後|裁決|不當勞動/.test(s)) return 'unfair';
+  if(/會費|入會/.test(s)) return 'fee';
+  return 'other';
+}
+function parseCase(t){
+  function get(label){ var m=t.match(new RegExp(label+'[：:]\\s*(.*)')); return m?m[1].trim():''; }
+  var clean=function(v){ return (v==='（未填）'||v==='(未填)'||v==='—')?'':v; };
+  var structured=/【工會案件單】|分類[：:]/.test(t);
+  var catT=get('分類'), name=clean(get('姓名')||get('會員')||get('稱呼')), contact=clean(get('聯絡')||get('聯絡方式')), desc=get('問題')||get('簡述')||get('內容'), note=get('備註');
+  if(!structured || !desc){ desc=(t||'').replace(/^[\s\S]*?問題[：:]/, '').trim() || t.trim(); }
+  return { name:name, contact:contact, desc:desc, note:note, cat:detectCat(catT,desc) };
+}
+$('importBtn').addEventListener('click',function(){ $('form').classList.remove('show'); $('imp-text').value=''; $('impform').classList.add('show'); $('imp-text').focus(); window.scrollTo({top:0,behavior:'smooth'}); });
+$('impCancel').addEventListener('click',function(){ $('impform').classList.remove('show'); });
+$('impParse').addEventListener('click',function(){
+  var raw=$('imp-text').value.trim();
+  if(!raw){ alert('請先把會員傳來的案件單貼進來'); return; }
+  var p=parseCase(raw);
+  $('impform').classList.remove('show');
+  openForm(null);
+  $('c-name').value=p.name||''; $('c-contact').value=p.contact||''; $('c-desc').value=p.desc||''; $('c-cat').value=p.cat; updateDueHint();
+  toast('已帶入·分類自動判為「'+catName(p.cat)+'」，請確認後儲存');
+});
 $('c-cat').addEventListener('change',updateDueHint);
 $('saveBtn').addEventListener('click',function(){
   var name=$('c-name').value.trim();
