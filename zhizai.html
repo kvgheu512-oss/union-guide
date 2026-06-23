@@ -25,6 +25,18 @@
   .first li{margin-bottom:.55rem;font-size:14px;line-height:1.75;}
   .first li b{color:var(--brand-deep);}
   .warnline{background:#FDECEA;border:1px solid #F3C9C4;border-radius:10px;padding:.7rem .9rem;font-size:13px;color:#7B1818;margin-top:.7rem;line-height:1.75;}
+  .flow{background:#fff;border:2px solid var(--green);border-radius:16px;padding:1rem 1.1rem;margin-bottom:1.1rem;}
+  .flow .ft{font-family:'Noto Serif TC',serif;font-weight:700;color:var(--green-deep);font-size:16px;margin-bottom:.3rem;}
+  .flow .sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:.7rem;line-height:1.7;}
+  .flow ol{counter-reset:f;list-style:none;margin:0;padding:0;}
+  .flow li{position:relative;padding:.55rem .7rem .55rem 2.4rem;margin-bottom:.5rem;background:#F2FAF5;border:1px solid #C9E4D3;border-radius:10px;font-size:13.5px;line-height:1.8;color:var(--ink-mid);}
+  .flow li::before{counter-increment:f;content:counter(f);position:absolute;left:.6rem;top:.55rem;width:1.3rem;height:1.3rem;line-height:1.3rem;text-align:center;background:var(--green);color:#fff;border-radius:50%;font-size:12.5px;font-weight:700;}
+  .flow li b{color:var(--green-deep);}
+  .flow .okline{background:#EAF5EE;border:1px solid #C9E4D3;border-radius:10px;padding:.7rem .9rem;font-size:13px;color:#235C3C;margin-top:.3rem;line-height:1.8;}
+  .flow h4{font-size:13.5px;color:var(--green-deep);margin:.8rem 0 .4rem;font-family:'Noto Serif TC',serif;}
+  .flow .res{display:flex;gap:8px;flex-wrap:wrap;margin-top:.6rem;}
+  .flow .res a{flex:1;min-width:200px;background:var(--green);color:#fff;text-decoration:none;font-weight:700;font-size:12.8px;padding:.5rem .7rem;border-radius:9px;line-height:1.5;}
+  .flow .res a small{display:block;font-weight:400;opacity:.85;font-size:11px;word-break:break-all;margin-top:2px;}
 
   table{width:100%;border-collapse:collapse;font-size:13px;margin:.5rem 0;}
   th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top;}
@@ -83,6 +95,34 @@
       <li><b>先別簽</b>任何「自願以個人普通病假處理」「與職災無關」「和解拋棄」的文件——<b>先問工會</b>。簽了再翻盤很難。</li>
     </ol>
     <div class="warnline">💡 高榮職安室如果以各種理由「不認定」職災／公傷，<b>那是程序上的拖延，不是法律上的定論</b>。認定有法定準則與專責醫院，<b>不是雇主說了算</b>。下面教你怎麼接招。</div>
+  </div>
+
+  <!-- 職災看病官方正規流程 -->
+  <div class="flow">
+    <div class="ft">🧾 職災看病的「官方正規流程」（門診單怎麼來、回診怎麼辦）</div>
+    <div class="sub">這是<b>勞動部・勞工保險局</b>依《勞工職業災害保險及保護法》訂的<b>正規流程</b>，<b>不是醫院說了算，也不是職安室說的就是法律</b>。看不懂就把這段拿給他們看。</div>
+    <ol>
+      <li><b>免部分負擔，要靠一張「職業傷病門診單」。</b>看門診帶「<b>勞工保險職業傷病門診單</b>」（住院則「職業傷病住院申請書」）＋健保卡＋身分證，到健保特約醫院就醫，<b>就免繳健保部分負擔</b>，由職災保險支應。</li>
+      <li><b>這張單子是「投保單位（＝醫院人事／職安室這個雇主端）」開的。</b>勞保局每年底會把書單寄給投保單位備用；不夠用，單位可向勞保局辦事處索取或填表申領。<b>所以你回診前，要再跟單位（職安室／人事）拿一張門診單——這是正常程序，不是刁難你的理由。</b></li>
+      <li><b>雇主「應主動」填發。</b>勞動部明令：勞工發生職災，<b>雇主應主動填發職災醫療書單</b>以減輕你就醫負擔。<b>職安室拖著不開、要你自己想辦法，不合規。</b></li>
+      <li><b>來不及拿到單、或先用健保看了？10 天內補件就退錢。</b>緊急就醫先以健保身分繳部分負擔，<b>於就醫日起 10 日內（不含例假日）或出院前</b>，把門診單補送到醫院，<b>就退回你已繳的部分負擔</b>（住院還退 30 日內膳食費半數）。</li>
+    </ol>
+
+    <h4>🆘 萬一「拿不到」門診單——官方給你三招（不必受制於職安室）</h4>
+    <div class="okline">
+      <b>① 自己去勞保局辦事處領：</b>帶佐證文件（職災事故證明、勞保局核付公文、職業醫學科診斷證明／評估報告、同一傷病已用過的書單等）＋身分證，到<b>勞保局各地辦事處</b>，查明後<b>當場發給</b>。<br>
+      <b>② 職業病給職業醫學科醫師開：</b>經職業醫學科醫師診斷屬「職業病種類表」的職業病，<b>醫師可直接開「職業病門診單」</b>。<br>
+      <b>③ 先自費、事後核退：</b>超過 10 天沒補單、先用健保看的，可在<b>就醫／出院日起 6 個月內（特殊情形 5 年內）</b>，填「<b>自墊醫療費用核退申請書</b>」＋診斷證明，向勞保局申請<b>退回自墊的職災醫療費</b>。
+    </div>
+
+    <h4>📎 官方原始出處（自己點進去看，最準）</h4>
+    <div class="res">
+      <a href="https://www.bli.gov.tw/0106962.html" target="_blank" rel="noopener">勞保局・如何取得職業傷病醫療書單<small>www.bli.gov.tw/0106962.html</small></a>
+      <a href="https://www.mol.gov.tw/1607/1632/1633/89712/" target="_blank" rel="noopener">勞動部・拿不到書單？3 招守住權益<small>www.mol.gov.tw/1607/1632/1633/89712/</small></a>
+      <a href="https://www.mol.gov.tw/1607/1632/1640/43989/post" target="_blank" rel="noopener">勞動部・雇主應主動填發醫療書單<small>www.mol.gov.tw/.../43989</small></a>
+      <a href="https://www.bli.gov.tw/0106701.html" target="_blank" rel="noopener">勞保局・職業傷病門診單下載<small>www.bli.gov.tw/0106701.html</small></a>
+      <a href="https://www.bli.gov.tw/0106703.html" target="_blank" rel="noopener">勞保局・自墊醫療費用核退申請書<small>www.bli.gov.tw/0106703.html</small></a>
+    </div>
   </div>
 
   <!-- 對付擋公傷 -->
@@ -200,6 +240,8 @@
 window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
     { text:"工作受傷、生病，這頁教你怎麼爭取公傷和職災的權益，別自己吞下去。" },
     { text:"特別記住一件事：去醫院掛號的時候，一定要跟櫃台說，我要用職業傷病、也就是職災、職傷的身分就醫。這一句話，可以免掉健保的部分負擔，看病不用自己先掏這筆錢。沒講，就被當一般門診收費了。" },
+    { text:"免部分負擔，要靠一張「職業傷病門診單」。這張單子，是投保單位、也就是醫院的人事或職安室這個雇主端開的，不是醫院櫃台、也不是職安室嘴巴說了算。下次回診前，記得再跟單位拿一張門診單，這是勞保局訂的正常程序。" },
+    { text:"雇主依規定，應該主動幫你填發這張書單。如果職安室拖著不開、要你自己想辦法，那不合規。萬一真的拿不到，官方有三招：自己帶證明去勞保局辦事處當場領、職業病請職業醫學科醫師直接開、或者先自費、六個月內申請核退。記住，這是官方流程，不是醫院或職安室說了算。" },
     { text:"被職安室、或長官擋下來嗎？這裡有一步一步的接招步驟，照著做。" },
     { text:"最重要的是保全證據：受傷的經過、就醫的紀錄、通報的紀錄，通通留好。" },
     { text:"卡關了，就找工會，或打一九五五。" }
