@@ -203,6 +203,14 @@ function renderList(){
 renderPick(); renderList();
 </script>
 <script src="law-tips.js" defer></script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
+    { text:"這頁，是吵架前的練習。資方常用的那些歪理，這裡用法條，一條一條打回去。" },
+    { text:"找到資方對你講的那一句，點開，就看到對應的法條，還有怎麼反駁。" },
+    { text:"開會、協商、申訴之前，先看一遍，講起話來，就有底氣、有依據。" }
+  ], {}); });
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>
