@@ -151,6 +151,16 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('從小幫手來的頁面顯示回小幫手鈕', async p => { await p.goto(BASE + 'leavepay.html?from=help#sec-holi', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(400);
     const t = await p.textContent('#ebnHelp').catch(() => '');
     (t && t.includes('回小幫手')) ? ok('回小幫手鈕出現') : bad('backbtn', 'ebnHelp=' + t); });
+  await T('小幫手深連直達計算器區塊', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
+    await p.fill('#jbot-in', '國定假日上班的薪水'); await p.click('#jbot-send'); await p.waitForTimeout(300);
+    const href = await p.$eval('#jbot-chips a', e => e.getAttribute('href')).catch(() => '');
+    if (!/leavepay\.html\?from=help#sec-holi/.test(href)) return bad('deeplink', 'href=' + href);
+    await p.click('#jbot-chips a'); await p.waitForTimeout(700);
+    const inView = await p.$eval('#sec-holi', e => { const r = e.getBoundingClientRect(); return r.top >= -5 && r.top < 700; }).catch(() => false);
+    inView ? ok('深連落在國定假日區塊') : bad('deeplink', '#sec-holi 不在視窗'); });
+  await T('送出鈕在手機畫面內可見', async p => { await p.setViewportSize({ width: 390, height: 844 }); await go(p, 'help.html'); await p.waitForTimeout(300);
+    const v = await p.$eval('#jbot-send', e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.top >= 0 && r.bottom <= 844; }).catch(() => false);
+    v ? ok('送出鈕在視窗內') : bad('sendbtn', '送出鈕不在視窗內'); });
 
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);

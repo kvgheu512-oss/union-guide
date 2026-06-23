@@ -180,7 +180,7 @@
   </div>
 
   <!-- ④ 高榮加班費結算的兩個問題 -->
-  <div class="card" style="border-top-color:#C0392B">
+  <div class="card" id="sec-illegal" style="border-top-color:#C0392B">
     <h2 style="color:#7B1818">④ 高榮平日加班費「拖到 12 月＋÷31」的兩個違法點</h2>
     <div class="sub">這是針對上面 <b>① 平日加班費</b> 的兩個具體爭點——把做法記下來、證據留好，年底結算（或離職）時一起討</div>
 
@@ -508,13 +508,13 @@ window.addEventListener("load", function(){
   if(!window.EBNTour) return;
   function setv(sel,v){ var e=document.querySelector(sel); if(e){ e.value=v; e.dispatchEvent(new Event("input",{bubbles:true})); } }
   EBNTour.attach([
-    { title:"這是算加班費的工具", text:"我帶你看一遍，很簡單。它會幫你算三種錢：<b>平常加班</b>、<b>放假日來上班</b>、<b>沒放到的特休假</b>。" },
+    { sel:".header", title:"這是算加班費的工具", text:"我帶你看一遍，很簡單。它會幫你算三種錢：<b>平常加班</b>、<b>放假日來上班</b>、<b>沒放到的特休假</b>。" },
     { sel:"#salary", title:"先填薪水", text:"在這格填你<b>一個月領多少錢</b>。不知道填多少？點下面那條會幫你加起來。", demo:function(){ setv("#salary","40000"); } },
     { sel:"#salWrap", title:"幫你把薪水加起來", text:"把薪水單上每一項的<b>錢</b>填進去、打勾，按一下就自動加好。", pre:function(){ var d=document.getElementById("salWrap"); if(d) d.open=true; } },
     { sel:"#wkDays", title:"平常日加班", text:"只要寫<b>那天加了幾個小時</b>，它就自己幫你算錢。", demo:function(){ setv("#wkDays .wk-h","3"); } },
     { sel:"#holi", title:"放假日還要上班", text:"遇到<b>國定假日（紅字）</b>還來上班，老闆要<b>多給你一天的錢</b>。填來了幾天就好。", demo:function(){ setv("#holi","1"); } },
     { sel:"#unused", title:"沒放到的假", text:"今年<b>沒休完的特休假</b>，要換成錢給你。選年資、填沒休幾天就好。" },
-    { title:"好了！", text:"這樣就看得出老闆有沒有<b>少給你</b>。有問題就問工會，或打 <b>1955</b>。" }
+    { sel:"#sec-illegal", title:"好了！", text:"這樣就看得出老闆有沒有<b>少給你</b>。高榮這兩個違法點先記下來，有問題就問工會，或打 <b>1955</b>。" }
   ], {});
 });
 </script>

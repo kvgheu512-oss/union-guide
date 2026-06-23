@@ -35,10 +35,10 @@
   .jbot-chips a.tel{background:#1A3A6B;}
   .jbot-chips button.again{background:#fff;color:var(--ink-soft);border-color:var(--border);}
   .jbot-chips button.cat{background:var(--gold-light);color:#8A6300;border-color:#EAD67A;}
-  .jbot-input{display:flex;gap:8px;padding:.8rem 1rem;border-top:1px solid var(--border);background:#fff;}
-  .jbot-input input{flex:1;border:1.5px solid var(--border);border-radius:22px;padding:.6rem 1rem;font-size:16px;font-family:inherit;}
+  .jbot-input{display:flex;gap:8px;padding:.85rem 1rem;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:2;}
+  .jbot-input input{flex:1;min-width:0;border:1.5px solid var(--border);border-radius:22px;padding:.6rem 1rem;font-size:16px;font-family:inherit;}
   .jbot-input input:focus{outline:none;border-color:var(--green);}
-  .jbot-input button{flex-shrink:0;background:var(--green);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;}
+  .jbot-input button{flex-shrink:0;background:var(--green);color:#fff;border:none;border-radius:22px;padding:0 1.15rem;height:44px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
   .jbot-input button:active{background:var(--green-deep);}
   .ans .lab{display:inline-block;font-size:11.5px;font-weight:700;border-radius:6px;padding:1px 7px;margin-right:5px;}
   .ans .lab.fa{background:#E9F6EF;color:#1f6b43;}
@@ -63,12 +63,12 @@
       <div class="ava">🤖</div>
       <div><div class="nm">工會小幫手</div><div class="tg">打字或點按鈕都可以 · 答案即時跳出</div></div>
     </div>
-    <div class="jbot-log" id="jbot-log"></div>
-    <div class="jbot-chips" id="jbot-chips"></div>
     <div class="jbot-input">
       <input id="jbot-in" type="text" placeholder="打字問我，例如：特休沒休完有錢嗎？" enterkeyhint="search" autocomplete="off">
-      <button id="jbot-send" type="button" aria-label="問">➤</button>
+      <button id="jbot-send" type="button">送出</button>
     </div>
+    <div class="jbot-log" id="jbot-log"></div>
+    <div class="jbot-chips" id="jbot-chips"></div>
   </div>
 
   <div class="foot">高雄榮民總醫院企業工會（籌備中）· 答案為整理參考、非正式法律意見，正式以法規與官方公告為準<br>個資只存你的裝置、不上傳 · 真的卡關，打勞工專線 1955 或在 LINE 群找幹部</div>
