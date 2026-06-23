@@ -131,6 +131,11 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const pg = await p.textContent('#ebntour-tip .pg');
     (on && /2 \/ 7/.test(pg)) ? ok('導覽開啟並前進到 2/7') : bad('tour', 'on=' + on + ' pg=' + pg); });
 
+  await T('導覽「下一步」有會動引導圖示（全站共用）', async p => { await p.goto(BASE + 'qingjia.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    await p.click('#ebntour-launch'); await p.waitForTimeout(120); await p.click('#ebntour-menu button[data-m="text"]'); await p.waitForTimeout(400);
+    const hand = await p.$('#ebntour-tip .ebnt-next .ebnt-hand');
+    hand ? ok('下一步鈕有會動手指') : bad('tourcue', '導覽下一步無引導圖示'); });
+
   await T('導覽 spotlight 聚焦實際元素', async p => { await p.goto(BASE + 'zhizai.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
     if (!await p.$('#ebntour-launch')) return bad('spot', '沒有導覽啟動鈕');
     await p.click('#ebntour-launch'); await p.waitForTimeout(120);

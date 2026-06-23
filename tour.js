@@ -26,7 +26,11 @@
     + "#ebntour-tip .pg{font-size:11.5px;color:#999;margin-top:8px;}"
     + "#ebntour-tip .bz{display:flex;gap:7px;align-items:center;margin-top:10px;flex-wrap:wrap;}"
     + "#ebntour-tip button{font-family:inherit;border:0;border-radius:9px;padding:.5rem .85rem;font-weight:700;font-size:13.5px;cursor:pointer;}"
-    + ".ebnt-next{background:#1A3A6B;color:#fff;}.ebnt-prev{background:#EAF0FA;color:#1A3A6B;}.ebnt-skip{background:none;color:#999;margin-left:auto;}"
+    + ".ebnt-next{background:#1A3A6B;color:#fff;animation:ebnt-glow 1.4s ease-out infinite;}.ebnt-prev{background:#EAF0FA;color:#1A3A6B;}.ebnt-skip{background:none;color:#999;margin-left:auto;}"
+    + "@keyframes ebnt-glow{0%,100%{box-shadow:0 0 0 0 rgba(26,58,107,.5)}70%{box-shadow:0 0 0 9px rgba(26,58,107,0)}}"
+    + "@keyframes ebnt-bob{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}"
+    + ".ebnt-next .ebnt-hand{display:inline-block;animation:ebnt-bob .7s ease-in-out infinite;margin-right:3px;}"
+    + "@media (prefers-reduced-motion:reduce){.ebnt-next{animation:none}.ebnt-next .ebnt-hand{animation:none}}"
     + ".ebnt-ico{background:#F0F2F7;color:#1A3A6B;width:36px;height:34px;padding:0!important;font-size:16px;}"
     + ".ebnt-ico.on{background:#1A7A4A;color:#fff;}"
     + "#ebntour-launch{position:fixed;left:50%;transform:translateX(-50%);top:max(10px,env(safe-area-inset-top));z-index:1051;background:#1A3A6B;color:#fff;border:0;border-radius:24px;padding:.5rem 1rem;font:700 13.5px/1 'Noto Sans TC',system-ui,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.35);cursor:pointer;}"
@@ -167,7 +171,7 @@
         '<button class="ebnt-ico' + (voice ? ' on' : '') + '" data-a="voice" title="語音">🔊</button>' +
         '<button class="ebnt-ico' + (auto ? ' on' : '') + '" data-a="auto" title="自動播放">' + (auto ? '⏸' : '▶') + '</button>' +
         (i > 0 ? '<button class="ebnt-prev" data-a="prev">上一步</button>' : '') +
-        '<button class="ebnt-next" data-a="next">' + (last ? '完成 ✓' : '下一步') + '</button>' +
+        '<button class="ebnt-next" data-a="next"><span class="ebnt-hand">👉</span>' + (last ? '完成 ✓' : '下一步') + '</button>' +
         '<button class="ebnt-skip" data-a="skip">跳過</button>' +
       '</div>';
     place();
