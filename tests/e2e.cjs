@@ -161,6 +161,14 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('送出鈕在手機畫面內可見', async p => { await p.setViewportSize({ width: 390, height: 844 }); await go(p, 'help.html'); await p.waitForTimeout(300);
     const v = await p.$eval('#jbot-send', e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.top >= 0 && r.bottom <= 844; }).catch(() => false);
     v ? ok('送出鈕在視窗內') : bad('sendbtn', '送出鈕不在視窗內'); });
+  await T('到職日自動算特休天數', async p => { await go(p, 'leavepay.html'); await p.waitForTimeout(300);
+    await p.fill('#hireDate', '2024-01-01'); await p.waitForTimeout(200);
+    const t = await p.textContent('#hireOut');
+    /特休 10 天/.test(t) ? ok('到職日→10天') : bad('hiredate', t.slice(0, 40)); });
+  await T('行動鈕有會動的引導圖示', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
+    await p.fill('#jbot-in', '我有幾天特休'); await p.click('#jbot-send'); await p.waitForTimeout(250);
+    const cue = await p.$('#jbot-chips a.cue .cuehand');
+    cue ? ok('行動鈕有會動手指') : bad('cue', '沒有引導圖示'); });
   await T('小幫手能接資方刁難（接招話術）', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
     await p.fill('#jbot-in', '叫我簽自願離職書'); await p.click('#jbot-send'); await p.waitForTimeout(250);
     const t = await p.textContent('#jbot-log');

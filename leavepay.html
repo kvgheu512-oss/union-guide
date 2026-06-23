@@ -156,7 +156,11 @@
   <div class="card" id="sec-annual">
     <h2>③ 特休未休 折算工資</h2>
     <div class="sub">勞基法 §38 ＋ 施行細則 §24-1（這不是加班，是「沒放到的假換成錢」）</div>
-    <label>年資（幫你查今年「應有」幾天特休）</label>
+    <div class="hint" style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.6rem .8rem;color:#5C4000;margin:.3rem 0 .5rem;font-size:13px">😀 <b>不會算年資？沒關係</b>：直接填<b>你哪天到職高榮</b>，下面會自動幫你算出<b>今年該有幾天特休</b>。</div>
+    <label>🗓 你哪天到職高榮？<span class="opt">（填了自動算，不用自己數）</span></label>
+    <input id="hireDate" type="date" max="2030-12-31">
+    <div class="out" id="hireOut" style="display:none"></div>
+    <label>年資（沒填到職日時用這個；填了會自動帶入）</label>
     <select id="sen">
       <option value="0">未滿 6 個月（0 天）</option>
       <option value="3">滿 6 個月～未滿 1 年（3 天）</option>
@@ -328,11 +332,41 @@
 
   // 選年資時，自動把「未休天數」帶成該年應有天數（方便、仍可手動改）
   $("sen").addEventListener("change",function(){ $("unused").value=this.value; calc(); });
+
+  // 🗓 填到職日 → 自動算年資與「今年應有特休天數」（§38），不用自己數
+  function annualDays(y){            // y = 到職滿幾年（含小數）
+    if(y<0.5) return 0;
+    if(y<1)  return 3;
+    if(y<2)  return 7;
+    if(y<3)  return 10;
+    if(y<5)  return 14;
+    if(y<10) return 15;
+    return Math.min(30, 15 + (Math.floor(y) - 9));   // 滿10年16、每年+1、封頂30
+  }
+  function setSen(d){                // 把計算出的天數塞進年資下拉（沒有就動態新增）
+    var sel=$("sen"), found=false;
+    for(var i=0;i<sel.options.length;i++){ if(+sel.options[i].value===d){ sel.selectedIndex=i; found=true; break; } }
+    if(!found){ var o=document.createElement("option"); o.value=d; o.textContent="依到職日（"+d+" 天）"; sel.appendChild(o); sel.value=d; }
+  }
+  function onHire(){
+    var v=$("hireDate").value, out=$("hireOut");
+    if(!v){ out.style.display="none"; return; }
+    var h=new Date(v+"T00:00:00"), now=new Date();
+    if(isNaN(h)||h>now){ out.style.display="block"; out.innerHTML='<span style="color:#7B1818">日期看起來怪怪的，再確認一下喔。</span>'; return; }
+    var ms=now-h, yrsF=ms/(365.2425*24*3600*1000), yrs=Math.floor(yrsF), mons=Math.floor((yrsF-yrs)*12);
+    var d=annualDays(yrsF);
+    setSen(d); $("unused").value=d; calc();
+    out.style.display="block";
+    if(d===0){ out.innerHTML='你到職滿 <b>'+yrs+' 年 '+mons+' 個月</b>。<b>未滿 6 個月</b>還沒有特休；滿半年就有 3 天。'; }
+    else { out.innerHTML='你到職滿 <b>'+yrs+' 年 '+mons+' 個月</b> → <b>今年應有特休 '+d+' 天</b>。<br><span style="font-size:12px;color:#777">下面「沒休完的天數」已先幫你帶成 '+d+' 天，<b>請改成你「實際還沒休」的天數</b>再看折算金額。</span>'; }
+  }
+  $("hireDate").addEventListener("change",onHire);
+  $("hireDate").addEventListener("input",onHire);
   ["salary","dv","actWk","unused","actLeave","holi","otHr","actHoli"].forEach(function(id){ $(id).addEventListener("input",calc); });
 
   // 🛟 整頁暫存：含預設值的欄位＋調休單選鈕，重開自動還原（本機，不上傳）
   var PK="leavepay_state_v1";
-  var FIELDS=["salary","dv","actWk","sen","unused","actLeave","holi","otHr","actHoli"];
+  var FIELDS=["salary","dv","actWk","sen","unused","actLeave","holi","otHr","actHoli","hireDate"];
   function saveState(){
     var d={};
     FIELDS.forEach(function(id){ var el=$(id); if(el) d[id]=el.value; });
@@ -350,6 +384,7 @@
     if(d.ci){ var r2=document.querySelector('input[name="ci"][value="'+d.ci+'"]'); if(r2) r2.checked=true; }
   }
   loadState();
+  if($("hireDate") && $("hireDate").value) onHire();   // 重開後，有到職日就重新算一次
   FIELDS.forEach(function(id){ var el=$(id); if(el){ el.addEventListener("input",saveState); el.addEventListener("change",saveState); } });
   document.querySelectorAll('input[name="hm"],input[name="ci"]').forEach(function(r){ r.addEventListener("change",saveState); });
 

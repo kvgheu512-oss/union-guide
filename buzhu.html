@@ -57,6 +57,10 @@
   .jbot-chips button:active{background:#F6ECC2;}
   .jbot-chips a{font-size:13px;background:var(--gold);color:#fff;border:none;border-radius:20px;padding:.55rem .9rem;text-decoration:none;font-weight:700;-webkit-tap-highlight-color:transparent;}
   .jbot-chips button.again{background:#fff;color:var(--ink-soft);border-color:var(--border);}
+  @keyframes ebnGlow{0%,100%{box-shadow:0 0 0 0 rgba(183,134,11,.55)}70%{box-shadow:0 0 0 11px rgba(183,134,11,0)}}
+  @keyframes ebnBob{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+  .jbot-chips a.cue{animation:ebnGlow 1.25s ease-out 6;}
+  .jbot-chips a .cuehand{display:inline-block;animation:ebnBob .7s ease-in-out infinite;margin-right:3px;}
 </style>
 <link rel="stylesheet" href="common.css">
 </head>
@@ -242,6 +246,8 @@
         });}
       jchips.appendChild(el);
     });
+    var link=jchips.querySelector("a");
+    if(link){ link.classList.add("cue"); link.innerHTML='<span class="cuehand">👉</span>'+link.textContent; }
     if(!skipScroll){ try{ requestAnimationFrame(function(){ jchips.scrollIntoView({behavior:"smooth",block:"nearest"}); }); }catch(e){} }
   }
   go("start",true);

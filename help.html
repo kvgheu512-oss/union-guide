@@ -35,6 +35,11 @@
   .jbot-chips a.tel{background:#1A3A6B;}
   .jbot-chips button.again{background:#fff;color:var(--ink-soft);border-color:var(--border);}
   .jbot-chips button.cat{background:var(--gold-light);color:#8A6300;border-color:#EAD67A;}
+  /* 會動的小圖示：引導使用者「下一步點這顆」 */
+  @keyframes ebnGlow{0%,100%{box-shadow:0 0 0 0 rgba(26,122,74,.55)}70%{box-shadow:0 0 0 11px rgba(26,122,74,0)}}
+  @keyframes ebnBob{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+  .jbot-chips a.cue{animation:ebnGlow 1.25s ease-out 6;}
+  .jbot-chips a .cuehand{display:inline-block;animation:ebnBob .7s ease-in-out infinite;margin-right:3px;}
   .jbot-input{display:flex;gap:8px;padding:.85rem 1rem;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:2;}
   .jbot-input input{flex:1;min-width:0;border:1.5px solid var(--border);border-radius:22px;padding:.6rem 1rem;font-size:16px;font-family:inherit;}
   .jbot-input input:focus{outline:none;border-color:var(--green);}
@@ -102,8 +107,8 @@
     a:[A("<b>有！</b>特休沒休完，年度結束或離職時，<b>沒休的天數雇主要折錢給你</b>。","勞基法 §38。","常見糾紛是醫院用 ÷31 天去折、把你少算——<b>不是沒給，是算少了</b>。👉 <b>點下面綠色鈕「直接去算特休折錢」</b>，自己對該領多少。")],
     go:[{t:"➡️ 直接去算特休折錢",href:"leavepay.html#sec-annual"}]},
   {id:"annual_days",cat:"pay",t:"我有幾天特休",k:["特休幾天","幾天特休","特休天數","年資","休假天數","特休多少天"],
-    a:[A("看年資：滿半年 3 天、1 年 7 天、2 年 10 天、3 年起每年 14 天、5 年起 15 天、10 年起每年加 1 天到 30 天封頂。","勞基法 §38。","<b>約用、派遣只要受僱、年資到了，一樣有特休。</b>")],
-    go:[{t:"➡️ 請假速查",href:"qingjia.html"}]},
+    a:[A("看年資：滿半年 3 天、1 年 7 天、2 年 10 天、3 年起每年 14 天、5 年起 15 天、10 年起每年加 1 天到 30 天封頂。","勞基法 §38。","不會算年資？沒關係 👉 <b>點下面綠色鈕，填你到職高榮的日期，工具自動告訴你有幾天</b>。約用、派遣只要受僱、年資到了一樣有。")],
+    go:[{t:"➡️ 填到職日，自動算特休天數",href:"leavepay.html#sec-annual"}]},
   {id:"payslip",cat:"pay",t:"薪資明細看不懂、想核對",k:["薪資明細","薪資單","工資清冊","薪水條","明細","本薪","底薪","核對薪水","薪水對不上"],
     a:[A("雇主<b>應提供工資清冊、列明每個項目</b>。","勞基法 §23。","👉 <b>點下面綠色鈕去試算</b>，把本薪、加班、夜班、特休折算一項項對；對不上就是線索，存好截圖交工會。")],
     go:[{t:"➡️ 薪資/加班試算",href:"leavepay.html"}]},
@@ -304,6 +309,9 @@
         el.addEventListener("click",function(){ if(c.fn){c.fn();} });}
       jchips.appendChild(el);
     });
+    // 會動的小圖示：把第一顆「行動按鈕」(綠色連結) 加上手指＋發光，明確告訴他下一步點這顆
+    var link=jchips.querySelector("a");
+    if(link){ link.classList.add("cue"); link.innerHTML='<span class="cuehand">👉</span>'+link.textContent; }
     // 讓行動按鈕一定看得到（手機上別被擠到畫面外，免得使用者找不到、誤點答案文字）
     try{ requestAnimationFrame(function(){ jchips.scrollIntoView({behavior:"smooth",block:"nearest"}); }); }catch(e){}
   }
