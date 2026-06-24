@@ -273,17 +273,24 @@ function goCadre(){
   show('s-cadre');
 }
 
+// 幹部姓名：優先用「基本資料中心」發布的名單（大會選出後可改名、全站同步），否則用內建預設
+function cname(c){ try{ return (window.EBNOrg && EBNOrg.cadreName(c.key)) || c.name; }catch(e){ return c.name; } }
 function buildCadreGrid(){
   var g = document.getElementById('cadre-grid');
-  if(g.children.length) return;
+  g.innerHTML='';
   CADRES.forEach(function(c){
     var btn = document.createElement('button');
     btn.className = 'cadre-btn' + (c.full?' full':'');
-    btn.innerHTML = '<div class="cname">' + c.name + '</div><div class="crole">' + (c.role||'所有幹部工具') + '</div>';
+    btn.innerHTML = '<div class="cname">' + cname(c) + '</div><div class="crole">' + (c.role||'所有幹部工具') + '</div>';
     btn.onclick = function(){ choosePerson(c.key); };
     g.appendChild(btn);
   });
 }
+// public.json 載入後，名字可能更新 → 重建格子、若正在看某人也更新標題
+document.addEventListener("ebnorg:public",function(){
+  var g=document.getElementById('cadre-grid'); if(g){ g.innerHTML=''; buildCadreGrid(); }
+  try{ var s=JSON.parse(localStorage.getItem(NAV_KEY)||'null'); if(s&&s.role==='cadre'&&s.person&&document.getElementById('s-person')&&document.getElementById('s-person').classList.contains('show')) choosePerson(s.person); }catch(e){}
+});
 
 function choosePerson(key){
   var c = CADRES.find(function(x){ return x.key===key; });
@@ -292,7 +299,7 @@ function choosePerson(key){
 
   var hd = document.getElementById('person-hd');
   hd.innerHTML = '<div class="av '+c.cls+'">'+c.av+'</div>'
-    +'<div><div class="pn">'+c.name+(c.role?' （'+c.role+'）':'')+'</div>'
+    +'<div><div class="pn">'+cname(c)+(c.role?' （'+c.role+'）':'')+'</div>'
     +(c.desc?'<div class="pr">'+c.desc+'</div>':'')+'</div>';
 
   var cs = document.getElementById('person-cards');
@@ -332,7 +339,7 @@ window.addEventListener('DOMContentLoaded', function(){
   if(p.role==='member'){ label='會員'; go=goMember; }
   else if(p.role==='cadre' && p.person){
     var c=CADRES.find(function(x){return x.key===p.person;});
-    label='幹部 · '+(c?c.name:'') ; go=function(){ buildCadreGrid(); choosePerson(p.person); };
+    label='幹部 · '+(c?cname(c):'') ; go=function(){ buildCadreGrid(); choosePerson(p.person); };
   }
   else if(p.role==='cadre'){ label='幹部'; go=goCadre; }
   if(!go) return;
@@ -347,6 +354,7 @@ window.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 
+<script src="org.js" defer></script>
 <script src="common.js" defer></script>
 </body>
 </html>

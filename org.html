@@ -59,6 +59,12 @@
     <div style="display:flex;gap:8px"><input id="sign-now" inputmode="tel" placeholder="目前人數"><input id="sign-goal" inputmode="tel" placeholder="目標(預設30)"></div>
   </div>
 
+  <div class="card" style="border-top-color:#2E5C8A">
+    <h2 style="font-family:'Noto Serif TC',serif;color:#1A3A6B;font-size:16px;margin-bottom:.4rem">👥 幹部名單（大會選出後／輪動時改名）</h2>
+    <div class="hint" style="font-size:12.5px;line-height:1.8;margin-bottom:.5rem">大會選出新幹部、或會員輪動時，<b>在這裡改名字就好</b>。改完按上面「儲存」、再到下面「發布上線」，<b>全站（你是誰、幹部功能表、語音包）會員看到的幹部名字一起換</b>，無縫銜接、不用改程式。<br><span style="color:#999">職稱固定（理事長／總務／法規／文宣／監事），只換人名；某位從缺就留空。</span></div>
+    <div id="cadre-fields"></div>
+  </div>
+
   <div class="card" style="border-top-color:#B7860B">
     <h2 style="font-family:'Noto Serif TC',serif;color:#8A6D0B;font-size:16px;margin-bottom:.4rem">📢 發布上線（讓所有人看得到）</h2>
     <div class="hint" style="font-size:12.8px;line-height:1.85;color:#5C4000;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.6rem .8rem">先按上面「儲存」，再按下面「產生公告檔」。把產生的內容<b>貼給 Claude（或交給網站維護者）上線</b>，網站更新後<b>所有人</b>都看得到。<br>（純靜態網站沒有後端，所以要靠這一步「上線」；之後要改，改完再發布一次即可。）</div>
@@ -135,6 +141,23 @@
     var ac=$("org-addrConsent"); o2.addrConsent=!!(ac&&ac.checked);
     return o2;
   }
+  // 幹部名單：渲染與讀取
+  var cadreEdited=false;
+  function renderCadres(){
+    var box=$("cadre-fields"); if(!box||!window.EBNOrg) return;
+    var c=EBNOrg.cadres();
+    box.innerHTML=EBNOrg.CADRE_ROLES.map(function(r){
+      var key=r[0],role=r[1],v=(c[key]!=null?String(c[key]):"").replace(/"/g,"&quot;");
+      return '<label>'+role+'</label><input id="cadre-'+key+'" type="text" value="'+v+'" placeholder="姓名（從缺留空）">';
+    }).join("");
+    box.addEventListener("input",function(){ cadreEdited=true; },{once:true});
+  }
+  function saveCadres(){
+    if(!window.EBNOrg) return;
+    var o={};
+    EBNOrg.CADRE_ROLES.forEach(function(r){ var el=$("cadre-"+r[0]); if(el) o[r[0]]=el.value.trim(); });
+    EBNOrg.setCadres(o);
+  }
   // 填住家會址時主動跳出說明，確保「知情同意」
   function consented(){ var c=$("org-addrConsent"); return (c&&c.checked) || sessionStorage.getItem("ebn_addr_notice")==="1"; }
   function showAddrNotice(){
@@ -186,15 +209,15 @@
   }
   function start(){
     if(!window.EBNOrg){ setTimeout(start,30); return; }
-    render(); fillExtras();
+    render(); fillExtras(); renderCadres();
     ["m-prep-date","m-prep-time","m-prep-place","m-prep-url","m-found-date","m-found-time","m-found-place","m-found-url","sign-now","sign-goal"].forEach(function(id){ var e=$(id); if(e) e.addEventListener("input",function(){ extrasEdited=true; }); });
     $("saveBtn").addEventListener("click",function(){
-      EBNOrg.set(readForm());
+      EBNOrg.set(readForm()); saveCadres();
       var t=$("toast"); t.textContent="✅ 已存這支手機。要讓大家看到，請按下面『發布上線』";
       setTimeout(function(){ t.textContent=""; },3500);
     });
     $("pubBtn").addEventListener("click",function(){
-      EBNOrg.set(readForm());                    // 順手存一下
+      EBNOrg.set(readForm()); saveCadres();       // 順手存一下
       var full=EBNOrg.buildPublic(readForm());
       var ex=readExtras(); full.meet=ex.meet; full.sign=ex.sign;   // 會議/連署一起發布
       var txt=JSON.stringify(full,null,2);
@@ -211,7 +234,7 @@
     // 一點到「會址」就跳說明，確保知情同意（用事件委派，重繪後仍有效）
     document.addEventListener("focusin",function(e){ if(e.target&&e.target.id==="org-addr"&&!consented()) showAddrNotice(); });
     // public.json 載到後，若使用者還沒動手編輯，就把公告版填上來
-    document.addEventListener("ebnorg:public",function(){ if(!edited) render(); fillExtras(); });
+    document.addEventListener("ebnorg:public",function(){ if(!edited) render(); fillExtras(); if(!cadreEdited) renderCadres(); });
   }
   start();
 })();

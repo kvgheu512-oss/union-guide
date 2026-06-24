@@ -26,6 +26,19 @@
 
   // 已發布的公開資料（全站每個人都讀同一份 public.json）；本機草稿(KEY)會疊在上面
   var PUB = "public.json", _pub = null, _pubLoaded = false;
+
+  // 幹部名單（大會選出後／會員輪動時，可在「基本資料中心」改名，改一次→發布→全站同步）
+  var CKEY = "ebn_cadres_v1";
+  var CADRE_ROLES = [
+    ["chair", "理事長"], ["fin", "總務"], ["doc", "法規（一）"],
+    ["doc2", "法規（二）"], ["wel", "文宣"], ["sup", "監事"]
+  ];
+  var CADRE_DEFAULTS = { chair: "楊淯涵", fin: "莊瑋聆", doc: "巫佳容", doc2: "葉柏宏", wel: "黃淑姸", sup: "陳依婷" };
+  function cadreDraft() { try { return JSON.parse(localStorage.getItem(CKEY)) || {}; } catch (e) { return {}; } }
+  function cadres() { return Object.assign({}, CADRE_DEFAULTS, (_pub && _pub.cadres) || {}, cadreDraft()); }
+  function setCadres(o) { try { localStorage.setItem(CKEY, JSON.stringify(o || {})); } catch (e) {} }
+  function cadreName(key) { return cadres()[key] || CADRE_DEFAULTS[key] || ""; }
+
   function draft() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   // get()＝已發布的 org ＋ 本機草稿（草稿優先，讓正在編輯的人看到自己最新的）
   function get() { return Object.assign({}, (_pub && _pub.org) || {}, draft()); }
@@ -44,6 +57,7 @@
   function buildPublic(orgObj) {
     var base = _pub ? JSON.parse(JSON.stringify(_pub)) : {};
     base.org = orgObj || get();
+    base.cadres = cadres();                 // 連同幹部名單一起發布（全站讀同一份）
     base.updated = new Date().toISOString().slice(0, 10);
     return base;
   }
@@ -85,7 +99,7 @@
   function getLog() { try { return JSON.parse(localStorage.getItem(LOG) || "[]"); } catch (e) { return []; } }
   function setLog(arr) { try { localStorage.setItem(LOG, JSON.stringify(arr || [])); } catch (e) {} }
 
-  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB };
+  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY };
   // 先用本機草稿即時填一次（不必等網路）；public.json 載到後再填一次（公告版蓋上來）
   function init() { fill(); loadPublic(function () { fill(); try { document.dispatchEvent(new CustomEvent("ebnorg:public")); } catch (e) {} }); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
