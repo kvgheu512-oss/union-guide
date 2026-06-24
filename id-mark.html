@@ -113,6 +113,16 @@
   .focusring.show{animation:fpulse .55s ease;}
   @keyframes fpulse{0%{opacity:1;transform:scale(1.5)}80%{opacity:1}100%{opacity:0;transform:scale(1)}}
 
+  /* 滑動提示小手 */
+  .scroll-hint{position:fixed;bottom:max(28px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+    z-index:999;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;
+    animation:shintFade 3.5s ease forwards;}
+  .scroll-hint .sh-hand{font-size:32px;animation:shintBounce 0.9s ease-in-out 3;}
+  .scroll-hint .sh-txt{font-size:12px;background:rgba(0,0,0,.55);color:#fff;padding:4px 10px;border-radius:20px;white-space:nowrap;}
+  @keyframes shintBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  @keyframes shintFade{0%,60%{opacity:1}100%{opacity:0}}
+  @media print{.scroll-hint{display:none}}
+
   #print{margin-top:14px;}
   .page{width:210mm;min-height:297mm;padding:10mm;background:#fff;margin:0 auto 12px;box-shadow:0 0 8px rgba(0,0,0,.18);}
   .page.grid{display:flex;flex-wrap:wrap;align-content:flex-start;}
@@ -159,7 +169,7 @@
       <textarea id="anno">僅供高榮企業工會發起連署用
 它用無效</textarea>
       <div class="row"><label>字級</label><input type="range" id="fsize" min="30" max="90" value="50"><span class="val" id="fsizeV">50</span></div>
-      <div class="row"><label>濃淡</label><input type="range" id="alpha" min="40" max="100" value="80"><span class="val" id="alphaV">80</span></div>
+      <div class="row"><label>背景濃淡</label><input type="range" id="alpha" min="0" max="100" value="80"><span class="val" id="alphaV">80</span>%</div>
       <div class="row"><label>上下線</label>
         <select id="rule">
           <option value="thin" selected>細</option>
@@ -330,39 +340,50 @@
     sw=Math.min(sw,vw-sx); sh=Math.min(sh,vh-sy);
     return {sx:sx,sy:sy,sw:sw,sh:sh};
   }
-  // D：盡量用全解析度靜態拍照（Android Chrome 支援；不支援或比例不符就退回即時影格，確保對齊正確）
-  async function grabSource(v){
+  // D：盡量用全解析度靜態拍照
+  //   - ImageCapture 且比例吻合 → 裁成對齊框（高畫質）
+  //   - 比例不符（常見於 Android 直式手機）→ 保留完整畫格，預設裁切框設在對齊框位置
+  async function shoot(){
+    var v=$('camv'); if(!v.videoWidth){ alert('相機尚未就緒，請稍候再按'); return; }
+    var r=frameRectInVideo(v);
+    var c=document.createElement('canvas'), autoCrop=null;
+    var gotHighRes=false;
     if(window.ImageCapture && window._camTrack){
       try{
         var bmp=await createImageBitmap(await new ImageCapture(window._camTrack).takePhoto());
-        if(Math.abs(bmp.width/bmp.height - v.videoWidth/v.videoHeight) < 0.06) return { img:bmp, scale:bmp.width/v.videoWidth };
+        var photoRatio=bmp.width/bmp.height, vidRatio=v.videoWidth/v.videoHeight;
+        if(Math.abs(photoRatio-vidRatio)<0.1){
+          var k=bmp.width/v.videoWidth;
+          c.width=Math.max(1,Math.round(r.sw*k)); c.height=Math.max(1,Math.round(r.sh*k));
+          c.getContext('2d').drawImage(bmp, r.sx*k, r.sy*k, r.sw*k, r.sh*k, 0,0,c.width,c.height);
+          gotHighRes=true;
+        }
       }catch(_){}
     }
-    return { img:v, scale:1 };
-  }
-  async function shoot(){
-    var v=$('camv'); if(!v.videoWidth){ alert('相機尚未就緒，請稍候再按'); return; }
-    var r=frameRectInVideo(v), src=await grabSource(v), k=src.scale;
-    var c=document.createElement('canvas');
-    c.width=Math.max(1,Math.round(r.sw*k)); c.height=Math.max(1,Math.round(r.sh*k));
-    c.getContext('2d').drawImage(src.img, r.sx*k, r.sy*k, r.sw*k, r.sh*k, 0,0,c.width,c.height);
-    showConfirm(c);
+    if(!gotHighRes){
+      // 比例不符或 ImageCapture 不支援：存完整畫格，記下對齊框位置作預設裁切
+      c.width=v.videoWidth; c.height=v.videoHeight;
+      c.getContext('2d').drawImage(v, 0,0,v.videoWidth,v.videoHeight);
+      autoCrop={ x:r.sx/v.videoWidth, y:r.sy/v.videoHeight, w:r.sw/v.videoWidth, h:r.sh/v.videoHeight };
+    }
+    showConfirm(c, autoCrop);
   }
   // B：拍完先預覽，讓使用者「重拍」或「採用」
-  function showConfirm(canvas){
-    window._pendingShot=canvas; stopGlareWatch();
-    $('camShot').src=canvas.toDataURL('image/jpeg',0.9);
+  function showConfirm(canvas, autoCrop){
+    window._pendingShot=canvas; window._pendingCrop=autoCrop||null; stopGlareWatch();
+    $('camShot').src=canvas.toDataURL('image/jpeg',0.88);
     $('camLiveBtns').style.display='none'; $('camConfirm').classList.add('show');
   }
   function retake(){
-    window._pendingShot=null;
+    window._pendingShot=null; window._pendingCrop=null;
     $('camConfirm').classList.remove('show'); $('camLiveBtns').style.display='flex'; startGlareWatch();
   }
   function acceptShot(){
-    var c=window._pendingShot; if(!c) return; window._pendingShot=null;
-    newItem(c, null);   // 已裁成對齊框範圍，直接採用
+    var c=window._pendingShot; if(!c) return;
+    var crop=window._pendingCrop; window._pendingShot=null; window._pendingCrop=null;
+    newItem(c, crop);
     closeCam(); renderList();
-    $('status').textContent='已拍 1 張（已依對齊框裁好），可按 ✂️ 微調或加更多張。';
+    $('status').textContent='已拍 1 張，可按 ✂️ 微調對齊或加更多張。';
   }
   // C：點畫面對焦（支援的裝置）+ 對焦圈回饋
   function tapFocus(ev){
@@ -447,7 +468,8 @@
     ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
     ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
   }
-  function drawAnno(ctx, cw, ch, it, editable){
+  // noBg=true：列印/存圖/拖曳時不畫白底，讓底下的字透出來
+  function drawAnno(ctx, cw, ch, it, editable, noBg){
     var lines=annoLines(); if(!lines.length) return null;
     var fs=Math.max(11, Math.round(cw*fontK()*(it.scale||1)));   // it.scale：拖把手縮放
     ctx.font='bold '+fs+'px sans-serif'; ctx.textAlign='left'; ctx.textBaseline='top';
@@ -459,7 +481,7 @@
     var bw=tw+pad*2, bh=lh*wrapped.length+pad*2+rule*2;
     var bx=Math.max(0,Math.min(bx0, cw-bw)), by=Math.max(0,Math.min(by0, ch-bh));
     var a=alphaVal();
-    ctx.globalAlpha=Math.min(0.45, a*0.45); ctx.fillStyle='#fff'; ctx.fillRect(bx,by,bw,bh);
+    if(!noBg && a>0){ ctx.globalAlpha=a*0.45; ctx.fillStyle='#fff'; ctx.fillRect(bx,by,bw,bh); }
     ctx.globalAlpha=1; ctx.fillStyle='#C0392B';
     ctx.shadowColor='rgba(0,0,0,0.55)'; ctx.shadowBlur=Math.max(2,fs*0.18); ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
     if(rule) ctx.fillRect(bx,by,bw,rule);
@@ -516,6 +538,13 @@
     $('make').disabled=!has;
     if(!/已拍|已輸出/.test($('status').textContent))
       $('status').textContent = has ? ('已加入 '+items.length+' 張，調整好後按「整理成 A4」。') : '尚未加入照片。';
+    if(has && !window._shownScrollHint){ window._shownScrollHint=true; showScrollHint(); }
+  }
+  function showScrollHint(){
+    var h=document.createElement('div'); h.className='scroll-hint';
+    h.innerHTML='<span class="sh-hand">👆</span><span class="sh-txt">上下滑動查看設定</span>';
+    document.body.appendChild(h);
+    setTimeout(function(){ if(h.parentNode) h.parentNode.removeChild(h); }, 3600);
   }
   function dispWidth(){ return Math.min((window.innerWidth||520)-64, 520); }
 
@@ -579,7 +608,7 @@
         var ny=Math.max(0,Math.min(q.y-offY, cv.height-b.h));
         it.pos={x:nx/cv.width, y:ny/cv.height};
         var ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
-        ctx.drawImage(it._base,0,0); it._box=drawAnno(ctx,cv.width,cv.height,it,true);
+        ctx.drawImage(it._base,0,0); it._box=drawAnno(ctx,cv.width,cv.height,it,true,true); // 拖曳中透明背景，看得到下面的字
       }
       function up(){ document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',up); resetBuilt(); }
       document.addEventListener('pointermove',move); document.addEventListener('pointerup',up);
@@ -680,7 +709,27 @@
     });
   });
   window.addEventListener('resize', function(){ items.forEach(function(it,idx){ it._base=null; if(!it._cropping) paintItem(idx); }); });
-  window.addEventListener('beforeunload', function(e){ if(items.length>0 && !window._built){ e.preventDefault(); e.returnValue='照片尚未整理輸出，離開後資料會消失，確定嗎？'; } });
+  // ---- 文字設定自動存取（下次進來不用重設）----
+  var SETTINGS_KEY='idmark_settings_v1';
+  function saveSettings(){
+    try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+      anno:$('anno').value, fsize:$('fsize').value, alpha:$('alpha').value, rule:$('rule').value
+    })); }catch(_){}
+  }
+  function loadSettings(){
+    try{
+      var s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'null'); if(!s) return;
+      if(s.anno!=null) $('anno').value=s.anno;
+      if(s.fsize!=null){ $('fsize').value=s.fsize; $('fsizeV').textContent=s.fsize; }
+      if(s.alpha!=null){ $('alpha').value=s.alpha; $('alphaV').textContent=s.alpha; }
+      if(s.rule!=null) $('rule').value=s.rule;
+    }catch(_){}
+  }
+  ['anno','fsize','alpha','rule'].forEach(function(id){
+    $(id).addEventListener('change', saveSettings);
+  });
+  window.addEventListener('beforeunload', saveSettings);
+  loadSettings();
 
   function removeItem(i){ items.splice(i,1); renderList(); resetBuilt(); }
   function resetBuilt(){ $('print').innerHTML=''; $('prn').disabled=true; window._built=false;
@@ -691,7 +740,7 @@
     var work=workingCanvas(it), c=document.createElement('canvas');
     c.width=work.width; c.height=work.height;
     drawWorking(c.getContext('2d'), it, c.width, c.height);
-    drawAnno(c.getContext('2d'), c.width, c.height, it);
+    drawAnno(c.getContext('2d'), c.width, c.height, it, false, true);  // 列印/存圖不畫白底
     return c.toDataURL('image/jpeg',0.95);
   }
   function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -830,7 +879,7 @@
 <script src="law-tips.js" defer></script>
 <script src="tour.js" defer></script>
 <script>
-window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
+window.addEventListener("DOMContentLoaded",function(){ if(window.EBNTour) EBNTour.attach([
     { sel:".bar", title:"證件加註", text:"要交身分證影本嗎？用這個工具最安全。" },
     { sel:"#anno", title:"加上註記", text:"在這裡幫你蓋上『僅供連署、他用無效』，還能裁切。" },
     { sel:".safe", title:"不會上傳", text:"而且，照片只在你自己手機處理，不會上傳，不用怕外流。" }
