@@ -13,7 +13,7 @@
 <meta name="description" content="工會會議：開會通知、議程、簽到表、會議紀錄。">
 <link rel="apple-touch-icon" href="assets/union-icon-180.png">
 <link rel="manifest" href="meeting.webmanifest">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">
 <style>
   /* ============================================================
      會議文件（離線、純前端、免金鑰）— 文書理事用。
@@ -857,7 +857,7 @@ else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
 
 </script>
-<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js" async></script>
 <script src="tw-zip5-renwu.js" defer></script>
 <script src="tw-area.js" defer></script>
 <script src="law-tips.js" defer></script>

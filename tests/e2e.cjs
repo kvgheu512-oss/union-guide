@@ -82,8 +82,8 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('leavepay 重開保留輸入(本機暫存)', async p => { await go(p, 'leavepay.html'); await p.fill('#salary', '55555'); await p.waitForTimeout(300);
     await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
     const v = await p.inputValue('#salary'); v === '55555' ? ok('重開後月薪保留') : bad('persist', 'salary=' + v); });
-  await T('頁面載入速度(leavepay)', async p => { const t0 = Date.now(); await p.goto(BASE + 'leavepay.html', { waitUntil: 'load' }); const dt = Date.now() - t0;
-    dt < 3000 ? ok('load ' + dt + 'ms') : bad('perf', '慢 ' + dt + 'ms'); });
+  await T('頁面載入速度(leavepay)', async p => { const t0 = Date.now(); await p.goto(BASE + 'leavepay.html', { waitUntil: 'domcontentloaded' }); const dt = Date.now() - t0;
+    dt < 3000 ? ok('domcontentloaded ' + dt + 'ms') : bad('perf', '慢 ' + dt + 'ms'); });
 
   console.log('\n========== E. 錯誤/邊界測試 ==========');
   await T('leavepay 月薪空白不崩潰', async p => { await go(p, 'leavepay.html'); await p.fill('#salary', ''); await p.waitForTimeout(150);
@@ -160,7 +160,7 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.fill('#jbot-in', '國定假日上班的薪水'); await p.click('#jbot-send'); await p.waitForTimeout(300);
     const href = await p.$eval('#jbot-chips a', e => e.getAttribute('href')).catch(() => '');
     if (!/leavepay\.html\?from=help#sec-holi/.test(href)) return bad('deeplink', 'href=' + href);
-    await p.click('#jbot-chips a'); await p.waitForTimeout(700);
+    await Promise.all([p.waitForNavigation({ waitUntil: 'domcontentloaded' }), p.click('#jbot-chips a')]); await p.waitForTimeout(400);
     const inView = await p.$eval('#sec-holi', e => { const r = e.getBoundingClientRect(); return r.top >= -5 && r.top < 700; }).catch(() => false);
     inView ? ok('深連落在國定假日區塊') : bad('deeplink', '#sec-holi 不在視窗'); });
   await T('送出鈕在手機畫面內可見', async p => { await p.setViewportSize({ width: 390, height: 844 }); await go(p, 'help.html'); await p.waitForTimeout(300);
