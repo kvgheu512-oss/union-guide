@@ -126,14 +126,16 @@
   @media screen{ .page{transform:scale(.46);transform-origin:top center;margin-bottom:-150mm;} }
   @media print{
     @page{ size:A4; margin:0; }
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
     body{background:#fff;}
     .noprint{display:none !important;}
-    .bar{display:none !important;}            /* ① 不印紅色標題列，省墨水 */
-    .cam{display:none !important;}             /* 掃描相機/框線 絕不列印 */
-    main{max-width:none;padding:0;margin:0;}   /* ⑤ 避免被 600px 擠出空白頁 */
+    .bar{display:none !important;}
+    .cam{display:none !important;}
+    main{max-width:none;padding:0;margin:0;}
     #print{margin:0;}
     .page{box-shadow:none;margin:0;transform:none;}
-    .page + .page{page-break-before:always;}   /* ⑤ 只在頁與頁之間分頁，最後不留空白頁 */
+    .page + .page{page-break-before:always;}
+    .slot img{display:block;max-width:100%;max-height:none;object-fit:unset;width:100%;height:auto;}
   }
 </style>
 
@@ -457,12 +459,13 @@
     var bw=tw+pad*2, bh=lh*wrapped.length+pad*2+rule*2;
     var bx=Math.max(0,Math.min(bx0, cw-bw)), by=Math.max(0,Math.min(by0, ch-bh));
     var a=alphaVal();
-    ctx.globalAlpha=Math.min(0.85, a*0.95); ctx.fillStyle='#fff'; ctx.fillRect(bx,by,bw,bh);
-    ctx.globalAlpha=Math.max(a,0.6); ctx.fillStyle='#C0392B';
+    ctx.globalAlpha=Math.min(0.45, a*0.45); ctx.fillStyle='#fff'; ctx.fillRect(bx,by,bw,bh);
+    ctx.globalAlpha=1; ctx.fillStyle='#C0392B';
+    ctx.shadowColor='rgba(0,0,0,0.55)'; ctx.shadowBlur=Math.max(2,fs*0.18); ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
     if(rule) ctx.fillRect(bx,by,bw,rule);
     wrapped.forEach(function(l,i){ ctx.fillText(l, bx+pad, by+rule+pad+i*lh); });
     if(rule) ctx.fillRect(bx,by+bh-rule,bw,rule);
-    ctx.globalAlpha=1;
+    ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.globalAlpha=1;
     var box={x:bx,y:by,w:bw,h:bh,hs:0};
     if(editable && it._editing){                    // 外框/把手只在「編輯中」顯示；列印與預覽乾淨效果時都不畫
       ctx.save();
@@ -677,6 +680,7 @@
     });
   });
   window.addEventListener('resize', function(){ items.forEach(function(it,idx){ it._base=null; if(!it._cropping) paintItem(idx); }); });
+  window.addEventListener('beforeunload', function(e){ if(items.length>0 && !window._built){ e.preventDefault(); e.returnValue='照片尚未整理輸出，離開後資料會消失，確定嗎？'; } });
 
   function removeItem(i){ items.splice(i,1); renderList(); resetBuilt(); }
   function resetBuilt(){ $('print').innerHTML=''; $('prn').disabled=true; window._built=false;

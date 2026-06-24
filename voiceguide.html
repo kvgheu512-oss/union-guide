@@ -84,6 +84,7 @@
 </main>
 
 <div id="verBadge"></div>
+<script src="org.js"></script>
 <script>
 (function(){
   var $=function(id){return document.getElementById(id);};
@@ -142,19 +143,37 @@
       {nm:"監督會議",s:"開會的時候，用『會議文件』看議事程序有沒有照規矩走。"},
       {nm:"合規檢核",s:"『成立排雷檢核表』幫你確認每一個流程，合不合法、合不合規。"},
       {nm:"你的價值",s:"監事最珍貴的，就是獨立。發現問題，據實提出，這樣會員才會真正信任工會。"}
+    ]},
+    fin2:{name:"蔣雅",role:"總務",secs:[
+      {nm:"你是總務",s:"蔣雅，你管錢——年度預算、收支記帳、決算。錢的事最怕亂，記住三個原則：用工會專戶、每筆有憑證、定期公開。"},
+      {nm:"每天記帳",s:"日常收支，用『透明帳本』登錄，自動分類、自動統計，月底要決算，一鍵就看得到。"},
+      {nm:"編預算",s:"『年度預算草案』有現成範本，填一填就能提會員大會，還能下載 Word 或存成 PDF。"},
+      {nm:"收會費",s:"收會費用『收據產生器』開收據；要一次開很多張，用『批次收據』，貼上名單就全部做好。會費誰繳了、誰還沒，看『會員名冊』。"},
+      {nm:"小提醒",s:"最重要：一定用工會帳戶，別用個人帳戶；發錢給人，記得問要不要報稅。不確定，先問記帳士，花小錢、省大麻煩。"}
     ]}
   };
+  // 從 EBNOrg 同步幹部名字（優先用已發布的 public.json，其次 localStorage 草稿）
+  function syncNames(){
+    if(!window.EBNOrg) return;
+    Object.keys(ROLES).forEach(function(k){
+      var n=EBNOrg.cadreName(k); if(n) ROLES[k].name=n;
+    });
+  }
+  syncNames();
   var PICK=false, SECS;
   if(ROLE && ROLES[ROLE]) SECS=ROLES[ROLE].secs;
   else if(/[?&]for=cadre/.test(Q)){ PICK=true; SECS=[]; }
   else SECS=ALL.filter(function(x){ return x.cat==="會員篇"; });
-  // 標題依對象切換
-  try{
-    var h=document.querySelector(".header h1"), sub=document.querySelector(".header p");
-    if(ROLE && ROLES[ROLE]){ if(h)h.textContent="🎧 "+ROLES[ROLE].role+"・"+ROLES[ROLE].name; if(sub)sub.textContent="你的業務＋可用工具，用聽的就好"; document.title=ROLES[ROLE].role+"語音導覽｜高榮企業工會"; }
-    else if(PICK){ if(h)h.textContent="🎧 幹部專屬語音導覽"; if(sub)sub.textContent="選你的職務，聽自己的業務（約 1 分鐘）"; document.title="幹部專屬語音導覽｜高榮企業工會"; }
-    else { if(h)h.textContent="🎧 會員 語音導覽"; if(sub)sub.textContent="認識工會，用聽的就好"; document.title="會員語音導覽｜高榮企業工會"; }
-  }catch(e){}
+  // 標題依對象切換（可重呼叫）
+  function renderHeader(){
+    try{
+      var h=document.querySelector(".header h1"), sub=document.querySelector(".header p");
+      if(ROLE && ROLES[ROLE]){ if(h)h.textContent="🎧 "+ROLES[ROLE].role+"・"+ROLES[ROLE].name; if(sub)sub.textContent="你的業務＋可用工具，用聽的就好"; document.title=ROLES[ROLE].role+"語音導覽｜高榮企業工會"; }
+      else if(PICK){ if(h)h.textContent="🎧 幹部專屬語音導覽"; if(sub)sub.textContent="選你的職務，聽自己的業務（約 1 分鐘）"; document.title="幹部專屬語音導覽｜高榮企業工會"; }
+      else { if(h)h.textContent="🎧 會員 語音導覽"; if(sub)sub.textContent="認識工會，用聽的就好"; document.title="會員語音導覽｜高榮企業工會"; }
+    }catch(e){}
+  }
+  renderHeader();
   var rate=4.6;
   function fmt(t){t=t.replace(/\s+/g,"");var sec=Math.round(t.length/rate);var m=Math.floor(sec/60),s=sec%60;return m?(m+"分"+(s<10?"0":"")+s+"秒"):(s+"秒");}
 
@@ -218,13 +237,16 @@
   $("resume").addEventListener("click",function(){ try{speechSynthesis.resume();}catch(e){} if(cur>=0)$("now").textContent="🔊 播放中："+SECS[cur].nm; });
   $("stop").addEventListener("click",function(){ stopped=true; playingAll=false; cur=-1; try{speechSynthesis.cancel();}catch(e){} highlight(); $("now").textContent="⏹ 已停止"; });
 
-  if(PICK){
-    // 職務選單：選了才聽自己的業務導覽
-    var roles=[["chair","理事長","楊淯涵"],["fin","總務","莊瑋聆"],["doc","法規","巫佳容・葉柏宏"],["wel","文宣","黃淑姸"],["sup","監事","陳依婷"]];
-    $("list").innerHTML='<div class="cat">選你的職務 👇</div>'+roles.map(function(r){
+  function buildPickList(){
+    var roleKeys=["chair","fin","fin2","doc","doc2","wel","sup"];
+    var items=roleKeys.filter(function(k){ return ROLES[k]; }).map(function(k){ return [k,ROLES[k].role,ROLES[k].name]; });
+    $("list").innerHTML='<div class="cat">選你的職務 👇</div>'+items.map(function(r){
       return '<a class="sec" href="?role='+r[0]+'" style="text-decoration:none;color:inherit"><span class="pi">🎧</span><div class="nm">'+r[1]+'　<span style="color:#777;font-weight:400;font-size:12.5px">'+r[2]+'</span></div><div class="meta">約 1 分 ▶</div></a>';
     }).join("");
-    var pa=$("playAll"); if(pa){ var card=pa.closest('.card'); if(card) card.style.display='none'; }   // 還沒選職務，先不顯示播放鈕
+  }
+  if(PICK){
+    buildPickList();
+    var pa=$("playAll"); if(pa){ var card=pa.closest('.card'); if(card) card.style.display='none'; }
   } else {
     var html="", lastCat="";
     if(ROLE) html+='<a class="sec" href="?for=cadre" style="text-decoration:none;color:#5B3B8C;justify-content:center"><b>↩ 換一個職務</b></a>';
@@ -236,6 +258,11 @@
     $("list").addEventListener("click",function(e){ var el=e.target.closest&&e.target.closest(".sec[data-i]"); if(!el)return; try{speechSynthesis.cancel();}catch(_){} playingAll=false; playFrom(+el.dataset.i); });
   }
   window.addEventListener("pagehide",function(){ try{speechSynthesis.cancel();}catch(e){} });
+  // 公開資料載入後同步幹部名字（public.json 覆蓋 localStorage 草稿）
+  try{ document.addEventListener("ebnorg:public",function(){
+    syncNames(); renderHeader();
+    if(PICK) buildPickList();
+  }); }catch(e){}
 })();
 </script>
 <script src="common.js" defer></script>
