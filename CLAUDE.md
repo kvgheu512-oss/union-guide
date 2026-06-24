@@ -22,6 +22,25 @@
 - `union.html`＝幹部功能表（深藍）；`meeting.html`＝會議文件（金，含掃碼簽到）；`roster.html`＝會員名冊。
 - 返回鈕：公開區子頁→「🏠工會首頁」index.html；幹部區子頁→「‹功能表」union.html。
 
+## 幹部名冊（cadres 系統）
+- **幹部鍵值**：`chair` 理事長・`fin` 總務（一）・`fin2` 總務（二）・`doc` 法規（一）・`doc2` 法規（二）・`wel` 文宣・`sup` 監事。
+- **改名流程**：在 `org.html`「幹部名單」區修改 → 按「儲存與發布」→ 發布的 `public.json` 含 `cadres` 欄位 → 全站（nav.html / voiceguide.html / gongwen.html 等）自動讀取 `EBNOrg.cadreName(key)`。
+- `org.js` 是幹部/組織資料單一真相源：`CADRE_DEFAULTS`（內建值）＋`localStorage ebn_cadres_v1`（草稿）＋`public.json cadres`（已發布）三層合併，已發布優先。
+- `voiceguide.html` 語音腳本裡的名字**不改**（腳本已個人化如「楊淯涵，你是理事長」）；只有 ROLES[key].name（標題顯示）會由 syncNames() 自動更新。
+
+## 深層實測（凡大功能必做）
+- 測試要用 `elementFromPoint` 確認元素真實可點（不被遮擋），不能只看 DOM 存在。
+- 幹部導覽說明框不能擋住示範內容：改用瞬間捲動＋說明框貼螢幕遠側。
+- 送出/行動按鈕必須在手機視窗內（y < 844）。
+- 新功能測試項目加進 `tests/e2e.cjs`，`await T(描述, async()=>{...})` 格式。
+- 全站改動後跑 `bash tests/run.sh`（40 項全過才 push）。
+
+## 使用者溝通習慣（重要）
+- 使用者用手機 App 看回覆，Markdown `[文字](網址)` 會顯示原始碼而非連結。裸網址 `https://...` 才能點。
+- 有功能要讓使用者去試：**一定附那頁的裸網址**（不用他自己找）。
+- 沒有要他去操作時，**不要無故列一堆網址**（手機複製很痛苦）。
+- 每次回覆結尾附線上網址（使用者很在意）。
+
 ## 測試（沙箱）
 CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http.server`＋Playwright：chrome=`/opt/pw-browsers/chromium-1194/chrome-linux/chrome`，playwright-core=`/opt/node22/lib/node_modules/playwright/node_modules/playwright-core`。
 **自動化測試：`bash tests/run.sh`**（自動開伺服器→跑端對端→收尾；全過 exit 0、有錯 exit 1）。改完程式想確認沒弄壞別頁就重跑它；新增測試在 `tests/e2e.cjs` 照 `await T(...)` 格式加。⚠️ 別用 `pkill`（會殺掉自己的 shell→exit 144）；要換埠用 `PORT=8170 bash tests/run.sh`。
