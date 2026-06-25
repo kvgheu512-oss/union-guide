@@ -51,6 +51,8 @@
   .pub-btns button{flex:1;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:700;cursor:pointer}
   .pub-btns .copy-btn{background:#16C2A3;color:#062b25}
   .pub-btns .dl-btn{background:#2d3a4f;color:#fff}
+  .role-title-input{flex:0 0 80px;border:1.5px solid var(--gold-border);border-radius:9px;padding:8px 8px;
+    font-size:13px;font-family:inherit;color:var(--ink);background:#FEFBF0;text-align:center}
 </style>
 <link rel="stylesheet" href="common.css">
 </head>
@@ -75,6 +77,7 @@
 
   <div class="section-head">幹部名單</div>
   <div class="card" id="cadreList"><!-- 由 JS 渲染 --></div>
+  <button class="btn" style="background:#fff;border:2px dashed #B7860B;color:#7A5600;margin-top:8px" onclick="addCustomRole()">＋ 新增幹部職務</button>
 
   <button class="btn btn-save" id="saveBtn" onclick="saveCadres()">💾 儲存到這支手機</button>
   <button class="btn btn-pub" id="pubBtn" onclick="publish()">📢 發布同步（讓所有人看到）</button>
@@ -93,6 +96,10 @@
 
 <script src="org.js" defer></script>
 <script>
+var CUSTOM_KEY = 'ebn_cadres_custom_v1';
+function getCustomRoles(){ try{ return JSON.parse(localStorage.getItem(CUSTOM_KEY)||'[]'); }catch(_){ return []; } }
+function saveCustomRoles(arr){ try{ localStorage.setItem(CUSTOM_KEY, JSON.stringify(arr)); }catch(_){} }
+
 var ROLES_META = {
   chair:{ label:'理事長', badge:'chair', hint:'綜理會務・對外代表' },
   fin:  { label:'總務（一）', badge:'fin', hint:'財務・收支記帳' },
@@ -108,6 +115,7 @@ function renderList(){
   if(!wrap || !window.EBNOrg) return;
   var data = EBNOrg.cadres();
   wrap.innerHTML = '';
+  // 固定職務
   EBNOrg.CADRE_ROLES.forEach(function(pair){
     var key=pair[0], meta=ROLES_META[key]||{label:pair[1],badge:'sup',hint:''};
     var val = data[key]||'';
@@ -121,6 +129,40 @@ function renderList(){
       '<button class="del-btn" title="清空此職務" onclick="clearRole(\''+key+'\')">✕</button>';
     wrap.appendChild(row);
   });
+  // 自訂職務
+  getCustomRoles().forEach(function(c, i){
+    appendCustomRow(wrap, c.title||'', c.name||'', i);
+  });
+}
+
+function appendCustomRow(wrap, title, name, idx){
+  var row = document.createElement('div'); row.className='role-row'; row.dataset.cidx=idx;
+  row.innerHTML =
+    '<div class="badge sup" style="font-size:11px;background:#B7860B">自</div>'+
+    '<input class="role-title-input" data-cidx="'+idx+'" placeholder="職稱" value="'+esc(title)+'" '+
+      'oninput="updateCustomTitle('+idx+',this.value)">'+
+    '<input class="role-input'+(name?'':' empty')+'" data-cname="'+idx+'" '+
+      'value="'+esc(name)+'" placeholder="姓名" '+
+      'oninput="updateCustomName('+idx+',this.value);this.classList.toggle(\'empty\',!this.value)">'+
+    '<button class="del-btn" onclick="removeCustomRole('+idx+')">✕</button>';
+  wrap.appendChild(row);
+}
+
+function addCustomRole(){
+  var arr = getCustomRoles(); arr.push({title:'',name:''});
+  saveCustomRoles(arr);
+  var wrap = document.getElementById('cadreList');
+  appendCustomRow(wrap, '', '', arr.length-1);
+  wrap.lastElementChild.querySelector('.role-title-input').focus();
+}
+function updateCustomTitle(idx, val){
+  var arr=getCustomRoles(); if(arr[idx]) arr[idx].title=val; saveCustomRoles(arr);
+}
+function updateCustomName(idx, val){
+  var arr=getCustomRoles(); if(arr[idx]) arr[idx].name=val; saveCustomRoles(arr);
+}
+function removeCustomRole(idx){
+  var arr=getCustomRoles(); arr.splice(idx,1); saveCustomRoles(arr); renderList();
 }
 
 function clearRole(key){
@@ -130,8 +172,16 @@ function clearRole(key){
 
 function collectData(){
   var obj={};
-  document.querySelectorAll('.role-input').forEach(function(inp){
+  // 固定職務
+  document.querySelectorAll('.role-input[data-key]').forEach(function(inp){
     obj[inp.dataset.key] = inp.value.trim();
+  });
+  // 自訂職務（key 用 custom_0, custom_1…，title 另存 custom_title_0…）
+  getCustomRoles().forEach(function(c,i){
+    if(c.title||c.name){
+      obj['custom_'+i] = c.name||'';
+      obj['custom_title_'+i] = c.title||'';
+    }
   });
   return obj;
 }
