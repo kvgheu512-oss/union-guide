@@ -126,6 +126,16 @@
       依章程第16條，本會置<b>理事五人（含理事長）、監事一人</b>。分工：理事長、法規（小巫、柏宏）、文宣（妍妍）、總務（瑋聆）、組訓（淯涵）、監事（陳依婷）。找自己的區塊辦事；標「建置中」的工具陸續加入。
     </p>
 
+    <a class="tile" href="cadres.html" style="border-left-color:#B7860B;background:linear-gradient(180deg,#fff,#FEFBF0)">
+      <div class="row">
+        <span class="ico">👥</span>
+        <div>
+          <div class="t" style="color:#7A5600">管理幹部名單（增刪·改名·全站同步）</div>
+          <div class="d">新增幹部、調整名字、刪除離職者，改完<b>全站自動同步</b>，不用找人改程式。</div>
+        </div>
+        <span class="go" style="color:#B7860B">→</span>
+      </div>
+    </a>
     <a class="tile" href="org.html?tour=open" style="border-left-color:#1A3A6B;background:linear-gradient(180deg,#fff,#F4F6FA)">
       <div class="row">
         <span class="ico">🏛️</span>
@@ -290,8 +300,7 @@
     <div class="soon">陸續加入：<b>團體協商進度</b>。<br>※ 跨組事項（年度計畫、決算、監察報告）由理事長彙整提會員大會。</div>
 
     <!-- ② 總務 -->
-    <div class="role"><div class="rb r-fin">財</div><div><div class="rt">總務（一） · <span style="color:var(--green-mid)" id="name-fin">瑋聆</span></div><div class="rd">年度預算 · 收支記帳 · 決算報稅</div></div></div>
-    <div class="role" style="margin-top:-6px"><div class="rb r-fin" style="font-size:11px">財2</div><div><div class="rt">總務（二） · <span style="color:var(--green-mid)" id="name-fin2">蔣雅</span></div><div class="rd">協助財務 · 單據整理 · 備援總務</div></div></div>
+    <div class="role"><div class="rb r-fin">財</div><div><div class="rt">總務 · <span style="color:var(--green-mid)" id="name-fins">莊瑋聆、蔣雅</span></div><div class="rd">年度預算 · 收支記帳 · 決算報稅</div></div></div>
     <div style="font-size:12.5px;margin:0 2px .7rem;line-height:1.9">📎 官方參考：<a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020014" target="_blank" rel="noopener" style="color:#0F5C36;font-weight:700">工會財務處理準則 ↗</a>　<a href="https://www.mol.gov.tw/topic/3073/19159/" target="_blank" rel="noopener" style="color:#0F5C36;font-weight:700">新成立工會獎勵補助（勞動部）↗</a></div>
     <a class="tile plan" href="plan.html">
       <div class="row">
@@ -610,7 +619,13 @@ window.addEventListener("load", function(){
 // 幹部名字動態填入（org.js 載好後更新，讓 cadres.html 改名後全站同步）
 document.addEventListener('DOMContentLoaded', function(){
   function fillName(id, key){ var el=document.getElementById(id); if(el && window.EBNOrg) el.textContent=EBNOrg.cadreName(key)||el.textContent; }
-  function syncNames(){ fillName('name-fin','fin'); fillName('name-fin2','fin2'); }
+  function syncNames(){
+    var el=document.getElementById('name-fins');
+    if(el && window.EBNOrg){
+      var n1=EBNOrg.cadreName('fin'), n2=EBNOrg.cadreName('fin2');
+      el.textContent = n2 ? n1+'、'+n2 : n1;
+    }
+  }
   syncNames();
   document.addEventListener('ebnorg:public', syncNames);
 });
