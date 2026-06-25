@@ -290,7 +290,8 @@
     <div class="soon">陸續加入：<b>團體協商進度</b>。<br>※ 跨組事項（年度計畫、決算、監察報告）由理事長彙整提會員大會。</div>
 
     <!-- ② 總務 -->
-    <div class="role"><div class="rb r-fin">財</div><div><div class="rt">總務 · <span style="color:var(--green-mid)">瑋聆</span></div><div class="rd">年度預算 · 收支記帳 · 決算報稅</div></div></div>
+    <div class="role"><div class="rb r-fin">財</div><div><div class="rt">總務（一） · <span style="color:var(--green-mid)" id="name-fin">瑋聆</span></div><div class="rd">年度預算 · 收支記帳 · 決算報稅</div></div></div>
+    <div class="role" style="margin-top:-6px"><div class="rb r-fin" style="font-size:11px">財2</div><div><div class="rt">總務（二） · <span style="color:var(--green-mid)" id="name-fin2">蔣雅</span></div><div class="rd">協助財務 · 單據整理 · 備援總務</div></div></div>
     <div style="font-size:12.5px;margin:0 2px .7rem;line-height:1.9">📎 官方參考：<a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020014" target="_blank" rel="noopener" style="color:#0F5C36;font-weight:700">工會財務處理準則 ↗</a>　<a href="https://www.mol.gov.tw/topic/3073/19159/" target="_blank" rel="noopener" style="color:#0F5C36;font-weight:700">新成立工會獎勵補助（勞動部）↗</a></div>
     <a class="tile plan" href="plan.html">
       <div class="row">
@@ -602,6 +603,16 @@ window.addEventListener("load", function(){
     { sel:'a[href="receipt-batch.html"]', title:"④ 一次開很多收據", text:"收會費時<b>一次做好</b>所有收據和總表。" },
     { title:"開始吧！", text:"建議先點<b>第一個『工會基本資料』</b>填好，其他就會自動帶。每頁左下角的 🎬 可以再看一次。" }
   ], {});
+});
+</script>
+<script src="org.js" defer></script>
+<script>
+// 幹部名字動態填入（org.js 載好後更新，讓 cadres.html 改名後全站同步）
+document.addEventListener('DOMContentLoaded', function(){
+  function fillName(id, key){ var el=document.getElementById(id); if(el && window.EBNOrg) el.textContent=EBNOrg.cadreName(key)||el.textContent; }
+  function syncNames(){ fillName('name-fin','fin'); fillName('name-fin2','fin2'); }
+  syncNames();
+  document.addEventListener('ebnorg:public', syncNames);
 });
 </script>
 <script src="law-tips.js" defer></script>
