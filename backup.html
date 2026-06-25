@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資料備份中心 · 高榮企業工會</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>
+  :root{
+    --navy:#1A3A6B;--navy-mid:#2E5C8A;--navy-deep:#122A4F;--navy-light:#EAF0F8;
+    --green:#1A7A4A;--green-light:#EAFAF1;--green-deep:#0F5C36;
+    --red:#C0392B;--red-light:#FDECEA;
+    --gold:#B7860B;--gold-light:#FEF9E7;
+    --ink:#1A1A1A;--ink-mid:#444;--ink-soft:#777;--bg:#F4F6FA;
+    --card:#fff;--border:#E2E6EC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#1A3A6B 0%,#0E2347 100%);color:#fff;padding:1.6rem 1.25rem 1.4rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;}
+  .header p{font-size:12.5px;opacity:.88;margin-top:6px;}
+  main{max-width:580px;margin:0 auto;padding:1.2rem 1rem 4rem;}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.15rem;margin-bottom:12px;}
+  .card-head{display:flex;align-items:center;gap:9px;margin-bottom:.8rem;}
+  .card-head .ico{font-size:26px;flex-shrink:0;}
+  .card-head h2{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;color:var(--navy);}
+  .card-head .sub{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+  .last-backup{display:inline-flex;align-items:center;gap:7px;font-size:13px;background:var(--gold-light);border:1px solid #EAD67A;border-radius:10px;padding:.5rem .9rem;margin-bottom:12px;}
+  .last-backup .ts{font-weight:700;color:#7A5600;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:.72rem 1.1rem;border:none;border-radius:10px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;}
+  .btn.full{width:100%;}
+  .btn.navy{background:var(--navy);color:#fff;}
+  .btn.navy:active{background:var(--navy-deep);}
+  .btn.green{background:var(--green);color:#fff;}
+  .btn.green:active{background:var(--green-deep);}
+  .btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--navy-mid);}
+  .btn.red{background:var(--red);color:#fff;}
+  .btn.sm{padding:.45rem .75rem;font-size:13px;border-radius:8px;}
+
+  .mod-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .mod-table th{text-align:left;font-size:11.5px;color:var(--ink-soft);font-weight:500;padding:.35rem .4rem;border-bottom:2px solid var(--border);}
+  .mod-table td{padding:.55rem .4rem;border-bottom:1px solid #F0EDE8;vertical-align:middle;}
+  .mod-table tr:last-child td{border-bottom:none;}
+  .mod-name{font-weight:600;color:var(--navy);}
+  .mod-desc{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+  .badge.has{background:var(--navy-light);color:var(--navy-deep);}
+  .badge.empty{background:#F0EDE8;color:#aaa;}
+  .clr-btn{background:none;border:1px solid #E8C0BC;color:var(--red);border-radius:7px;font-size:11.5px;padding:3px 9px;cursor:pointer;white-space:nowrap;}
+  .clr-btn:active{background:var(--red-light);}
+
+  .alert{display:flex;gap:9px;align-items:flex-start;border-radius:11px;padding:.75rem .9rem;font-size:13px;line-height:1.65;margin-bottom:10px;}
+  .alert.warn{background:var(--gold-light);border:1px solid #EAD67A;color:#7A5600;}
+  .alert.ok{background:var(--green-light);border:1px solid #BFE3CF;color:var(--green-deep);}
+  .alert.info{background:var(--navy-light);border:1px solid #C2D2E8;color:var(--navy-deep);}
+  .alert .ico{flex-shrink:0;}
+
+  .drop-zone{border:2px dashed var(--border);border-radius:12px;padding:1.5rem;text-align:center;font-size:13px;color:var(--ink-soft);margin:.6rem 0;cursor:pointer;transition:.15s;}
+  .drop-zone:hover,.drop-zone.over{border-color:var(--navy-mid);background:var(--navy-light);}
+  .drop-zone b{color:var(--navy);display:block;font-size:15px;margin-bottom:4px;}
+  #fileInput{display:none;}
+
+  .progress-bar{height:6px;background:#E8EAF0;border-radius:6px;overflow:hidden;margin-top:6px;}
+  .progress-fill{height:100%;background:var(--green);border-radius:6px;transition:width .4s;}
+
+  .toast{position:fixed;bottom:max(24px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+    background:rgba(20,20,30,.88);color:#fff;font-size:14px;font-weight:600;padding:10px 20px;
+    border-radius:24px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;z-index:999;}
+  .toast.show{opacity:1;}
+  .sec-label{font-size:11.5px;font-weight:700;color:var(--ink-soft);letter-spacing:.06em;margin:1.2rem 0 .5rem 2px;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+
+<a href="union.html" onclick="return ebnBack(this.getAttribute('href'),event)"
+   style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;
+   background:#fff;color:#333;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;
+   text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.2)">‹ 功能表</a>
+
+<div class="header">
+  <h1>💾 全站資料備份中心</h1>
+  <p>所有工具的資料只存在這台裝置——定期備份，換手機／清瀏覽器才不會遺失</p>
+</div>
+
+<main>
+
+  <div class="alert warn">
+    <span class="ico">⚠️</span>
+    <div>資料只存在<b>這台裝置的瀏覽器</b>，不會自動同步。清除網站資料、換裝置或重灌後<b>資料會消失</b>。<br>建議每個月備份一次，存到雲端。</div>
+  </div>
+
+  <div id="lastBackupBar" style="display:none" class="last-backup">
+    <span>📅 上次備份</span><span class="ts" id="lastBackupTs">—</span>
+  </div>
+
+  <div class="sec-label">一鍵備份 / 還原</div>
+  <div class="card">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="btn green full" onclick="exportAll()">⬇️ 匯出全部資料（下載 .json）</button>
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="ev(event)" ondrop="dropFile(event)">
+        <b>⬆️ 匯入備份檔</b>
+        點一下選擇或拖放 .json 檔案來還原資料
+      </div>
+      <input type="file" id="fileInput" accept=".json,application/json" onchange="importFile(this)">
+    </div>
+  </div>
+
+  <div class="sec-label">各模組資料狀態</div>
+  <div class="card">
+    <table class="mod-table">
+      <thead><tr><th>模組</th><th style="text-align:center">資料量</th><th></th></tr></thead>
+      <tbody id="modBody">
+        <!-- 由 JS 填入 -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-label">進階</div>
+  <div class="card" id="advCard">
+    <div class="alert info" style="margin-bottom:.8rem">
+      <span class="ico">ℹ️</span>
+      <div>清除全站資料後無法復原，請先確認已匯出備份檔。</div>
+    </div>
+    <button class="btn red full" onclick="clearAll()">🗑️ 清除全站所有資料（危險）</button>
+  </div>
+
+</main>
+
+<div id="verBadge">v2026.06.25.00</div>
+<div class="toast" id="toast"></div>
+
+<script src="org.js" defer></script>
+<script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
+
+<script>
+/* ── 模組清單（key, 標題, 說明, 計數方式） ─────────────────── */
+var MODULES = [
+  { key:'ebn_org_v1',          label:'工會基本資料',   desc:'名稱、地址、理事長、帳戶等', count:'obj' },
+  { key:'ebn_org_doclog_v1',   label:'公文發文簿',     desc:'所有發出公文的流水記錄',       count:'arr' },
+  { key:'ebn_cadres_v1',       label:'幹部名單',       desc:'理事長・總務・法規・文宣・監事', count:'obj' },
+  { key:'ebn_cadres_custom_v1',label:'自訂幹部職務',   desc:'額外自訂的職務與姓名',         count:'arr' },
+  { key:'roster_members_v1',   label:'會員名冊',       desc:'所有會員 PII（含入會申請）',   count:'arr' },
+  { key:'roster_trash_v1',     label:'名冊垃圾桶',     desc:'已退出或刪除的會員備份',       count:'arr' },
+  { key:'roster_hosp_mail_v1', label:'醫院通訊錄',     desc:'各單位分機 / 院方聯絡方式',   count:'arr' },
+  { key:'union_fin_db',        label:'財務帳本',       desc:'所有收支記帳明細（透明帳本）', count:'obj-prop' },
+  { key:'cases_v1',            label:'案件台（明文）', desc:'會員服務案件未加密版',         count:'arr' },
+  { key:'cases_enc_v1',        label:'案件台（加密）', desc:'案件台加密後的資料',           count:'str' },
+  { key:'meetings_v1',         label:'會議文件',       desc:'開會通知、議程、紀錄',         count:'arr' },
+  { key:'activities_v1',       label:'活動報名',       desc:'福利活動、教育訓練報名名單',   count:'arr' },
+  { key:'plan_data_v1',        label:'年度計畫預算',   desc:'工作計畫與經費預算草案',       count:'obj' },
+  { key:'reg_checklist_v1',    label:'登記送件清單',   desc:'向高雄市勞工局送件的打勾進度', count:'obj' },
+  { key:'union_prep_steps_v1', label:'籌備進度',       desc:'成立大會流程各步驟的勾選',     count:'obj' },
+  { key:'union_status_v1',     label:'工會狀態',       desc:'籌備中 / 正式運營旗標',        count:'obj' },
+  { key:'ebn_announcements_v1',label:'公告與通知',     desc:'幹部發佈的公告存檔',           count:'arr' },
+  { key:'ebn_petition_v1',     label:'連署/招募進度',  desc:'30人連署追蹤、幹部分工',       count:'obj' },
+];
+var LAST_BACKUP_KEY = 'ebn_last_backup_ts';
+
+function parseVal(raw, mode){
+  if(raw == null) return null;
+  try{
+    var v = JSON.parse(raw);
+    if(mode === 'arr') return Array.isArray(v) ? v.length + ' 筆' : '（格式異常）';
+    if(mode === 'obj') return typeof v === 'object' && v ? Object.keys(v).length + ' 欄' : '（格式異常）';
+    if(mode === 'obj-prop'){
+      if(v && v.entries && Array.isArray(v.entries)) return v.entries.length + ' 筆';
+      return '（有資料）';
+    }
+    return '（有資料）';
+  } catch(e){ return raw.length > 0 ? raw.length + ' 字元' : '（空）'; }
+}
+
+function renderModules(){
+  var tbody = document.getElementById('modBody');
+  tbody.innerHTML = MODULES.map(function(m){
+    var raw = null;
+    try{ raw = localStorage.getItem(m.key); } catch(e){}
+    var hasData = raw != null && raw !== 'null' && raw !== '[]' && raw !== '{}' && raw !== '';
+    var countStr = hasData ? parseVal(raw, m.count) : null;
+    return '<tr>'+
+      '<td><div class="mod-name">'+m.label+'</div><div class="mod-desc">'+m.desc+'</div></td>'+
+      '<td style="text-align:center;white-space:nowrap">'+
+        (hasData
+          ? '<span class="badge has">'+countStr+'</span>'
+          : '<span class="badge empty">無資料</span>')+
+      '</td>'+
+      '<td style="text-align:right">'+
+        (hasData ? '<button class="clr-btn" onclick="clearMod(\''+m.key+'\',\''+m.label+'\')">清除</button>' : '')+
+      '</td>'+
+    '</tr>';
+  }).join('');
+}
+
+function exportAll(){
+  var out = {};
+  try{
+    for(var i=0;i<localStorage.length;i++){
+      var k = localStorage.key(i);
+      if(k) out[k] = localStorage.getItem(k);
+    }
+  }catch(e){}
+  var json = JSON.stringify(out, null, 2);
+  var blob = new Blob([json], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  var d = new Date(); var ts = d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+  a.download = 'union-backup-'+ts+'.json';
+  a.click();
+  try{ localStorage.setItem(LAST_BACKUP_KEY, new Date().toISOString()); }catch(e){}
+  showLastBackup();
+  toast('✅ 備份完成，已下載 union-backup-'+ts+'.json');
+}
+
+function importFile(inp){
+  var f = inp.files[0]; if(!f) return;
+  var rd = new FileReader();
+  rd.onload = function(e){
+    try{
+      var data = JSON.parse(e.target.result);
+      if(typeof data !== 'object' || Array.isArray(data)) throw new Error('格式錯誤');
+      var keys = Object.keys(data);
+      if(!confirm('確認匯入備份？\n\n這份備份含 '+keys.length+' 個資料項目。\n匯入後會覆蓋目前裝置上的對應資料（同 key 會蓋掉，其他 key 保留）。\n\n確定繼續？')) return;
+      var ok=0, fail=0;
+      keys.forEach(function(k){
+        try{ localStorage.setItem(k, data[k]); ok++; }catch(er){ fail++; }
+      });
+      renderModules(); showLastBackup();
+      toast('✅ 匯入完成（'+ok+' 項成功'+(fail?' / '+fail+' 失敗':'')+')，請重新整理頁面確認');
+    }catch(er){ toast('❌ 檔案格式不符，請確認是工會匯出的 .json 備份'); }
+  };
+  rd.readAsText(f);
+  inp.value='';
+}
+
+function ev(e){ e.preventDefault(); document.getElementById('dropZone').classList.add('over'); }
+function dropFile(e){
+  e.preventDefault(); document.getElementById('dropZone').classList.remove('over');
+  var f = e.dataTransfer.files[0]; if(!f) return;
+  var inp = document.getElementById('fileInput');
+  // 模擬 file input
+  var dt = new DataTransfer(); dt.items.add(f); inp.files = dt.files;
+  importFile(inp);
+}
+
+function clearMod(key, label){
+  if(!confirm('確定清除「'+label+'」的資料？\n\n清除後無法復原，請確認已備份。')) return;
+  try{ localStorage.removeItem(key); }catch(e){}
+  renderModules();
+  toast('🗑️ 已清除「'+label+'」');
+}
+
+function clearAll(){
+  if(!confirm('⚠️ 確定清除【全站所有資料】？\n\n這包括會員名冊、帳本、案件、公文、會議紀錄……所有工具的資料都會消失。\n\n清除後無法復原！請先確認已匯出備份。')) return;
+  if(!confirm('再確認一次：真的要清除所有資料嗎？')) return;
+  try{
+    var keys = [];
+    for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
+    keys.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+  }catch(e){}
+  renderModules(); showLastBackup();
+  toast('🗑️ 已清除全站資料，請重新整理頁面');
+}
+
+function showLastBackup(){
+  var ts = null;
+  try{ ts = localStorage.getItem(LAST_BACKUP_KEY); }catch(e){}
+  var bar = document.getElementById('lastBackupBar');
+  var el = document.getElementById('lastBackupTs');
+  if(ts){ bar.style.display=''; el.textContent=fmtTs(ts); }
+  else{ bar.style.display='none'; }
+}
+
+function fmtTs(iso){
+  var d = new Date(iso); if(isNaN(d)) return iso;
+  return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' '+p2(d.getHours())+':'+p2(d.getMinutes());
+}
+function p2(n){ return n<10?'0'+n:String(n); }
+
+function toast(msg){
+  var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2400);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  renderModules();
+  showLastBackup();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>公告與通知 · 高榮企業工會</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>
+  :root{
+    --navy:#1A3A6B;--navy-mid:#2E5C8A;--navy-deep:#122A4F;--navy-light:#EAF0F8;
+    --green:#1A7A4A;--green-deep:#0F5C36;--green-light:#EAFAF1;
+    --gold:#B7860B;--gold-light:#FEF9E7;
+    --red:#C0392B;--red-light:#FDECEA;
+    --ink:#1A1A1A;--ink-mid:#444;--ink-soft:#777;--bg:#F4F6FA;
+    --card:#fff;--border:#E2E6EC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,#1A3A6B 0%,#0E2347 100%);color:#fff;padding:1.6rem 1.25rem 1.4rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;}
+  .header p{font-size:12.5px;opacity:.88;margin-top:6px;}
+  main{max-width:580px;margin:0 auto;padding:1rem 1rem 4rem;}
+
+  .tabs{position:sticky;top:0;z-index:60;display:flex;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--border);}
+  .tab{flex:1;padding:.72rem;font-size:14px;color:var(--ink-soft);border:none;background:none;cursor:pointer;font-family:inherit;font-weight:500;border-bottom:2.5px solid transparent;}
+  .tab.on{color:var(--navy-deep);font-weight:700;border-bottom-color:var(--navy);}
+  .panel{display:none;} .panel.on{display:block;}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.15rem;margin-bottom:12px;}
+  label{display:block;font-size:12px;font-weight:700;color:var(--navy);margin:.65rem 0 .25rem;}
+  input[type=text],input[type=date],select,textarea{width:100%;padding:.6rem .7rem;font-size:15px;font-family:inherit;border:1.5px solid var(--border);border-radius:9px;background:#fff;color:var(--ink);}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy-mid);}
+  textarea{resize:vertical;min-height:100px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:.7rem 1rem;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;}
+  .btn.full{width:100%;}
+  .btn.navy{background:var(--navy);color:#fff;} .btn.navy:active{background:var(--navy-deep);}
+  .btn.green{background:var(--green);color:#fff;} .btn.green:active{background:var(--green-deep);}
+  .btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--navy-mid);}
+  .btn.red{background:var(--red);color:#fff;}
+  .btn.sm{padding:.4rem .72rem;font-size:13px;border-radius:8px;}
+  .btn-row{display:flex;gap:8px;margin-top:.8rem;flex-wrap:wrap;}
+
+  .type-sel{display:flex;gap:6px;flex-wrap:wrap;margin-top:.25rem;}
+  .type-chip{padding:.38rem .8rem;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:13.5px;cursor:pointer;color:var(--ink-mid);font-family:inherit;}
+  .type-chip.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700;}
+
+  .ann-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:.85rem .95rem;margin-bottom:9px;border-left:5px solid var(--navy-mid);}
+  .ann-card.type-公告{border-left-color:var(--navy);}
+  .ann-card.type-通知{border-left-color:var(--green);}
+  .ann-card.type-決議{border-left-color:var(--gold);}
+  .ann-card.type-注意{border-left-color:var(--red);}
+  .ann-top{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;}
+  .ann-type{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid;}
+  .ann-type.公告{background:var(--navy-light);color:var(--navy-deep);border-color:#C2D2E8;}
+  .ann-type.通知{background:var(--green-light);color:var(--green-deep);border-color:#BFE3CF;}
+  .ann-type.決議{background:var(--gold-light);color:#7A5600;border-color:#EAD67A;}
+  .ann-type.注意{background:var(--red-light);color:var(--red);border-color:#F0C5C2;}
+  .ann-title{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;flex:1;min-width:0;}
+  .ann-date{font-size:12px;color:var(--ink-soft);white-space:nowrap;}
+  .ann-body{font-size:13.5px;color:var(--ink-mid);margin-top:.5rem;line-height:1.75;white-space:pre-wrap;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;}
+  .ann-foot{display:flex;align-items:center;gap:8px;margin-top:.6rem;flex-wrap:wrap;}
+  .ann-issuer{font-size:12px;color:var(--ink-soft);}
+  .ann-acts{margin-left:auto;display:flex;gap:6px;}
+  .ann-acts button{background:none;border:1px solid var(--border);border-radius:7px;padding:3px 9px;font-size:12px;cursor:pointer;color:var(--ink-mid);}
+
+  .empty{text-align:center;color:var(--ink-soft);padding:2rem 1rem;background:var(--card);border:1px dashed var(--border);border-radius:13px;font-size:13.5px;}
+
+  .toast{position:fixed;bottom:max(24px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+    background:rgba(20,20,30,.88);color:#fff;font-size:14px;font-weight:600;padding:10px 20px;
+    border-radius:24px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;z-index:999;}
+  .toast.show{opacity:1;}
+
+  /* ── 列印公告 ── */
+  @media print{
+    .noprint{display:none!important;}
+    body{background:#fff;}
+    .tabs,.header,.toast,a[href]{display:none!important;}
+    #printArea{display:block!important;}
+  }
+  #printArea{display:none;}
+  .pa-header{text-align:center;border-bottom:2px solid #333;padding-bottom:10pt;margin-bottom:14pt;}
+  .pa-org{font-size:13pt;font-weight:700;letter-spacing:.1em;}
+  .pa-type-title{font-family:'Noto Serif TC',serif;font-size:22pt;font-weight:700;margin:8pt 0 4pt;}
+  .pa-no{font-size:10pt;color:#666;}
+  .pa-title{font-family:'Noto Serif TC',serif;font-size:17pt;font-weight:700;margin:12pt 0 8pt;}
+  .pa-meta{font-size:10pt;color:#555;margin-bottom:10pt;}
+  .pa-body{font-size:12pt;line-height:2;white-space:pre-wrap;}
+  .pa-sign{margin-top:28pt;text-align:right;font-size:11pt;}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+
+<a href="union.html" onclick="return ebnBack(this.getAttribute('href'),event)"
+   style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:9999;
+   background:#fff;color:#333;border:1px solid rgba(0,0,0,.12);font-weight:600;font-size:13px;
+   text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.2)">‹ 功能表</a>
+
+<div class="header noprint">
+  <h1>📢 公告與通知</h1>
+  <p>填好按儲存 · 可複製文字 · 可列印 A4 公告</p>
+</div>
+
+<div class="tabs noprint">
+  <button class="tab on" onclick="switchTab('new',this)">✏️ 新增公告</button>
+  <button class="tab"    onclick="switchTab('list',this)">📋 公告紀錄</button>
+</div>
+
+<main class="noprint">
+
+  <!-- ① 新增公告 -->
+  <div class="panel on" id="panelNew">
+    <div class="card" style="margin-top:.8rem">
+      <label>類型</label>
+      <div class="type-sel" id="typeSel">
+        <button class="type-chip on" onclick="setType('公告',this)">📢 公告</button>
+        <button class="type-chip"    onclick="setType('通知',this)">📩 通知</button>
+        <button class="type-chip"    onclick="setType('決議',this)">✅ 決議通過</button>
+        <button class="type-chip"    onclick="setType('注意',this)">⚠️ 注意事項</button>
+      </div>
+
+      <div class="row2" style="margin-top:.25rem">
+        <div>
+          <label>日期</label>
+          <input type="date" id="annDate">
+        </div>
+        <div>
+          <label>有效期限（選填）</label>
+          <input type="date" id="annExpiry">
+        </div>
+      </div>
+
+      <label>標題</label>
+      <input type="text" id="annTitle" placeholder="例：115年第一次理監事聯席會議開會通知">
+
+      <label>內容</label>
+      <textarea id="annContent" rows="6" placeholder="填寫公告正文…"></textarea>
+
+      <div class="row2">
+        <div>
+          <label>發布人／職稱</label>
+          <input type="text" id="annIssuer" placeholder="例：理事長 楊淯涵">
+        </div>
+        <div>
+          <label>聯絡方式（選填）</label>
+          <input type="text" id="annContact" placeholder="例：分機 1234 或 LINE">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn navy" onclick="saveAnn()">💾 儲存</button>
+        <button class="btn ghost" onclick="previewPrint()">🖨️ 列印預覽</button>
+        <button class="btn ghost" onclick="copyText()">📋 複製文字</button>
+        <button class="btn ghost sm" onclick="clearForm()">↺ 清空</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 公告紀錄 -->
+  <div class="panel" id="panelList">
+    <div style="margin:.8rem 0 .5rem;display:flex;justify-content:flex-end;">
+      <button class="btn ghost sm" onclick="exportAnns()">⬇️ 匯出 CSV</button>
+    </div>
+    <div id="annList"><!-- 由 JS 填入 --></div>
+  </div>
+
+</main>
+
+<!-- ── 列印區（print only）── -->
+<div id="printArea">
+  <div class="pa-header">
+    <div class="pa-org" id="paOrg">高雄榮民總醫院企業工會</div>
+    <div class="pa-type-title" id="paTypeTitle">公告</div>
+    <div class="pa-no" id="paNo"></div>
+  </div>
+  <div class="pa-title" id="paTitle"></div>
+  <div class="pa-meta" id="paMeta"></div>
+  <div class="pa-body" id="paBody"></div>
+  <div class="pa-sign" id="paSign"></div>
+</div>
+
+<div id="verBadge">v2026.06.25.00</div>
+<div class="toast" id="toast"></div>
+
+<script src="org.js" defer></script>
+<script src="law-tips.js" defer></script>
+<script src="common.js" defer></script>
+
+<script>
+var STORE_KEY = 'ebn_announcements_v1';
+var curType = '公告';
+
+/* ── localStorage ── */
+function loadAnns(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY)||'[]'); }catch(e){ return []; } }
+function saveAnns(a){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(a)); }catch(e){} }
+
+/* ── 表單狀態 ── */
+function setType(t, btn){
+  curType = t;
+  document.querySelectorAll('#typeSel .type-chip').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+}
+
+function getFormData(){
+  return {
+    id: Date.now(),
+    type: curType,
+    date: document.getElementById('annDate').value || today(),
+    expiry: document.getElementById('annExpiry').value || '',
+    title: document.getElementById('annTitle').value.trim(),
+    content: document.getElementById('annContent').value.trim(),
+    issuer: document.getElementById('annIssuer').value.trim(),
+    contact: document.getElementById('annContact').value.trim(),
+    ts: new Date().toISOString()
+  };
+}
+
+function today(){ var d=new Date(); return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); }
+function p2(n){ return n<10?'0'+n:String(n); }
+
+/* ── 儲存 ── */
+function saveAnn(){
+  var d = getFormData();
+  if(!d.title){ toast('⚠️ 請填寫標題'); return; }
+  if(!d.content){ toast('⚠️ 請填寫內容'); return; }
+  var arr = loadAnns();
+  arr.unshift(d);
+  saveAnns(arr);
+  renderList();
+  toast('✅ 已儲存');
+}
+
+/* ── 複製文字 ── */
+function copyText(){
+  var d = getFormData();
+  if(!d.title){ toast('⚠️ 請先填寫標題'); return; }
+  var typeLabel = {'公告':'【公告】','通知':'【通知】','決議':'【決議通過】','注意':'【注意事項】'}[d.type]||'【公告】';
+  var lines = [
+    typeLabel+' '+d.title,
+    '日期：'+fmtDate(d.date)+(d.expiry?' （至'+fmtDate(d.expiry)+'）':''),
+    '',
+    d.content,
+    d.issuer ? '\n發布：'+d.issuer : '',
+    d.contact ? '聯絡：'+d.contact : ''
+  ].filter(function(l){ return l !== undefined; }).join('\n').replace(/\n{3,}/g,'\n\n').trim();
+
+  if(navigator.clipboard){ navigator.clipboard.writeText(lines).then(function(){ toast('✅ 已複製，可貼到 LINE 群發送'); }); }
+  else{ var ta=document.createElement('textarea'); ta.value=lines; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast('✅ 已複製'); }
+}
+
+/* ── 列印 ── */
+function previewPrint(){
+  var d = getFormData();
+  if(!d.title){ toast('⚠️ 請先填寫標題'); return; }
+  fillPrint(d);
+  window.print();
+}
+
+function fillPrint(d){
+  var orgName = (window.EBNOrg ? EBNOrg.get().fullName : '') || '高雄榮民總醫院企業工會';
+  var typeMap = {公告:'公　告',通知:'通　知',決議:'決議通過',注意:'注意事項'};
+  document.getElementById('paOrg').textContent = orgName;
+  document.getElementById('paTypeTitle').textContent = typeMap[d.type]||d.type;
+  document.getElementById('paNo').textContent = '';
+  document.getElementById('paTitle').textContent = '主旨：'+d.title;
+  var meta = '日期：'+fmtDate(d.date);
+  if(d.expiry) meta += '　有效期限至：'+fmtDate(d.expiry);
+  if(d.contact) meta += '　聯絡：'+d.contact;
+  document.getElementById('paMeta').textContent = meta;
+  document.getElementById('paBody').textContent = d.content;
+  document.getElementById('paSign').innerHTML = d.issuer ? '發布人：'+d.issuer+'<br>'+fmtDate(d.date) : fmtDate(d.date);
+}
+
+function fmtDate(s){
+  if(!s) return '';
+  var p = s.split('-');
+  if(p.length !== 3) return s;
+  return (parseInt(p[0])-1911)+'年'+parseInt(p[1])+'月'+parseInt(p[2])+'日';
+}
+
+/* ── 列表渲染 ── */
+function renderList(){
+  var arr = loadAnns();
+  var el = document.getElementById('annList');
+  if(!arr.length){
+    el.innerHTML = '<div class="empty">尚無公告紀錄<br><span style="font-size:12px">在「新增公告」填寫後按儲存，這裡就會出現歷史紀錄。</span></div>';
+    return;
+  }
+  el.innerHTML = arr.map(function(d, i){
+    var expired = d.expiry && d.expiry < today();
+    return '<div class="ann-card type-'+d.type+'"'+
+      (expired?' style="opacity:.65"':'')+'>'+
+      '<div class="ann-top">'+
+        '<span class="ann-type '+d.type+'">'+d.type+'</span>'+
+        '<div class="ann-title">'+esc(d.title)+'</div>'+
+        '<div class="ann-date">'+fmtDate(d.date)+'</div>'+
+      '</div>'+
+      '<div class="ann-body">'+esc(d.content)+'</div>'+
+      '<div class="ann-foot">'+
+        '<span class="ann-issuer">'+(d.issuer?'📌 '+esc(d.issuer):'')+(expired?' ⏰ 已過期':'')+'</span>'+
+        '<div class="ann-acts">'+
+          '<button onclick="loadToForm('+i+')">編輯</button>'+
+          '<button onclick="printById('+i+')">列印</button>'+
+          '<button onclick="copyById('+i+')">複製</button>'+
+          '<button onclick="delAnn('+i+')" style="color:var(--red)">刪除</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function loadToForm(i){
+  var d = loadAnns()[i]; if(!d) return;
+  curType = d.type;
+  document.querySelectorAll('#typeSel .type-chip').forEach(function(b){
+    b.classList.toggle('on', b.textContent.includes(d.type==='決議'?'決議':d.type==='注意'?'注意':d.type));
+  });
+  document.getElementById('annDate').value = d.date||'';
+  document.getElementById('annExpiry').value = d.expiry||'';
+  document.getElementById('annTitle').value = d.title||'';
+  document.getElementById('annContent').value = d.content||'';
+  document.getElementById('annIssuer').value = d.issuer||'';
+  document.getElementById('annContact').value = d.contact||'';
+  switchTab('new', document.querySelector('.tab'));
+  toast('已載入，修改後重新儲存即可');
+}
+
+function printById(i){ var d=loadAnns()[i]; if(!d) return; fillPrint(d); window.print(); }
+function copyById(i){
+  var d=loadAnns()[i]; if(!d) return;
+  // 填入表單後複製
+  document.getElementById('annTitle').value = d.title;
+  document.getElementById('annContent').value = d.content;
+  document.getElementById('annIssuer').value = d.issuer||'';
+  document.getElementById('annDate').value = d.date||'';
+  document.getElementById('annContact').value = d.contact||'';
+  curType = d.type;
+  copyText();
+}
+function delAnn(i){
+  if(!confirm('刪除這則公告？')) return;
+  var arr=loadAnns(); arr.splice(i,1); saveAnns(arr); renderList();
+  toast('已刪除');
+}
+
+function clearForm(){
+  document.getElementById('annTitle').value='';
+  document.getElementById('annContent').value='';
+  document.getElementById('annIssuer').value='';
+  document.getElementById('annExpiry').value='';
+  document.getElementById('annContact').value='';
+  document.getElementById('annDate').value=today();
+}
+
+function exportAnns(){
+  var arr = loadAnns();
+  if(!arr.length){ toast('⚠️ 尚無公告可匯出'); return; }
+  var lines = [['類型','日期','標題','內容','發布人','聯絡','有效期限'].join(',')];
+  arr.forEach(function(d){
+    lines.push([d.type,d.date,'"'+String(d.title||'').replace(/"/g,'""')+'"',
+      '"'+String(d.content||'').replace(/\n/g,' ').replace(/"/g,'""')+'"',
+      d.issuer||'',d.contact||'',d.expiry||''].join(','));
+  });
+  var blob = new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='announcements-'+today()+'.csv'; a.click();
+}
+
+/* ── tab 切換 ── */
+function switchTab(id, btn){
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  if(btn) btn.classList.add('on');
+  else document.querySelector('.tab').classList.add('on');
+  var p = document.getElementById('panel'+capitalize(id));
+  if(p) p.classList.add('on');
+  if(id==='list') renderList();
+}
+function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function toast(msg){
+  var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2400);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('annDate').value = today();
+  // 嘗試帶入發布人（理事長）
+  function tryFill(){ if(window.EBNOrg){ var o=EBNOrg.get(); if(o.chair && !document.getElementById('annIssuer').value) document.getElementById('annIssuer').value='理事長 '+o.chair; } }
+  if(window.EBNOrg) tryFill();
+  else{ var t=setInterval(function(){ if(window.EBNOrg){ clearInterval(t); tryFill(); }},60); }
+});
+</script>
+</body>
+</html>
