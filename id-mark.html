@@ -740,7 +740,7 @@
     var work=workingCanvas(it), c=document.createElement('canvas');
     c.width=work.width; c.height=work.height;
     drawWorking(c.getContext('2d'), it, c.width, c.height);
-    drawAnno(c.getContext('2d'), c.width, c.height, it, false, true);  // 列印/存圖不畫白底
+    drawAnno(c.getContext('2d'), c.width, c.height, it, false);  // 與編輯模式一致（有白底）
     return c.toDataURL('image/jpeg',0.95);
   }
   function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
