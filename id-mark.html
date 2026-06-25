@@ -610,7 +610,7 @@
         var ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
         ctx.drawImage(it._base,0,0); it._box=drawAnno(ctx,cv.width,cv.height,it,true,true); // 拖曳中透明背景，看得到下面的字
       }
-      function up(){ document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',up); resetBuilt(); }
+      function up(){ document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',up); paintItem(idx); resetBuilt(); }
       document.addEventListener('pointermove',move); document.addEventListener('pointerup',up);
     });
   }
@@ -691,7 +691,7 @@
     function up(){ document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',up); }
     document.addEventListener('pointermove',move); document.addEventListener('pointerup',up);
   }
-  function applyCrop(idx){ var it=items[idx]; it.crop=Object.assign({},it._cropRect); it._cropping=false; it.pos={x:0.035,y:0.04}; it._base=null; cleanCropUI(idx); paintItem(idx); resetBuilt(); }
+  function applyCrop(idx){ var it=items[idx]; it.crop=Object.assign({},it._cropRect); it._cropping=false; it.pos={x:0.035,y:0.04}; it.scale=1; it._base=null; cleanCropUI(idx); paintItem(idx); resetBuilt(); }
   function cancelCrop(idx){ items[idx]._cropping=false; cleanCropUI(idx); paintItem(idx); }
   function cleanCropUI(idx){
     var div=items[idx]._canvas.closest('.item');
@@ -728,7 +728,8 @@
   ['anno','fsize','alpha','rule'].forEach(function(id){
     $(id).addEventListener('change', saveSettings);
   });
-  window.addEventListener('beforeunload', saveSettings);
+  window.addEventListener('beforeunload', function(){ saveSettings(); closeCam(); });
+  window.addEventListener('pagehide', closeCam);
   loadSettings();
 
   function removeItem(i){ items.splice(i,1); renderList(); resetBuilt(); }
