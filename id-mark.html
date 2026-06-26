@@ -71,6 +71,16 @@
   .croprow{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;color:#5C4000;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:8px 10px;}
   .croprow input{width:auto;flex:0 0 auto;}
   .dragtip{font-size:12px;color:#7A5600;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:7px 9px;margin-top:7px;}
+  /* 註記行 chip 管理 */
+  #annoChips{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+  .anno-chip{display:flex;align-items:center;gap:6px;background:#FEF2F2;border:1.5px solid #FBBFBF;border-radius:9px;padding:7px 10px;}
+  .anno-chip span{flex:1;font-size:14px;color:var(--red-deep);word-break:break-all;}
+  .anno-chip button{flex:0 0 auto;background:none;border:none;color:#C0392B;font-size:18px;line-height:1;cursor:pointer;padding:0 2px;}
+  .anno-empty{font-size:13px;color:var(--soft);padding:4px 2px;}
+  .anno-add-row{display:flex;gap:8px;align-items:center;}
+  .anno-add-row input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;}
+  .anno-add-row button{flex:0 0 auto;background:var(--red-deep);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:14px;font-weight:700;cursor:pointer;}
+
   .posrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:7px;font-size:12.5px;color:#555;}
   .posrow .lbl{flex:0 0 auto;color:#888;}
   .posrow button{flex:0 0 auto;padding:8px 11px;font-size:13.5px;border:1px solid var(--border);background:#fff;border-radius:9px;cursor:pointer;}
@@ -165,9 +175,14 @@
       勞工局送件要核對身分，這四項只要被蓋住看不清，<b>整份會被退件</b>。請把紅色註記拖到<b>空白邊角</b>，並在「整理成 A4」後再檢查一次都看得清楚。</div>
 
     <div class="card noprint">
-      <label>1. 註記文字（可多行，會自動跳行）</label>
-      <textarea id="anno">僅供高榮企業工會發起連署用
+      <label>1. 註記文字（每行可單獨刪除）</label>
+      <textarea id="anno" style="display:none">僅供高榮企業工會發起連署用
 它用無效</textarea>
+      <div id="annoChips"></div>
+      <div class="anno-add-row">
+        <input type="text" id="annoNew" placeholder="新增一行…" maxlength="40">
+        <button onclick="annoAddLine()">＋ 新增</button>
+      </div>
       <div class="row"><label>字級</label><input type="range" id="fsize" min="30" max="90" value="50"><span class="val" id="fsizeV">50</span></div>
       <div class="row"><label>背景濃淡</label><input type="range" id="alpha" min="0" max="100" value="80"><span class="val" id="alphaV">80</span>%</div>
       <div class="row"><label>上下線</label>
@@ -731,6 +746,33 @@
   window.addEventListener('beforeunload', function(){ saveSettings(); closeCam(); });
   window.addEventListener('pagehide', closeCam);
   loadSettings();
+
+  // ---- 註記行管理 ----
+  function renderChips(){
+    var lines=($('anno').value||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
+    var div=$('annoChips');
+    if(!lines.length){ div.innerHTML='<div class="anno-empty">（目前沒有文字）</div>'; return; }
+    div.innerHTML=lines.map(function(l,i){
+      return '<div class="anno-chip"><span>'+esc(l)+'</span><button onclick="annoRemoveLine('+i+')" title="刪除這行">×</button></div>';
+    }).join('');
+  }
+  function annoRemoveLine(i){
+    var lines=($('anno').value||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
+    lines.splice(i,1);
+    $('anno').value=lines.join('\n');
+    renderChips(); saveSettings();
+    $('anno').dispatchEvent(new Event('input'));
+  }
+  function annoAddLine(){
+    var v=($('annoNew').value||'').trim(); if(!v) return;
+    var cur=($('anno').value||'').trim();
+    $('anno').value=cur ? cur+'\n'+v : v;
+    $('annoNew').value='';
+    renderChips(); saveSettings();
+    $('anno').dispatchEvent(new Event('input'));
+  }
+  $('annoNew').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); annoAddLine(); } });
+  renderChips();
 
   function removeItem(i){ items.splice(i,1); renderList(); resetBuilt(); }
   function resetBuilt(){ $('print').innerHTML=''; $('prn').disabled=true; window._built=false;
