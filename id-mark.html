@@ -86,6 +86,13 @@
   .posrow button{flex:0 0 auto;padding:8px 11px;font-size:13.5px;border:1px solid var(--border);background:#fff;border-radius:9px;cursor:pointer;}
   .posrow button:active{background:#FDECEA;border-color:#E8A29A;}
 
+  /* 微調歪斜 */
+  .tiltrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px;font-size:12.5px;color:#5C4000;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:8px 10px;}
+  .tiltrow button{padding:7px 10px;font-size:13px;border:1px solid #EAD67A;background:#fff;border-radius:8px;cursor:pointer;font-weight:600;}
+  .tiltrow button:active{background:#FDECEA;border-color:#E8A29A;}
+  .tilt-val{font-size:14px;font-weight:700;color:#7A5600;min-width:40px;text-align:center;}
+  .tilt-rst{background:#C0392B !important;color:#fff !important;border-color:#C0392B !important;}
+
   /* 傳送 / 信箱自動補全 */
   .btn-share{background:#1565C0;color:#fff;margin-top:6px;}
   .btn-dl{background:#5B6770;color:#fff;margin-top:6px;}
@@ -418,13 +425,26 @@
   // ---- 影像處理：旋轉 + 裁切 ----
   function orientedCanvas(it){
     var b=it.bitmap, sw=b.width, sh=b.height, r=((it.rot%360)+360)%360;
+    var tilt=(it.tilt||0)*Math.PI/180;
     var c=document.createElement('canvas'), x=c.getContext('2d');
-    if(r===90||r===270){ c.width=sh; c.height=sw; } else { c.width=sw; c.height=sh; }
-    x.save();
-    if(r===90){ x.translate(sh,0); x.rotate(Math.PI/2); }
-    else if(r===180){ x.translate(sw,sh); x.rotate(Math.PI); }
-    else if(r===270){ x.translate(0,sw); x.rotate(3*Math.PI/2); }
-    x.drawImage(b,0,0,sw,sh); x.restore();
+    if(!tilt){
+      // 快速路徑：只有 90° 倍數
+      if(r===90||r===270){ c.width=sh; c.height=sw; } else { c.width=sw; c.height=sh; }
+      x.save();
+      if(r===90){ x.translate(sh,0); x.rotate(Math.PI/2); }
+      else if(r===180){ x.translate(sw,sh); x.rotate(Math.PI); }
+      else if(r===270){ x.translate(0,sw); x.rotate(3*Math.PI/2); }
+      x.drawImage(b,0,0,sw,sh); x.restore();
+    } else {
+      // 含微調：組合旋轉角度，自動展開畫布避免截角
+      var total=r*Math.PI/180+tilt;
+      var cosA=Math.abs(Math.cos(total)), sinA=Math.abs(Math.sin(total));
+      var nw=Math.ceil(sw*cosA+sh*sinA), nh=Math.ceil(sw*sinA+sh*cosA);
+      c.width=nw; c.height=nh;
+      x.fillStyle='#fff'; x.fillRect(0,0,nw,nh);
+      x.save(); x.translate(nw/2,nh/2); x.rotate(total);
+      x.drawImage(b,-sw/2,-sh/2,sw,sh); x.restore();
+    }
     return c;
   }
   function workingCanvas(it){
@@ -548,7 +568,8 @@
         '<div class="ihead"><select onchange="items['+idx+'].label=this.value">'+opts+'</select></div>'+
         '<div class="pv"><canvas></canvas></div>'+
         '<div class="dragtip">👆 <b>拖紅框</b>＝移動、<b>拖右下角藍把手</b>＝縮放；調好後<b>點照片別處</b>，外框會消失、看到貼好的乾淨效果（要再調就點一下註記）</div>'+
-        '<div class="tools">'+toolsHTML(idx)+'</div>';
+        '<div class="tools">'+toolsHTML(idx)+'</div>'+
+        '<div class="tiltrow" id="tiltrow'+idx+'">'+tiltRowHTML(idx)+'</div>';
       wrap.appendChild(div);
       it._canvas=div.querySelector('canvas'); it._base=null;
       paintItem(idx); attachDrag(idx);
@@ -575,7 +596,7 @@
     drawWorking(b.getContext('2d'), it, W, H);
     it._base=b; it._baseTag=baseTag(it);
   }
-  function baseTag(it){ return it.rot+'|'+JSON.stringify(it.crop)+'|'+(it.enhance?1:0)+'|'+(it.docmode?1:0); }
+  function baseTag(it){ return it.rot+'|'+(it.tilt||0)+'|'+JSON.stringify(it.crop)+'|'+(it.enhance?1:0)+'|'+(it.docmode?1:0); }
 
   function paintItem(idx){
     var it=items[idx], cv=it._canvas; if(!cv) return;
@@ -651,6 +672,28 @@
   function toggleAnno(idx){
     var it=items[idx]; it.showAnno=(it.showAnno===false)?true:false; paintItem(idx); resetBuilt();
     var b=it._canvas.closest('.item').querySelector('.tools'); if(b) b.innerHTML=toolsHTML(idx);
+  }
+
+  // ---- 微調歪斜 ----
+  function tiltRowHTML(idx){
+    var t=items[idx].tilt||0, ts=(t>0?'+':'')+t+'°';
+    var rst=t?'<button class="tilt-rst" onclick="resetTilt('+idx+')">歸零</button>':'';
+    return '微調歪斜：<button onclick="tiltBy('+idx+',-5)">↺5°</button>'+
+           '<button onclick="tiltBy('+idx+',-1)">↺1°</button>'+
+           '<span class="tilt-val">'+ts+'</span>'+
+           '<button onclick="tiltBy('+idx+',1)">↻1°</button>'+
+           '<button onclick="tiltBy('+idx+',5)">↻5°</button>'+rst;
+  }
+  function tiltBy(idx, deg){
+    var it=items[idx];
+    it.tilt=(it.tilt||0)+deg;
+    if(it.tilt>15) it.tilt=15; if(it.tilt<-15) it.tilt=-15;
+    it._base=null; paintItem(idx); resetBuilt();
+    var tr=$('tiltrow'+idx); if(tr) tr.innerHTML=tiltRowHTML(idx);
+  }
+  function resetTilt(idx){
+    items[idx].tilt=0; items[idx]._base=null; paintItem(idx); resetBuilt();
+    var tr=$('tiltrow'+idx); if(tr) tr.innerHTML=tiltRowHTML(idx);
   }
 
   // ---- 裁切 ----
