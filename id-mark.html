@@ -485,6 +485,7 @@
   }
   // noBg=true：列印/存圖/拖曳時不畫白底，讓底下的字透出來
   function drawAnno(ctx, cw, ch, it, editable, noBg){
+    if(it.showAnno===false) return null;
     var lines=annoLines(); if(!lines.length) return null;
     var fs=Math.max(11, Math.round(cw*fontK()*(it.scale||1)));   // it.scale：拖把手縮放
     ctx.font='bold '+fs+'px sans-serif'; ctx.textAlign='left'; ctx.textBaseline='top';
@@ -527,11 +528,14 @@
   // ---- 列表 ----
   function toolsHTML(idx){
     var on=items[idx].enhance?'on':'', dm=items[idx].docmode?'on':'';
+    var annoHidden=items[idx].showAnno===false;
+    var annoBtn='<button class="'+(annoHidden?'on':'')+'" onclick="toggleAnno('+idx+')">'+(annoHidden?'🙈 顯示註記':'👁 隱藏註記')+'</button>';
     return '<button onclick="rotate('+idx+',-90)">↺ 左轉</button>'+
            '<button onclick="rotate('+idx+',90)">↻ 右轉</button>'+
            '<button onclick="enterCrop('+idx+')">✂️ 裁切</button>'+
            '<button class="'+dm+'" onclick="toggleDoc('+idx+')">📄 去反光/陰影</button>'+
            '<button class="'+on+'" onclick="toggleEnhance('+idx+')">✨ 補光</button>'+
+           annoBtn+
            '<button onclick="saveOne('+idx+')">💾 存圖</button>'+
            '<button class="danger" onclick="removeItem('+idx+')">🗑 刪除</button>';
   }
@@ -642,6 +646,10 @@
   }
   function toggleDoc(idx){
     var it=items[idx]; it.docmode=!it.docmode; it._base=null; paintItem(idx); resetBuilt();
+    var b=it._canvas.closest('.item').querySelector('.tools'); if(b) b.innerHTML=toolsHTML(idx);
+  }
+  function toggleAnno(idx){
+    var it=items[idx]; it.showAnno=(it.showAnno===false)?true:false; paintItem(idx); resetBuilt();
     var b=it._canvas.closest('.item').querySelector('.tools'); if(b) b.innerHTML=toolsHTML(idx);
   }
 
