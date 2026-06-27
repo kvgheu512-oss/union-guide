@@ -123,14 +123,16 @@
         </div>
         <button id="phaseToggleBtn" style="background:#2A4070;color:#fff;border:none;border-radius:10px;padding:.55rem 1.1rem;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap">🔀 切換</button>
       </div>
-      <div id="phaseOut" style="display:none;margin-top:.8rem">
-        <div style="font-size:12px;color:#8CA0B8;margin-bottom:.4rem">👇 複製給 Claude 說「發布這個」，或下載後交給維護者上線：</div>
-        <textarea id="phaseTa" readonly style="width:100%;min-height:100px;font-size:11px;font-family:monospace;background:#0A111C;color:#D7E2EF;border:1px solid #2A4070;border-radius:8px;padding:.5rem;resize:none"></textarea>
-        <div style="display:flex;gap:8px;margin-top:.4rem">
-          <button id="phaseCopy" style="flex:1;background:#1E73C8;color:#fff;border:none;border-radius:8px;padding:.5rem;font-size:13px;font-weight:700;cursor:pointer">📋 複製</button>
-          <button id="phaseDl" style="flex:1;background:#0F5C36;color:#fff;border:none;border-radius:8px;padding:.5rem;font-size:13px;font-weight:700;cursor:pointer">⬇ 下載</button>
+      <!-- GitHub Token 設定（填一次永久生效） -->
+      <div id="phaseTokenArea" style="margin-top:.7rem">
+        <div style="font-size:11.5px;color:#8CA0B8;margin-bottom:.3rem">🔑 GitHub Token（填一次，之後一鍵直接上線）</div>
+        <div style="display:flex;gap:6px">
+          <input id="phaseToken" type="password" placeholder="ghp_xxxxxxxxxxxx" style="flex:1;background:#0A111C;color:#D7E2EF;border:1px solid #2A4070;border-radius:8px;padding:.4rem .6rem;font-size:13px;font-family:monospace">
+          <button id="phaseTokenSave" style="background:#1E73C8;color:#fff;border:none;border-radius:8px;padding:.4rem .7rem;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">儲存</button>
         </div>
+        <div id="phaseTokenNote" style="font-size:11px;color:#5A7A9A;margin-top:.25rem"></div>
       </div>
+      <div id="phaseMsg" style="display:none;margin-top:.6rem;font-size:13px;font-weight:700;text-align:center"></div>
     </div>
     <a href="nav.html" style="display:flex;align-items:center;gap:10px;background:#EEF3FA;border:1.5px solid #C2D2E8;border-radius:14px;padding:.75rem 1rem;margin-bottom:.8rem;text-decoration:none;color:#1A3A6B;">
       <span style="font-size:24px;">🧭</span>
@@ -684,37 +686,87 @@ document.addEventListener('DOMContentLoaded', function(){
   document.addEventListener('ebnorg:public', syncNames);
 });
 
-// 首頁模式切換
+// 首頁模式切換（GitHub API 直推）
 (function(){
-  var PHASE_KEY='ebn_phase_v1';
-  function curPhase(){ var pd=window.EBNOrg?EBNOrg.publicData():{};  return localStorage.getItem(PHASE_KEY)||pd.phase||'prep'; }
+  var REPO='kvgheu512-oss/union-guide', FILE='public.json';
+  var TOKEN_KEY='ebn_gh_token_v1', PHASE_KEY='ebn_phase_v1';
+
+  function getToken(){ return localStorage.getItem(TOKEN_KEY)||''; }
+  function curPhase(){ var pd=window.EBNOrg?EBNOrg.publicData():{};  return pd.phase||localStorage.getItem(PHASE_KEY)||'prep'; }
   function setLabel(p){ var el=document.getElementById('phaseLabel'); if(el) el.textContent=p==='official'?'🎖 正式成立':'🏗 籌備中'; }
+  function setMsg(txt,color){ var el=document.getElementById('phaseMsg'); if(!el) return; el.style.display=txt?'block':'none'; el.style.color=color||'#7EC8E3'; el.textContent=txt; }
+
+  // 還原 token 欄位
+  function initToken(){
+    var t=getToken(), inp=document.getElementById('phaseToken'), note=document.getElementById('phaseTokenNote');
+    if(t && inp){ inp.value=''; inp.placeholder='（已設定，如需更換請重新貼上）'; }
+    if(note) note.textContent=t?'✅ Token 已設定，切換時直接上線':'⚠️ 尚未設定 Token，切換只會存在本機';
+  }
+
+  document.getElementById('phaseTokenSave').addEventListener('click',function(){
+    var v=document.getElementById('phaseToken').value.trim();
+    if(!v){ alert('請貼上 GitHub Token'); return; }
+    localStorage.setItem(TOKEN_KEY,v);
+    document.getElementById('phaseToken').value='';
+    initToken();
+    setMsg('✅ Token 已儲存','#4CAF50');
+    setTimeout(function(){ setMsg(''); },2500);
+  });
+
   function buildJson(p){
-    if(!window.EBNOrg) return '{}';
+    if(!window.EBNOrg) return null;
     var full=EBNOrg.buildPublic(), pd=EBNOrg.publicData();
     full.phase=p;
     if(pd.meet) full.meet=pd.meet;
     if(pd.sign) full.sign=pd.sign;
     return JSON.stringify(full,null,2);
   }
+
+  async function pushPhase(newPhase){
+    var token=getToken();
+    var json=buildJson(newPhase);
+    if(!json){ setMsg('❌ 資料尚未載入，請稍後再試','#FF6B6B'); return; }
+
+    var api='https://api.github.com/repos/'+REPO+'/contents/'+FILE;
+    var headers={'Authorization':'token '+token,'Content-Type':'application/json'};
+
+    setMsg('⏳ 上傳中…','#7EC8E3');
+    try {
+      // 取得目前檔案的 SHA
+      var r=await fetch(api,{headers:headers});
+      if(!r.ok) throw new Error('取得檔案失敗 ('+r.status+')，請確認 Token 是否正確');
+      var meta=await r.json();
+      var sha=meta.sha;
+
+      // 更新檔案
+      var body={message:(newPhase==='official'?'首頁切換：正式成立':'首頁切換：籌備中'), content:btoa(unescape(encodeURIComponent(json))), sha:sha};
+      var r2=await fetch(api,{method:'PUT',headers:headers,body:JSON.stringify(body)});
+      if(!r2.ok) throw new Error('推送失敗 ('+r2.status+')');
+
+      localStorage.setItem(PHASE_KEY,newPhase);
+      setLabel(newPhase);
+      setMsg('✅ 已上線！首頁約 1 分鐘後生效','#4CAF50');
+    } catch(e){
+      setMsg('❌ '+e.message,'#FF6B6B');
+    }
+  }
+
   document.addEventListener('ebnorg:public',function(){ setLabel(curPhase()); });
   setLabel(curPhase());
-  var btn=document.getElementById('phaseToggleBtn');
-  if(btn) btn.addEventListener('click',function(){
+  initToken();
+
+  document.getElementById('phaseToggleBtn').addEventListener('click',function(){
     var cur=curPhase(), next=cur==='official'?'prep':'official';
     var label=next==='official'?'正式成立':'籌備中';
-    if(!confirm('確定把首頁切換成「'+label+'」？\n切換後下載發布才會上線。')) return;
-    localStorage.setItem(PHASE_KEY,next);
-    setLabel(next);
-    var ta=document.getElementById('phaseTa'); if(ta) ta.value=buildJson(next);
-    var out=document.getElementById('phaseOut'); if(out) out.style.display='block';
-  });
-  document.getElementById('phaseCopy').addEventListener('click',function(){
-    var ta=document.getElementById('phaseTa');
-    if(navigator.clipboard) navigator.clipboard.writeText(ta.value).then(function(){ alert('✅ 已複製，貼給 Claude 說「發布這個」即可'); }); else { ta.select(); document.execCommand('copy'); }
-  });
-  document.getElementById('phaseDl').addEventListener('click',function(){
-    var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([document.getElementById('phaseTa').value],{type:'application/json'})); a.download='public.json'; a.click();
+    if(!confirm('確定把首頁切換成「'+label+'」？')) return;
+    if(getToken()){
+      pushPhase(next);
+    } else {
+      // 沒有 token 就只存本機（舊行為）
+      localStorage.setItem(PHASE_KEY,next);
+      setLabel(next);
+      setMsg('⚠️ 已切換（僅本機）。設定 Token 才能直接上線。','#F5A623');
+    }
   });
 })();
 </script>
