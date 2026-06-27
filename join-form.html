@@ -154,29 +154,78 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
 <script src="org.js" defer></script>
 <script>
 (function(){
-  // 填今天日期
+  // 今天日期
   var d=new Date(); document.getElementById('f-date').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 
-  // 帶入工會名稱
+  // 工會名稱
   function fillOrg(){ var o=window.EBNOrg?EBNOrg.get():{}, n=o.fullName||'高榮企業工會'; document.getElementById('orgName').textContent=n; document.getElementById('orgName2').textContent=n; }
   fillOrg();
   document.addEventListener('ebnorg:public',fillOrg);
 
   // 簽名板
   var canvas=document.getElementById('signCanvas');
+  var signWrap=document.getElementById('signWrap');
   var pad=EBNSign.create(canvas);
   var hint=document.getElementById('signHint');
-  canvas.addEventListener('mousedown',function(){ hint.style.display='none'; });
-  canvas.addEventListener('touchstart',function(){ hint.style.display='none'; },{passive:true});
-  document.getElementById('btnClear').addEventListener('click',function(){ pad.clear(); hint.style.display='flex'; });
 
-  // 送出
+  // 收鍵盤再簽名：點簽名區先讓輸入框失焦，確保 canvas 尺寸正確
+  signWrap.addEventListener('touchstart',function(){
+    if(document.activeElement&&document.activeElement.tagName==='INPUT') document.activeElement.blur();
+  },{passive:true});
+  canvas.addEventListener('mousedown',function(){ hint.style.display='none'; signWrap.style.borderColor=''; });
+  canvas.addEventListener('touchstart',function(){ hint.style.display='none'; signWrap.style.borderColor=''; },{passive:true});
+
+  var btnClear=document.getElementById('btnClear');
+  btnClear.addEventListener('click',function(){ pad.clear(); hint.style.display='flex'; signWrap.style.borderColor=''; });
+
+  // 必填欄位即時標色
+  ['f-name','f-empid'].forEach(function(id){
+    var el=document.getElementById(id);
+    el.addEventListener('blur',function(){ el.style.borderColor=el.value.trim()?'var(--green)':'#E53935'; });
+    el.addEventListener('input',function(){ if(el.value.trim()) el.style.borderColor='var(--green)'; });
+  });
+
+  // 離開警告（有填才觸發）
+  var dirty=false, submitted=false;
+  document.querySelectorAll('input').forEach(function(el){ el.addEventListener('input',function(){ dirty=true; }); });
+  canvas.addEventListener('mousedown',function(){ dirty=true; });
+  canvas.addEventListener('touchstart',function(){ dirty=true; },{passive:true});
+  window.addEventListener('beforeunload',function(e){ if(dirty&&!submitted){ e.preventDefault(); e.returnValue=''; } });
+
+  // Toast 提示
+  function toast(msg,color){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:'+(color||'#333')+';color:#fff;padding:.55rem 1.2rem;border-radius:20px;font-size:14px;font-weight:700;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.3)';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); },2800);
+  }
+
+  // 送出驗證
   document.getElementById('btnSubmit').addEventListener('click',function(){
     var name=document.getElementById('f-name').value.trim();
     var empid=document.getElementById('f-empid').value.trim();
-    if(!name||!empid){ alert('姓名和員工編號為必填'); return; }
-    if(pad.isEmpty()){ alert('請在簽名欄簽名'); return; }
 
+    // 必填驗證
+    var ok=true;
+    if(!name){ document.getElementById('f-name').style.borderColor='#E53935'; ok=false; }
+    if(!empid){ document.getElementById('f-empid').style.borderColor='#E53935'; ok=false; }
+    if(!ok){ toast('❌ 請填寫姓名和員工編號','#E53935'); document.getElementById('f-name').focus(); return; }
+
+    // 簽名驗證
+    if(pad.isEmpty()){ toast('❌ 請先在下方簽名','#E53935'); signWrap.style.borderColor='#E53935'; signWrap.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+
+    // 簽名筆畫太少
+    var ctx=canvas.getContext('2d');
+    var data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    var ink=0; for(var i=3;i<data.length;i+=4){ if(data[i]>30) ink++; }
+    if(ink<150){ toast('❌ 簽名太少，請完整書寫姓名','#E53935'); signWrap.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+
+    // 確認對話框
+    if(!confirm('確認送出入會申請？\n\n姓名：'+name+'\n員工編號：'+empid+'\n\n請確認資料正確，送出後即完成電子簽署。')){ return; }
+
+    // 送出
+    var btn=this; btn.disabled=true; btn.textContent='送出中…';
     var ts=EBNSign.timestamp();
     var sigUrl=pad.toDataURL();
     var orgName=document.getElementById('orgName').textContent;
@@ -190,8 +239,8 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
       sig:sigUrl, ts:ts, org:orgName
     };
     EBNSign.saveLog(rec);
+    submitted=true;
 
-    // 填印列區
     document.getElementById('p-orgName').textContent=orgName;
     document.getElementById('p-orgName2').textContent=orgName;
     document.getElementById('p-name').textContent=name;
@@ -205,9 +254,9 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     document.getElementById('p-ts').textContent=ts;
     document.getElementById('printOut').style.display='block';
 
-    document.getElementById('doneMsg').textContent='簽署時間：'+ts+'　姓名：'+name+'　員工編號：'+empid;
+    document.getElementById('doneMsg').innerHTML='<b>簽署時間：</b>'+ts+'<br><b>姓名：</b>'+name+'　<b>員工編號：</b>'+empid+'<br><span style="font-size:12px;color:#2E7D32">📸 截圖或列印後傳給工會幹部留存</span>';
     document.getElementById('doneBox').style.display='block';
-    document.getElementById('btnSubmit').style.display='none';
+    btn.style.display='none';
     window.scrollTo({top:0,behavior:'smooth'});
   });
 
