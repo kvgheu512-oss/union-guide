@@ -212,7 +212,8 @@
     function set(id,v){ var e=$(id); if(e&&v!=null) e.value=v; }
     ["prep","found"].forEach(function(k){ var m=mt[k]||{}; set("m-"+k+"-date",m.date); set("m-"+k+"-time",m.time); set("m-"+k+"-place",m.place); set("m-"+k+"-url",m.url); });
     set("sign-now",sg.now); set("sign-goal",sg.goal);
-    var phaseEl=$(pd.phase==="official"?"phase-official":"phase-prep"); if(phaseEl) phaseEl.checked=true;
+    var phase=pd.phase||localStorage.getItem('ebn_phase_v1')||'prep';
+    var phaseEl=$(phase==="official"?"phase-official":"phase-prep"); if(phaseEl) phaseEl.checked=true;
   }
   function readExtras(){
     function v(id){ var e=$(id); return e?e.value.trim():""; }
