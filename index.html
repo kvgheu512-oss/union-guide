@@ -188,6 +188,15 @@
     .header h1{font-size:22px;}
     .cta-btn{width:100%;}
   }
+  /* ===== 雙模式：籌備中 / 正式成立 ===== */
+  .official-only{display:none;}
+  body.phase-official .prep-only{display:none!important;}
+  body.phase-official .official-only{display:block;}
+  body.phase-official a.official-only{display:inline;}
+  .cadre-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.25rem;}
+  .cadre-item{background:#F4FAF6;border:1px solid #C9E4D3;border-radius:10px;padding:.65rem .75rem;}
+  .cadre-item .cr{font-size:11.5px;color:var(--green);font-weight:700;margin-bottom:2px;}
+  .cadre-item .cn{font-weight:700;color:var(--green-deep);font-size:15px;}
 </style>
 
 <link rel="stylesheet" href="common.css">
@@ -216,10 +225,16 @@
   </div>
 
   <!-- 置頂行動呼籲：湊 30 人連署是現在最急的事 -->
-  <div class="cta-bar">
+  <div class="cta-bar prep-only">
     <div class="cta-kicker">依《工會法》成立企業工會，需要 <strong>30 位以上勞工</strong>連署發起。<br>你願意當其中一位嗎？</div>
     <button class="cta-btn" id="cta-join">✋ 我想連署／加入籌備</button>
     <span class="cta-note">不公開、不對外，只是先表達意願；幹部會私下與你聯繫。</span>
+  </div>
+  <!-- 正式成立模式：置頂行動呼籲 -->
+  <div class="cta-bar official-only" style="background:linear-gradient(135deg,#EAF4EC,#D4ECD8)">
+    <div class="cta-kicker" style="color:#0F5C36">高榮企業工會已<strong>正式成立</strong>！<br>歡迎符合資格的同仁加入，一起守護工作權益。</div>
+    <button class="cta-btn" id="cta-join-off" style="background:var(--green)">✋ 我要正式入會</button>
+    <span class="cta-note">填表即表達意願，幹部會聯繫你確認入會手續。</span>
   </div>
 
   <!-- 導覽 -->
@@ -232,9 +247,11 @@
     <a href="#about">我們是誰</a>
     <a href="#who">誰可以加入</a>
     <a href="#why">加入的好處</a>
-    <a href="#progress">成立進度</a>
-    <a href="#meetings">關鍵會議</a>
-    <a href="#join">怎麼加入</a>
+    <a href="#progress" class="prep-only">成立進度</a>
+    <a href="#meetings" class="prep-only">關鍵會議</a>
+    <a href="#join" class="prep-only">怎麼加入</a>
+    <a href="#cadres-pub" class="official-only">👥 幹部</a>
+    <a href="#join-official" class="official-only">✋ 入會</a>
     <a href="#faq">常見問答</a>
     <a href="#protect">你的保障</a>
     <a href="#laws">法規連結</a>
@@ -258,8 +275,11 @@
         <p class="lead">我們是一群在高雄榮總工作、具「勞工身分」的同仁（約用、契約、派遣等），正依《工會法》籌組「<strong>高榮企業工會</strong>」。</p>
         <p>「企業工會」是同一個事業單位的勞工自己組成的工會，目的是用<strong>集體</strong>的力量，和院方就薪資、加班費、工時、權益等事項對話、協商——一個人講沒人理，一群人講才有份量。</p>
       </div>
-      <div class="hl hl-red" style="margin-top:10px">
+      <div class="hl hl-red prep-only" style="margin-top:10px">
         現在還在<strong>籌備階段</strong>：先湊滿 30 位連署發起人、組成籌備會，再開成立大會、向勞工局登記。這個頁面就是要讓你快速搞懂「我能不能加入、加入有什麼好處、現在要做什麼」。
+      </div>
+      <div class="hl hl-green official-only" style="margin-top:10px">
+        高榮企業工會已依《工會法》完成設立登記，正式成為高雄榮民總醫院的合法企業工會。<strong>加入工會，讓我們一起守護你的工作權益。</strong>
       </div>
     </section>
 
@@ -298,8 +318,8 @@
       </ul>
     </section>
 
-    <!-- 4 成立進度 -->
-    <section class="section" id="progress">
+    <!-- 4 成立進度（籌備模式）-->
+    <section class="section prep-only" id="progress">
       <div class="section-header"><div class="section-num gold">4</div><div class="section-title">成立進度</div></div>
       <div class="card" style="margin-bottom:12px">
         <div class="timeline">
@@ -312,8 +332,8 @@
       <div class="hl hl-green">📅 最新進度會在這裡更新。目前正在第 1 步，全力徵集連署中。</div>
     </section>
 
-    <!-- 4.5 兩場關鍵會議，需要你一起 -->
-    <section class="section" id="meetings">
+    <!-- 4.5 兩場關鍵會議（籌備模式）-->
+    <section class="section prep-only" id="meetings">
       <div class="section-header"><div class="section-num gold">📣</div><div class="section-title">兩場關鍵會議，需要你一起</div></div>
       <div class="card">
         <p class="lead" style="font-size:14.5px">工會成立的路上，<strong>最需要大家幫忙的就是這兩場會</strong>。能到現場最好；真的到不了，也可以<strong>線上一起參與</strong>。</p>
@@ -344,8 +364,8 @@
       </a>
     </section>
 
-    <!-- 5 怎麼加入 -->
-    <section class="section" id="join">
+    <!-- 5 怎麼加入（籌備模式）-->
+    <section class="section prep-only" id="join">
       <div class="section-header"><div class="section-num green">5</div><div class="section-title">怎麼加入／連署</div></div>
       <div class="card" id="signbar" data-now="15" data-goal="30" style="border-left:5px solid #0F5C36">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
@@ -386,6 +406,32 @@
       </a>
       <div class="hl hl-gold" style="margin-top:12px">
         🔒 <strong>隱私說明：</strong>本網頁本身不會儲存你的任何資料。你填的聯絡方式是送到工會的 Line／表單，僅供籌備聯繫之用，受《個人資料保護法》保護，不會對外公開。
+      </div>
+    </section>
+
+    <!-- 官：工會幹部（正式成立後顯示）-->
+    <section class="section official-only" id="cadres-pub">
+      <div class="section-header"><div class="section-num green">4</div><div class="section-title">工會幹部</div></div>
+      <div class="card">
+        <div class="cadre-grid" id="cadre-pub-grid"></div>
+        <p style="font-size:12.5px;color:var(--ink-soft);margin-top:.75rem;line-height:1.7">有問題歡迎在 LINE 群找幹部，或進入幹部專區。</p>
+      </div>
+    </section>
+
+    <!-- 官：正式入會流程（正式成立後顯示）-->
+    <section class="section official-only" id="join-official">
+      <div class="section-header"><div class="section-num green">5</div><div class="section-title">如何正式入會</div></div>
+      <div class="card">
+        <div class="step"><div class="step-no">1</div><div><strong>確認入會資格</strong><br><span style="font-size:13px;color:var(--ink-soft)">你是約用／契約／派遣等勞工身分（非正式公職、非代表雇主的主管）。</span></div></div>
+        <div class="step"><div class="step-no">2</div><div><strong>填寫入會申請書</strong><br><span style="font-size:13px;color:var(--ink-soft)">在 LINE 群向幹部索取表格，填好後交回。</span></div></div>
+        <div class="step"><div class="step-no">3</div><div><strong>繳納入會費及常年會費</strong><br><span style="font-size:13px;color:var(--ink-soft)">依章程規定金額繳費後，正式成為工會會員。</span></div></div>
+      </div>
+      <a href="joinroi.html" style="display:block;text-decoration:none;color:inherit;margin-top:12px;background:#FFF7F4;border:1px solid #F0D9D2;border-left:5px solid #C0392B;border-radius:12px;padding:.95rem 1.1rem;">
+        <strong style="color:#7B1818;font-size:15px">💰 入會划算嗎？1 分鐘算給你看 →</strong>
+        <div style="font-size:13px;color:var(--ink-mid);line-height:1.7;margin-top:5px">被低估的加班費、沒休的特休，往往<b>遠超一年會費</b>。</div>
+      </a>
+      <div style="text-align:center;margin-top:14px">
+        <button class="cta-btn" id="cta-join-off2" style="background:var(--green)">✋ 我要入會</button>
       </div>
     </section>
 
@@ -708,12 +754,47 @@ document.getElementById('faq-toggle-btn').addEventListener('click',function(){
   function toast(t){ var e=document.getElementById('share-toast'); if(e){ e.textContent=t; setTimeout(function(){ e.textContent=''; },2600); } }
   var sBtn=document.getElementById('share-btn'); if(sBtn) sBtn.addEventListener('click',function(){ var text=msg(); if(navigator.share){ navigator.share({title:'高榮企業工會 連署',text:text,url:url}).catch(function(){}); } else if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){toast('✅ 已複製，貼到 LINE 群組即可');},function(){toast('請長按訊息複製');}); } else { toast('請長按訊息複製'); } });
   var cBtn=document.getElementById('copy-btn'); if(cBtn) cBtn.addEventListener('click',function(){ if(navigator.clipboard){ navigator.clipboard.writeText(msg()).then(function(){toast('✅ 連署訊息已複製');},function(){toast('請長按複製');}); } else { toast('請長按複製'); } });
-  // 工會狀態：籌備中 → 正式運營（由幹部在 founding.html 解鎖後，本機顯示更新）
-  try{ var st=JSON.parse(localStorage.getItem("union_status_v1")); var pb=document.getElementById("prepBadge");
-    if(pb && st && st.status==="official"){ pb.textContent="🎖 正式運營 · 歡迎加入"; pb.style.background="#FFF6D6"; pb.style.color="#7A5800"; } }catch(_){}
 })();
 </script>
 <script src="org.js" defer></script>
+<script>
+/* ===== 雙模式切換：依 public.json 的 phase 決定顯示「籌備」或「正式成立」===== */
+function applyPhase(phase){
+  if(phase!=='official') return;
+  document.body.classList.add('phase-official');
+  document.title=document.title.replace('（籌備中）','');
+  var badge=document.getElementById('prepBadge');
+  if(badge){ badge.textContent='🎖 正式成立'; badge.style.background='#FFF6D6'; badge.style.color='#7A5800'; }
+  var robots=document.querySelector('meta[name="robots"]'); if(robots) robots.remove();
+  // 填幹部名冊
+  var grid=document.getElementById('cadre-pub-grid');
+  if(grid && window.EBNOrg){
+    var c=EBNOrg.cadres(), roles=EBNOrg.CADRE_ROLES;
+    grid.innerHTML=roles.filter(function(r){return c[r[0]];}).map(function(r){
+      return '<div class="cadre-item"><div class="cr">'+r[1]+'</div><div class="cn">'+c[r[0]]+'</div></div>';
+    }).join('');
+  }
+}
+// 加入 cta-join-off / cta-join-off2 的點擊處理
+function goJoinOfficial(){
+  var ex=document.getElementById('join-sheet-off'); if(ex) ex.remove();
+  var wrap=document.createElement('div'); wrap.id='join-sheet-off';
+  wrap.style.cssText='position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center';
+  var h='<div style="background:#fff;width:100%;max-width:430px;border-radius:18px 18px 0 0;padding:18px 18px 24px;box-shadow:0 -6px 24px rgba(0,0,0,.3)">'
+    +'<div style="text-align:center;font-weight:700;font-size:16px;color:#0F5C36;margin-bottom:4px">✋ 我要正式入會</div>'
+    +'<div style="text-align:center;font-size:12.5px;color:#777;margin-bottom:14px">告訴幹部你想加入，他們會聯繫你確認手續</div>';
+  if(typeof LINE_URL!=='undefined'&&LINE_URL) h+='<a href="'+LINE_URL+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#06C755;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">💬 在 LINE 群找幹部申請</a>';
+  if(typeof FORM_URL!=='undefined'&&FORM_URL) h+='<a href="'+FORM_URL+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#1A3A6B;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">📝 填入會申請表</a>';
+  h+='<button id="join-off-cancel" style="display:block;width:100%;background:none;border:0;color:#999;font-size:14px;padding:.5rem;cursor:pointer">取消</button></div>';
+  wrap.innerHTML=h; document.body.appendChild(wrap);
+  wrap.addEventListener('click',function(e){ if(e.target===wrap||e.target.id==='join-off-cancel'||e.target.tagName==='A') wrap.remove(); });
+}
+['cta-join-off','cta-join-off2'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('click',goJoinOfficial); });
+// public.json 載入後套用模式
+document.addEventListener('ebnorg:public',function(){
+  try{ applyPhase((window.EBNOrg&&EBNOrg.publicData().phase)||'prep'); }catch(e){}
+});
+</script>
 <script src="tour.js" defer></script>
 <script>
 window.addEventListener("load", function(){
