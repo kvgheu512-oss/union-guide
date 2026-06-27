@@ -49,6 +49,17 @@
   <div class="card" style="border-top-color:#1A7A4A">
     <h2 style="font-family:'Noto Serif TC',serif;color:#0F5C36;font-size:16px;margin-bottom:.4rem">📅 會議與連署（公告給大家看）</h2>
     <div class="hint" style="font-size:12px;margin-bottom:.3rem">這幾項會顯示在「線上會議室」與「對外首頁」。填好後一起按下面發布。</div>
+    <label style="font-weight:700;margin-top:.4rem">🔀 首頁模式</label>
+    <div style="display:flex;gap:12px;align-items:center;margin:.35rem 0 .6rem;background:#1A2535;border-radius:10px;padding:.5rem .7rem">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;font-size:14px">
+        <input type="radio" name="phase" id="phase-prep" value="prep" checked style="accent-color:#4EA8FF;width:18px;height:18px">
+        <span>🏗 籌備中<br><small style="color:#8CA0B8;font-weight:400">招募發起人、顯示連署進度</small></span>
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;font-size:14px">
+        <input type="radio" name="phase" id="phase-official" value="official" style="accent-color:#4EA8FF;width:18px;height:18px">
+        <span>🎖 正式成立<br><small style="color:#8CA0B8;font-weight:400">顯示幹部名單、正式入會流程</small></span>
+      </label>
+    </div>
     <label>發起人會議 — 日期 / 時間 / 地點</label>
     <input id="m-prep-date" placeholder="例：115/7/15"><input id="m-prep-time" placeholder="例：19:00" style="margin-top:6px"><input id="m-prep-place" placeholder="地點（實體＋線上）" style="margin-top:6px">
     <input id="m-prep-url" placeholder="Google Meet 連結（可留空）" style="margin-top:6px">
@@ -201,16 +212,19 @@
     function set(id,v){ var e=$(id); if(e&&v!=null) e.value=v; }
     ["prep","found"].forEach(function(k){ var m=mt[k]||{}; set("m-"+k+"-date",m.date); set("m-"+k+"-time",m.time); set("m-"+k+"-place",m.place); set("m-"+k+"-url",m.url); });
     set("sign-now",sg.now); set("sign-goal",sg.goal);
+    var phaseEl=$(pd.phase==="official"?"phase-official":"phase-prep"); if(phaseEl) phaseEl.checked=true;
   }
   function readExtras(){
     function v(id){ var e=$(id); return e?e.value.trim():""; }
     function meet(k){ return { date:v("m-"+k+"-date"), time:v("m-"+k+"-time"), place:v("m-"+k+"-place")||"實體會場＋線上同步", url:v("m-"+k+"-url") }; }
-    return { meet:{ prep:meet("prep"), found:meet("found") }, sign:{ now:parseInt(v("sign-now"),10)||0, goal:parseInt(v("sign-goal"),10)||30 } };
+    var phaseEl=$("phase-official"); var phase=phaseEl&&phaseEl.checked?"official":"prep";
+    return { phase:phase, meet:{ prep:meet("prep"), found:meet("found") }, sign:{ now:parseInt(v("sign-now"),10)||0, goal:parseInt(v("sign-goal"),10)||30 } };
   }
   function start(){
     if(!window.EBNOrg){ setTimeout(start,30); return; }
     render(); fillExtras(); renderCadres();
     ["m-prep-date","m-prep-time","m-prep-place","m-prep-url","m-found-date","m-found-time","m-found-place","m-found-url","sign-now","sign-goal"].forEach(function(id){ var e=$(id); if(e) e.addEventListener("input",function(){ extrasEdited=true; }); });
+    ["phase-prep","phase-official"].forEach(function(id){ var e=$(id); if(e) e.addEventListener("change",function(){ extrasEdited=true; }); });
     $("saveBtn").addEventListener("click",function(){
       EBNOrg.set(readForm()); saveCadres();
       var t=$("toast"); t.textContent="✅ 已存這支手機。要讓大家看到，請按下面『發布上線』";
@@ -219,7 +233,7 @@
     $("pubBtn").addEventListener("click",function(){
       EBNOrg.set(readForm()); saveCadres();       // 順手存一下
       var full=EBNOrg.buildPublic(readForm());
-      var ex=readExtras(); full.meet=ex.meet; full.sign=ex.sign;   // 會議/連署一起發布
+      var ex=readExtras(); full.phase=ex.phase; full.meet=ex.meet; full.sign=ex.sign;   // 首頁模式/會議/連署一起發布
       var txt=JSON.stringify(full,null,2);
       $("pubOut").value=txt; $("pubOut").style.display="block";
       $("pubCopy").style.display="block"; $("pubDl").style.display="block";
