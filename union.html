@@ -114,6 +114,24 @@
   </div>
 
   <main>
+    <!-- 首頁模式切換 -->
+    <div style="background:#1A2535;border-radius:16px;padding:.85rem 1.1rem;margin-bottom:1rem;border-left:5px solid #4EA8FF;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-size:12px;color:#8CA0B8;margin-bottom:3px;letter-spacing:.04em">首頁模式</div>
+          <div id="phaseLabel" style="font-size:17px;font-weight:700;color:#fff">🏗 籌備中</div>
+        </div>
+        <button id="phaseToggleBtn" style="background:#2A4070;color:#fff;border:none;border-radius:10px;padding:.55rem 1.1rem;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap">🔀 切換</button>
+      </div>
+      <div id="phaseOut" style="display:none;margin-top:.8rem">
+        <div style="font-size:12px;color:#8CA0B8;margin-bottom:.4rem">👇 複製給 Claude 說「發布這個」，或下載後交給維護者上線：</div>
+        <textarea id="phaseTa" readonly style="width:100%;min-height:100px;font-size:11px;font-family:monospace;background:#0A111C;color:#D7E2EF;border:1px solid #2A4070;border-radius:8px;padding:.5rem;resize:none"></textarea>
+        <div style="display:flex;gap:8px;margin-top:.4rem">
+          <button id="phaseCopy" style="flex:1;background:#1E73C8;color:#fff;border:none;border-radius:8px;padding:.5rem;font-size:13px;font-weight:700;cursor:pointer">📋 複製</button>
+          <button id="phaseDl" style="flex:1;background:#0F5C36;color:#fff;border:none;border-radius:8px;padding:.5rem;font-size:13px;font-weight:700;cursor:pointer">⬇ 下載</button>
+        </div>
+      </div>
+    </div>
     <a href="nav.html" style="display:flex;align-items:center;gap:10px;background:#EEF3FA;border:1.5px solid #C2D2E8;border-radius:14px;padding:.75rem 1rem;margin-bottom:.8rem;text-decoration:none;color:#1A3A6B;">
       <span style="font-size:24px;">🧭</span>
       <div>
@@ -665,6 +683,40 @@ document.addEventListener('DOMContentLoaded', function(){
   syncNames();
   document.addEventListener('ebnorg:public', syncNames);
 });
+
+// 首頁模式切換
+(function(){
+  var PHASE_KEY='ebn_phase_v1';
+  function curPhase(){ var pd=window.EBNOrg?EBNOrg.publicData():{};  return localStorage.getItem(PHASE_KEY)||pd.phase||'prep'; }
+  function setLabel(p){ var el=document.getElementById('phaseLabel'); if(el) el.textContent=p==='official'?'🎖 正式成立':'🏗 籌備中'; }
+  function buildJson(p){
+    if(!window.EBNOrg) return '{}';
+    var full=EBNOrg.buildPublic(), pd=EBNOrg.publicData();
+    full.phase=p;
+    if(pd.meet) full.meet=pd.meet;
+    if(pd.sign) full.sign=pd.sign;
+    return JSON.stringify(full,null,2);
+  }
+  document.addEventListener('ebnorg:public',function(){ setLabel(curPhase()); });
+  setLabel(curPhase());
+  var btn=document.getElementById('phaseToggleBtn');
+  if(btn) btn.addEventListener('click',function(){
+    var cur=curPhase(), next=cur==='official'?'prep':'official';
+    var label=next==='official'?'正式成立':'籌備中';
+    if(!confirm('確定把首頁切換成「'+label+'」？\n切換後下載發布才會上線。')) return;
+    localStorage.setItem(PHASE_KEY,next);
+    setLabel(next);
+    var ta=document.getElementById('phaseTa'); if(ta) ta.value=buildJson(next);
+    var out=document.getElementById('phaseOut'); if(out) out.style.display='block';
+  });
+  document.getElementById('phaseCopy').addEventListener('click',function(){
+    var ta=document.getElementById('phaseTa');
+    if(navigator.clipboard) navigator.clipboard.writeText(ta.value).then(function(){ alert('✅ 已複製，貼給 Claude 說「發布這個」即可'); }); else { ta.select(); document.execCommand('copy'); }
+  });
+  document.getElementById('phaseDl').addEventListener('click',function(){
+    var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([document.getElementById('phaseTa').value],{type:'application/json'})); a.download='public.json'; a.click();
+  });
+})();
 </script>
 <script src="law-tips.js" defer></script>
 <script src="common.js" defer></script>
