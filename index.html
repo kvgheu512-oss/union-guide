@@ -423,7 +423,7 @@
       <div class="section-header"><div class="section-num green">5</div><div class="section-title">如何正式入會</div></div>
       <div class="card">
         <div class="step"><div class="step-no">1</div><div><strong>確認入會資格</strong><br><span style="font-size:13px;color:var(--ink-soft)">你是約用／契約／派遣等勞工身分（非正式公職、非代表雇主的主管）。</span></div></div>
-        <div class="step"><div class="step-no">2</div><div><strong>填寫入會申請書</strong><br><span style="font-size:13px;color:var(--ink-soft)">在 LINE 群向幹部索取表格，填好後交回。</span></div></div>
+        <div class="step"><div class="step-no">2</div><div><strong>填寫入會申請書</strong><br><span style="font-size:13px;color:var(--ink-soft)">點下方按鈕直接線上填寫電子申請書，填完後畫面會產生連結，傳給幹部即完成。</span></div></div>
         <div class="step"><div class="step-no">3</div><div><strong>繳納入會費及常年會費</strong><br><span style="font-size:13px;color:var(--ink-soft)">依章程規定金額繳費後，正式成為工會會員。</span></div></div>
       </div>
       <a href="joinroi.html" style="display:block;text-decoration:none;color:inherit;margin-top:12px;background:#FFF7F4;border:1px solid #F0D9D2;border-left:5px solid #C0392B;border-radius:12px;padding:.95rem 1.1rem;">
@@ -782,9 +782,10 @@ function goJoinOfficial(){
   wrap.style.cssText='position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center';
   var h='<div style="background:#fff;width:100%;max-width:430px;border-radius:18px 18px 0 0;padding:18px 18px 24px;box-shadow:0 -6px 24px rgba(0,0,0,.3)">'
     +'<div style="text-align:center;font-weight:700;font-size:16px;color:#0F5C36;margin-bottom:4px">✋ 我要正式入會</div>'
-    +'<div style="text-align:center;font-size:12.5px;color:#777;margin-bottom:14px">告訴幹部你想加入，他們會聯繫你確認手續</div>';
+    +'<div style="text-align:center;font-size:12.5px;color:#777;margin-bottom:14px">填完電子申請書後，畫面會產生連結，傳給幹部即完成</div>'
+    +'<a href="join-form.html" style="display:block;text-align:center;background:#0F5C36;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">📝 線上填寫電子入會申請書</a>';
   if(typeof LINE_URL!=='undefined'&&LINE_URL) h+='<a href="'+LINE_URL+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#06C755;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">💬 在 LINE 群找幹部申請</a>';
-  if(typeof FORM_URL!=='undefined'&&FORM_URL) h+='<a href="'+FORM_URL+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#1A3A6B;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">📝 填入會申請表</a>';
+  if(typeof FORM_URL!=='undefined'&&FORM_URL) h+='<a href="'+FORM_URL+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#1A3A6B;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">📝 舊版紙本申請表</a>';
   h+='<button id="join-off-cancel" style="display:block;width:100%;background:none;border:0;color:#999;font-size:14px;padding:.5rem;cursor:pointer">取消</button></div>';
   wrap.innerHTML=h; document.body.appendChild(wrap);
   wrap.addEventListener('click',function(e){ if(e.target===wrap||e.target.id==='join-off-cancel'||e.target.tagName==='A') wrap.remove(); });
