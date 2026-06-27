@@ -44,3 +44,35 @@
 ## 測試（沙箱）
 CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http.server`＋Playwright：chrome=`/opt/pw-browsers/chromium-1194/chrome-linux/chrome`，playwright-core=`/opt/node22/lib/node_modules/playwright/node_modules/playwright-core`。
 **自動化測試：`bash tests/run.sh`**（自動開伺服器→跑端對端→收尾；全過 exit 0、有錯 exit 1）。改完程式想確認沒弄壞別頁就重跑它；新增測試在 `tests/e2e.cjs` 照 `await T(...)` 格式加。⚠️ 別用 `pkill`（會殺掉自己的 shell→exit 144）；要換埠用 `PORT=8170 bash tests/run.sh`。
+
+## 📋 最近進度
+<!-- AUTO:START -->
+最後更新：2026-06-27
+
+最近 commits：
+  8ceacdd id-mark：背景濃淡預設改為 0（完全透明）版本 2026062702
+  d183bb4 id-mark：優化手機操作體驗——按鈕加大至 44px touch target、註記預設位置移至左下角、新增快貼角落按鈕（↖↗↙↘）版本 $(cat ver.txt)
+  bb01cfc id-mark.html 新增微調歪斜功能：±1°/±5° 點選按鈕，即時顯示目前角度，支援最大 ±15°，可一鍵歸零 版本 2026062602
+  56f79f5 id-mark.html 每張證件可獨立隱藏／顯示註記文字 版本 2026062601
+  f33038e id-mark.html 註記文字改為逐行 chip 管理，每行可單獨刪除或新增 版本 2026062601
+<!-- AUTO:END -->
+
+### 本 session 工作紀要（2026-06-27）
+**id-mark.html（相片工具）：**
+- 新增歪斜微調按鈕（±1°/±5°），最大 ±15°，一鍵歸零 → v2026062602
+- 按鈕放大至 44px touch target（手指粗也好按）
+- 預設注記位置從左上(y=0.04)改為左下(y=0.80)，不遮住臉/姓名
+- 新增快貼角落按鈕（↖左上／↗右上／↙左下／↘右下）
+- 背景透明度預設從 80 改為 0 → v2026062702
+
+**Google Apps Script `程式碼.gs`（Google Sheets，非 repo）：**
+- `makeRoster()` 生成「工會發起人連署及略歷冊」Google Doc
+- 關鍵修正：`try-finally` 保證 `saveAndClose()` 一定執行
+- `setLineSpacing()` 用乘數（1.0=單行），不是百分比（曾設100造成100倍行距）
+- 縮小邊距（上12mm/下5mm）符合 A4 三欄表格
+- 改用 `toast()` 取代 `alert()`（不需手動關閉）
+- **PII 絕不上傳**：試算表資料只在 Apps Script 執行，不進 repo
+
+**自動存檔機制（本 session 建立）：**
+- `.claude/update-notes.py`：Stop hook 腳本，每次回應後更新本區塊的日期+git log
+- `.claude/settings.json`：Stop hook 設定
