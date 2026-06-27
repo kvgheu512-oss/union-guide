@@ -7,13 +7,13 @@
 <title>會員申請管理｜法規組</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#1A3A6B;--green:#1A7A4A;--ink:#1A1A1A;--soft:#666;--bg:#F0F4FA;--card:#fff;--border:#D0DAF0;}
+:root{--navy:#1A3A6B;--green:#1A7A4A;--red:#C62828;--orange:#E65100;--ink:#1A1A1A;--soft:#666;--bg:#F0F4FA;--card:#fff;--border:#D0DAF0;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;}
 .header{background:linear-gradient(135deg,#1A3A6B,#0E2347);color:#fff;padding:1.3rem 1rem 1rem;text-align:center;}
 .header h1{font-size:18px;font-weight:700;}
 .header p{font-size:12px;opacity:.85;margin-top:4px;}
-main{max-width:720px;margin:0 auto;padding:.8rem .8rem 4rem;}
+main{max-width:720px;margin:0 auto;padding:.8rem .8rem 5rem;}
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.9rem 1rem;margin-bottom:.8rem;}
 .toolbar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;}
 .toolbar select,.toolbar input[type=text]{padding:.45rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink);}
@@ -23,33 +23,67 @@ main{max-width:720px;margin:0 auto;padding:.8rem .8rem 4rem;}
 .btn-sec{background:var(--green);color:#fff;}
 .btn-sm{padding:.35rem .7rem;font-size:12px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;font-weight:600;}
 .btn-sm.ok{background:#E8F5E9;border-color:#A5D6A7;color:#1B5E20;}
-.btn-sm.del{background:#FFF5F5;border-color:#FFCDD2;color:#B71C1C;}
-/* 統計列 */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:.8rem;}
-.stat{background:var(--card);border-radius:12px;padding:.6rem .5rem;text-align:center;border:1px solid var(--border);}
-.stat .n{font-size:22px;font-weight:700;color:var(--navy);}
-.stat .l{font-size:11px;color:var(--soft);margin-top:1px;}
+.btn-sm.del{background:#FFF5F5;border-color:#FFCDD2;color:var(--red);}
+/* 統計 */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin-bottom:.8rem;}
+.stat{background:var(--card);border-radius:12px;padding:.55rem .4rem;text-align:center;border:1px solid var(--border);cursor:pointer;}
+.stat:hover{border-color:var(--navy);}
+.stat.active{border-color:var(--navy);background:#EEF3FF;}
+.stat .n{font-size:20px;font-weight:700;color:var(--navy);}
+.stat .l{font-size:11px;color:var(--soft);}
+.stat.warn-stat .n{color:var(--red);}
+/* 批次工具列 */
+#batchBar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--navy);color:#fff;padding:.75rem 1rem;z-index:200;align-items:center;gap:.5rem;flex-wrap:wrap;}
+#batchBar.active{display:flex;}
+#batchBar select{padding:.35rem .6rem;border-radius:6px;border:0;font-size:13px;font-family:inherit;}
 /* 列表 */
 #memberList{list-style:none;}
-.rec{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.75rem .9rem;margin-bottom:.5rem;position:relative;}
+.rec{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .85rem;margin-bottom:.5rem;position:relative;}
 .rec.support{border-left:4px solid #F57C00;}
 .rec.regular{border-left:4px solid var(--green);}
-.rec-top{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
-.rec-name{font-weight:700;font-size:15px;}
+.rec.has-issues{border-top:2px solid #FFB300;}
+.rec-header{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;}
+.rec-chk{width:16px;height:16px;accent-color:var(--navy);cursor:pointer;flex-shrink:0;}
+.rec-name{font-weight:700;font-size:15px;flex:1;min-width:60px;}
 .badge{font-size:11px;border-radius:10px;padding:2px 7px;font-weight:700;}
 .badge.regular{background:#E8F5E9;color:#1B5E20;}
 .badge.support{background:#FFF3E0;color:#E65100;}
 .badge.status-new{background:#E3F2FD;color:#0D47A1;}
 .badge.status-done{background:#E8F5E9;color:#1B5E20;}
 .badge.status-pending{background:#FFF9C4;color:#F57F17;}
-.rec-detail{font-size:12px;color:var(--soft);margin-top:.25rem;line-height:1.6;}
+.badge.warn{background:#FFF3E0;color:#B45309;cursor:pointer;}
+.edit-toggle{background:none;border:none;font-size:15px;cursor:pointer;padding:2px 4px;border-radius:6px;color:var(--soft);}
+.edit-toggle:hover{background:#EEF3FF;color:var(--navy);}
+/* 詳情 */
+.rec-detail{font-size:12px;color:var(--soft);margin-top:.3rem;line-height:1.7;}
+.issues-list{margin-top:.3rem;}
+.issue-tag{display:inline-block;background:#FFF3E0;border:1px solid #FFB300;border-radius:8px;font-size:11px;color:#B45309;padding:1px 7px;margin:.15rem .15rem 0 0;}
+/* 行內編輯 */
+.rec-edit{display:none;margin-top:.6rem;border-top:1px dashed var(--border);padding-top:.6rem;}
+.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.edit-grid input,.edit-full input{width:100%;padding:.45rem .65rem;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;background:#fff;}
+.edit-grid input:focus,.edit-full input:focus{outline:none;border-color:var(--navy);}
+.edit-grid input.err,.edit-full input.err{border-color:var(--red);background:#FFF5F5;}
+.edit-full{margin-top:5px;}
+.edit-label{font-size:11px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+.edit-actions{display:flex;gap:.4rem;margin-top:.6rem;}
+.mt-pick{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;}
+.mt-pick button{border:1.5px solid var(--border);border-radius:8px;padding:.4rem .5rem;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:var(--ink);}
+.mt-pick button.sel{border-color:var(--navy);background:#EEF3FF;color:var(--navy);}
+/* 備注 */
+.rec-note{margin-top:.4rem;}
+.note-ta{width:100%;border:1px dashed var(--border);border-radius:8px;padding:.4rem .6rem;font-size:12px;font-family:inherit;background:#FAFBFF;resize:none;line-height:1.6;color:var(--soft);}
+.note-ta:focus{outline:none;border-color:var(--navy);color:var(--ink);}
+/* 操作 */
 .rec-actions{margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap;}
-/* 匯入提示 */
-#importBanner{display:none;background:#E3F2FD;border:1px solid #90CAF9;border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem;text-align:center;}
+/* 匯入 */
+#importBanner{display:none;background:#E3F2FD;border:1px solid #90CAF9;border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem;}
+.import-warn{background:#FFF3E0;border:1px solid #FFB300;border-radius:8px;padding:.5rem .7rem;font-size:12px;color:#B45309;margin-top:.5rem;}
+.import-warn li{margin-left:1rem;}
 /* Toast */
-#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1A3A6B;color:#fff;padding:.55rem 1.2rem;border-radius:20px;font-size:14px;font-weight:700;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.3);display:none;}
+#toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:.55rem 1.2rem;border-radius:20px;font-size:14px;font-weight:700;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.3);display:none;}
 @media print{
-  .header,.toolbar,.rec-actions,.noprint{display:none!important;}
+  .header,.toolbar,.rec-actions,#batchBar,.rec-edit,.rec-note,.noprint,.rec-chk,.edit-toggle{display:none!important;}
   body{background:#fff;font-size:12px;}
   .rec{border-radius:0;border:1px solid #ccc;margin-bottom:4px;page-break-inside:avoid;}
 }
@@ -60,22 +94,27 @@ main{max-width:720px;margin:0 auto;padding:.8rem .8rem 4rem;}
 
 <div class="header">
   <h1>📋 會員申請管理</h1>
-  <p>法規組 · 批次收件、狀態追蹤、匯出</p>
+  <p>法規組 · 批次收件、品質偵測、行內編輯</p>
 </div>
 
 <main>
+  <!-- 匯入 -->
   <div id="importBanner">
     <div id="importMsg"></div>
-    <button class="btn btn-sec" style="margin-top:.5rem" id="btnImportConfirm">✅ 確認匯入</button>
-    <button class="btn" style="background:#fff;color:var(--navy);border:1px solid var(--border);margin-top:.5rem;margin-left:.4rem" id="btnImportCancel">取消</button>
+    <div id="importIssues"></div>
+    <div style="margin-top:.6rem;display:flex;gap:.4rem;flex-wrap:wrap">
+      <button class="btn btn-sec" id="btnImportConfirm">✅ 確認匯入</button>
+      <button class="btn" style="background:#fff;color:var(--navy);border:1px solid var(--border)" id="btnImportCancel">取消</button>
+    </div>
   </div>
 
-  <!-- 統計 -->
+  <!-- 統計（可點擊篩選） -->
   <div class="stats">
-    <div class="stat"><div class="n" id="st-total">0</div><div class="l">全部</div></div>
-    <div class="stat"><div class="n" id="st-regular">0</div><div class="l">正式會員</div></div>
-    <div class="stat"><div class="n" id="st-support">0</div><div class="l">贊助會員</div></div>
-    <div class="stat"><div class="n" id="st-new">0</div><div class="l">待處理</div></div>
+    <div class="stat" id="st-all" onclick="quickFilter('')"><div class="n" id="n-total">0</div><div class="l">全部</div></div>
+    <div class="stat" id="st-new" onclick="quickFilter('new')"><div class="n" id="n-new">0</div><div class="l">待處理</div></div>
+    <div class="stat" id="st-done" onclick="quickFilter('done')"><div class="n" id="n-done">0</div><div class="l">已完成</div></div>
+    <div class="stat" id="st-pend" onclick="quickFilter('pending')"><div class="n" id="n-pend">0</div><div class="l">待補件</div></div>
+    <div class="stat warn-stat" id="st-issues" onclick="quickFilter('issues')"><div class="n" id="n-issues">0</div><div class="l">⚠️ 有問題</div></div>
   </div>
 
   <!-- 工具列 -->
@@ -87,154 +126,311 @@ main{max-width:720px;margin:0 auto;padding:.8rem .8rem 4rem;}
         <option value="regular">正式會員</option>
         <option value="support">贊助會員</option>
       </select>
-      <select id="filterStatus" onchange="render()">
-        <option value="">所有狀態</option>
-        <option value="new">待處理</option>
-        <option value="done">已完成</option>
-        <option value="pending">待補件</option>
-      </select>
-      <button class="btn btn-sec" onclick="exportCsv()">⬇ 匯出 CSV</button>
+      <button class="btn" style="background:#fff;color:var(--navy);border:1px solid var(--border)" onclick="toggleSelectAll()">☑ 全選/反選</button>
+      <button class="btn btn-sec" onclick="exportCsv()">⬇ CSV</button>
       <button class="btn btn-pri" onclick="window.print()">🖨 列印</button>
-      <button class="btn btn-pri noprint" onclick="markAllDone()" style="background:#388E3C">✅ 全部標完成</button>
     </div>
   </div>
 
   <ul id="memberList"></ul>
   <div id="emptyMsg" style="display:none;text-align:center;padding:2rem;color:var(--soft)">
     <div style="font-size:36px;margin-bottom:.5rem">📭</div>
-    <div>尚無資料。請請會員透過入會申請書送出連結後傳給你。</div>
+    <div>目前沒有符合條件的資料</div>
   </div>
 </main>
+
+<!-- 批次工具列 -->
+<div id="batchBar">
+  <span id="batchCount" style="font-size:13px;font-weight:700;white-space:nowrap"></span>
+  <button class="btn" style="background:#388E3C;color:#fff" onclick="batchAction('done')">✅ 標完成</button>
+  <button class="btn" style="background:#F9A825;color:#7A5800" onclick="batchAction('pending')">⏳ 待補件</button>
+  <button class="btn" style="background:#C62828;color:#fff" onclick="batchAction('delete')">🗑 刪除</button>
+  <button class="btn" style="background:rgba(255,255,255,.2);color:#fff" onclick="clearSel()">✕ 取消</button>
+</div>
 
 <div id="toast"></div>
 
 <script>
+/* ── IndexedDB ── */
 var DB_NAME='ebn_members_v1', STORE='members';
 function openDB(cb){
   var r=indexedDB.open(DB_NAME,1);
   r.onupgradeneeded=function(e){ e.target.result.createObjectStore(STORE,{keyPath:'id',autoIncrement:true}); };
   r.onsuccess=function(e){ cb(null,e.target.result); };
-  r.onerror=function(){ cb(new Error('DB'));};
+  r.onerror=function(){ cb(new Error('DB')); };
 }
 function dbAdd(rec,cb){ openDB(function(e,db){ if(e){cb&&cb(e);return;} var tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).add(rec); tx.oncomplete=function(){cb&&cb(null);}; }); }
 function dbGetAll(cb){ openDB(function(e,db){ if(e){cb([]);return;} var r=db.transaction(STORE,'readonly').objectStore(STORE).getAll(); r.onsuccess=function(){cb(r.result||[]);}; r.onerror=function(){cb([]);}; }); }
-function dbUpdate(id,patch,cb){ openDB(function(e,db){ if(e){cb&&cb(e);return;} var tx=db.transaction(STORE,'readwrite'); var os=tx.objectStore(STORE); var r=os.get(id); r.onsuccess=function(){ var rec=r.result; Object.assign(rec,patch); os.put(rec); }; tx.oncomplete=function(){cb&&cb(null);}; }); }
+function dbUpdate(id,patch,cb){ openDB(function(e,db){ if(e){cb&&cb(e);return;} var tx=db.transaction(STORE,'readwrite'); var os=tx.objectStore(STORE); var r=os.get(id); r.onsuccess=function(){ Object.assign(r.result,patch); os.put(r.result); }; tx.oncomplete=function(){cb&&cb(null);}; }); }
 function dbDelete(id,cb){ openDB(function(e,db){ if(e){cb&&cb(e);return;} var tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete(id); tx.oncomplete=function(){cb&&cb(null);}; }); }
 
-var ALL=[];
+var ALL=[], SEL={}, currentFilter='';
 function load(cb){ dbGetAll(function(list){ ALL=list.sort(function(a,b){ return (b.importedAt||0)-(a.importedAt||0); }); cb&&cb(); }); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg,dur){ var t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(function(){ t.style.display='none'; },dur||2200); }
 
-function toast(msg,dur){
-  var t=document.getElementById('toast'); t.textContent=msg; t.style.display='block';
-  setTimeout(function(){ t.style.display='none'; },dur||2000);
+/* ── 品質偵測 ── */
+function checkQuality(r){
+  var issues=[];
+  if(!r.name||r.name.trim().length<2) issues.push('姓名有問題');
+  if(!r.empid||!r.empid.trim()) issues.push('缺工號');
+  if(r.phone){ var p=r.phone.replace(/[\s\-]/g,''); if(!/^09\d{8}$/.test(p)) issues.push('電話格式有誤'); }
+  if(r.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) issues.push('Email格式有誤');
+  if(!r.date) issues.push('缺申請日期');
+  return issues;
 }
 
-function render(){
+/* ── 篩選 ── */
+function quickFilter(f){
+  currentFilter=f;
+  document.querySelectorAll('.stat').forEach(function(el){ el.classList.remove('active'); });
+  var map={'':'st-all','new':'st-new','done':'st-done','pending':'st-pend','issues':'st-issues'};
+  var el=document.getElementById(map[f]); if(el) el.classList.add('active');
+  render();
+}
+function getFiltered(){
   var srch=document.getElementById('srch').value.toLowerCase();
   var ftype=document.getElementById('filterType').value;
-  var fstat=document.getElementById('filterStatus').value;
-  var list=ALL.filter(function(r){
+  return ALL.filter(function(r){
     if(ftype&&r.memberType!==ftype) return false;
-    if(fstat&&(r.status||'new')!==fstat) return false;
+    if(currentFilter==='issues'&&checkQuality(r).length===0) return false;
+    if(currentFilter&&currentFilter!=='issues'&&(r.status||'new')!==currentFilter) return false;
     if(srch&&!(r.name||'').toLowerCase().includes(srch)&&!(r.empid||'').toLowerCase().includes(srch)&&!(r.dept||'').toLowerCase().includes(srch)) return false;
     return true;
   });
-  // 統計（全量）
-  document.getElementById('st-total').textContent=ALL.length;
-  document.getElementById('st-regular').textContent=ALL.filter(function(r){return r.memberType==='regular';}).length;
-  document.getElementById('st-support').textContent=ALL.filter(function(r){return r.memberType==='support';}).length;
-  document.getElementById('st-new').textContent=ALL.filter(function(r){return !r.status||r.status==='new';}).length;
+}
+
+/* ── 批次選取 ── */
+function updateBatchBar(){
+  var ids=Object.keys(SEL).filter(function(k){ return SEL[k]; });
+  var bar=document.getElementById('batchBar');
+  if(ids.length===0){ bar.classList.remove('active'); return; }
+  bar.classList.add('active');
+  document.getElementById('batchCount').textContent='已選 '+ids.length+' 筆';
+}
+function clearSel(){ SEL={}; document.querySelectorAll('.rec-chk').forEach(function(c){ c.checked=false; }); updateBatchBar(); }
+function toggleSelectAll(){
+  var list=getFiltered();
+  var anyUnchecked=list.some(function(r){ return !SEL[r.id]; });
+  list.forEach(function(r){ SEL[r.id]=anyUnchecked; });
+  document.querySelectorAll('.rec-chk').forEach(function(c){ var id=parseInt(c.dataset.id); c.checked=SEL[id]||false; });
+  updateBatchBar();
+}
+
+/* ── 批次操作（附名單確認）── */
+function batchAction(action){
+  var ids=Object.keys(SEL).filter(function(k){ return SEL[k]; }).map(Number);
+  if(!ids.length) return;
+  var recs=ALL.filter(function(r){ return ids.indexOf(r.id)>=0; });
+  var names=recs.map(function(r){ return '・'+esc(r.name)+'（'+esc(r.empid||'—')+'）'; }).join('\n');
+  var labels={'done':'標為完成','pending':'標為待補件','delete':'刪除'};
+  var msg='確定要把以下 '+recs.length+' 筆「'+labels[action]+'」？\n\n'+names;
+  if(action==='delete') msg+='\n\n⚠️ 刪除後無法恢復！';
+  if(!confirm(msg)) return;
+  var done=0;
+  function next(){ done++; if(done===recs.length){ clearSel(); load(render); toast('✅ 已完成批次操作（'+recs.length+' 筆）'); } }
+  if(action==='delete'){
+    recs.forEach(function(r){ dbDelete(r.id,next); });
+  } else {
+    recs.forEach(function(r){ dbUpdate(r.id,{status:action},next); });
+  }
+}
+
+/* ── 行內編輯 ── */
+var editMT={};
+window.toggleEdit=function(id){
+  var ed=document.getElementById('edit-'+id);
+  var vw=document.getElementById('view-'+id);
+  if(!ed) return;
+  var open=ed.style.display!=='none'&&ed.style.display!=='';
+  ed.style.display=open?'none':'block';
+  if(!open){
+    var rec=ALL.find(function(r){ return r.id===id; });
+    if(rec){
+      ['name','empid','title','dept','phone','email','date'].forEach(function(f){ var el=document.getElementById('ef-'+id+'-'+f); if(el) el.value=rec[f]||''; });
+      editMT[id]=rec.memberType||'regular';
+      refreshMTPick(id);
+    }
+  }
+};
+window.setEditMT=function(id,t){
+  editMT[id]=t;
+  refreshMTPick(id);
+};
+function refreshMTPick(id){
+  ['regular','support'].forEach(function(t){
+    var btn=document.getElementById('emp-'+id+'-'+t); if(btn) btn.classList.toggle('sel',editMT[id]===t);
+  });
+}
+window.saveEdit=function(id){
+  var vals={}, ok=true;
+  ['name','empid','title','dept','phone','email','date'].forEach(function(f){
+    var el=document.getElementById('ef-'+id+'-'+f);
+    if(el){ vals[f]=el.value.trim(); }
+  });
+  // 基本驗證
+  if(!vals.name||vals.name.length<2){ var el=document.getElementById('ef-'+id+'-name'); el.classList.add('err'); el.focus(); toast('⚠️ 姓名至少2個字','2500'); ok=false; }
+  if(!vals.empid){ var el2=document.getElementById('ef-'+id+'-empid'); el2.classList.add('err'); if(ok) el2.focus(); toast('⚠️ 工號不能空白','2500'); ok=false; }
+  if(!ok) return;
+  vals.memberType=editMT[id]||'regular';
+  dbUpdate(id,vals,function(){
+    document.getElementById('edit-'+id).style.display='none';
+    load(render);
+    toast('✅ 已儲存');
+  });
+};
+window.cancelEdit=function(id){ document.getElementById('edit-'+id).style.display='none'; };
+
+/* ── 備注 ── */
+window.saveNote=function(id,val){
+  dbUpdate(id,{note:val},function(){ /* silent save */ });
+};
+
+/* ── 單筆狀態 / 刪除 ── */
+window.setStatus=function(id,st){ dbUpdate(id,{status:st},function(){ load(render); }); };
+window.delRec=function(id){
+  var rec=ALL.find(function(r){ return r.id===id; });
+  var name=rec?rec.name+'（'+rec.empid+'）':'此筆';
+  if(!confirm('確定刪除「'+name+'」？\n\n刪除後無法恢復。')) return;
+  dbDelete(id,function(){ load(render); toast('已刪除'); });
+};
+
+/* ── 渲染 ── */
+function render(){
+  var list=getFiltered();
+  // 統計
+  document.getElementById('n-total').textContent=ALL.length;
+  document.getElementById('n-new').textContent=ALL.filter(function(r){ return !r.status||r.status==='new'; }).length;
+  document.getElementById('n-done').textContent=ALL.filter(function(r){ return r.status==='done'; }).length;
+  document.getElementById('n-pend').textContent=ALL.filter(function(r){ return r.status==='pending'; }).length;
+  document.getElementById('n-issues').textContent=ALL.filter(function(r){ return checkQuality(r).length>0; }).length;
 
   var ul=document.getElementById('memberList');
   ul.innerHTML='';
   document.getElementById('emptyMsg').style.display=list.length?'none':'block';
+
   list.forEach(function(rec){
     var mt=rec.memberType||'regular';
     var st=rec.status||'new';
     var stLabel={'new':'待處理','done':'已完成','pending':'待補件'}[st]||st;
+    var issues=checkQuality(rec);
+    var hasIssues=issues.length>0;
+
     var li=document.createElement('li');
-    li.className='rec '+mt;
+    li.className='rec '+mt+(hasIssues?' has-issues':'');
+
+    var issuesHtml=hasIssues
+      ? '<div class="issues-list">'+issues.map(function(i){ return '<span class="issue-tag">⚠ '+esc(i)+'</span>'; }).join('')+'</div>'
+      : '';
+
+    // 編輯區
+    var editHtml=
+      '<div class="rec-edit" id="edit-'+rec.id+'">'+
+      '<div class="edit-grid">'+
+        '<div><div class="edit-label">姓名 *</div><input id="ef-'+rec.id+'-name" placeholder="姓名"></div>'+
+        '<div><div class="edit-label">員工編號 *</div><input id="ef-'+rec.id+'-empid" placeholder="工號"></div>'+
+        '<div><div class="edit-label">職稱</div><input id="ef-'+rec.id+'-title" placeholder="職稱"></div>'+
+        '<div><div class="edit-label">服務單位</div><input id="ef-'+rec.id+'-dept" placeholder="單位"></div>'+
+        '<div><div class="edit-label">手機</div><input id="ef-'+rec.id+'-phone" placeholder="09xxxxxxxx"></div>'+
+        '<div><div class="edit-label">Email</div><input id="ef-'+rec.id+'-email" placeholder="xxx@..."></div>'+
+      '</div>'+
+      '<div class="edit-full"><div class="edit-label">申請日期</div><input id="ef-'+rec.id+'-date" type="date"></div>'+
+      '<div class="edit-full" style="margin-top:5px"><div class="edit-label">會員類別</div>'+
+        '<div class="mt-pick">'+
+          '<button id="emp-'+rec.id+'-regular" onclick="setEditMT('+rec.id+',\'regular\')">✅ 正式會員</button>'+
+          '<button id="emp-'+rec.id+'-support" onclick="setEditMT('+rec.id+',\'support\')">🤝 贊助會員</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="edit-actions">'+
+        '<button class="btn-sm ok" onclick="saveEdit('+rec.id+')">💾 儲存修改</button>'+
+        '<button class="btn-sm" onclick="cancelEdit('+rec.id+')">取消</button>'+
+      '</div></div>';
+
     li.innerHTML=
-      '<div class="rec-top">'+
+      '<div class="rec-header">'+
+        '<input type="checkbox" class="rec-chk noprint" data-id="'+rec.id+'"'+(SEL[rec.id]?' checked':'')+'>'+
         '<span class="rec-name">'+esc(rec.name||'—')+'</span>'+
         '<span class="badge '+mt+'">'+(mt==='regular'?'正式':'贊助')+'</span>'+
         '<span class="badge status-'+st+'">'+stLabel+'</span>'+
+        (hasIssues?'<span class="badge warn" title="'+issues.join(' · ')+'">⚠️ '+issues.length+'問題</span>':'')+
+        '<button class="edit-toggle noprint" onclick="toggleEdit('+rec.id+')" title="行內編輯">✏️</button>'+
       '</div>'+
-      '<div class="rec-detail">工號：'+esc(rec.empid||'—')+'　職稱：'+esc(rec.title||'—')+'　單位：'+esc(rec.dept||'—')+'<br>'+
+      '<div class="rec-detail" id="view-'+rec.id+'">工號：'+esc(rec.empid||'—')+'　職稱：'+esc(rec.title||'—')+'　單位：'+esc(rec.dept||'—')+'<br>'+
         '手機：'+esc(rec.phone||'—')+'　Email：'+esc(rec.email||'—')+'<br>'+
-        '申請日：'+esc(rec.date||'—')+'　收件時間：'+esc(rec.ts||'—')+
+        '申請日：'+esc(rec.date||'—')+'　收件：'+esc(rec.ts||'—')+
+        (rec.note?'<br><span style="color:#5C4000">📝 '+esc(rec.note)+'</span>':'')+
+      '</div>'+
+      issuesHtml+
+      editHtml+
+      '<div class="rec-note noprint">'+
+        '<textarea class="note-ta" rows="1" placeholder="備注（自動儲存）…" onblur="saveNote('+rec.id+',this.value)">'+(rec.note||'')+'</textarea>'+
       '</div>'+
       '<div class="rec-actions noprint">'+
-        (st!=='done'?'<button class="btn-sm ok" onclick="setStatus('+rec.id+',\'done\')">✅ 標記完成</button>':'')+
+        (st!=='done'?'<button class="btn-sm ok" onclick="setStatus('+rec.id+',\'done\')">✅ 完成</button>':'')+
         (st!=='pending'?'<button class="btn-sm" style="background:#FFF9C4;border-color:#F9A825;color:#7A5800" onclick="setStatus('+rec.id+',\'pending\')">⏳ 待補件</button>':'')+
         (st!=='new'?'<button class="btn-sm" onclick="setStatus('+rec.id+',\'new\')">↩ 重設</button>':'')+
-        '<button class="btn-sm del" onclick="delRec('+rec.id+')">🗑 刪除</button>'+
+        '<button class="btn-sm del" onclick="delRec('+rec.id+')">🗑</button>'+
       '</div>';
+
+    li.querySelector('.rec-chk').addEventListener('change',function(){
+      SEL[rec.id]=this.checked;
+      updateBatchBar();
+    });
     ul.appendChild(li);
   });
 }
 
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function setStatus(id,st){ dbUpdate(id,{status:st},function(){ load(render); }); }
-function delRec(id){ if(!confirm('確定刪除這筆紀錄？')) return; dbDelete(id,function(){ load(render); toast('已刪除'); }); }
-function markAllDone(){
-  if(!confirm('確定把所有「待處理」標為完成？')) return;
-  var pending=ALL.filter(function(r){ return !r.status||r.status==='new'; });
-  var done=0;
-  if(!pending.length){ toast('沒有待處理的資料'); return; }
-  pending.forEach(function(r){ dbUpdate(r.id,{status:'done'},function(){ done++; if(done===pending.length) load(render); }); });
-  toast('已全部標記完成');
-}
-
+/* ── 匯出 CSV ── */
 function exportCsv(){
-  var rows=[['姓名','工號','職稱','服務單位','手機','Email','申請日期','申請類別','申請時間','狀態']];
+  var rows=[['姓名','工號','職稱','服務單位','手機','Email','申請日期','申請類別','申請時間','狀態','備注','品質問題']];
   ALL.forEach(function(r){
     rows.push([r.name,r.empid,r.title,r.dept,r.phone,r.email,r.date,
       r.memberType==='support'?'贊助會員':'正式會員',r.ts,
-      ({new:'待處理',done:'已完成',pending:'待補件'})[r.status||'new']||'待處理']);
+      ({new:'待處理',done:'已完成',pending:'待補件'})[r.status||'new'],
+      r.note||'', checkQuality(r).join('；')]);
   });
   var csv=rows.map(function(r){ return r.map(function(c){ return '"'+(c||'').replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
-  var bom='﻿';
-  var blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8'});
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='會員申請名冊_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
+  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='會員申請名冊_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
   toast('✅ CSV 已下載');
 }
 
-// 匯入（URL hash）
+/* ── 匯入（URL hash）── */
 function checkImport(){
-  var hash=location.hash;
-  if(!hash.startsWith('#import=')) return;
-  var enc=hash.slice(8);
-  var rec;
+  if(!location.hash.startsWith('#import=')) return;
+  var enc=location.hash.slice(8); var rec;
   try{ rec=JSON.parse(decodeURIComponent(escape(atob(enc)))); }
-  catch(e){ toast('⚠️ 連結格式錯誤','3000'); return; }
+  catch(e){ toast('⚠️ 連結格式錯誤'); return; }
   if(!rec.name||!rec.empid){ toast('⚠️ 資料不完整'); return; }
-  var banner=document.getElementById('importBanner');
-  var msg=document.getElementById('importMsg');
-  msg.innerHTML='<b>收到新申請！</b><br>'+
-    '姓名：<b>'+esc(rec.name)+'</b>　工號：<b>'+esc(rec.empid)+'</b>　類別：'+
-    (rec.memberType==='support'?'<span style="color:#E65100">贊助會員</span>':'<span style="color:#1B5E20">正式會員</span>')+
-    '<br>單位：'+esc(rec.dept||'—')+'　申請時間：'+esc(rec.ts||'—');
-  banner.style.display='block';
+  var issues=checkQuality(rec);
+  var mt=rec.memberType||'regular';
+  document.getElementById('importMsg').innerHTML=
+    '<b style="font-size:15px">📬 收到新申請！</b><br>'+
+    '姓名：<b>'+esc(rec.name)+'</b>　工號：<b>'+esc(rec.empid)+'</b>　'+
+    '類別：'+(mt==='support'?'<span style="color:#E65100">贊助會員</span>':'<span style="color:#1B5E20">正式會員</span>')+'<br>'+
+    '單位：'+esc(rec.dept||'—')+'　申請時間：'+esc(rec.ts||'—');
+  var iw=document.getElementById('importIssues');
+  if(issues.length>0){
+    iw.innerHTML='<div class="import-warn"><b>⚠️ 資料有 '+issues.length+' 個問題（匯入後可行內編輯修正）：</b><ul>'+
+      issues.map(function(i){ return '<li>'+esc(i)+'</li>'; }).join('')+'</ul></div>';
+  } else { iw.innerHTML=''; }
+  document.getElementById('importBanner').style.display='block';
   document.getElementById('btnImportConfirm').onclick=function(){
-    var toSave=Object.assign({},rec,{status:'new',importedAt:Date.now()});
-    dbAdd(toSave,function(){
-      banner.style.display='none';
+    dbAdd(Object.assign({},rec,{status:'new',importedAt:Date.now()}),function(){
+      document.getElementById('importBanner').style.display='none';
       history.replaceState(null,'',location.pathname);
-      toast('✅ 已匯入！');
+      toast(issues.length?'⚠️ 已匯入，有 '+issues.length+' 個問題待修正':'✅ 已匯入！');
       load(render);
     });
   };
   document.getElementById('btnImportCancel').onclick=function(){
-    banner.style.display='none';
+    document.getElementById('importBanner').style.display='none';
     history.replaceState(null,'',location.pathname);
   };
 }
 
+document.getElementById('st-all').classList.add('active');
 load(function(){ render(); checkImport(); });
 </script>
 <script src="common.js" defer></script>
