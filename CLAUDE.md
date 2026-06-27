@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-27
 
 最近 commits：
+  b8dcead 入會申請書：贊助會員選項、公職保護自動切換、工號更新提示、傳幹部連結；法規組批次管理頁 版本 2026062710
+  e8c9271 自動更新 CLAUDE.md 最近進度（Stop hook）
   493d0f3 自動更新 CLAUDE.md 最近進度（Stop hook）
   ca51818 電子簽章全面強化：確認對話框、簽名驗證、紅框提示、截圖提示；章程第24條複製文字同步 版本 2026062709
   3667042 自動更新 CLAUDE.md 最近進度（Stop hook）
-  4341458 新增電子簽名：入會申請書(join-form.html)＋委託書(proxy-form.html)＋esign.js 版本 2026062708
-  0810e47 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
