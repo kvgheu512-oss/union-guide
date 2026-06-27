@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-27
 
 最近 commits：
+  5bf3d39 會員管理防呆強化：品質偵測⚠️、行內編輯✏️、批次勾選含名單確認、備注欄、有問題篩選 版本 2026062713
+  b05cff1 自動更新 CLAUDE.md 最近進度（Stop hook）
   5a2fd7c 逐件精審台：手動輸入＋三層跳錯＋逐項勾選確認清單＋修正次數計數 版本 2026062712
   c63e5da 自動更新 CLAUDE.md 最近進度（Stop hook）
   31b3c97 新增逐件精審台（法規二專用）：逐筆確認、一鍵完成、待補件標記 版本 2026062711
-  2618124 自動更新 CLAUDE.md 最近進度（Stop hook）
-  c43b61c 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
