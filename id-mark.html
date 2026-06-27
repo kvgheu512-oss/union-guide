@@ -63,7 +63,7 @@
   .pv{position:relative;width:100%;text-align:center;background:#faf8f5;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
   .pv canvas{display:block;max-width:100%;height:auto;margin:0 auto;touch-action:none;}
   .tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-  .tools button{flex:1;min-width:58px;background:#f1eeea;border:1px solid var(--border);border-radius:9px;padding:9px 5px;cursor:pointer;font-size:13px;font-weight:600;color:#444;}
+  .tools button{flex:1;min-width:64px;background:#f1eeea;border:1px solid var(--border);border-radius:9px;padding:11px 5px;cursor:pointer;font-size:14px;font-weight:600;color:#444;min-height:44px;}
   .tools button.on{background:#FCEFB4;border-color:#E0C44A;color:#7A5600;}
   .tools button.danger{color:#B0392B;}
   .tools button.go{background:#2E7D32;color:#fff;border-color:#2E7D32;}
@@ -79,18 +79,18 @@
   .anno-empty{font-size:13px;color:var(--soft);padding:4px 2px;}
   .anno-add-row{display:flex;gap:8px;align-items:center;}
   .anno-add-row input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:14px;font-family:inherit;}
-  .anno-add-row button{flex:0 0 auto;background:var(--red-deep);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:14px;font-weight:700;cursor:pointer;}
+  .anno-add-row button{flex:0 0 auto;background:var(--red-deep);color:#fff;border:none;border-radius:10px;padding:11px 16px;font-size:15px;font-weight:700;cursor:pointer;min-height:44px;}
 
   .posrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:7px;font-size:12.5px;color:#555;}
   .posrow .lbl{flex:0 0 auto;color:#888;}
-  .posrow button{flex:0 0 auto;padding:8px 11px;font-size:13.5px;border:1px solid var(--border);background:#fff;border-radius:9px;cursor:pointer;}
+  .posrow button{flex:0 0 auto;padding:11px 15px;font-size:15px;border:1px solid var(--border);background:#fff;border-radius:9px;cursor:pointer;min-height:44px;}
   .posrow button:active{background:#FDECEA;border-color:#E8A29A;}
 
   /* 微調歪斜 */
   .tiltrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px;font-size:12.5px;color:#5C4000;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:8px 10px;}
-  .tiltrow button{padding:7px 10px;font-size:13px;border:1px solid #EAD67A;background:#fff;border-radius:8px;cursor:pointer;font-weight:600;}
+  .tiltrow button{padding:10px 14px;font-size:15px;border:1px solid #EAD67A;background:#fff;border-radius:8px;cursor:pointer;font-weight:600;min-height:44px;}
   .tiltrow button:active{background:#FDECEA;border-color:#E8A29A;}
-  .tilt-val{font-size:14px;font-weight:700;color:#7A5600;min-width:40px;text-align:center;}
+  .tilt-val{font-size:16px;font-weight:700;color:#7A5600;min-width:48px;text-align:center;}
   .tilt-rst{background:#C0392B !important;color:#fff !important;border-color:#C0392B !important;}
 
   /* 傳送 / 信箱自動補全 */
@@ -281,7 +281,7 @@
   // ---- 檔案載入（相簿可多張；系統相機備援單張）----
   function newItem(bmp, crop){
     items.push({ bitmap:bmp, label:TYPES[Math.min(items.length,TYPES.length-1)],
-                 rot:0, crop:crop||null, pos:{x:0.035,y:0.04}, scale:1, enhance:false, docmode:false, _editing:true });
+                 rot:0, crop:crop||null, pos:{x:0.03,y:0.80}, scale:1, enhance:false, docmode:false, _editing:true });
   }
   async function addFiles(files){
     for (var i=0;i<files.length;i++){
@@ -567,7 +567,12 @@
       div.innerHTML=
         '<div class="ihead"><select onchange="items['+idx+'].label=this.value">'+opts+'</select></div>'+
         '<div class="pv"><canvas></canvas></div>'+
-        '<div class="dragtip">👆 <b>拖紅框</b>＝移動、<b>拖右下角藍把手</b>＝縮放；調好後<b>點照片別處</b>，外框會消失、看到貼好的乾淨效果（要再調就點一下註記）</div>'+
+        '<div class="dragtip">👆 <b>拖紅框</b>＝移動、<b>拖右下角藍把手</b>＝縮放；調好後<b>點照片別處</b>，外框消失看乾淨效果（再調就點一下紅框）</div>'+
+        '<div class="posrow">快貼角落：'+
+        '<button onclick="snapPos('+idx+',0,0)">↖左上</button>'+
+        '<button onclick="snapPos('+idx+',1,0)">↗右上</button>'+
+        '<button onclick="snapPos('+idx+',0,1)">↙左下</button>'+
+        '<button onclick="snapPos('+idx+',1,1)">↘右下</button></div>'+
         '<div class="tools">'+toolsHTML(idx)+'</div>'+
         '<div class="tiltrow" id="tiltrow'+idx+'">'+tiltRowHTML(idx)+'</div>';
       wrap.appendChild(div);
@@ -603,7 +608,7 @@
     if(it._cropping){ paintCrop(idx); return; }
     ensureBase(it);
     var W=it._base.width, H=it._base.height;
-    cv.width=W; cv.height=H; cv.style.width=W+'px';
+    cv.width=W; cv.height=H;
     var ctx=cv.getContext('2d');
     ctx.clearRect(0,0,W,H); ctx.drawImage(it._base,0,0);
     it._box=drawAnno(ctx,W,H,it,true);
@@ -694,6 +699,16 @@
   function resetTilt(idx){
     items[idx].tilt=0; items[idx]._base=null; paintItem(idx); resetBuilt();
     var tr=$('tiltrow'+idx); if(tr) tr.innerHTML=tiltRowHTML(idx);
+  }
+  function snapPos(idx, xRight, yBottom){
+    var it=items[idx];
+    if(!it._box) paintItem(idx);
+    var b=it._box, W=it._canvas.width, H=it._canvas.height;
+    var bw=b?b.w:W*0.35, bh=b?b.h:H*0.18;
+    var nx=xRight ? W-bw-W*0.025 : W*0.025;
+    var ny=yBottom ? H-bh-H*0.025 : H*0.025;
+    it.pos={x:Math.max(0,nx/W), y:Math.max(0,ny/H)};
+    paintItem(idx); resetBuilt();
   }
 
   // ---- 裁切 ----
