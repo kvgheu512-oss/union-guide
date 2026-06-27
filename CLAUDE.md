@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-27
 
 最近 commits：
+  09ac15d 新增發起人會議專頁：議程時間表＋4份可列印書面文件 版本 2026062716
+  7c2f28e 自動更新 CLAUDE.md 最近進度（Stop hook）
   f801b11 自動更新 CLAUDE.md 最近進度（Stop hook）
   a6111e9 自動更新 CLAUDE.md 最近進度（Stop hook）
   fe357c2 自動更新 CLAUDE.md 最近進度（Stop hook）
-  b1f0866 首頁入會按鈕直連電子申請書：更新「我要入會」底部選單＋第2步說明 版本 2026062715
-  e4dcf77 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
