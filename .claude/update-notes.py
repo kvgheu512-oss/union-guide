@@ -48,6 +48,22 @@ def update():
     if new_content != content:
         with open(CLAUDE_MD, 'w', encoding='utf-8') as f:
             f.write(new_content)
+        try:
+            branch = subprocess.check_output(
+                ['git', '-C', REPO, 'rev-parse', '--abbrev-ref', 'HEAD'],
+                stderr=subprocess.DEVNULL
+            ).decode().strip()
+            subprocess.run(['git', '-C', REPO, 'add', 'CLAUDE.md'], check=True, stderr=subprocess.DEVNULL)
+            subprocess.run(
+                ['git', '-C', REPO, 'commit', '-m', '自動更新 CLAUDE.md 最近進度（Stop hook）'],
+                check=True, stderr=subprocess.DEVNULL
+            )
+            subprocess.run(
+                ['git', '-C', REPO, 'push', '-u', 'origin', branch],
+                stderr=subprocess.DEVNULL
+            )
+        except Exception:
+            pass
 
 if __name__ == '__main__':
     update()
