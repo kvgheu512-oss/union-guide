@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>會員申請管理｜法規組</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1A3A6B;--green:#1A7A4A;--ink:#1A1A1A;--soft:#666;--bg:#F0F4FA;--card:#fff;--border:#D0DAF0;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;}
+.header{background:linear-gradient(135deg,#1A3A6B,#0E2347);color:#fff;padding:1.3rem 1rem 1rem;text-align:center;}
+.header h1{font-size:18px;font-weight:700;}
+.header p{font-size:12px;opacity:.85;margin-top:4px;}
+main{max-width:720px;margin:0 auto;padding:.8rem .8rem 4rem;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.9rem 1rem;margin-bottom:.8rem;}
+.toolbar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;}
+.toolbar select,.toolbar input[type=text]{padding:.45rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink);}
+.toolbar input[type=text]{flex:1;min-width:120px;}
+.btn{border:0;border-radius:8px;padding:.45rem .9rem;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-pri{background:var(--navy);color:#fff;}
+.btn-sec{background:var(--green);color:#fff;}
+.btn-sm{padding:.35rem .7rem;font-size:12px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;font-weight:600;}
+.btn-sm.ok{background:#E8F5E9;border-color:#A5D6A7;color:#1B5E20;}
+.btn-sm.del{background:#FFF5F5;border-color:#FFCDD2;color:#B71C1C;}
+/* 統計列 */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:.8rem;}
+.stat{background:var(--card);border-radius:12px;padding:.6rem .5rem;text-align:center;border:1px solid var(--border);}
+.stat .n{font-size:22px;font-weight:700;color:var(--navy);}
+.stat .l{font-size:11px;color:var(--soft);margin-top:1px;}
+/* 列表 */
+#memberList{list-style:none;}
+.rec{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.75rem .9rem;margin-bottom:.5rem;position:relative;}
+.rec.support{border-left:4px solid #F57C00;}
+.rec.regular{border-left:4px solid var(--green);}
+.rec-top{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.rec-name{font-weight:700;font-size:15px;}
+.badge{font-size:11px;border-radius:10px;padding:2px 7px;font-weight:700;}
+.badge.regular{background:#E8F5E9;color:#1B5E20;}
+.badge.support{background:#FFF3E0;color:#E65100;}
+.badge.status-new{background:#E3F2FD;color:#0D47A1;}
+.badge.status-done{background:#E8F5E9;color:#1B5E20;}
+.badge.status-pending{background:#FFF9C4;color:#F57F17;}
+.rec-detail{font-size:12px;color:var(--soft);margin-top:.25rem;line-height:1.6;}
+.rec-actions{margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap;}
+/* 匯入提示 */
+#importBanner{display:none;background:#E3F2FD;border:1px solid #90CAF9;border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem;text-align:center;}
+/* Toast */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1A3A6B;color:#fff;padding:.55rem 1.2rem;border-radius:20px;font-size:14px;font-weight:700;z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.3);display:none;}
+@media print{
+  .header,.toolbar,.rec-actions,.noprint{display:none!important;}
+  body{background:#fff;font-size:12px;}
+  .rec{border-radius:0;border:1px solid #ccc;margin-bottom:4px;page-break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+<a class="noprint" href="union.html" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:999;background:#fff;color:#1A3A6B;border:1px solid rgba(0,0,0,.12);font-size:13px;font-weight:600;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.2);">‹ 功能表</a>
+
+<div class="header">
+  <h1>📋 會員申請管理</h1>
+  <p>法規組 · 批次收件、狀態追蹤、匯出</p>
+</div>
+
+<main>
+  <div id="importBanner">
+    <div id="importMsg"></div>
+    <button class="btn btn-sec" style="margin-top:.5rem" id="btnImportConfirm">✅ 確認匯入</button>
+    <button class="btn" style="background:#fff;color:var(--navy);border:1px solid var(--border);margin-top:.5rem;margin-left:.4rem" id="btnImportCancel">取消</button>
+  </div>
+
+  <!-- 統計 -->
+  <div class="stats">
+    <div class="stat"><div class="n" id="st-total">0</div><div class="l">全部</div></div>
+    <div class="stat"><div class="n" id="st-regular">0</div><div class="l">正式會員</div></div>
+    <div class="stat"><div class="n" id="st-support">0</div><div class="l">贊助會員</div></div>
+    <div class="stat"><div class="n" id="st-new">0</div><div class="l">待處理</div></div>
+  </div>
+
+  <!-- 工具列 -->
+  <div class="card noprint">
+    <div class="toolbar">
+      <input type="text" id="srch" placeholder="搜尋姓名/工號/單位…" oninput="render()">
+      <select id="filterType" onchange="render()">
+        <option value="">所有類別</option>
+        <option value="regular">正式會員</option>
+        <option value="support">贊助會員</option>
+      </select>
+      <select id="filterStatus" onchange="render()">
+        <option value="">所有狀態</option>
+        <option value="new">待處理</option>
+        <option value="done">已完成</option>
+        <option value="pending">待補件</option>
+      </select>
+      <button class="btn btn-sec" onclick="exportCsv()">⬇ 匯出 CSV</button>
+      <button class="btn btn-pri" onclick="window.print()">🖨 列印</button>
+      <button class="btn btn-pri noprint" onclick="markAllDone()" style="background:#388E3C">✅ 全部標完成</button>
+    </div>
+  </div>
+
+  <ul id="memberList"></ul>
+  <div id="emptyMsg" style="display:none;text-align:center;padding:2rem;color:var(--soft)">
+    <div style="font-size:36px;margin-bottom:.5rem">📭</div>
+    <div>尚無資料。請請會員透過入會申請書送出連結後傳給你。</div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<script>
+var DB_NAME='ebn_members_v1', STORE='members';
+function openDB(cb){
+  var r=indexedDB.open(DB_NAME,1);
+  r.onupgradeneeded=function(e){ e.target.result.createObjectStore(STORE,{keyPath:'id',autoIncrement:true}); };
+  r.onsuccess=function(e){ cb(null,e.target.result); };
+  r.onerror=function(){ cb(new Error('DB'));};
+}
+function dbAdd(rec,cb){ openDB(function(e,db){ if(e){cb&&cb(e);return;} var tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).add(rec); tx.oncomplete=function(){cb&&cb(null);}; }); }
+function dbGetAll(cb){ openDB(function(e,db){ if(e){cb([]);return;} var r=db.transaction(STORE,'readonly').objectStore(STORE).getAll(); r.onsuccess=function(){cb(r.result||[]);}; r.onerror=function(){cb([]);}; }); }
+function dbUpdate(id,patch,cb){ openDB(function(e,db){ if(e){cb&&cb(e);return;} var tx=db.transaction(STORE,'readwrite'); var os=tx.objectStore(STORE); var r=os.get(id); r.onsuccess=function(){ var rec=r.result; Object.assign(rec,patch); os.put(rec); }; tx.oncomplete=function(){cb&&cb(null);}; }); }
+function dbDelete(id,cb){ openDB(function(e,db){ if(e){cb&&cb(e);return;} var tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete(id); tx.oncomplete=function(){cb&&cb(null);}; }); }
+
+var ALL=[];
+function load(cb){ dbGetAll(function(list){ ALL=list.sort(function(a,b){ return (b.importedAt||0)-(a.importedAt||0); }); cb&&cb(); }); }
+
+function toast(msg,dur){
+  var t=document.getElementById('toast'); t.textContent=msg; t.style.display='block';
+  setTimeout(function(){ t.style.display='none'; },dur||2000);
+}
+
+function render(){
+  var srch=document.getElementById('srch').value.toLowerCase();
+  var ftype=document.getElementById('filterType').value;
+  var fstat=document.getElementById('filterStatus').value;
+  var list=ALL.filter(function(r){
+    if(ftype&&r.memberType!==ftype) return false;
+    if(fstat&&(r.status||'new')!==fstat) return false;
+    if(srch&&!(r.name||'').toLowerCase().includes(srch)&&!(r.empid||'').toLowerCase().includes(srch)&&!(r.dept||'').toLowerCase().includes(srch)) return false;
+    return true;
+  });
+  // 統計（全量）
+  document.getElementById('st-total').textContent=ALL.length;
+  document.getElementById('st-regular').textContent=ALL.filter(function(r){return r.memberType==='regular';}).length;
+  document.getElementById('st-support').textContent=ALL.filter(function(r){return r.memberType==='support';}).length;
+  document.getElementById('st-new').textContent=ALL.filter(function(r){return !r.status||r.status==='new';}).length;
+
+  var ul=document.getElementById('memberList');
+  ul.innerHTML='';
+  document.getElementById('emptyMsg').style.display=list.length?'none':'block';
+  list.forEach(function(rec){
+    var mt=rec.memberType||'regular';
+    var st=rec.status||'new';
+    var stLabel={'new':'待處理','done':'已完成','pending':'待補件'}[st]||st;
+    var li=document.createElement('li');
+    li.className='rec '+mt;
+    li.innerHTML=
+      '<div class="rec-top">'+
+        '<span class="rec-name">'+esc(rec.name||'—')+'</span>'+
+        '<span class="badge '+mt+'">'+(mt==='regular'?'正式':'贊助')+'</span>'+
+        '<span class="badge status-'+st+'">'+stLabel+'</span>'+
+      '</div>'+
+      '<div class="rec-detail">工號：'+esc(rec.empid||'—')+'　職稱：'+esc(rec.title||'—')+'　單位：'+esc(rec.dept||'—')+'<br>'+
+        '手機：'+esc(rec.phone||'—')+'　Email：'+esc(rec.email||'—')+'<br>'+
+        '申請日：'+esc(rec.date||'—')+'　收件時間：'+esc(rec.ts||'—')+
+      '</div>'+
+      '<div class="rec-actions noprint">'+
+        (st!=='done'?'<button class="btn-sm ok" onclick="setStatus('+rec.id+',\'done\')">✅ 標記完成</button>':'')+
+        (st!=='pending'?'<button class="btn-sm" style="background:#FFF9C4;border-color:#F9A825;color:#7A5800" onclick="setStatus('+rec.id+',\'pending\')">⏳ 待補件</button>':'')+
+        (st!=='new'?'<button class="btn-sm" onclick="setStatus('+rec.id+',\'new\')">↩ 重設</button>':'')+
+        '<button class="btn-sm del" onclick="delRec('+rec.id+')">🗑 刪除</button>'+
+      '</div>';
+    ul.appendChild(li);
+  });
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function setStatus(id,st){ dbUpdate(id,{status:st},function(){ load(render); }); }
+function delRec(id){ if(!confirm('確定刪除這筆紀錄？')) return; dbDelete(id,function(){ load(render); toast('已刪除'); }); }
+function markAllDone(){
+  if(!confirm('確定把所有「待處理」標為完成？')) return;
+  var pending=ALL.filter(function(r){ return !r.status||r.status==='new'; });
+  var done=0;
+  if(!pending.length){ toast('沒有待處理的資料'); return; }
+  pending.forEach(function(r){ dbUpdate(r.id,{status:'done'},function(){ done++; if(done===pending.length) load(render); }); });
+  toast('已全部標記完成');
+}
+
+function exportCsv(){
+  var rows=[['姓名','工號','職稱','服務單位','手機','Email','申請日期','申請類別','申請時間','狀態']];
+  ALL.forEach(function(r){
+    rows.push([r.name,r.empid,r.title,r.dept,r.phone,r.email,r.date,
+      r.memberType==='support'?'贊助會員':'正式會員',r.ts,
+      ({new:'待處理',done:'已完成',pending:'待補件'})[r.status||'new']||'待處理']);
+  });
+  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+(c||'').replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  var bom='﻿';
+  var blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='會員申請名冊_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  toast('✅ CSV 已下載');
+}
+
+// 匯入（URL hash）
+function checkImport(){
+  var hash=location.hash;
+  if(!hash.startsWith('#import=')) return;
+  var enc=hash.slice(8);
+  var rec;
+  try{ rec=JSON.parse(decodeURIComponent(escape(atob(enc)))); }
+  catch(e){ toast('⚠️ 連結格式錯誤','3000'); return; }
+  if(!rec.name||!rec.empid){ toast('⚠️ 資料不完整'); return; }
+  var banner=document.getElementById('importBanner');
+  var msg=document.getElementById('importMsg');
+  msg.innerHTML='<b>收到新申請！</b><br>'+
+    '姓名：<b>'+esc(rec.name)+'</b>　工號：<b>'+esc(rec.empid)+'</b>　類別：'+
+    (rec.memberType==='support'?'<span style="color:#E65100">贊助會員</span>':'<span style="color:#1B5E20">正式會員</span>')+
+    '<br>單位：'+esc(rec.dept||'—')+'　申請時間：'+esc(rec.ts||'—');
+  banner.style.display='block';
+  document.getElementById('btnImportConfirm').onclick=function(){
+    var toSave=Object.assign({},rec,{status:'new',importedAt:Date.now()});
+    dbAdd(toSave,function(){
+      banner.style.display='none';
+      history.replaceState(null,'',location.pathname);
+      toast('✅ 已匯入！');
+      load(render);
+    });
+  };
+  document.getElementById('btnImportCancel').onclick=function(){
+    banner.style.display='none';
+    history.replaceState(null,'',location.pathname);
+  };
+}
+
+load(function(){ render(); checkImport(); });
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>

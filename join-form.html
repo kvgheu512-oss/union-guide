@@ -20,6 +20,16 @@ input,select{width:100%;padding:.6rem .8rem;font-size:16px;border:1.5px solid va
 input:focus,select:focus{outline:none;border-color:var(--green);}
 .hint{font-size:12px;color:var(--soft);margin-top:3px;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* 會員類別 */
+.mt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.4rem;}
+.mt-btn{border:2px solid var(--border);border-radius:12px;padding:.75rem .5rem;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;user-select:none;}
+.mt-btn.sel{border-color:var(--green);background:#E8F5E9;}
+.mt-btn .mt-t{font-weight:700;font-size:14px;}
+.mt-btn .mt-d{font-size:11px;color:var(--soft);margin-top:2px;line-height:1.5;}
+.pub-warn{display:none;background:#FFF3E0;border:1px solid #FFAB40;border-radius:10px;padding:.65rem .85rem;font-size:12.5px;color:#B71C1C;line-height:1.7;margin-top:.5rem;}
+/* 分享區 */
+.share-box{background:#E8F5E9;border:1px solid #A5D6A7;border-radius:12px;padding:.85rem;margin-top:.8rem;}
+.share-url{background:#fff;border:1px solid #A5D6A7;border-radius:8px;padding:.5rem .7rem;font-size:11px;color:#555;word-break:break-all;margin:.5rem 0;}
 /* 簽名板 */
 .sign-wrap{position:relative;border:2px dashed var(--border);border-radius:12px;background:#FAFCFF;margin-top:.4rem;overflow:hidden;}
 .sign-wrap canvas{display:block;width:100%;height:140px;cursor:crosshair;touch-action:none;}
@@ -64,6 +74,21 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     <label>工會名稱</label>
     <div style="padding:.6rem .8rem;background:#F4F6FA;border-radius:10px;font-size:15px;" id="orgName">（載入中）</div>
 
+    <label>申請類別 <span style="color:red">*</span></label>
+    <div class="mt-grid">
+      <div class="mt-btn sel" id="mt-regular" onclick="setMemberType('regular')">
+        <div class="mt-t">✅ 正式會員</div>
+        <div class="mt-d">具選舉、被選舉、表決完整權利</div>
+      </div>
+      <div class="mt-btn" id="mt-support" onclick="setMemberType('support')">
+        <div class="mt-t">🤝 贊助會員</div>
+        <div class="mt-d">不具表決權・適合有法規限制人員</div>
+      </div>
+    </div>
+    <div class="pub-warn" id="pubWarn">
+      ⚠️ <b>公職人員保護提示：</b>依《工會法》第4條，公務員及教育人員不得加入一般企業工會。系統已自動切換為「贊助會員」，僅支持工會、不持有投票權，法律風險最低。如有疑問請聯絡工會幹部。
+    </div>
+
     <label>姓名 <span style="color:red">*</span></label>
     <input id="f-name" placeholder="真實姓名" autocomplete="name">
 
@@ -71,6 +96,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
       <div>
         <label>員工編號 / 工號 <span style="color:red">*</span></label>
         <input id="f-empid" placeholder="例：A12345" inputmode="text">
+        <div class="hint">約聘升正式員工後，填新工號即可</div>
       </div>
       <div>
         <label>職稱</label>
@@ -112,6 +138,16 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     </div>
 
     <button class="btn-submit" id="btnSubmit">✅ 確認送出申請</button>
+  </div>
+
+  <!-- 傳給幹部 -->
+  <div id="shareBox" style="display:none">
+    <div class="share-box">
+      <div style="font-weight:700;font-size:14px;color:#1B5E20;margin-bottom:.3rem">📤 傳給法規組幹部</div>
+      <div style="font-size:12px;color:#2E7D32;line-height:1.6;margin-bottom:.5rem">複製下方連結，透過 LINE 傳給幹部即可自動匯入（簽名文件另外截圖或列印附上）</div>
+      <div class="share-url" id="shareUrl"></div>
+      <button id="btnCopyShare" style="display:block;width:100%;background:var(--green);color:#fff;border:0;border-radius:8px;padding:.55rem;font-size:14px;font-weight:700;cursor:pointer">📋 複製連結</button>
+    </div>
   </div>
 
   <div id="doneBox">
@@ -161,6 +197,28 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
   function fillOrg(){ var o=window.EBNOrg?EBNOrg.get():{}, n=o.fullName||'高榮企業工會'; document.getElementById('orgName').textContent=n; document.getElementById('orgName2').textContent=n; }
   fillOrg();
   document.addEventListener('ebnorg:public',fillOrg);
+
+  // 會員類別切換
+  var memberType='regular';
+  window.setMemberType=function(t){
+    memberType=t;
+    document.getElementById('mt-regular').classList.toggle('sel',t==='regular');
+    document.getElementById('mt-support').classList.toggle('sel',t==='support');
+    document.getElementById('pubWarn').style.display=(t==='support'&&pubTriggered)?'block':'none';
+  };
+
+  // 公職人員關鍵字偵測
+  var pubTriggered=false;
+  var PUB_KW=['公務員','軍','警察','消防員','教師','公教','文官','縣府','市府','區公所','鄉公所','稅務','海關','監獄','法院','行政院','衛福部','勞動部'];
+  document.getElementById('f-title').addEventListener('input',function(){
+    var v=this.value;
+    var match=PUB_KW.some(function(k){ return v.indexOf(k)>=0; });
+    if(match&&memberType!=='support'){
+      pubTriggered=true;
+      window.setMemberType('support');
+      document.getElementById('pubWarn').style.display='block';
+    }
+  });
 
   // 簽名板
   var canvas=document.getElementById('signCanvas');
@@ -230,7 +288,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     var sigUrl=pad.toDataURL();
     var orgName=document.getElementById('orgName').textContent;
     var rec={
-      type:'join', name:name, empid:empid,
+      type:'join', memberType:memberType, name:name, empid:empid,
       title:document.getElementById('f-title').value.trim(),
       dept:document.getElementById('f-dept').value.trim(),
       phone:document.getElementById('f-phone').value.trim(),
@@ -240,6 +298,21 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     };
     EBNSign.saveLog(rec);
     submitted=true;
+
+    // 產生分享連結（不含簽名圖，文字資料給幹部匯入）
+    var shareRec={name:name,empid:empid,memberType:memberType,
+      title:rec.title,dept:rec.dept,phone:rec.phone,email:rec.email,
+      date:rec.date,ts:ts,org:orgName};
+    var enc=btoa(unescape(encodeURIComponent(JSON.stringify(shareRec))));
+    var base=location.href.replace(/join-form\.html.*/,'');
+    var url=base+'member-manage.html#import='+enc;
+    document.getElementById('shareUrl').textContent=url;
+    document.getElementById('shareBox').style.display='block';
+    document.getElementById('btnCopyShare').onclick=function(){
+      var el=document.getElementById('shareUrl');
+      if(navigator.clipboard){ navigator.clipboard.writeText(el.textContent).then(function(){ toast('✅ 連結已複製，貼給幹部即可','#1B5E20'); }); }
+      else{ var ta=document.createElement('textarea');ta.value=el.textContent;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); toast('✅ 連結已複製','#1B5E20'); }
+    };
 
     document.getElementById('p-orgName').textContent=orgName;
     document.getElementById('p-orgName2').textContent=orgName;
