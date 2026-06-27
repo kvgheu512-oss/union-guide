@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-27
 
 最近 commits：
+  32a4cc3 自動更新 CLAUDE.md 最近進度（Stop hook）
   c735e24 工會小幫手：「不方便露面」說明加入隱私保護承諾與關鍵限制 版本 2026062705
   aae3953 首頁雙模式：籌備中↔正式成立一鍵切換 版本 2026062704
   cb5c310 自動更新 CLAUDE.md 最近進度（Stop hook）
   41525d3 自動更新 CLAUDE.md 最近進度（Stop hook）
-  da01fc9 工會小幫手：「找工會撐腰」前加入三步意願確認流程 版本 2026062703
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
