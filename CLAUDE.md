@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-27
 
 最近 commits：
+  f801b11 自動更新 CLAUDE.md 最近進度（Stop hook）
   a6111e9 自動更新 CLAUDE.md 最近進度（Stop hook）
   fe357c2 自動更新 CLAUDE.md 最近進度（Stop hook）
   b1f0866 首頁入會按鈕直連電子申請書：更新「我要入會」底部選單＋第2步說明 版本 2026062715
   e4dcf77 自動更新 CLAUDE.md 最近進度（Stop hook）
-  d0ea381 新增導覽：會員申請管理7步＋逐件精審台6步（含示範新件卡＋手動表單展開） 版本 2026062714
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
