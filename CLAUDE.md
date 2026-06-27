@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-27
 
 最近 commits：
+  f7e40e0 自動更新 CLAUDE.md 最近進度（Stop hook）
   f408cd3 自動更新 CLAUDE.md 最近進度（Stop hook）
   4f7fb08 自動更新 CLAUDE.md 最近進度（Stop hook）
   d4bbf03 自動更新 CLAUDE.md 最近進度（Stop hook）
   2bfc024 自動更新 CLAUDE.md 最近進度（Stop hook）
-  f97b1fb 加入勞工局12份官方範本可下載：founders.html 新增「官方範本」首頁分頁 版本 2026062717
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
