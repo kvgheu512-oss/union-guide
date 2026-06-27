@@ -433,6 +433,53 @@ function checkImport(){
 document.getElementById('st-all').classList.add('active');
 load(function(){ render(); checkImport(); });
 </script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener('load',function(){
+  if(!window.EBNTour) return;
+  EBNTour.attach([
+    {
+      title:'📋 會員申請管理 · 功能導覽',
+      text:'這是法規組的批次主控台，帶你認識六個核心功能，約走 7 步。隨時可以按「跳過」退出。'
+    },
+    {
+      sel:'.stats',
+      title:'五格統計，點一下就篩',
+      text:'即時顯示各類別筆數。點任一格直接篩選全部列表，不用另外下拉選。⚠️「有問題」那格最重要——有幾筆就表示幾份資料格式有誤，優先去修。'
+    },
+    {
+      sel:'.toolbar',
+      title:'搜尋・篩選・匯出',
+      text:'輸入姓名、工號或單位名稱即可搜尋。「全選/反選」一次勾選所有可見筆數，方便批次操作。CSV 匯出會把備注和品質問題也帶出去，留帳備查。'
+    },
+    {
+      sel:'#memberList',
+      title:'申請清單',
+      text:'每筆有橘色（贊助）或綠色（正式）左邊條，一眼分清楚。有⚠️徽章的直接說明哪個欄位有問題，不用自己猜。'
+    },
+    {
+      sel:'.rec-chk',
+      title:'批次勾選',
+      text:'勾了之後，螢幕底部會浮出批次操作列，可以一次標完成、待補件或刪除。操作前會列出所有選取人名讓你確認——不怕手滑誤觸一整排。',
+      pre:function(){
+        var c=document.querySelector('.rec-chk');
+        if(c&&!c.checked){ c.checked=true; c.dispatchEvent(new Event('change')); }
+      }
+    },
+    {
+      sel:'.edit-toggle',
+      title:'✏️ 行內直接改資料',
+      text:'點這個小鉛筆，欄位立刻變成可編輯的輸入框，改完按「儲存修改」。只動這一筆，其他筆完全不受影響。儲存前也有格式驗證，空工號存不了。',
+      pre:function(){ if(typeof clearSel==='function') clearSel(); }
+    },
+    {
+      sel:'.note-ta',
+      title:'備注欄・游標離開自動存',
+      text:'寫「已電話確認，補工號完成」之類的備注，游標移走就自動儲存，不用按鈕。列印和 CSV 都會帶出去。'
+    }
+  ],{title:'會員申請管理'});
+});
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>

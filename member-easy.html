@@ -462,6 +462,65 @@ document.getElementById('btnPend').addEventListener('click',function(){
 render();
 checkImport();
 </script>
+<script src="tour.js" defer></script>
+<script>
+window.addEventListener('load',function(){
+  if(!window.EBNTour) return;
+  EBNTour.attach([
+    {
+      title:'📂 逐件精審台 · 功能導覽',
+      text:'這個頁面一次專心處理一件事。帶你走 5 步認識主要功能，隨時可以按「跳過」。'
+    },
+    {
+      sel:'#newSection',
+      title:'📬 收到新申請時長這樣',
+      text:'會員點了申請連結、傳給你之後，你點開連結，系統自動顯示這張確認卡。確認資料正確就按「確認收件」，有問題按「暫放：需要補件」。',
+      pre:function(){
+        var el=document.getElementById('newSection');
+        if(el){
+          document.getElementById('nc-name').textContent='王小明（A12345）';
+          document.getElementById('nc-meta').innerHTML='職稱：護理師　單位：內科護理站<br>手機：0912-345678<br>申請日期：2026-06-27　申請時間：民國115年6月27日';
+          document.getElementById('nc-type').innerHTML='<span class="mt-tag mt-regular">✅ 正式會員</span>';
+          el.style.display='block';
+        }
+      }
+    },
+    {
+      sel:'#toggleManual',
+      title:'✏️ 手動輸入（看截圖來打）',
+      text:'收到紙本或截圖，沒有連結的情況下，點這裡展開手動輸入表單。每個欄位有即時格式驗證，打錯就紅框提示。',
+      pre:function(){
+        var el=document.getElementById('newSection'); if(el) el.style.display='none';
+      }
+    },
+    {
+      sel:'#manualForm',
+      title:'三層驗證，不讓你送錯',
+      text:'（1）填完欄位離開時即時標紅，（2）點送出按鈕一次標出所有錯誤並跳到第一個，（3）最後出現「逐項勾選確認清單」——每個欄位要你自己打勾才能送出。',
+      pre:function(){
+        var f=document.getElementById('manualForm');
+        var btn=document.getElementById('toggleManual');
+        if(f){ f.style.display='block'; btn.classList.add('open'); }
+      }
+    },
+    {
+      sel:'#pendingSection',
+      title:'⏳ 等待處理',
+      text:'還沒完成的申請放這裡。每筆右邊有「✅ 完成」快速按鈕，一按就標記、移到已完成區。',
+      pre:function(){
+        var f=document.getElementById('manualForm');
+        var btn=document.getElementById('toggleManual');
+        if(f){ f.style.display='none'; btn.classList.remove('open'); }
+      }
+    },
+    {
+      sel:'#doneSection',
+      title:'✅ 已審完成',
+      text:'標記完成的全部在這裡，依時間排序顯示最新 15 筆。更多的請到「法規組 · 會員管理」批次頁面查看。'
+    }
+  ],{title:'逐件精審台'});
+});
+</script>
 <script src="common.js" defer></script>
 </body>
 </html>
