@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-27
 
 最近 commits：
+  75d98b6 新增自動存檔機制：Stop hook 每次回應後更新 CLAUDE.md 最近進度
   8ceacdd id-mark：背景濃淡預設改為 0（完全透明）版本 2026062702
   d183bb4 id-mark：優化手機操作體驗——按鈕加大至 44px touch target、註記預設位置移至左下角、新增快貼角落按鈕（↖↗↙↘）版本 $(cat ver.txt)
   bb01cfc id-mark.html 新增微調歪斜功能：±1°/±5° 點選按鈕，即時顯示目前角度，支援最大 ±15°，可一鍵歸零 版本 2026062602
   56f79f5 id-mark.html 每張證件可獨立隱藏／顯示註記文字 版本 2026062601
-  f33038e id-mark.html 註記文字改為逐行 chip 管理，每行可單獨刪除或新增 版本 2026062601
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
