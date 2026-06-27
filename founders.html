@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>發起人會議 — 高榮企業工會</title>
+<link rel="stylesheet" href="common.css">
+<script src="version.js"></script>
+<script src="common.js"></script>
+<script src="org.js"></script>
+<style>
+:root{--navy:#1A3A6B;--green:#0F5C36;--gold:#B7860B;--red:#7B1818;}
+body{font-family:'Noto Sans TC',system-ui,sans-serif;background:#f5f6fa;margin:0;padding-bottom:2rem;}
+
+.ph{background:var(--navy);color:#fff;padding:.9rem 1.1rem .75rem;text-align:center;}
+.ph h1{margin:0;font-size:18px;letter-spacing:.02em;}
+.ph .sub{font-size:12.5px;opacity:.78;margin-top:4px;}
+
+.tab-bar{display:flex;overflow-x:auto;background:#fff;border-bottom:2px solid #e0e4ef;padding:0 6px;gap:2px;position:sticky;top:0;z-index:100;-webkit-overflow-scrolling:touch;}
+.tab-bar::-webkit-scrollbar{display:none;}
+.tb{flex:0 0 auto;padding:.58rem .85rem;border:none;background:none;font-size:13.5px;color:#666;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;font-family:inherit;}
+.tb.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:700;}
+
+.tc{display:none;padding:1rem;max-width:700px;margin:0 auto;}
+.tc.on{display:block;}
+
+.prt-btn{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:.72rem 1.4rem;font-size:14px;cursor:pointer;margin:0 auto 1.1rem;font-weight:700;font-family:inherit;}
+.prt-btn:active{opacity:.8;}
+
+/* Document card */
+.doc{background:#fff;border-radius:12px;padding:1.2rem 1.1rem;box-shadow:0 2px 10px rgba(0,0,0,.08);}
+.dt{text-align:center;font-size:16.5px;font-weight:700;color:#111;line-height:1.5;}
+.ds{text-align:center;font-size:13px;color:#666;margin:.3rem 0 1rem;}
+.dmeta{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;}
+.field{flex:1 1 200px;border-bottom:1.5px solid #aaa;padding:5px 2px 3px;font-size:13.5px;}
+.fl{color:#888;font-size:11.5px;display:block;margin-bottom:2px;}
+.blank{display:inline-block;border-bottom:1.5px solid #333;vertical-align:bottom;}
+.bl-sm{min-width:48px;}
+.bl-md{min-width:100px;}
+.bl-lg{min-width:160px;}
+
+/* Tables */
+table.dt{width:100%;border-collapse:collapse;font-size:13px;margin:0;}
+table.dt th,table.dt td{border:1px solid #bbb;padding:6px 7px;text-align:center;vertical-align:middle;}
+table.dt th{background:#eef2fa;font-weight:600;font-size:12px;}
+table.dt td.l{text-align:left;}
+table.dt td.sign{min-width:72px;}
+table.dt td.nm{min-width:62px;}
+
+/* Minutes sections */
+.ms h3{font-size:13.5px;font-weight:700;color:var(--navy);margin:.9rem 0 .35rem;border-left:3px solid var(--navy);padding-left:8px;}
+.ms p{font-size:13px;color:#444;line-height:1.75;margin:.2rem 0 .5rem;}
+.res{background:#f4fbf5;border:1px solid #b8ddb8;border-left:4px solid #2a7a2a;border-radius:6px;padding:.55rem .85rem;margin:.35rem 0;font-size:13.5px;}
+
+/* Timeline */
+.tl{list-style:none;margin:0;padding:0;}
+.ti{display:flex;gap:10px;margin-bottom:.7rem;align-items:flex-start;}
+.ti-t{flex:0 0 64px;font-size:12.5px;font-weight:700;color:var(--navy);padding-top:4px;}
+.ti-b{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;flex:0 0 26px;margin-top:2px;}
+.must{background:#C0392B;} .key{background:var(--navy);} .opt{background:#999;}
+.ti-body{flex:1;}
+.ti-body strong{font-size:13.5px;display:block;line-height:1.4;}
+.ti-body span{font-size:12px;color:#666;line-height:1.65;}
+.ti-min{flex:0 0 36px;text-align:right;font-size:11.5px;color:#aaa;padding-top:5px;}
+.leg{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:.9rem;}
+.le{display:flex;align-items:center;gap:5px;font-size:12px;}
+.le-d{width:13px;height:13px;border-radius:50%;}
+.note-box{background:#FFF8E1;border-radius:9px;padding:.75rem .9rem;font-size:12.5px;color:#6D4C00;line-height:1.8;margin-top:.9rem;}
+
+/* Charter tab */
+.charter-tab{text-align:center;padding:2rem 1rem;}
+.charter-tab p{color:#555;margin-bottom:1.2rem;font-size:14px;}
+
+/* ───── PRINT ───── */
+@media print{
+  html,body{background:#fff!important;margin:0;padding:0;}
+  .ph,.tab-bar,.prt-btn,.no-print{display:none!important;}
+  .tc{display:none!important;padding:0;max-width:100%;}
+  .tc.print-this{display:block!important;}
+  .doc{box-shadow:none;border-radius:0;padding:.3rem;}
+  table.dt th,table.dt td{padding:4px 5px;font-size:11.5px;}
+  table.dt th{font-size:11px;}
+  .dt{font-size:15px;}
+  .ds{font-size:12px;}
+  .dmeta .field{font-size:12.5px;}
+  .ms h3{font-size:13px;}
+  .ms p,.res{font-size:12.5px;}
+  .ti-body strong{font-size:13px;}
+  .ti-body span{font-size:11.5px;}
+  .ti-t{font-size:12px;}
+  .note-box{font-size:12px;}
+  @page{size:A4;margin:14mm 11mm;}
+}
+</style>
+</head>
+<body>
+
+<div class="ph">
+  <h1>📋 發起人會議</h1>
+  <div class="sub">高雄榮民總醫院企業工會（籌備中）</div>
+  <div class="sub">中華民國115年6月27日</div>
+</div>
+
+<div class="tab-bar" role="tablist">
+  <button class="tb on" onclick="sw('timeline',this)">⏱ 議程時間表</button>
+  <button class="tb" onclick="sw('signin',this)">✍️ 簽到表</button>
+  <button class="tb" onclick="sw('minutes',this)">📝 會議紀錄</button>
+  <button class="tb" onclick="sw('committee',this)">👥 籌委名單</button>
+  <button class="tb" onclick="sw('charter',this)">📜 章程</button>
+</div>
+
+<!-- ① 議程時間表 -->
+<div class="tc on" id="tc-timeline">
+  <button class="prt-btn" onclick="pt('timeline')">🖨️ 列印議程時間表</button>
+  <div class="doc">
+    <div class="dt">發起人會議 精準議程</div>
+    <div class="ds">中華民國115年6月27日・高雄榮民總醫院企業工會（籌備中）</div>
+    <div class="leg">
+      <div class="le"><div class="le-d must"></div>勞工局必要文件/程序</div>
+      <div class="le"><div class="le-d key"></div>重要（不能跳）</div>
+      <div class="le"><div class="le-d opt"></div>視狀況彈性調整</div>
+    </div>
+    <ul class="tl">
+      <li class="ti">
+        <div class="ti-t">開場前</div>
+        <div class="ti-b must">必</div>
+        <div class="ti-body"><strong>報到 &amp; 簽到</strong><span>發起人簽名於名冊（姓名、員工編號、部門、親簽）——這份是法律文件，請保存</span></div>
+        <div class="ti-min">10分</div>
+      </li>
+      <li class="ti">
+        <div class="ti-t">T+10</div>
+        <div class="ti-b must">必</div>
+        <div class="ti-body"><strong>宣布開會・確認法定人數</strong><span>主席（理事長）宣讀出席人數，確認已達法定門檻</span></div>
+        <div class="ti-min">3分</div>
+      </li>
+      <li class="ti">
+        <div class="ti-t">T+13</div>
+        <div class="ti-b key">重</div>
+        <div class="ti-body"><strong>工會是什麼 — 文宣說明</strong><span>保障範圍 / 運作方式 / 會費義務 / 加入與不加入的差別（約5張簡報圖）</span></div>
+        <div class="ti-min">15分</div>
+      </li>
+      <li class="ti">
+        <div class="ti-t">T+28</div>
+        <div class="ti-b key">重</div>
+        <div class="ti-body"><strong>籌備進度報告</strong><span>連署人數現況、電子入會流程說明、預計成立大會時程</span></div>
+        <div class="ti-min">10分</div>
+      </li>
+      <li class="ti">
+        <div class="ti-t">T+38</div>
+        <div class="ti-b must">必</div>
+        <div class="ti-body"><strong>章程說明 &amp; 舉手通過</strong><span>法規組說明重點條文：第3條宗旨・第7條入會資格・第13條會費・第24條電子簽章具法律效力；全體無異議舉手通過</span></div>
+        <div class="ti-min">12分</div>
+      </li>
+      <li class="ti">
+        <div class="ti-t">T+50</div>
+        <div class="ti-b must">必</div>
+        <div class="ti-body"><strong>確認籌備委員名單</strong><span>主席逐一唸出姓名與職務，全體無異議通過，委員本人當場簽名確認</span></div>
+        <div class="ti-min">5分</div>
+      </li>
+      <li class="ti">
+        <div class="ti-t">T+55</div>
+        <div class="ti-b must">必</div>
+        <div class="ti-body"><strong>訂定成立大會日期 &amp; 地點</strong><span>決議後記入紀錄；日期需於30日內報主管機關核備</span></div>
+        <div class="ti-min">5分</div>
+      </li>
+      <li class="ti">
+        <div class="ti-t">T+60</div>
+        <div class="ti-b key">重</div>
+        <div class="ti-body"><strong>開放 Q&amp;A</strong><span>法規組備好常見問題答案（見下方備答卡），讓每個人的疑慮當場清空</span></div>
+        <div class="ti-min">25分</div>
+      </li>
+      <li class="ti">
+        <div class="ti-t">T+85</div>
+        <div class="ti-b must">必</div>
+        <div class="ti-body"><strong>主席宣讀決議事項</strong><span>口頭逐條唸今日通過的3項決議（章程通過、籌委確認、成立大會日期），確認無異議</span></div>
+        <div class="ti-min">5分</div>
+      </li>
+      <li class="ti">
+        <div class="ti-t">T+90</div>
+        <div class="ti-b opt">—</div>
+        <div class="ti-body"><strong>散會</strong><span></span></div>
+        <div class="ti-min">—</div>
+      </li>
+    </ul>
+    <div class="note-box">
+      <strong>📌 Q&amp;A 法規組備答卡（提前背起來）</strong><br>
+      ① 約用／契約／派遣可以入會嗎？→ 可以，是工會法主要保護對象<br>
+      ② 公職人員可以嗎？→ 視職務，建議先加「贊助會員」避免觸法<br>
+      ③ 加入後有什麼義務？→ 繳會費、必要時參與投票，無強制行動義務<br>
+      ④ 老闆知道了怎麼辦？→ 工會法第35條：以此解僱無效，可向勞動部申請裁決<br>
+      ⑤ 會費多少？→ 依章程第13條（今日通過後正式確定）
+    </div>
+    <div style="margin-top:.9rem;background:#EEF3FA;border-radius:9px;padding:.7rem .85rem;font-size:12.5px;color:#1A3A6B;">
+      <strong>📋 今晚必須帶走的書面記錄：</strong><br>
+      ✅ 簽到表（有親簽）&emsp;✅ 會議紀錄（有主席/記錄簽名）<br>
+      ✅ 章程草案（今日通過版）&emsp;✅ 籌備委員名單（委員親簽）
+    </div>
+  </div>
+</div>
+
+<!-- ② 簽到表 -->
+<div class="tc" id="tc-signin">
+  <button class="prt-btn" onclick="pt('signin')">🖨️ 列印簽到表</button>
+  <div class="doc">
+    <div class="dt">高雄榮民總醫院企業工會（籌備中）</div>
+    <div class="dt" style="font-size:15px;margin-top:.15rem">發起人會議 簽到表</div>
+    <div class="ds">中華民國115年6月27日</div>
+    <div class="dmeta">
+      <div class="field"><span class="fl">會議時間</span>民國115年6月27日　　　時　　分</div>
+      <div class="field"><span class="fl">會議地點</span>&nbsp;</div>
+    </div>
+    <table class="dt">
+      <thead>
+        <tr>
+          <th style="width:32px">序</th>
+          <th style="min-width:68px">姓&emsp;名</th>
+          <th style="min-width:78px">員工編號</th>
+          <th style="min-width:72px">部門／單位</th>
+          <th style="min-width:54px">聯絡電話</th>
+          <th style="min-width:84px">本人親簽</th>
+        </tr>
+      </thead>
+      <tbody id="signin-rows"></tbody>
+    </table>
+    <div style="margin-top:.75rem;font-size:12.5px;color:#555;text-align:right">
+      出席人數合計：<span class="blank bl-sm">&ensp;</span> 人
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:1.5rem;font-size:13px;gap:1rem">
+      <div>主席 <span id="si-chair"></span>：<span class="blank bl-md">&ensp;</span></div>
+      <div>記錄 <span id="si-wel"></span>：<span class="blank bl-md">&ensp;</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ③ 會議紀錄 -->
+<div class="tc" id="tc-minutes">
+  <button class="prt-btn" onclick="pt('minutes')">🖨️ 列印會議紀錄</button>
+  <div class="doc">
+    <div class="dt">高雄榮民總醫院企業工會（籌備中）</div>
+    <div class="dt" style="font-size:15px;margin-top:.15rem">第一次發起人會議紀錄</div>
+    <div class="dmeta" style="margin-top:.8rem">
+      <div class="field"><span class="fl">會議時間</span>民國115年6月27日　　　時　　分</div>
+      <div class="field"><span class="fl">會議地點</span>&nbsp;</div>
+      <div class="field"><span class="fl">主席</span><span id="min-chair">　</span></div>
+      <div class="field"><span class="fl">記錄</span><span id="min-wel">　</span></div>
+      <div class="field"><span class="fl">出席（發起人）</span><span class="blank bl-sm">&ensp;</span> 人</div>
+      <div class="field"><span class="fl">列席（觀察）</span><span class="blank bl-sm">&ensp;</span> 人</div>
+    </div>
+
+    <div class="ms">
+      <h3>壹、宣布開會</h3>
+      <p>主席於　　時　　分宣布開會。出席發起人達法定人數，會議正式成立。</p>
+    </div>
+
+    <div class="ms">
+      <h3>貳、工會籌備說明</h3>
+      <p>文宣組說明工會宗旨、成員保障、運作架構及籌備進度，說明連署現況及電子入會申請流程。</p>
+    </div>
+
+    <div class="ms">
+      <h3>參、討論事項</h3>
+
+      <p><strong>第一案：審議工會章程草案</strong></p>
+      <p>由法規組說明章程重點條文（第3條宗旨、第7條入會資格、第13條會費、第24條電子簽章之法律效力）。</p>
+      <div class="res">決議：章程草案照案通過。</div>
+
+      <p style="margin-top:.7rem"><strong>第二案：選任籌備委員</strong></p>
+      <p>依工會法規定，選出籌備委員會，負責後續成立大會籌辦事宜。</p>
+      <div class="res">決議：選出籌備委員 <span class="blank bl-sm">&ensp;</span> 人，名單詳見附件（籌備委員名單）。</div>
+
+      <p style="margin-top:.7rem"><strong>第三案：訂定成立大會日期及地點</strong></p>
+      <div class="res">決議：訂於民國 <span class="blank bl-sm">&ensp;</span> 年 <span class="blank bl-sm">&ensp;</span> 月 <span class="blank bl-sm">&ensp;</span> 日（<span class="blank bl-sm">&ensp;</span>），於 <span class="blank bl-lg">&ensp;</span> 舉行成立大會。</div>
+    </div>
+
+    <div class="ms">
+      <h3>肆、臨時動議</h3>
+      <p>無。</p>
+    </div>
+
+    <div class="ms">
+      <h3>伍、散會</h3>
+      <p>主席於　　時　　分宣布散會。</p>
+    </div>
+
+    <div style="height:1px;background:#ddd;margin:1.2rem 0;"></div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;gap:1rem;flex-wrap:wrap">
+      <div>主席 <span id="min-chair2"></span>（簽名）：<span class="blank bl-lg">&ensp;</span></div>
+      <div>記錄 <span id="min-wel2"></span>（簽名）：<span class="blank bl-lg">&ensp;</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ④ 籌備委員名單 -->
+<div class="tc" id="tc-committee">
+  <button class="prt-btn" onclick="pt('committee')">🖨️ 列印籌委名單</button>
+  <div class="doc">
+    <div class="dt">高雄榮民總醫院企業工會（籌備中）</div>
+    <div class="dt" style="font-size:15px;margin-top:.15rem">籌備委員名單</div>
+    <div class="ds">中華民國115年6月27日 第一次發起人會議通過</div>
+    <table class="dt">
+      <thead>
+        <tr>
+          <th>職務</th>
+          <th class="nm">姓名</th>
+          <th>員工編號</th>
+          <th class="sign">本人簽名確認</th>
+        </tr>
+      </thead>
+      <tbody id="committee-rows"></tbody>
+    </table>
+    <div style="margin-top:2rem;display:flex;justify-content:space-between;font-size:13px;gap:1rem;flex-wrap:wrap">
+      <div>主席（簽名）：<span class="blank bl-lg">&ensp;</span></div>
+      <div>記錄（簽名）：<span class="blank bl-lg">&ensp;</span></div>
+    </div>
+    <div style="margin-top:.75rem;font-size:11.5px;color:#888;text-align:center">本名單於第一次發起人會議通過，作為向主管機關申請籌備工會之附件</div>
+  </div>
+</div>
+
+<!-- ⑤ 章程 -->
+<div class="tc" id="tc-charter">
+  <div class="charter-tab">
+    <p>章程全文已有獨立頁面，點下方按鈕開啟後使用瀏覽器「列印」或「另存為 PDF」</p>
+    <a href="charter.html" target="_blank" style="display:inline-block;background:var(--navy);color:#fff;text-decoration:none;padding:.8rem 1.8rem;border-radius:12px;font-weight:700;font-size:15px;margin-bottom:.8rem">📜 開啟章程全文</a>
+    <br>
+    <button class="prt-btn" onclick="window.open('charter.html')">🖨️ 直接列印章程</button>
+  </div>
+</div>
+
+<script>
+var ROLES=[
+  {key:'chair',label:'理事長（籌備會主席）'},
+  {key:'fin',  label:'總務委員（一）'},
+  {key:'fin2', label:'總務委員（二）'},
+  {key:'doc',  label:'法規委員（一）'},
+  {key:'doc2', label:'法規委員（二）'},
+  {key:'wel',  label:'文宣委員'},
+  {key:'sup',  label:'監事'},
+];
+
+function gn(k){ return (typeof EBNOrg!=='undefined'&&EBNOrg.cadreName(k))||''; }
+
+function initSignin(){
+  var tb=document.getElementById('signin-rows'); if(!tb||tb.hasChildNodes()) return;
+  for(var i=1;i<=35;i++){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+i+'</td><td class="nm l">&nbsp;</td><td>&nbsp;</td><td class="l">&nbsp;</td><td>&nbsp;</td><td class="sign">&nbsp;</td>';
+    tb.appendChild(tr);
+  }
+}
+
+function initCommittee(){
+  var tb=document.getElementById('committee-rows'); if(!tb) return;
+  tb.innerHTML='';
+  ROLES.forEach(function(r){
+    var n=gn(r.key);
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="l">'+r.label+'</td><td class="nm">'+(n||'&nbsp;')+'</td><td>&nbsp;</td><td class="sign">&nbsp;</td>';
+    tb.appendChild(tr);
+  });
+  for(var i=0;i<2;i++){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td class="l">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td class="sign">&nbsp;</td>';
+    tb.appendChild(tr);
+  }
+}
+
+function initNames(){
+  var chair=gn('chair'); var wel=gn('wel');
+  ['si-chair','min-chair','min-chair2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=chair; });
+  ['si-wel','min-wel','min-wel2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=wel; });
+}
+
+function sw(name,btn){
+  document.querySelectorAll('.tc').forEach(function(e){e.classList.remove('on');});
+  document.querySelectorAll('.tb').forEach(function(e){e.classList.remove('on');});
+  var c=document.getElementById('tc-'+name); if(c) c.classList.add('on');
+  if(btn) btn.classList.add('on');
+}
+
+function pt(name){
+  document.querySelectorAll('.tc').forEach(function(e){e.classList.remove('print-this');});
+  var e=document.getElementById('tc-'+name); if(e) e.classList.add('print-this');
+  window.print();
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  initSignin();
+  initCommittee();
+  initNames();
+});
+document.addEventListener('ebnorg:public',function(){
+  initCommittee();
+  initNames();
+});
+</script>
+</body>
+</html>
