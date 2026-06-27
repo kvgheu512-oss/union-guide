@@ -71,6 +71,16 @@ table.dt td.nm{min-width:62px;}
 .charter-tab{text-align:center;padding:2rem 1rem;}
 .charter-tab p{color:#555;margin-bottom:1.2rem;font-size:14px;}
 
+/* Gov forms */
+.gov-row{display:flex;align-items:center;gap:10px;padding:.65rem .4rem;border-bottom:1px solid #eee;text-decoration:none;color:inherit;}
+.gov-row:last-child{border-bottom:none;}
+.gov-row:active{background:#f5f8ff;}
+.gov-num{flex:0 0 28px;height:28px;border-radius:6px;background:#1A3A6B;color:#fff;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.gov-info{flex:1;}
+.gov-t{font-size:14px;font-weight:600;color:#1A3A6B;line-height:1.4;}
+.gov-d{font-size:12px;color:#777;line-height:1.5;margin-top:2px;}
+.gov-dl{font-size:20px;color:#1A3A6B;flex:0 0 24px;text-align:center;}
+
 /* ───── PRINT ───── */
 @media print{
   html,body{background:#fff!important;margin:0;padding:0;}
@@ -102,15 +112,81 @@ table.dt td.nm{min-width:62px;}
 </div>
 
 <div class="tab-bar" role="tablist">
-  <button class="tb on" onclick="sw('timeline',this)">⏱ 議程時間表</button>
+  <button class="tb on" onclick="sw('govforms',this)">📥 官方範本（必用）</button>
+  <button class="tb" onclick="sw('timeline',this)">⏱ 議程時間表</button>
   <button class="tb" onclick="sw('signin',this)">✍️ 簽到表</button>
   <button class="tb" onclick="sw('minutes',this)">📝 會議紀錄</button>
   <button class="tb" onclick="sw('committee',this)">👥 籌委名單</button>
   <button class="tb" onclick="sw('charter',this)">📜 章程</button>
 </div>
 
-<!-- ① 議程時間表 -->
-<div class="tc on" id="tc-timeline">
+<!-- ① 官方範本（必用）-->
+<div class="tc on" id="tc-govforms">
+  <div class="doc" style="border-left:5px solid #C0392B;border-radius:12px;padding:1rem 1.1rem;margin-bottom:1rem;background:#FFF5F5;">
+    <div style="font-weight:700;color:#7B1818;font-size:15px;margin-bottom:.4rem">⚠️ 重要：只能用官方原始檔</div>
+    <div style="font-size:13px;color:#555;line-height:1.8">以下12份為<strong>高雄市政府勞工局</strong>官方表格。<br>送件時<strong>務必使用這些原始 .doc 下載後填寫</strong>，不得自製或改格式，否則勞工局不受理。</div>
+  </div>
+
+  <div class="doc" style="margin-bottom:.8rem">
+    <div style="font-size:11.5px;font-weight:700;color:#C0392B;margin-bottom:.6rem;letter-spacing:.05em">▌ 第一階段：發起人會議前必備（今晚用）</div>
+    <a class="gov-row" href="gov-forms/02-發起人連署及略歷冊.doc" download>
+      <span class="gov-num">02</span><div class="gov-info"><div class="gov-t">發起人連署及略歷冊</div><div class="gov-d">每位發起人填姓名、身分證、地址、簽名 ← <strong>最重要</strong></div></div><span class="gov-dl">⬇</span>
+    </a>
+    <a class="gov-row" href="gov-forms/04-從業切結書.doc" download>
+      <span class="gov-num">04</span><div class="gov-info"><div class="gov-t">發起人從業切結書</div><div class="gov-d">每人切結確實在高雄市依法從事工作</div></div><span class="gov-dl">⬇</span>
+    </a>
+    <a class="gov-row" href="gov-forms/03-發起人身分證影本.doc" download>
+      <span class="gov-num">03</span><div class="gov-info"><div class="gov-t">發起人身分證正反面影本</div><div class="gov-d">依連署冊順序浮貼，召集人簽章</div></div><span class="gov-dl">⬇</span>
+    </a>
+    <a class="gov-row" href="gov-forms/05-發起人會議紀錄範例.doc" download>
+      <span class="gov-num">05</span><div class="gov-info"><div class="gov-t">發起人會議紀錄（官方範例）</div><div class="gov-d">今晚會議結束後依此格式填寫正式紀錄</div></div><span class="gov-dl">⬇</span>
+    </a>
+    <a class="gov-row" href="gov-forms/06-官方表格六.doc" download>
+      <span class="gov-num">06</span><div class="gov-info"><div class="gov-t">官方表格六</div><div class="gov-d">開啟檔案確認標題後填寫</div></div><span class="gov-dl">⬇</span>
+    </a>
+  </div>
+
+  <div class="doc" style="margin-bottom:.8rem">
+    <div style="font-size:11.5px;font-weight:700;color:#1A3A6B;margin-bottom:.6rem;letter-spacing:.05em">▌ 第二階段：送件報備（發起人會議後）</div>
+    <a class="gov-row" href="gov-forms/01-工會成立登記申請書.doc" download>
+      <span class="gov-num">01</span><div class="gov-info"><div class="gov-t">工會成立登記申請書</div><div class="gov-d">籌備完成後向高雄市勞工局正式申請</div></div><span class="gov-dl">⬇</span>
+    </a>
+  </div>
+
+  <div class="doc" style="margin-bottom:.8rem">
+    <div style="font-size:11.5px;font-weight:700;color:#0F5C36;margin-bottom:.6rem;letter-spacing:.05em">▌ 第三階段：成立大會相關</div>
+    <a class="gov-row" href="gov-forms/07-成立大會會議紀錄範例.doc" download>
+      <span class="gov-num">07</span><div class="gov-info"><div class="gov-t">成立大會會議紀錄（官方範例）</div><div class="gov-d">第一屆第一次會員大會紀錄格式</div></div><span class="gov-dl">⬇</span>
+    </a>
+    <a class="gov-row" href="gov-forms/08-官方表格八.doc" download>
+      <span class="gov-num">08</span><div class="gov-info"><div class="gov-t">官方表格八</div><div class="gov-d">開啟檔案確認標題後填寫</div></div><span class="gov-dl">⬇</span>
+    </a>
+    <a class="gov-row" href="gov-forms/09-章程參考版.doc" download>
+      <span class="gov-num">09</span><div class="gov-info"><div class="gov-t">工會章程（官方參考版）</div><div class="gov-d">本站章程已依此改寫，可對照用</div></div><span class="gov-dl">⬇</span>
+    </a>
+    <a class="gov-row" href="gov-forms/10-職員當選名冊.doc" download>
+      <span class="gov-num">10</span><div class="gov-info"><div class="gov-t">職員當選名冊（含候補）</div><div class="gov-d">理監事選出後填寫，連同任期一起報備</div></div><span class="gov-dl">⬇</span>
+    </a>
+  </div>
+
+  <div class="doc">
+    <div style="font-size:11.5px;font-weight:700;color:#7B1818;margin-bottom:.6rem;letter-spacing:.05em">▌ 第四階段：成立後行政</div>
+    <a class="gov-row" href="gov-forms/11-會員名冊.doc" download>
+      <span class="gov-num">11</span><div class="gov-info"><div class="gov-t">工會會員名冊</div><div class="gov-d">正式成立後建立並保管</div></div><span class="gov-dl">⬇</span>
+    </a>
+    <a class="gov-row" href="gov-forms/12-圖記及印鑑印模.doc" download>
+      <span class="gov-num">12</span><div class="gov-info"><div class="gov-t">圖記及相關印鑑印模</div><div class="gov-d">工會圖記、理事長印、簽名章等存記</div></div><span class="gov-dl">⬇</span>
+    </a>
+  </div>
+
+  <div style="background:#F0F3FA;border-radius:10px;padding:.75rem .9rem;font-size:12px;color:#555;margin-top:.8rem;line-height:1.8">
+    💡 手機點「⬇」會下載 .doc 到手機；電腦點後可直接用 Word 開啟填寫列印。<br>
+    📌 送件地點：高雄市政府勞工局（四維行政中心）勞動關係科
+  </div>
+</div>
+
+<!-- ② 議程時間表 -->
+<div class="tc" id="tc-timeline">
   <button class="prt-btn" onclick="pt('timeline')">🖨️ 列印議程時間表</button>
   <div class="doc">
     <div class="dt">發起人會議 精準議程</div>
