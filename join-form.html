@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>入會申請書（電子簽名）｜高榮企業工會</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--green:#1A7A4A;--navy:#1A3A6B;--ink:#1A1A1A;--soft:#777;--bg:#F4F6FA;--card:#fff;--border:#D8E0EC;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8;-webkit-text-size-adjust:100%;}
+.header{background:linear-gradient(160deg,#1A7A4A,#0F5C36);color:#fff;padding:1.6rem 1.2rem 1.3rem;text-align:center;}
+.header h1{font-family:'Noto Serif TC',serif;font-size:20px;}
+.header p{font-size:12.5px;opacity:.9;margin-top:5px;}
+main{max-width:600px;margin:0 auto;padding:1.1rem 1rem 5rem;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.15rem;margin-bottom:1rem;border-top:4px solid var(--green);}
+label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin:.75rem 0 .2rem;}
+input,select{width:100%;padding:.6rem .8rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;background:#fff;}
+input:focus,select:focus{outline:none;border-color:var(--green);}
+.hint{font-size:12px;color:var(--soft);margin-top:3px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* 簽名板 */
+.sign-wrap{position:relative;border:2px dashed var(--border);border-radius:12px;background:#FAFCFF;margin-top:.4rem;overflow:hidden;}
+.sign-wrap canvas{display:block;width:100%;height:140px;cursor:crosshair;touch-action:none;}
+.sign-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#BCC8D8;font-size:13px;pointer-events:none;}
+.sign-actions{display:flex;gap:8px;margin-top:.4rem;}
+.btn-clear{background:#fff;color:#777;border:1.5px solid var(--border);border-radius:8px;padding:.45rem .9rem;font-size:13px;cursor:pointer;}
+/* 法律聲明 */
+.legal{background:#EFF6FF;border:1px solid #BDD4F0;border-radius:10px;padding:.7rem .9rem;font-size:12.5px;color:#1A3A6B;line-height:1.75;margin-top:.6rem;}
+/* 按鈕 */
+.btn-submit{display:block;width:100%;background:var(--green);color:#fff;border:0;border-radius:12px;padding:.9rem;font-size:16px;font-weight:700;cursor:pointer;margin-top:.5rem;}
+.btn-submit:active{background:#0F5C36;}
+/* 完成畫面 */
+#doneBox{display:none;background:#E8F5E9;border:1px solid #A5D6A7;border-radius:14px;padding:1rem 1.1rem;margin-top:1rem;text-align:center;}
+#doneBox h2{color:#1B5E20;font-size:17px;margin-bottom:.5rem;}
+#doneBox p{font-size:13px;color:#2E7D32;line-height:1.7;}
+.btn-print{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:.65rem 1.2rem;font-size:14px;font-weight:700;cursor:pointer;margin-top:.7rem;margin-right:.5rem;}
+.btn-again{background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:10px;padding:.65rem 1.2rem;font-size:14px;cursor:pointer;margin-top:.7rem;}
+/* 列印 */
+@media print{
+  .header,.sign-actions,.btn-submit,#doneBox .btn-print,#doneBox .btn-again,.noprint{display:none!important;}
+  body{background:#fff;} .card{border:1px solid #ccc;box-shadow:none;}
+  #printOut{display:block!important;}
+}
+#printOut{display:none;}
+.print-sig{border:1px solid #ccc;border-radius:8px;width:100%;max-height:120px;object-fit:contain;}
+</style>
+</head>
+<body>
+<a class="noprint" href="javascript:history.back()" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:999;background:#fff;color:#0F5C36;border:1px solid rgba(0,0,0,.12);font-size:13px;font-weight:600;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.2);">← 上一頁</a>
+
+<div class="header">
+  <h1>📝 入會申請書</h1>
+  <p>電子簽名版 · 依電子簽章法具同等效力</p>
+</div>
+
+<main>
+  <div class="card">
+    <div style="font-size:13px;color:#5C4000;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.6rem .8rem;margin-bottom:.4rem;line-height:1.7">
+      📌 本申請書依<b>電子簽章法第4條</b>，電子文件與紙本具同等效力。手寫簽名＋時間戳記可作為正式記錄。
+    </div>
+
+    <label>工會名稱</label>
+    <div style="padding:.6rem .8rem;background:#F4F6FA;border-radius:10px;font-size:15px;" id="orgName">（載入中）</div>
+
+    <label>姓名 <span style="color:red">*</span></label>
+    <input id="f-name" placeholder="真實姓名" autocomplete="name">
+
+    <div class="row2">
+      <div>
+        <label>員工編號 / 工號 <span style="color:red">*</span></label>
+        <input id="f-empid" placeholder="例：A12345" inputmode="text">
+      </div>
+      <div>
+        <label>職稱</label>
+        <input id="f-title" placeholder="例：護理師">
+      </div>
+    </div>
+
+    <label>服務單位 / 部門</label>
+    <input id="f-dept" placeholder="例：內科護理站">
+
+    <div class="row2">
+      <div>
+        <label>手機</label>
+        <input id="f-phone" type="tel" placeholder="09xx-xxxxxx" inputmode="tel">
+      </div>
+      <div>
+        <label>Email</label>
+        <input id="f-email" type="email" placeholder="xxx@gmail.com" inputmode="email">
+      </div>
+    </div>
+
+    <label>申請日期</label>
+    <input id="f-date" type="date">
+  </div>
+
+  <div class="card">
+    <div style="font-family:'Noto Serif TC',serif;font-weight:700;font-size:15px;color:var(--green);margin-bottom:.5rem">✍️ 本人親筆簽名</div>
+    <div class="sign-wrap" id="signWrap">
+      <canvas id="signCanvas"></canvas>
+      <div class="sign-placeholder" id="signHint">請在此處手寫簽名</div>
+    </div>
+    <div class="sign-actions">
+      <button class="btn-clear" id="btnClear">↺ 重寫</button>
+      <span style="flex:1;font-size:12px;color:var(--soft);align-self:center;text-align:right">手指或滑鼠均可</span>
+    </div>
+
+    <div class="legal">
+      本人自願申請加入<span id="orgName2">高榮企業工會</span>，願遵守工會章程及大會決議。本電子簽名依<b>中華民國電子簽章法第4條</b>規定，與親筆簽名蓋章具同等法律效力，簽署時間戳記由系統自動記錄。
+    </div>
+
+    <button class="btn-submit" id="btnSubmit">✅ 確認送出申請</button>
+  </div>
+
+  <div id="doneBox">
+    <h2>🎉 申請已完成</h2>
+    <p id="doneMsg"></p>
+    <div>
+      <button class="btn-print" onclick="window.print()">🖨 列印 / 存 PDF</button>
+      <button class="btn-again" id="btnAgain">再填一份</button>
+    </div>
+  </div>
+
+  <!-- 列印專用區 -->
+  <div id="printOut">
+    <div style="text-align:center;margin-bottom:1rem">
+      <div style="font-family:'Noto Serif TC',serif;font-size:20px;font-weight:700" id="p-orgName"></div>
+      <div style="font-size:16px;margin-top:4px;font-weight:700">入 會 申 請 書</div>
+      <div style="font-size:12px;color:#666;margin-top:4px">（電子簽名版 · 依電子簽章法第4條具同等效力）</div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      <tr><td style="border:1px solid #ccc;padding:6px 10px;width:30%;background:#F8F8F8;font-weight:700">姓名</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-name"></td><td style="border:1px solid #ccc;padding:6px 10px;width:30%;background:#F8F8F8;font-weight:700">員工編號</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-empid"></td></tr>
+      <tr><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">職稱</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-title"></td><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">服務單位</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-dept"></td></tr>
+      <tr><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">手機</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-phone"></td><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">Email</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-email"></td></tr>
+      <tr><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">申請日期</td><td colspan="3" style="border:1px solid #ccc;padding:6px 10px" id="p-date"></td></tr>
+    </table>
+    <div style="margin-top:1rem;border:1px solid #ccc;border-radius:8px;padding:.8rem">
+      <div style="font-size:13px;color:#444;line-height:1.7;margin-bottom:.6rem">本人自願申請加入<span id="p-orgName2"></span>，願遵守工會章程及大會決議。本電子簽名依中華民國電子簽章法第4條規定，與親筆簽名蓋章具同等法律效力。</div>
+      <div style="display:flex;align-items:flex-end;gap:2rem;margin-top:.5rem">
+        <div style="flex:1">
+          <div style="font-size:12px;color:#888;margin-bottom:4px">申請人簽名：</div>
+          <img id="p-sig" class="print-sig" style="height:80px">
+        </div>
+        <div style="font-size:12px;color:#888;white-space:nowrap">簽署時間：<span id="p-ts"></span></div>
+      </div>
+    </div>
+    <div style="margin-top:.8rem;font-size:12px;color:#aaa;text-align:center">本文件由高榮企業工會電子申請系統產生 · 依電子簽章法具法律效力</div>
+  </div>
+</main>
+
+<script src="esign.js"></script>
+<script src="org.js" defer></script>
+<script>
+(function(){
+  // 填今天日期
+  var d=new Date(); document.getElementById('f-date').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+
+  // 帶入工會名稱
+  function fillOrg(){ var o=window.EBNOrg?EBNOrg.get():{}, n=o.fullName||'高榮企業工會'; document.getElementById('orgName').textContent=n; document.getElementById('orgName2').textContent=n; }
+  fillOrg();
+  document.addEventListener('ebnorg:public',fillOrg);
+
+  // 簽名板
+  var canvas=document.getElementById('signCanvas');
+  var pad=EBNSign.create(canvas);
+  var hint=document.getElementById('signHint');
+  canvas.addEventListener('mousedown',function(){ hint.style.display='none'; });
+  canvas.addEventListener('touchstart',function(){ hint.style.display='none'; },{passive:true});
+  document.getElementById('btnClear').addEventListener('click',function(){ pad.clear(); hint.style.display='flex'; });
+
+  // 送出
+  document.getElementById('btnSubmit').addEventListener('click',function(){
+    var name=document.getElementById('f-name').value.trim();
+    var empid=document.getElementById('f-empid').value.trim();
+    if(!name||!empid){ alert('姓名和員工編號為必填'); return; }
+    if(pad.isEmpty()){ alert('請在簽名欄簽名'); return; }
+
+    var ts=EBNSign.timestamp();
+    var sigUrl=pad.toDataURL();
+    var orgName=document.getElementById('orgName').textContent;
+    var rec={
+      type:'join', name:name, empid:empid,
+      title:document.getElementById('f-title').value.trim(),
+      dept:document.getElementById('f-dept').value.trim(),
+      phone:document.getElementById('f-phone').value.trim(),
+      email:document.getElementById('f-email').value.trim(),
+      date:document.getElementById('f-date').value,
+      sig:sigUrl, ts:ts, org:orgName
+    };
+    EBNSign.saveLog(rec);
+
+    // 填印列區
+    document.getElementById('p-orgName').textContent=orgName;
+    document.getElementById('p-orgName2').textContent=orgName;
+    document.getElementById('p-name').textContent=name;
+    document.getElementById('p-empid').textContent=empid;
+    document.getElementById('p-title').textContent=rec.title;
+    document.getElementById('p-dept').textContent=rec.dept;
+    document.getElementById('p-phone').textContent=rec.phone;
+    document.getElementById('p-email').textContent=rec.email;
+    document.getElementById('p-date').textContent=rec.date;
+    document.getElementById('p-sig').src=sigUrl;
+    document.getElementById('p-ts').textContent=ts;
+    document.getElementById('printOut').style.display='block';
+
+    document.getElementById('doneMsg').textContent='簽署時間：'+ts+'　姓名：'+name+'　員工編號：'+empid;
+    document.getElementById('doneBox').style.display='block';
+    document.getElementById('btnSubmit').style.display='none';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  document.getElementById('btnAgain').addEventListener('click',function(){ location.reload(); });
+})();
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>
