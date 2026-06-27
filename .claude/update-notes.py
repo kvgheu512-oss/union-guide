@@ -55,7 +55,9 @@ def update():
             ).decode().strip()
             subprocess.run(['git', '-C', REPO, 'add', 'CLAUDE.md'], check=True, stderr=subprocess.DEVNULL)
             subprocess.run(
-                ['git', '-C', REPO, 'commit', '-m', '自動更新 CLAUDE.md 最近進度（Stop hook）'],
+                ['git', '-C', REPO, 'commit',
+                 '--author=Claude <noreply@anthropic.com>',
+                 '-m', '自動更新 CLAUDE.md 最近進度（Stop hook）'],
                 check=True, stderr=subprocess.DEVNULL
             )
             subprocess.run(
