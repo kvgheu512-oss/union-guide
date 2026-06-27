@@ -359,7 +359,7 @@
       .filter(function(id){return id!==e.id;}).slice(0,3)
       .map(function(id){return {t:BYID[id].t,fn:function(){answer(BYID[id]);}};});
     items=items.concat(sib);
-    items.push({t:"📋 還沒解決？交給工會",fn:function(){openCaseBox(CASEMAP[e.id]||"other", LASTQ||e.t);}});
+    items.push({t:"📋 還沒解決？找工會撐腰",fn:function(){startScreening(CASEMAP[e.id]||"other", LASTQ||e.t);}});
     items.push({t:"📂 其它分類",cls:"cat",fn:showCats});
     chips(items);
   }
@@ -379,7 +379,7 @@
     var res=search(q);
     if(!res.length){
       bub("這題我一時對不到答案😅 別擔心——你可以<b>整理成『案件單』交給工會</b>（我幫你帶好），或選個分類看看：","bot");
-      chips([{t:"📋 整理成案件單，交給工會",fn:function(){openCaseBox("other",q);}}]
+      chips([{t:"📋 整理成案件單，找工會",fn:function(){startScreening("other",q);}}]
         .concat(CATS.map(function(c){return {t:c.t,cls:"cat",fn:function(){showCat(c);}};}))
         .concat([{t:"📱 加入 LINE 群",href:LINE_URL}]));
       return;
@@ -426,6 +426,63 @@
   });
   // 提供給 chips 用的升級鈕
   window.__ebnEscalate=function(catV,desc){ openCaseBox(catV||"other", desc||LASTQ||""); };
+
+  // ─── 意願確認（找工會出面前的三問）───────────────────────────────────
+  var _scCat="", _scDesc="";
+  function startScreening(catV,desc){
+    _scCat=catV||"other"; _scDesc=desc||LASTQ||"";
+    bub("在幫你接上幹部之前，<b>先問幾個問題</b>——就像治療需要病人配合，工會幫人也一樣，雙向才有效果。\n\n你希望工會幫你做的是？","bot");
+    chips([
+      {t:"正式出面幫我處理（申訴／調解）",fn:sc_q2},
+      {t:"先了解我的權益就好",fn:sc_soft_info},
+      {t:"📂 先看自助資源",cls:"again",fn:showCats}
+    ]);
+  }
+  function sc_q2(){
+    bub("你現在比較像哪個狀態？","bot");
+    chips([
+      {t:"🔥 已決定，想認真處理",fn:sc_q3},
+      {t:"🤔 還在評估，想先了解",fn:sc_soft_eval}
+    ]);
+  }
+  function sc_q3(){
+    bub("好。如果工會出面，你願意配合嗎？（提資料、出席協調、後續跟進）","bot");
+    chips([
+      {t:"✅ 願意，叫我做什麼我配合",fn:function(){
+        bub("👍 好的，一起出力才有用！填好案件單，幹部會接手。","bot");
+        openCaseBox(_scCat,_scDesc);
+      }},
+      {t:"❓ 要看具體做什麼才決定",fn:function(){
+        bub("沒問題，先讓幹部了解你的狀況，後續再一起討論怎麼配合。","bot");
+        openCaseBox(_scCat,_scDesc);
+      }},
+      {t:"❌ 我不方便露面",fn:sc_no_show}
+    ]);
+  }
+  function sc_no_show(){
+    bub("理解你有顧慮。要說清楚：工會出面，雇主那邊一定要確認你的意願，<b>完全不露面很難幫到你</b>。\n可以先填案件單讓幹部了解狀況、私下討論看看，但最終若真的無法配合，幹部能幫到的範圍有限。","bot");
+    chips([
+      {t:"📋 還是填案件單，先聊聊",fn:function(){openCaseBox(_scCat,_scDesc);}},
+      {t:"📂 先看自助資源",cls:"again",fn:showCats}
+    ]);
+  }
+  function sc_soft_info(){
+    bub("好！先了解也很好。\n\n<b>幹部時間有限，正式出面需要確定要做才能安排</b>。先用自助資源釐清狀況，確定要動再找我。\n\n加入工會，就算這次先觀察，之後有需要也可以隨時用工會的資源。","bot");
+    chips([
+      {t:"📂 看自助資源",cls:"cat",fn:showCats},
+      {t:"🏠 去首頁了解入會",href:"index.html"},
+      {t:"📋 我確定要填案件單",fn:function(){openCaseBox(_scCat,_scDesc);}}
+    ]);
+  }
+  function sc_soft_eval(){
+    bub("還在評估很正常。工會出面通常要：<b>蒐證、書面說明、可能出席協調</b>——不是遞案就什麼都不用做，但幹部全程陪你。\n\n確定要動再找我，先把自助資源看一下很有幫助。","bot");
+    chips([
+      {t:"📂 看自助資源",cls:"cat",fn:showCats},
+      {t:"📋 好了，我確定要填案件單",fn:function(){openCaseBox(_scCat,_scDesc);}},
+      {t:"🏠 去首頁了解入會",href:"index.html"}
+    ]);
+  }
+  // ───────────────────────────────────────────────────────────────────────
 
   jsend.addEventListener("click",function(){var v=jin.value;jin.value="";handleType(v);});
   jin.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();var v=jin.value;jin.value="";handleType(v);}});
