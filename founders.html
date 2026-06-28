@@ -319,8 +319,33 @@ table.dt td.nm{min-width:62px;}
       <tbody id="signin-rows"></tbody>
     </table>
     <div style="margin-top:.75rem;font-size:12.5px;color:#555;text-align:right">
-      出席人數合計：<span class="blank bl-sm">&ensp;</span> 人
+      出席發起人合計：<span class="blank bl-sm">&ensp;</span> 人
     </div>
+
+    <div style="margin-top:1.2rem;border-top:2px solid #1A3A6B;padding-top:.75rem">
+      <div style="font-size:12px;font-weight:700;color:#1A3A6B;margin-bottom:.5rem;letter-spacing:.05em">▌ 列席人員（觀察員）</div>
+      <table class="dt" style="margin:0">
+        <thead>
+          <tr>
+            <th style="width:32px">序</th>
+            <th style="min-width:72px">姓&emsp;名</th>
+            <th>服務單位 / 職稱</th>
+            <th style="min-width:84px">本人親簽</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td class="nm" contenteditable="true" style="outline:none">黃甘迪</td>
+            <td class="l" contenteditable="true" style="outline:none">台北榮民總醫院企業工會　理事長</td>
+            <td class="sign">&nbsp;</td>
+          </tr>
+          <tr><td>2</td><td contenteditable="true" style="outline:none">&nbsp;</td><td contenteditable="true" style="outline:none">&nbsp;</td><td class="sign">&nbsp;</td></tr>
+          <tr><td>3</td><td contenteditable="true" style="outline:none">&nbsp;</td><td contenteditable="true" style="outline:none">&nbsp;</td><td class="sign">&nbsp;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <div style="display:flex;justify-content:space-between;margin-top:1.5rem;font-size:13px;gap:1rem">
       <div>主席 <span id="si-chair"></span>：<span class="blank bl-md">&ensp;</span></div>
       <div>記錄 <span id="si-wel"></span>：<span class="blank bl-md">&ensp;</span></div>
@@ -504,32 +529,39 @@ function pasteImport(){
 
   // detect column indices from header row
   var hdr=rows[0].map(function(h){return h.trim();});
-  var iName=-1,iPad=-1,iDept=-1;
+  var iName=-1,iPhone=-1,iDept=-1;
   hdr.forEach(function(h,i){
-    var hl=h.toLowerCase();
     if(h==='姓名') iName=i;
-    if(h.indexOf('行動電話')>=0||h.indexOf('手機')>=0) iPad=i;
+    if(h.indexOf('行動電話')>=0||h.indexOf('手機')>=0) iPhone=i;
     if(h.indexOf('部門')>=0||h.indexOf('職稱')>=0) iDept=i;
   });
-  // fallback: no header row detected — assume col2=name,col6=phone,col8=dept
-  var hasHeader=(iName>=0||iPad>=0||iDept>=0);
-  if(!hasHeader){iName=2;iPad=6;iDept=8;}
+  var hasHeader=(iName>=0||iPhone>=0||iDept>=0);
+  if(!hasHeader){iName=2;iPhone=6;iDept=8;}
   var dataRows=hasHeader?rows.slice(1):rows;
 
-  var tds=document.querySelectorAll('#signin-rows tr');
-  var filled=0;
-  dataRows.forEach(function(cols,di){
-    if(di>=tds.length) return;
-    var cells=tds[di].querySelectorAll('td');
+  // build name→table-row map from existing table
+  var trs=document.querySelectorAll('#signin-rows tr');
+  var nameMap={};
+  trs.forEach(function(tr){
+    var nm=tr.querySelectorAll('td')[1];
+    if(nm&&nm.textContent.trim()) nameMap[nm.textContent.trim()]=tr;
+  });
+
+  var filled=0,skipped=0;
+  dataRows.forEach(function(cols){
+    var name=(iName>=0&&cols[iName])?cols[iName].trim():'';
+    if(!name) return;
+    var tr=nameMap[name];
+    if(!tr){skipped++;return;}  // not in tonight's attendee list → skip
+    var cells=tr.querySelectorAll('td');
     // cells: 0=序, 1=姓名, 2=員工編號, 3=部門, 4=電話, 5=簽名
-    if(iName>=0&&cols[iName]!==undefined) cells[1].textContent=cols[iName].trim();
     if(iDept>=0&&cols[iDept]!==undefined) cells[3].textContent=cols[iDept].trim();
-    if(iPad>=0&&cols[iPad]!==undefined)  cells[4].textContent=cols[iPad].trim();
+    if(iPhone>=0&&cols[iPhone]!==undefined) cells[4].textContent=cols[iPhone].trim();
     filled++;
   });
 
   msg.style.color='#0F5C36';
-  msg.textContent='✅ 已填入 '+filled+' 筆（員工編號請手動補充）';
+  msg.textContent='✅ 配對填入 '+filled+' 人（員工編號請手動補充）'+(skipped?' / '+skipped+' 人不在出席名單，已略過':'');
   msg.style.display='block';
   document.getElementById('paste-area').style.display='none';
   document.getElementById('paste-toggle-btn').style.display='block';
