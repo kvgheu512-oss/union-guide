@@ -548,49 +548,53 @@ function pasteImport(){
 
   function norm(s){ return (s||'').normalize('NFC').replace(/\s/g,''); }
 
-  // 模糊比對：計算兩個名字有幾個字相同
-  function charScore(a,b){
-    var na=norm(a),nb=norm(b),n=0;
-    for(var i=0;i<na.length;i++) if(nb.indexOf(na[i])>=0) n++;
-    return n;
+  // 逐字位置比對：第N個字相同才算分（姸≠妍不計，但黃=黃計）
+  function posScore(a,b){
+    var na=norm(a),nb=norm(b),n=Math.min(na.length,nb.length),c=0;
+    for(var i=0;i<n;i++) if(na[i]===nb[i]) c++;
+    return c;
   }
 
-  // 建立表格行清單（帶正規化名字）
+  // 建立表格行清單
   var trs=Array.prototype.slice.call(document.querySelectorAll('#signin-rows tr'));
   var tableRows=trs.map(function(tr){
     var nm=tr.querySelectorAll('td')[1];
-    return {tr:tr, name:nm?(nm.textContent.trim()):'', used:false};
+    return {tr:tr,name:nm?(nm.textContent.trim()):'',used:false};
   }).filter(function(r){return r.name;});
 
-  var filled=0,noMatch=[];
-  dataRows.forEach(function(cols){
+  // 先把所有配對分數算好，分數高的優先配（貪婪法，避免同姓搶錯）
+  var pairs=[];
+  dataRows.forEach(function(cols,ri){
     if(!cols||cols.length<=iName) return;
     var sheetName=(cols[iName]||'').trim();
     if(!sheetName) return;
-
-    // 先找完全吻合（正規化後）
-    var best=null,bestScore=0;
     tableRows.forEach(function(r){
-      if(r.used) return;
-      var exactMatch=(norm(r.name)===norm(sheetName));
-      if(exactMatch){best=r;bestScore=99;return;}
-      var score=charScore(r.name,sheetName);
-      // 2/3個字相同即視為同一人（處理罕見字不同Unicode的情況）
-      if(score>=2&&score>bestScore){bestScore=score;best=r;}
+      var s=(norm(r.name)===norm(sheetName))?99:posScore(r.name,sheetName);
+      if(s>=1) pairs.push({score:s,sheet:sheetName,row:r,cols:cols});
     });
+  });
+  pairs.sort(function(a,b){return b.score-a.score;});
 
-    if(!best){noMatch.push(sheetName);return;}
-    best.used=true;
-    var cells=best.tr.querySelectorAll('td');
-    // 用試算表的名字更正表格（解決姸/妍這類問題）
-    cells[1].textContent=sheetName;
-    if(iDept>=0&&cols[iDept]!==undefined) cells[3].textContent=cols[iDept].trim();
-    if(iPhone>=0&&cols[iPhone]!==undefined) cells[4].textContent=cols[iPhone].trim();
+  var usedSheet={};
+  var filled=0,noMatch=[];
+  pairs.forEach(function(p){
+    if(p.row.used||usedSheet[p.sheet]) return;
+    p.row.used=true; usedSheet[p.sheet]=true;
+    var cells=p.row.tr.querySelectorAll('td');
+    cells[1].textContent=p.sheet; // 名字依試算表更正
+    if(iDept>=0&&p.cols[iDept]!==undefined) cells[3].textContent=p.cols[iDept].trim();
+    if(iPhone>=0&&p.cols[iPhone]!==undefined) cells[4].textContent=p.cols[iPhone].trim();
     filled++;
+  });
+  // 找出試算表裡完全沒配到的
+  dataRows.forEach(function(cols){
+    if(!cols||cols.length<=iName) return;
+    var n=(cols[iName]||'').trim();
+    if(n&&!usedSheet[n]) noMatch.push(n);
   });
 
   var txt='✅ 填入 '+filled+' 人（名字已依試算表更正）';
-  if(noMatch.length) txt+='　⚠️ 完全找不到對應：'+noMatch.join('、');
+  if(noMatch.length) txt+='　⚠️ 找不到對應（非出席名單）：'+noMatch.join('、');
   msg.style.color=noMatch.length?'#B7860B':'#0F5C36';
   msg.innerHTML=txt;
   msg.style.display='block';
