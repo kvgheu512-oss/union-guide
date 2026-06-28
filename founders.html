@@ -535,11 +535,10 @@ function pasteImport(){
   var rows=raw.split(/\r?\n/).map(function(r){return r.split('\t');});
   if(rows.length<2){msg.style.color='#c00';msg.textContent='⚠️ 資料至少需要標題+一行';msg.style.display='block';return;}
 
-  // detect column indices from header row
   var hdr=rows[0].map(function(h){return h.trim();});
   var iName=-1,iPhone=-1,iDept=-1;
   hdr.forEach(function(h,i){
-    if(h==='姓名') iName=i;
+    if(h.indexOf('姓名')>=0) iName=i;
     if(h.indexOf('行動電話')>=0||h.indexOf('手機')>=0) iPhone=i;
     if(h.indexOf('部門')>=0||h.indexOf('職稱')>=0) iDept=i;
   });
@@ -547,29 +546,34 @@ function pasteImport(){
   if(!hasHeader){iName=2;iPhone=6;iDept=8;}
   var dataRows=hasHeader?rows.slice(1):rows;
 
-  // build name→table-row map from existing table
+  // 標準化：去空白＋NFC統一編碼，解決看起來一樣但 Unicode 不同的問題
+  function norm(s){ return (s||'').normalize('NFC').replace(/\s/g,''); }
+
+  // 建立「標準化名字 → 表格行」的對照表
   var trs=document.querySelectorAll('#signin-rows tr');
   var nameMap={};
   trs.forEach(function(tr){
     var nm=tr.querySelectorAll('td')[1];
-    if(nm&&nm.textContent.trim()) nameMap[nm.textContent.trim()]=tr;
+    if(nm&&nm.textContent.trim()) nameMap[norm(nm.textContent)]=tr;
   });
 
-  var filled=0,skipped=0;
+  var filled=0,noMatch=[];
   dataRows.forEach(function(cols){
-    var name=(iName>=0&&cols[iName])?cols[iName].trim():'';
+    if(!cols||cols.length<=iName) return;
+    var name=(cols[iName]||'').trim();
     if(!name) return;
-    var tr=nameMap[name];
-    if(!tr){skipped++;return;}  // not in tonight's attendee list → skip
+    var tr=nameMap[norm(name)];
+    if(!tr){noMatch.push(name);return;}
     var cells=tr.querySelectorAll('td');
-    // cells: 0=序, 1=姓名, 2=員工編號, 3=部門, 4=電話, 5=簽名
     if(iDept>=0&&cols[iDept]!==undefined) cells[3].textContent=cols[iDept].trim();
     if(iPhone>=0&&cols[iPhone]!==undefined) cells[4].textContent=cols[iPhone].trim();
     filled++;
   });
 
-  msg.style.color='#0F5C36';
-  msg.textContent='✅ 配對填入 '+filled+' 人（員工編號請手動補充）'+(skipped?' / '+skipped+' 人不在出席名單，已略過':'');
+  var txt='✅ 填入 '+filled+' 人';
+  if(noMatch.length) txt+='　⚠️ 試算表有但名字對不上（請手動補）：'+noMatch.join('、');
+  msg.style.color=noMatch.length?'#B7860B':'#0F5C36';
+  msg.innerHTML=txt;
   msg.style.display='block';
   document.getElementById('paste-area').style.display='none';
   document.getElementById('paste-toggle-btn').style.display='block';
