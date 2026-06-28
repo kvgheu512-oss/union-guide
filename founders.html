@@ -484,7 +484,7 @@ function ce(tag,cls,text,editable){
 }
 function initSignin(){
   var tb=document.getElementById('signin-rows'); if(!tb||tb.hasChildNodes()) return;
-  for(var i=1;i<=35;i++){
+  for(var i=1;i<=20;i++){
     var tr=document.createElement('tr');
     var num=document.createElement('td'); num.textContent=i; tr.appendChild(num);
     tr.appendChild(ce('td','nm l',SIGNIN_NAMES[i-1]||'',true));
