@@ -28,6 +28,19 @@
   .who-btn .sub{display:block;font-family:'Noto Sans TC',sans-serif;font-weight:400;font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.5;}
   .who-btn.m:hover,.who-btn.m:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(15,92,54,.12);}
   .who-btn.c:hover,.who-btn.c:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,58,107,.12);}
+  /* 幹部密碼 modal */
+  #nav-gate{position:fixed;inset:0;z-index:300;background:rgba(10,20,50,.72);display:none;align-items:center;justify-content:center;padding:1.5rem;}
+  #nav-gate.show{display:flex;}
+  .ng-box{background:#fff;border-radius:16px;max-width:340px;width:100%;padding:2rem 1.5rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+  .ng-box h3{font-family:'Noto Serif TC',serif;color:var(--red-deep);font-size:18px;margin-bottom:6px;}
+  .ng-box p{font-size:12.5px;color:var(--ink-soft);margin-bottom:1.1rem;}
+  .ng-box input{width:100%;padding:.75rem 1rem;font-size:16px;border:1.5px solid #ddd;border-radius:10px;margin-bottom:8px;text-align:center;}
+  .ng-box input:focus{outline:none;border-color:var(--navy);}
+  .ng-btns{display:flex;gap:8px;}
+  .ng-btns button{flex:1;padding:.7rem;font-size:14px;font-weight:600;border:none;border-radius:10px;cursor:pointer;font-family:inherit;}
+  .ng-ok{background:var(--navy);color:#fff;}
+  .ng-cancel{background:#eee;color:#555;}
+  .ng-err{color:var(--red);font-size:12.5px;min-height:16px;margin-top:6px;}
 
   /* ─── 卡片群 ─── */
   .cards{display:flex;flex-direction:column;gap:11px;}
@@ -165,6 +178,20 @@
   </div>
 </main>
 
+<!-- 幹部密碼 modal -->
+<div id="nav-gate">
+  <div class="ng-box">
+    <h3>🛡️ 幹部專區</h3>
+    <p>請輸入幹部通行碼</p>
+    <input id="ng-pw" type="password" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="通行碼" enterkeyhint="go">
+    <div class="ng-btns">
+      <button class="ng-ok" id="ng-go">確認進入</button>
+      <button class="ng-cancel" onclick="closeNavGate()">取消</button>
+    </div>
+    <div class="ng-err" id="ng-err"></div>
+  </div>
+</div>
+
 <script>
 var NAV_KEY = 'union_nav_pref_v1';
 
@@ -278,11 +305,39 @@ function goMember(){
   show('s-member');
 }
 
-function goCadre(){
+var NAV_GATE_PW_HASH="1621267407177439"; // gaorong2026
+function cyrb53Nav(s,seed){seed=seed||0;s=s||"";var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(var i=0,c;i<s.length;i++){c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return""+(4294967296*(2097151&h2)+(h1>>>0));}
+function openCadreAfterAuth(){
   try{ localStorage.setItem(NAV_KEY, JSON.stringify({role:'cadre'})); }catch(e){}
-  buildCadreGrid();
-  show('s-cadre');
+  buildCadreGrid(); show('s-cadre');
 }
+function goCadre(){
+  // 本 session 已驗過，直接進
+  try{ if(sessionStorage.getItem('union_panel_unlocked')==='1'){ openCadreAfterAuth(); return; }}catch(e){}
+  // 否則顯示密碼 modal
+  var g=document.getElementById('nav-gate');
+  g.classList.add('show');
+  setTimeout(function(){ document.getElementById('ng-pw').focus(); },100);
+}
+function closeNavGate(){
+  document.getElementById('nav-gate').classList.remove('show');
+  document.getElementById('ng-pw').value='';
+  document.getElementById('ng-err').textContent='';
+}
+function tryNavUnlock(){
+  var v=document.getElementById('ng-pw').value.trim();
+  if(cyrb53Nav(v)===NAV_GATE_PW_HASH){
+    try{ sessionStorage.setItem('union_panel_unlocked','1'); }catch(e){}
+    closeNavGate(); openCadreAfterAuth();
+  } else {
+    document.getElementById('ng-err').textContent='通行碼不對，請再試一次';
+    document.getElementById('ng-pw').select();
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('ng-go').addEventListener('click',tryNavUnlock);
+  document.getElementById('ng-pw').addEventListener('keydown',function(e){ if(e.key==='Enter') tryNavUnlock(); });
+});
 
 // 幹部姓名：優先用「基本資料中心」發布的名單（大會選出後可改名、全站同步），否則用內建預設
 function cname(c){ try{ return (window.EBNOrg && EBNOrg.cadreName(c.key)) || c.name; }catch(e){ return c.name; } }
