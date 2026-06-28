@@ -606,7 +606,7 @@
    • 想換密碼：用 cyrb53('新密碼') 算出數字，貼到 PW_HASH。
      或直接跟 Claude Code 說「把幹部功能表的密碼改成 XXX」。
    ============================================================ */
-const LOCK = false;   // 目前不鎖；等加入「會員名冊／會議文件」有個資時，改回 true 即可
+const LOCK = true;    // 幹部專區已上鎖
 const PW_HASH = "1621267407177439";   // 通行碼：gaorong2026（改回 LOCK=true 就生效）
 const UNLOCK_KEY = "union_panel_unlocked";
 
