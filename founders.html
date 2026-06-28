@@ -84,6 +84,34 @@ table.dt td.nm{min-width:62px;}
 .charter-tab{text-align:center;padding:2rem 1rem;}
 .charter-tab p{color:#555;margin-bottom:1.2rem;font-size:14px;}
 
+/* ─── 籌備任務打勾清單 ─── */
+.task-row{display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:.42rem 0;-webkit-tap-highlight-color:transparent;}
+.task-cb{width:24px;height:24px;border:2px solid #ccc;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s;margin-top:1px;}
+.task-cb.done{background:#0F5C36;border-color:#0F5C36;}
+.task-cb.done::after{content:'✓';color:#fff;font-size:15px;font-weight:700;}
+.task-lbl{font-size:13px;color:#333;line-height:1.5;flex:1;}
+.task-lbl small{display:block;font-size:11.5px;color:#888;line-height:1.6;}
+.task-lbl.done{color:#aaa;text-decoration:line-through;}
+.pg-bar{background:#e8ecf5;border-radius:99px;height:10px;margin:.5rem 0 .25rem;}
+.pg-fill{height:10px;border-radius:99px;background:linear-gradient(90deg,#0F5C36,#2D9D6E);transition:width .4s;}
+
+/* ─── 籌備問答機器人 ─── */
+#task-bot{position:fixed;right:16px;bottom:76px;z-index:200;}
+#task-bot-btn{background:#B7860B;color:#fff;border:none;border-radius:50px;padding:.6rem 1.1rem;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);font-family:inherit;display:none;}
+#task-bot-btn.show{display:inline-flex;align-items:center;gap:6px;}
+#task-bot-panel{display:none;position:fixed;right:0;bottom:0;left:0;z-index:250;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -4px 30px rgba(0,0,0,.18);max-height:72vh;overflow-y:auto;}
+#task-bot-panel.show{display:block;}
+.tbot-hd{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.1rem .5rem;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;}
+.tbot-hd h3{font-size:15px;color:#1A3A6B;font-weight:700;}
+.tbot-close{background:none;border:none;font-size:22px;cursor:pointer;color:#999;padding:.2rem .4rem;}
+.tbot-qs{padding:.7rem 1rem;display:flex;flex-direction:column;gap:.45rem;}
+.tbot-q{background:#F0F4FF;border:1.5px solid #C8D5F0;border-radius:10px;padding:.6rem .85rem;font-size:13px;color:#1A3A6B;cursor:pointer;text-align:left;font-family:inherit;font-weight:600;}
+.tbot-q:active{background:#DCE5FC;}
+.tbot-ans{display:none;background:#F8FFF9;border:1.5px solid #B8DDB8;border-radius:10px;padding:.75rem .9rem;font-size:12.5px;color:#2a4a2a;line-height:1.85;margin:.2rem 1rem .5rem;}
+.tbot-ans.show{display:block;}
+.tbot-ans strong{color:#0F5C36;}
+.tbot-ans .warn{color:#7B1818;font-weight:700;}
+
 /* Gov forms */
 .gov-row{display:flex;align-items:center;gap:10px;padding:.65rem .4rem;border-bottom:1px solid #eee;text-decoration:none;color:inherit;}
 .gov-row:last-child{border-bottom:none;}
@@ -454,107 +482,177 @@ table.dt td.nm{min-width:62px;}
 
 <!-- ④ 籌備任務（依官方文件） -->
 <div class="tc" id="tc-tasks">
-  <div style="background:linear-gradient(135deg,#1A3A6B,#2E5C8A);color:#fff;border-radius:12px;padding:1rem 1.1rem;margin-bottom:.9rem;text-align:center">
-    <div style="font-size:18px;font-weight:700;margin-bottom:.3rem">籌備會的任務清單</div>
-    <div style="font-size:12px;opacity:.85">依據勞動部「工會組織」官方手冊編製</div>
+
+  <!-- 進度條 -->
+  <div style="background:#fff;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.9rem;box-shadow:0 2px 10px rgba(0,0,0,.07)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
+      <div style="font-size:13px;font-weight:700;color:#1A3A6B">📋 籌備進度</div>
+      <div style="font-size:13px;color:#555">完成 <span id="task-done-count" style="font-weight:700;color:#0F5C36">0</span> / 9 項
+        <span id="task-all-done" style="display:none;color:#0F5C36;font-weight:700"> 🎉 全部完成！</span>
+      </div>
+    </div>
+    <div class="pg-bar"><div class="pg-fill" id="task-pg-fill" style="width:0%"></div></div>
+    <div style="font-size:11px;color:#aaa;text-align:right">點任務卡上的圓圈打勾，進度自動記錄</div>
   </div>
 
-  <!-- 三大法定職責 -->
-  <div style="font-size:11.5px;font-weight:700;color:#7B1818;letter-spacing:.06em;margin-bottom:.5rem">▌ 籌備會三大法定職責</div>
-
+  <!-- ── 職責① ── -->
+  <div style="font-size:11.5px;font-weight:700;color:#7B1818;letter-spacing:.06em;margin-bottom:.4rem">▌ 籌備會三大法定職責</div>
   <div class="grp-card" style="border-left:4px solid #C0392B;margin-bottom:.6rem">
-    <div class="grp-h" style="background:#C0392B">
-      <span style="font-size:18px">①</span> 擬定基本文件草案
-    </div>
-    <div class="grp-b">
-      <div class="grp-item">📜 <strong>工會章程</strong>（草案，成立大會表決通過）</div>
-      <div class="grp-item">📋 <strong>年度工作計畫</strong>（第一年要做什麼）</div>
-      <div class="grp-item">💰 <strong>年度經費預算</strong>（收入來源、支出估算）</div>
-      <div style="background:#FFF0F0;border-radius:6px;padding:.45rem .7rem;font-size:12px;color:#7B1818;margin-top:.5rem;line-height:1.7">
-        ⚠️ 這些都是「草案」，需在<strong>成立大會提交全體會員表決</strong>，不能籌備會自己決定就算數。
+    <div class="grp-h" style="background:#C0392B">① 擬定基本文件草案</div>
+    <div class="grp-b" style="display:flex;flex-direction:column;gap:.1rem">
+      <label class="task-row" onclick="toggleTask('t_charter')">
+        <div class="task-cb" id="cb_t_charter"></div>
+        <div class="task-lbl" id="lb_t_charter">📜 <strong>工會章程</strong>（草案）<small>成立大會提交全體會員表決通過</small></div>
+      </label>
+      <label class="task-row" onclick="toggleTask('t_plan')">
+        <div class="task-cb" id="cb_t_plan"></div>
+        <div class="task-lbl" id="lb_t_plan">📋 <strong>年度工作計畫</strong><small>第一年要做什麼，列出來</small></div>
+      </label>
+      <label class="task-row" onclick="toggleTask('t_budget')">
+        <div class="task-cb" id="cb_t_budget"></div>
+        <div class="task-lbl" id="lb_t_budget">💰 <strong>年度經費預算</strong><small>收入來源（會費）、支出估算</small></div>
+      </label>
+      <div style="background:#FFF0F0;border-radius:6px;padding:.4rem .7rem;font-size:12px;color:#7B1818;margin-top:.3rem;line-height:1.7">
+        ⚠️ 以上都是「草案」，需在成立大會提交<strong>全體會員表決</strong>才算數。
       </div>
     </div>
   </div>
 
+  <!-- ── 職責② ── -->
   <div class="grp-card" style="border-left:4px solid #1A3A6B;margin-bottom:.6rem">
-    <div class="grp-h" style="background:#1A3A6B">
-      <span style="font-size:18px">②</span> 公開徵求會員
-    </div>
+    <div class="grp-h" style="background:#1A3A6B">② 公開徵求會員</div>
     <div class="grp-b">
-      <div style="font-size:12.5px;color:#444;line-height:1.8;margin-bottom:.4rem">
-        透過<strong>公告、網路、新聞紙或其他管道</strong>，讓有加入資格的人都知道、都有機會加入。
-      </div>
-      <div class="grp-item">📢 院內公告欄張貼</div>
-      <div class="grp-item">📱 LINE 群、IG、FB、Threads、Dcard 宣傳</div>
-      <div class="grp-item">📧 Email 寄送邀請函</div>
-      <div class="grp-item">🗣️ 口耳相傳、同事邀約</div>
+      <label class="task-row" onclick="toggleTask('t_recruit')">
+        <div class="task-cb" id="cb_t_recruit"></div>
+        <div class="task-lbl" id="lb_t_recruit"><strong>透過各管道讓有資格的人都知道</strong>
+          <small>公告欄 · LINE · IG · FB · Threads · Dcard · Email · 口耳相傳</small>
+        </div>
+      </label>
     </div>
   </div>
 
-  <div class="grp-card" style="border-left:4px solid #0F5C36;margin-bottom:1rem">
-    <div class="grp-h" style="background:#0F5C36">
-      <span style="font-size:18px">③</span> 籌備成立大會
-    </div>
-    <div class="grp-b">
-      <div style="font-size:12.5px;color:#666;margin-bottom:.5rem">以下五項是官方文件明定的「召開成立大會前準備工作」：</div>
-
-      <!-- (1) -->
-      <div style="background:#F0F7FF;border-radius:8px;padding:.6rem .8rem;margin-bottom:.45rem">
-        <div style="font-weight:700;font-size:13px;color:#1A3A6B;margin-bottom:.25rem">（1）徵集提案</div>
-        <div style="font-size:12.5px;color:#444;line-height:1.75">
-          在大會前向會員收集「想提出討論的議題」。<br>
-          例如：提案加入<strong>高雄市產業總工會</strong>（區域聯合組織）——日後可與其他工會一起推動勞工議題、交流爭取勞動權益的實務經驗。
+  <!-- ── 職責③ ── -->
+  <div class="grp-card" style="border-left:4px solid #0F5C36;margin-bottom:.9rem">
+    <div class="grp-h" style="background:#0F5C36">③ 籌備成立大會（5 步驟）</div>
+    <div class="grp-b" style="display:flex;flex-direction:column;gap:.3rem">
+      <label class="task-row" onclick="toggleTask('t_proposal')">
+        <div class="task-cb" id="cb_t_proposal"></div>
+        <div class="task-lbl" id="lb_t_proposal"><strong>（1）徵集提案</strong>
+          <small>向會員收集「想討論的議題」，例如：提案加入高雄市產業總工會</small>
         </div>
-      </div>
-
-      <!-- (2) -->
-      <div style="background:#F0F7FF;border-radius:8px;padding:.6rem .8rem;margin-bottom:.45rem">
-        <div style="font-weight:700;font-size:13px;color:#1A3A6B;margin-bottom:.25rem">（2）洽借場地</div>
-        <div style="font-size:12.5px;color:#444;line-height:1.75">
-          成立大會需要一個空間容納<strong>全體會員</strong>，提早聯繫借用。<br>
-          例如：洽借院內會議室、民眾活動中心，或其他適合的場地。
+      </label>
+      <label class="task-row" onclick="toggleTask('t_venue')">
+        <div class="task-cb" id="cb_t_venue"></div>
+        <div class="task-lbl" id="lb_t_venue"><strong>（2）洽借場地</strong>
+          <small>容納全體會員的空間，提早聯繫借用（院內會議室或外部場地）</small>
         </div>
-      </div>
-
-      <!-- (3) -->
-      <div style="background:#FFF8E1;border-radius:8px;padding:.6rem .8rem;margin-bottom:.45rem;border:1px solid #F0D080">
-        <div style="font-weight:700;font-size:13px;color:#B7860B;margin-bottom:.25rem">（3）通知出（列）席人員 ⭐</div>
-        <div style="font-size:12.5px;color:#444;line-height:1.75">
-          提前寄發<strong>開會通知書</strong>給每一位會員。<br>
-          <strong style="color:#7B1818">重要提醒：</strong>如果計畫在成立大會當天「選出理事、監事」後，接著開第 1 屆第 1 次<strong>理事會、監事會及常務理事會</strong>，<strong>這三個會議都必須在通知書中一起寫明</strong>，不能開完才臨時說要開。
+      </label>
+      <label class="task-row" onclick="toggleTask('t_notify')" style="background:#FFFBF0;border-radius:8px;padding:.42rem .6rem">
+        <div class="task-cb" id="cb_t_notify"></div>
+        <div class="task-lbl" id="lb_t_notify"><strong>（3）通知出（列）席人員 ⭐</strong>
+          <small>寄發開會通知書。<span style="color:#7B1818;font-weight:700">若當天還要開第1次理事會、監事會，要在通知書一起寫明！</span></small>
         </div>
-      </div>
-
-      <!-- (4) -->
-      <div style="background:#F0F7FF;border-radius:8px;padding:.6rem .8rem;margin-bottom:.45rem">
-        <div style="font-weight:700;font-size:13px;color:#1A3A6B;margin-bottom:.25rem">（4）編印大會手冊</div>
-        <div style="font-size:12.5px;color:#444;line-height:1.75">
-          製作發給與會者的紙本（或電子）手冊，內容包含：<br>
-          • 籌備會工作報告<br>
-          • 討論提案（含選舉事項）<br>
-          • 各項附件資料
+      </label>
+      <label class="task-row" onclick="toggleTask('t_handbook')">
+        <div class="task-cb" id="cb_t_handbook"></div>
+        <div class="task-lbl" id="lb_t_handbook"><strong>（4）編印大會手冊</strong>
+          <small>含籌備會工作報告、討論提案（含選舉事項）、各項附件</small>
         </div>
-      </div>
-
-      <!-- (5) -->
-      <div style="background:#F0F7FF;border-radius:8px;padding:.6rem .8rem">
-        <div style="font-weight:700;font-size:13px;color:#1A3A6B;margin-bottom:.25rem">（5）準備選舉事宜</div>
-        <div style="font-size:12.5px;color:#444;line-height:1.75">
-          成立大會要當場選出理事、監事，所需物品提前備好：<br>
-          • 🗳️ 選票<br>
-          • 📦 投票箱<br>
-          • 📋 領取選票名冊（確認身分用）<br>
-          • 📊 計票單
+      </label>
+      <label class="task-row" onclick="toggleTask('t_election')">
+        <div class="task-cb" id="cb_t_election"></div>
+        <div class="task-lbl" id="lb_t_election"><strong>（5）準備選舉事宜</strong>
+          <small>選票 · 投票箱 · 領取選票名冊 · 計票單</small>
         </div>
-      </div>
-
+      </label>
     </div>
   </div>
 
-  <!-- 來源說明 -->
-  <div style="background:#F0F3FA;border-radius:9px;padding:.7rem .9rem;font-size:11.5px;color:#666;line-height:1.8;margin-top:.4rem">
-    📚 以上內容依據<strong>勞動部官方工會組織手冊</strong>整理。籌備會的每一項任務都有法律依據，按步驟走就不會漏。
+  <div style="background:#F0F3FA;border-radius:9px;padding:.65rem .9rem;font-size:11.5px;color:#666;line-height:1.8">
+    📚 依據<strong>勞動部官方工會組織手冊</strong>整理。有問題點右下角「💬 籌備問答」。
   </div>
+</div>
+
+<!-- 籌備問答機器人浮鈕（只在籌備任務分頁顯示） -->
+<div id="task-bot">
+  <button id="task-bot-btn" onclick="openTaskBot()">💬 籌備問答</button>
+</div>
+
+<!-- 籌備問答面板 -->
+<div id="task-bot-panel">
+  <div class="tbot-hd">
+    <h3>💬 籌備問答小幫手</h3>
+    <button class="tbot-close" onclick="closeTaskBot()">✕</button>
+  </div>
+  <div style="padding:.5rem 1rem .3rem;font-size:12px;color:#888">點問題即可看答案，再點收起</div>
+  <div class="tbot-qs">
+
+    <button class="tbot-q" onclick="tbAns(this,'a1')">❓ 現在下一步要做什麼？</button>
+    <div class="tbot-ans" id="a1"></div>
+
+    <button class="tbot-q" onclick="tbAns(this,'a2')">📨 開會通知要寫哪些內容？</button>
+    <div class="tbot-ans" id="a2">
+      <strong>開會通知書必要內容：</strong><br>
+      1. 會議名稱（高榮企業工會成立大會）<br>
+      2. 開會日期、時間、地點<br>
+      3. 出席資格（有資格的會員）<br>
+      4. 議程（含選舉理事、監事）<br>
+      <span class="warn">⭐ 若預定成立大會後接著開第1屆第1次理事會、監事會及常務理事會，<strong>三個會議的時間與議程都要在同一份通知書中寫明</strong>，否則有違法之虞。</span>
+    </div>
+
+    <button class="tbot-q" onclick="tbAns(this,'a3')">🗳️ 成立大會選舉要準備什麼物品？</button>
+    <div class="tbot-ans" id="a3">
+      <strong>選舉必備物品清單：</strong><br>
+      ✅ 選票（每位選民一張，需列出候選人）<br>
+      ✅ 投票箱（需可上鎖或封箱）<br>
+      ✅ 領取選票名冊（逐一簽名確認領票）<br>
+      ✅ 計票單（唱票、複票各一份）<br>
+      ✅ 選舉人名冊（確認誰有投票資格）<br>
+      <span class="warn">⭐ 理事與監事分開選，需準備兩套選票。</span>
+    </div>
+
+    <button class="tbot-q" onclick="tbAns(this,'a4')">👥 怎麼公開徵求會員？</button>
+    <div class="tbot-ans" id="a4">
+      法律要求用「<strong>可讓有資格者得知</strong>」的方式，不限管道：<br>
+      📢 院內公告欄（最正式，可存底）<br>
+      📱 LINE 群、IG、FB、Threads、Dcard<br>
+      📧 Email 寄發邀請函<br>
+      🗣️ 逐一邀請同事<br><br>
+      <strong>建議同時用多管道</strong>，並保留截圖或列印存底，日後主管機關如有疑問可提供佐證。
+    </div>
+
+    <button class="tbot-q" onclick="tbAns(this,'a5')">📖 大會手冊要包含哪些內容？</button>
+    <div class="tbot-ans" id="a5">
+      <strong>大會手冊建議內容：</strong><br>
+      1. 籌備會工作報告（籌備期間做了什麼）<br>
+      2. 工會章程草案<br>
+      3. 年度工作計畫草案<br>
+      4. 年度經費預算草案<br>
+      5. 討論提案（徵集到的各項提案）<br>
+      6. 選舉事項說明（候選人名單、選舉規則）<br>
+      7. 其他附件（名冊、授權書等）
+    </div>
+
+    <button class="tbot-q" onclick="tbAns(this,'a6')">📋 什麼是徵集提案？怎麼做？</button>
+    <div class="tbot-ans" id="a6">
+      成立大會有一個議程是「<strong>討論提案</strong>」，讓會員表決工會要做的事。<br><br>
+      <strong>常見提案類型：</strong><br>
+      • 加入高雄市產業總工會（區域聯合組織）<br>
+      • 會費金額決議<br>
+      • 工作目標優先順序<br><br>
+      <strong>怎麼做：</strong>大會前以書面或表單向所有發起人、會員收集提案，整理後列入大會手冊的「討論提案」議程。
+    </div>
+
+    <button class="tbot-q" onclick="tbAns(this,'a7')">⏳ 籌備會要在多久內完成？</button>
+    <div class="tbot-ans" id="a7">
+      依《工會法》規定：<br>
+      <strong>籌備會成立後 6 個月內</strong>必須召開成立大會，<br>
+      逾期未召開者，主管機關（高雄市勞工局）可撤銷籌備許可。<br><br>
+      建議及早安排，留足時間準備手冊、通知、場地。
+    </div>
+
+  </div>
+  <div style="height:1.5rem"></div>
 </div>
 
 <!-- ⑤ 章程 -->
@@ -568,6 +666,78 @@ table.dt td.nm{min-width:62px;}
 </div>
 
 <script>
+/* ─── 籌備任務清單 ─── */
+var TASK_STORE='ebn_tasks_v1';
+var ALL_TASKS=['t_charter','t_plan','t_budget','t_recruit','t_proposal','t_venue','t_notify','t_handbook','t_election'];
+var TASK_LABEL={
+  t_charter:'工會章程草案',t_plan:'年度工作計畫',t_budget:'年度經費預算',
+  t_recruit:'公開徵求會員',
+  t_proposal:'徵集提案',t_venue:'洽借場地',t_notify:'通知出列席人員',
+  t_handbook:'編印大會手冊',t_election:'準備選舉事宜'
+};
+function loadTasks(){try{return JSON.parse(localStorage.getItem(TASK_STORE)||'{}');}catch(e){return {};}}
+function saveTasks(d){try{localStorage.setItem(TASK_STORE,JSON.stringify(d));}catch(e){}}
+function toggleTask(key){
+  var d=loadTasks(); d[key]=!d[key]; saveTasks(d); renderTasks();
+}
+function renderTasks(){
+  var d=loadTasks(); var done=0;
+  ALL_TASKS.forEach(function(k){
+    var cb=document.getElementById('cb_'+k);
+    var lb=document.getElementById('lb_'+k);
+    if(!cb) return;
+    if(d[k]){cb.classList.add('done');if(lb)lb.classList.add('done');done++;}
+    else{cb.classList.remove('done');if(lb)lb.classList.remove('done');}
+  });
+  var cnt=document.getElementById('task-done-count');
+  if(cnt) cnt.textContent=done;
+  var fill=document.getElementById('task-pg-fill');
+  if(fill) fill.style.width=Math.round(done/ALL_TASKS.length*100)+'%';
+  var all=document.getElementById('task-all-done');
+  if(all) all.style.display=(done===ALL_TASKS.length)?'inline':'none';
+}
+
+/* ─── 籌備問答機器人 ─── */
+var _tbOpen=null;
+function openTaskBot(){
+  document.getElementById('task-bot-panel').classList.add('show');
+  renderA1();
+}
+function closeTaskBot(){
+  document.getElementById('task-bot-panel').classList.remove('show');
+}
+function tbAns(btn,id){
+  var panel=document.getElementById(id);
+  if(!panel) return;
+  if(panel.classList.contains('show')){panel.classList.remove('show');return;}
+  if(_tbOpen&&_tbOpen!==id){
+    var prev=document.getElementById(_tbOpen);
+    if(prev) prev.classList.remove('show');
+  }
+  if(id==='a1') renderA1();
+  panel.classList.add('show');
+  _tbOpen=id;
+}
+function renderA1(){
+  var d=loadTasks();
+  var undone=ALL_TASKS.filter(function(k){return !d[k];});
+  var el=document.getElementById('a1'); if(!el) return;
+  if(undone.length===0){
+    el.innerHTML='<strong style="color:#0F5C36">🎉 全部 9 項任務都完成了！</strong><br>可以準備召開成立大會了。';
+    return;
+  }
+  var next=TASK_LABEL[undone[0]];
+  var rest=undone.slice(1).map(function(k){return '• '+TASK_LABEL[k];}).join('<br>');
+  el.innerHTML='<strong>⭐ 下一步：'+next+'</strong><br><br>'+(rest?'之後還有：<br>'+rest:'');
+}
+
+/* ─── 切頁時顯示/隱藏籌備問答浮鈕 ─── */
+function showTaskBot(show){
+  var btn=document.getElementById('task-bot-btn');
+  if(btn){ if(show) btn.classList.add('show'); else btn.classList.remove('show'); }
+  if(!show) closeTaskBot();
+}
+
 var ROLES=[
   {key:'chair',label:'理事長（籌備會主席）'},
   {key:'fin',  label:'總務委員（一）'},
@@ -719,6 +889,7 @@ function sw(name,btn){
   document.querySelectorAll('.tb').forEach(function(e){e.classList.remove('on');});
   var c=document.getElementById('tc-'+name); if(c) c.classList.add('on');
   if(btn) btn.classList.add('on');
+  showTaskBot(name==='tasks');
 }
 
 function pt(name){
@@ -731,6 +902,7 @@ document.addEventListener('DOMContentLoaded',function(){
   initSignin();
   initCommittee();
   initNames();
+  renderTasks();
 });
 document.addEventListener('ebnorg:public',function(){
   initCommittee();
