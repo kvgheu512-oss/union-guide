@@ -284,6 +284,7 @@ table.dt td.nm{min-width:62px;}
 <!-- ② 簽到表 -->
 <div class="tc" id="tc-signin">
   <button class="prt-btn" onclick="pt('signin')">🖨️ 列印簽到表</button>
+  <div style="text-align:center;font-size:12.5px;color:#888;margin-bottom:.7rem;margin-top:-.4rem" class="no-print">💡 點任何格子可直接輸入，填完再按列印</div>
   <div class="doc">
     <div class="dt">高雄榮民總醫院企業工會（籌備中）</div>
     <div class="dt" style="font-size:15px;margin-top:.15rem">發起人會議 簽到表</div>
@@ -470,11 +471,29 @@ var ROLES=[
 
 function gn(k){ return (typeof EBNOrg!=='undefined'&&EBNOrg.cadreName(k))||''; }
 
+var SIGNIN_NAMES=[
+  '楊淯涵','巫佳容','陳依婷','蔡心妤','范育苹',
+  '王聖涵','郭俞君','莊瑋聆','陳怡筠','林欣儀',
+  '黃淑妍','李宗樺','張芳瑜','黃湘婷','潘奕萱',
+  '楊舒閔','麥嘉宜'
+];
+function ce(tag,cls,text,editable){
+  var td=document.createElement(tag);
+  if(cls) td.className=cls;
+  if(editable){td.contentEditable='true';td.style.outline='none';}
+  td.textContent=text||'';
+  return td;
+}
 function initSignin(){
   var tb=document.getElementById('signin-rows'); if(!tb||tb.hasChildNodes()) return;
   for(var i=1;i<=35;i++){
     var tr=document.createElement('tr');
-    tr.innerHTML='<td>'+i+'</td><td class="nm l">&nbsp;</td><td>&nbsp;</td><td class="l">&nbsp;</td><td>&nbsp;</td><td class="sign">&nbsp;</td>';
+    var num=document.createElement('td'); num.textContent=i; tr.appendChild(num);
+    tr.appendChild(ce('td','nm l',SIGNIN_NAMES[i-1]||'',true));
+    tr.appendChild(ce('td','',''        ,true));
+    tr.appendChild(ce('td','l',''       ,true));
+    tr.appendChild(ce('td','',''        ,true));
+    tr.appendChild(ce('td','sign',''    ,false));
     tb.appendChild(tr);
   }
 }
