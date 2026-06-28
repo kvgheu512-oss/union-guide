@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-28
 
 最近 commits：
+  a973aee 貼入比對改模糊比對、名字自動依試算表更正版本 2026062808
+  001b0d0 自動更新 CLAUDE.md 最近進度（Stop hook）
   3daeae9 自動更新 CLAUDE.md 最近進度（Stop hook）
   76190cc 試算表貼入改用NFC標準化比對、顯示未配對名單版本 2026062807
   123b70e 自動更新 CLAUDE.md 最近進度（Stop hook）
-  fa7f7e9 簽到表印列版面修正、填入時間18:00地點耀嵩豐版本 2026062806
-  a7bb1ef 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
