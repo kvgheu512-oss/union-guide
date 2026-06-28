@@ -67,6 +67,13 @@ table.dt td.nm{min-width:62px;}
 .le-d{width:13px;height:13px;border-radius:50%;}
 .note-box{background:#FFF8E1;border-radius:9px;padding:.75rem .9rem;font-size:12.5px;color:#6D4C00;line-height:1.8;margin-top:.9rem;}
 
+/* Group cards */
+.grp-card{border-radius:9px;overflow:hidden;margin-bottom:.55rem;border:1px solid #e0e4ef;}
+.grp-h{padding:.42rem .8rem;color:#fff;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.grp-b{padding:.45rem .8rem;background:#fff;}
+.grp-item{font-size:12.5px;color:#444;padding:.18rem 0;line-height:1.65;}
+.grp-item::before{content:'▸ ';}
+
 /* Charter tab */
 .charter-tab{text-align:center;padding:2rem 1rem;}
 .charter-tab p{color:#555;margin-bottom:1.2rem;font-size:14px;}
@@ -369,6 +376,54 @@ table.dt td.nm{min-width:62px;}
 <!-- ④ 籌備委員名單 -->
 <div class="tc" id="tc-committee">
   <button class="prt-btn" onclick="pt('committee')">🖨️ 列印籌委名單</button>
+
+  <div class="doc" style="margin-bottom:.8rem">
+    <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:.75rem;border-left:3px solid var(--gold);padding-left:8px">籌備委員會 五個組別分工（會長公布）</div>
+
+    <div class="grp-card">
+      <div class="grp-h" style="background:#1A3A6B">① 總務組</div>
+      <div class="grp-b">
+        <div class="grp-item">刻印籌備會橫條章「高雄榮民總醫院企業工會籌備會」</div>
+        <div class="grp-item">籌備會收支紀錄</div>
+        <div class="grp-item">114 和 115 年度預算計畫表</div>
+      </div>
+    </div>
+
+    <div class="grp-card">
+      <div class="grp-h" style="background:#0F5C36">② 組訓組</div>
+      <div class="grp-b">
+        <div class="grp-item">會議設計</div>
+        <div class="grp-item">開會地點和時間確認</div>
+        <div class="grp-item">聯繫籌備會成員</div>
+        <div class="grp-item">設計入會申請書及審核連署及入會工作</div>
+      </div>
+    </div>
+
+    <div class="grp-card">
+      <div class="grp-h" style="background:#B7860B">③ 宣傳組</div>
+      <div class="grp-b">
+        <div class="grp-item">招募宣傳、文宣設計</div>
+        <div class="grp-item">工會 Logo、會旗、背心、名片設計</div>
+      </div>
+    </div>
+
+    <div class="grp-card">
+      <div class="grp-h" style="background:#7B1818">④ 法務組</div>
+      <div class="grp-b">
+        <div class="grp-item">擬訂章程及各項規則辦法等草案</div>
+      </div>
+    </div>
+
+    <div class="grp-card">
+      <div class="grp-h" style="background:#5B4A8A">⑤ 公關組</div>
+      <div class="grp-b">
+        <div class="grp-item">聯絡友好工會</div>
+        <div class="grp-item">邀請主管單位出席成立大會</div>
+        <div class="grp-item">IG、FB、Threads（脆）社群經營</div>
+      </div>
+    </div>
+  </div>
+
   <div class="doc">
     <div class="dt">高雄榮民總醫院企業工會（籌備中）</div>
     <div class="dt" style="font-size:15px;margin-top:.15rem">籌備委員名單</div>
