@@ -137,6 +137,7 @@ table.dt td.nm{min-width:62px;}
   <button class="tb" onclick="sw('timeline',this)">⏱ 議程時間表</button>
   <button class="tb" onclick="sw('signin',this)">✍️ 簽到表</button>
   <button class="tb" onclick="sw('minutes',this)">📝 會議紀錄</button>
+  <button class="tb" onclick="sw('tasks',this)">🏗️ 籌備任務</button>
   <button class="tb" onclick="sw('committee',this)">👥 籌委名單</button>
   <button class="tb" onclick="sw('charter',this)">📜 章程</button>
 </div>
@@ -448,6 +449,111 @@ table.dt td.nm{min-width:62px;}
       <div>記錄（簽名）：<span class="blank bl-lg">&ensp;</span></div>
     </div>
     <div style="margin-top:.75rem;font-size:11.5px;color:#888;text-align:center">本名單於第一次發起人會議通過，作為向主管機關申請籌備工會之附件</div>
+  </div>
+</div>
+
+<!-- ④ 籌備任務（依官方文件） -->
+<div class="tc" id="tc-tasks">
+  <div style="background:linear-gradient(135deg,#1A3A6B,#2E5C8A);color:#fff;border-radius:12px;padding:1rem 1.1rem;margin-bottom:.9rem;text-align:center">
+    <div style="font-size:18px;font-weight:700;margin-bottom:.3rem">籌備會的任務清單</div>
+    <div style="font-size:12px;opacity:.85">依據勞動部「工會組織」官方手冊編製</div>
+  </div>
+
+  <!-- 三大法定職責 -->
+  <div style="font-size:11.5px;font-weight:700;color:#7B1818;letter-spacing:.06em;margin-bottom:.5rem">▌ 籌備會三大法定職責</div>
+
+  <div class="grp-card" style="border-left:4px solid #C0392B;margin-bottom:.6rem">
+    <div class="grp-h" style="background:#C0392B">
+      <span style="font-size:18px">①</span> 擬定基本文件草案
+    </div>
+    <div class="grp-b">
+      <div class="grp-item">📜 <strong>工會章程</strong>（草案，成立大會表決通過）</div>
+      <div class="grp-item">📋 <strong>年度工作計畫</strong>（第一年要做什麼）</div>
+      <div class="grp-item">💰 <strong>年度經費預算</strong>（收入來源、支出估算）</div>
+      <div style="background:#FFF0F0;border-radius:6px;padding:.45rem .7rem;font-size:12px;color:#7B1818;margin-top:.5rem;line-height:1.7">
+        ⚠️ 這些都是「草案」，需在<strong>成立大會提交全體會員表決</strong>，不能籌備會自己決定就算數。
+      </div>
+    </div>
+  </div>
+
+  <div class="grp-card" style="border-left:4px solid #1A3A6B;margin-bottom:.6rem">
+    <div class="grp-h" style="background:#1A3A6B">
+      <span style="font-size:18px">②</span> 公開徵求會員
+    </div>
+    <div class="grp-b">
+      <div style="font-size:12.5px;color:#444;line-height:1.8;margin-bottom:.4rem">
+        透過<strong>公告、網路、新聞紙或其他管道</strong>，讓有加入資格的人都知道、都有機會加入。
+      </div>
+      <div class="grp-item">📢 院內公告欄張貼</div>
+      <div class="grp-item">📱 LINE 群、IG、FB、Threads、Dcard 宣傳</div>
+      <div class="grp-item">📧 Email 寄送邀請函</div>
+      <div class="grp-item">🗣️ 口耳相傳、同事邀約</div>
+    </div>
+  </div>
+
+  <div class="grp-card" style="border-left:4px solid #0F5C36;margin-bottom:1rem">
+    <div class="grp-h" style="background:#0F5C36">
+      <span style="font-size:18px">③</span> 籌備成立大會
+    </div>
+    <div class="grp-b">
+      <div style="font-size:12.5px;color:#666;margin-bottom:.5rem">以下五項是官方文件明定的「召開成立大會前準備工作」：</div>
+
+      <!-- (1) -->
+      <div style="background:#F0F7FF;border-radius:8px;padding:.6rem .8rem;margin-bottom:.45rem">
+        <div style="font-weight:700;font-size:13px;color:#1A3A6B;margin-bottom:.25rem">（1）徵集提案</div>
+        <div style="font-size:12.5px;color:#444;line-height:1.75">
+          在大會前向會員收集「想提出討論的議題」。<br>
+          例如：提案加入<strong>高雄市產業總工會</strong>（區域聯合組織）——日後可與其他工會一起推動勞工議題、交流爭取勞動權益的實務經驗。
+        </div>
+      </div>
+
+      <!-- (2) -->
+      <div style="background:#F0F7FF;border-radius:8px;padding:.6rem .8rem;margin-bottom:.45rem">
+        <div style="font-weight:700;font-size:13px;color:#1A3A6B;margin-bottom:.25rem">（2）洽借場地</div>
+        <div style="font-size:12.5px;color:#444;line-height:1.75">
+          成立大會需要一個空間容納<strong>全體會員</strong>，提早聯繫借用。<br>
+          例如：洽借院內會議室、民眾活動中心，或其他適合的場地。
+        </div>
+      </div>
+
+      <!-- (3) -->
+      <div style="background:#FFF8E1;border-radius:8px;padding:.6rem .8rem;margin-bottom:.45rem;border:1px solid #F0D080">
+        <div style="font-weight:700;font-size:13px;color:#B7860B;margin-bottom:.25rem">（3）通知出（列）席人員 ⭐</div>
+        <div style="font-size:12.5px;color:#444;line-height:1.75">
+          提前寄發<strong>開會通知書</strong>給每一位會員。<br>
+          <strong style="color:#7B1818">重要提醒：</strong>如果計畫在成立大會當天「選出理事、監事」後，接著開第 1 屆第 1 次<strong>理事會、監事會及常務理事會</strong>，<strong>這三個會議都必須在通知書中一起寫明</strong>，不能開完才臨時說要開。
+        </div>
+      </div>
+
+      <!-- (4) -->
+      <div style="background:#F0F7FF;border-radius:8px;padding:.6rem .8rem;margin-bottom:.45rem">
+        <div style="font-weight:700;font-size:13px;color:#1A3A6B;margin-bottom:.25rem">（4）編印大會手冊</div>
+        <div style="font-size:12.5px;color:#444;line-height:1.75">
+          製作發給與會者的紙本（或電子）手冊，內容包含：<br>
+          • 籌備會工作報告<br>
+          • 討論提案（含選舉事項）<br>
+          • 各項附件資料
+        </div>
+      </div>
+
+      <!-- (5) -->
+      <div style="background:#F0F7FF;border-radius:8px;padding:.6rem .8rem">
+        <div style="font-weight:700;font-size:13px;color:#1A3A6B;margin-bottom:.25rem">（5）準備選舉事宜</div>
+        <div style="font-size:12.5px;color:#444;line-height:1.75">
+          成立大會要當場選出理事、監事，所需物品提前備好：<br>
+          • 🗳️ 選票<br>
+          • 📦 投票箱<br>
+          • 📋 領取選票名冊（確認身分用）<br>
+          • 📊 計票單
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 來源說明 -->
+  <div style="background:#F0F3FA;border-radius:9px;padding:.7rem .9rem;font-size:11.5px;color:#666;line-height:1.8;margin-top:.4rem">
+    📚 以上內容依據<strong>勞動部官方工會組織手冊</strong>整理。籌備會的每一項任務都有法律依據，按步驟走就不會漏。
   </div>
 </div>
 
