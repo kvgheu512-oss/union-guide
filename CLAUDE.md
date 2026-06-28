@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-28
 
 最近 commits：
+  66e94dc 簽到表：貼入改按名字配對、加列席貴賓區（黃甘迪）版本 2026062805
+  6efd672 自動更新 CLAUDE.md 最近進度（Stop hook）
   41c297a 移除北榮工會分組卡片、加入試算表貼入功能版本 2026062804
   eb14f6a 自動更新 CLAUDE.md 最近進度（Stop hook）
   67bdf6d 自動更新 CLAUDE.md 最近進度（Stop hook）
-  e177b27 自動更新 CLAUDE.md 最近進度（Stop hook）
-  03e27ef 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
