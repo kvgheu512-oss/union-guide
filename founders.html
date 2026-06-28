@@ -95,8 +95,16 @@ table.dt td.nm{min-width:62px;}
   .tc{display:none!important;padding:0;max-width:100%;}
   .tc.print-this{display:block!important;}
   .doc{box-shadow:none;border-radius:0;padding:.3rem;}
-  table.dt th,table.dt td{padding:4px 5px;font-size:11.5px;}
-  table.dt th{font-size:11px;}
+  table.dt{table-layout:fixed;width:100%;word-break:break-all;}
+  table.dt th,table.dt td{padding:3px 4px;font-size:10.5px;word-break:break-all;}
+  table.dt th{font-size:10px;}
+  /* 簽到表欄寬固定，確保印得完整 */
+  #tc-signin table.dt th:nth-child(1),#tc-signin table.dt td:nth-child(1){width:5%;}
+  #tc-signin table.dt th:nth-child(2),#tc-signin table.dt td:nth-child(2){width:12%;}
+  #tc-signin table.dt th:nth-child(3),#tc-signin table.dt td:nth-child(3){width:13%;}
+  #tc-signin table.dt th:nth-child(4),#tc-signin table.dt td:nth-child(4){width:22%;}
+  #tc-signin table.dt th:nth-child(5),#tc-signin table.dt td:nth-child(5){width:18%;}
+  #tc-signin table.dt th:nth-child(6),#tc-signin table.dt td:nth-child(6){width:30%;}
   .dt{font-size:15px;}
   .ds{font-size:12px;}
   .dmeta .field{font-size:12.5px;}
@@ -302,8 +310,8 @@ table.dt td.nm{min-width:62px;}
     <div class="dt" style="font-size:15px;margin-top:.15rem">發起人會議 簽到表</div>
     <div class="ds">中華民國115年6月27日</div>
     <div class="dmeta">
-      <div class="field"><span class="fl">會議時間</span>民國115年6月27日　　　時　　分</div>
-      <div class="field"><span class="fl">會議地點</span>&nbsp;</div>
+      <div class="field"><span class="fl">會議時間</span>民國115年6月27日　18　時　00　分</div>
+      <div class="field"><span class="fl">會議地點</span>高雄市左營區博愛四路309號（耀嵩豐大樓）</div>
     </div>
     <table class="dt">
       <thead>
@@ -360,8 +368,8 @@ table.dt td.nm{min-width:62px;}
     <div class="dt">高雄榮民總醫院企業工會（籌備中）</div>
     <div class="dt" style="font-size:15px;margin-top:.15rem">第一次發起人會議紀錄</div>
     <div class="dmeta" style="margin-top:.8rem">
-      <div class="field"><span class="fl">會議時間</span>民國115年6月27日　　　時　　分</div>
-      <div class="field"><span class="fl">會議地點</span>&nbsp;</div>
+      <div class="field"><span class="fl">會議時間</span>民國115年6月27日　18　時　00　分</div>
+      <div class="field"><span class="fl">會議地點</span>高雄市左營區博愛四路309號（耀嵩豐大樓）</div>
       <div class="field"><span class="fl">主席</span><span id="min-chair">　</span></div>
       <div class="field"><span class="fl">記錄</span><span id="min-wel">　</span></div>
       <div class="field"><span class="fl">出席（發起人）</span><span class="blank bl-sm">&ensp;</span> 人</div>
