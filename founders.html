@@ -284,7 +284,19 @@ table.dt td.nm{min-width:62px;}
 <!-- ② 簽到表 -->
 <div class="tc" id="tc-signin">
   <button class="prt-btn" onclick="pt('signin')">🖨️ 列印簽到表</button>
-  <div style="text-align:center;font-size:12.5px;color:#888;margin-bottom:.7rem;margin-top:-.4rem" class="no-print">💡 點任何格子可直接輸入，填完再按列印</div>
+  <div style="text-align:center;font-size:12.5px;color:#888;margin-bottom:.5rem;margin-top:-.4rem" class="no-print">💡 點任何格子可直接輸入，填完再按列印</div>
+  <div class="no-print" style="margin-bottom:.75rem">
+    <button onclick="togglePaste()" id="paste-toggle-btn" style="width:100%;padding:.6rem;border:1.5px dashed #1A3A6B;border-radius:9px;background:#F0F4FF;color:#1A3A6B;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">📋 從試算表貼入（自動填姓名 / 部門 / 電話）</button>
+    <div id="paste-area" style="display:none;margin-top:.5rem">
+      <div style="font-size:12px;color:#555;margin-bottom:.35rem">① 在試算表全選 Ctrl+A → 複製 Ctrl+C　② 點下方空白處 → 貼上 Ctrl+V　③ 按「確認填入」</div>
+      <textarea id="paste-box" rows="5" style="width:100%;box-sizing:border-box;border:1.5px solid #bbb;border-radius:8px;padding:.5rem;font-size:12px;resize:vertical" placeholder="在這裡貼上試算表內容…"></textarea>
+      <div style="display:flex;gap:.5rem;margin-top:.4rem">
+        <button onclick="pasteImport()" style="flex:1;padding:.55rem;background:#1A3A6B;color:#fff;border:none;border-radius:8px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">確認填入</button>
+        <button onclick="togglePaste()" style="padding:.55rem 1rem;background:#eee;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit">取消</button>
+      </div>
+      <div id="paste-msg" style="font-size:12.5px;margin-top:.35rem;color:#0F5C36;display:none"></div>
+    </div>
+  </div>
   <div class="doc">
     <div class="dt">高雄榮民總醫院企業工會（籌備中）</div>
     <div class="dt" style="font-size:15px;margin-top:.15rem">發起人會議 簽到表</div>
@@ -377,53 +389,6 @@ table.dt td.nm{min-width:62px;}
 <!-- ④ 籌備委員名單 -->
 <div class="tc" id="tc-committee">
   <button class="prt-btn" onclick="pt('committee')">🖨️ 列印籌委名單</button>
-
-  <div class="doc" style="margin-bottom:.8rem">
-    <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:.75rem;border-left:3px solid var(--gold);padding-left:8px">籌備委員會 五個組別分工（會長公布）</div>
-
-    <div class="grp-card">
-      <div class="grp-h" style="background:#1A3A6B">① 總務組</div>
-      <div class="grp-b">
-        <div class="grp-item">刻印籌備會橫條章「高雄榮民總醫院企業工會籌備會」</div>
-        <div class="grp-item">籌備會收支紀錄</div>
-        <div class="grp-item">114 和 115 年度預算計畫表</div>
-      </div>
-    </div>
-
-    <div class="grp-card">
-      <div class="grp-h" style="background:#0F5C36">② 組訓組</div>
-      <div class="grp-b">
-        <div class="grp-item">會議設計</div>
-        <div class="grp-item">開會地點和時間確認</div>
-        <div class="grp-item">聯繫籌備會成員</div>
-        <div class="grp-item">設計入會申請書及審核連署及入會工作</div>
-      </div>
-    </div>
-
-    <div class="grp-card">
-      <div class="grp-h" style="background:#B7860B">③ 宣傳組</div>
-      <div class="grp-b">
-        <div class="grp-item">招募宣傳、文宣設計</div>
-        <div class="grp-item">工會 Logo、會旗、背心、名片設計</div>
-      </div>
-    </div>
-
-    <div class="grp-card">
-      <div class="grp-h" style="background:#7B1818">④ 法務組</div>
-      <div class="grp-b">
-        <div class="grp-item">擬訂章程及各項規則辦法等草案</div>
-      </div>
-    </div>
-
-    <div class="grp-card">
-      <div class="grp-h" style="background:#5B4A8A">⑤ 公關組</div>
-      <div class="grp-b">
-        <div class="grp-item">聯絡友好工會</div>
-        <div class="grp-item">邀請主管單位出席成立大會</div>
-        <div class="grp-item">IG、FB、Threads（脆）、Dcard 社群經營</div>
-      </div>
-    </div>
-  </div>
 
   <div class="doc">
     <div class="dt">高雄榮民總醫院企業工會（籌備中）</div>
@@ -518,6 +483,57 @@ function initNames(){
   var chair=gn('chair'); var wel=gn('wel');
   ['si-chair','min-chair','min-chair2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=chair; });
   ['si-wel','min-wel','min-wel2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=wel; });
+}
+
+function togglePaste(){
+  var a=document.getElementById('paste-area');
+  var b=document.getElementById('paste-toggle-btn');
+  var show=a.style.display==='none';
+  a.style.display=show?'block':'none';
+  b.style.display=show?'none':'block';
+  if(show) document.getElementById('paste-box').focus();
+}
+
+function pasteImport(){
+  var raw=document.getElementById('paste-box').value.trim();
+  var msg=document.getElementById('paste-msg');
+  if(!raw){msg.style.color='#c00';msg.textContent='⚠️ 請先貼上試算表內容';msg.style.display='block';return;}
+
+  var rows=raw.split(/\r?\n/).map(function(r){return r.split('\t');});
+  if(rows.length<2){msg.style.color='#c00';msg.textContent='⚠️ 資料至少需要標題+一行';msg.style.display='block';return;}
+
+  // detect column indices from header row
+  var hdr=rows[0].map(function(h){return h.trim();});
+  var iName=-1,iPad=-1,iDept=-1;
+  hdr.forEach(function(h,i){
+    var hl=h.toLowerCase();
+    if(h==='姓名') iName=i;
+    if(h.indexOf('行動電話')>=0||h.indexOf('手機')>=0) iPad=i;
+    if(h.indexOf('部門')>=0||h.indexOf('職稱')>=0) iDept=i;
+  });
+  // fallback: no header row detected — assume col2=name,col6=phone,col8=dept
+  var hasHeader=(iName>=0||iPad>=0||iDept>=0);
+  if(!hasHeader){iName=2;iPad=6;iDept=8;}
+  var dataRows=hasHeader?rows.slice(1):rows;
+
+  var tds=document.querySelectorAll('#signin-rows tr');
+  var filled=0;
+  dataRows.forEach(function(cols,di){
+    if(di>=tds.length) return;
+    var cells=tds[di].querySelectorAll('td');
+    // cells: 0=序, 1=姓名, 2=員工編號, 3=部門, 4=電話, 5=簽名
+    if(iName>=0&&cols[iName]!==undefined) cells[1].textContent=cols[iName].trim();
+    if(iDept>=0&&cols[iDept]!==undefined) cells[3].textContent=cols[iDept].trim();
+    if(iPad>=0&&cols[iPad]!==undefined)  cells[4].textContent=cols[iPad].trim();
+    filled++;
+  });
+
+  msg.style.color='#0F5C36';
+  msg.textContent='✅ 已填入 '+filled+' 筆（員工編號請手動補充）';
+  msg.style.display='block';
+  document.getElementById('paste-area').style.display='none';
+  document.getElementById('paste-toggle-btn').style.display='block';
+  document.getElementById('paste-box').value='';
 }
 
 function sw(name,btn){
