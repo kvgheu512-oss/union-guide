@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>發起人從業切結書（全體）｜高榮企業工會</title>
+<title>從業切結書（全體）｜高榮企業工會</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'標楷體','DFKai-SB','BiauKai',serif;background:#f5f5f5;font-size:14pt;}
@@ -12,84 +12,90 @@ body{font-family:'標楷體','DFKai-SB','BiauKai',serif;background:#f5f5f5;font-
   width:210mm;min-height:297mm;
   background:#fff;
   margin:12px auto;
-  padding:22mm 22mm 18mm;
+  padding:30mm 25mm 20mm;
   page-break-after:always;
   position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
 .page:last-child{page-break-after:auto;}
 
 /* 標題區 */
-.org-top{text-align:center;font-size:13pt;margin-bottom:2mm;}
-.title{text-align:center;font-size:20pt;font-weight:bold;letter-spacing:.15em;margin:4mm 0 6mm;}
-.subtitle{text-align:center;font-size:12pt;color:#444;margin-bottom:8mm;letter-spacing:.05em;}
+.title-block{text-align:center;margin-bottom:18mm;}
+.title-line1{font-size:18pt;font-weight:bold;letter-spacing:.1em;margin-bottom:3mm;}
+.title-line2{font-size:22pt;font-weight:bold;letter-spacing:.2em;}
 
 /* 正文 */
 .body-text{
-  font-size:14pt;line-height:2.2;
+  font-size:15pt;line-height:2.4;
   text-align:justify;
-  margin-bottom:8mm;
-  border:1px solid #ccc;
-  border-radius:4px;
-  padding:6mm 7mm;
-  background:#FAFAF8;
+  margin-bottom:14mm;
+  text-indent:2em;
 }
-.name-inline{
+.work-blank{
   display:inline-block;
-  min-width:60px;
+  min-width:90px;
+  border-bottom:1.5px solid #333;
+  vertical-align:bottom;
+}
+
+/* 此致 */
+.zhici{
+  font-size:15pt;
+  text-align:right;
+  margin-bottom:20mm;
+  letter-spacing:.05em;
+}
+.zhici-indent{display:inline-block;text-align:left;}
+
+/* 簽署欄 */
+.sign-section{font-size:14pt;line-height:1;}
+.sign-row{
+  display:flex;align-items:baseline;gap:4mm;
+  margin-bottom:8mm;
+}
+.sign-label{white-space:nowrap;flex:0 0 auto;}
+.sign-name{
+  display:inline-block;
+  min-width:110px;
   border-bottom:1.5px solid #333;
   text-align:center;
   font-weight:bold;
-  vertical-align:bottom;
-  padding:0 4px;
+  padding:0 6px;
 }
-
-/* 簽署欄 */
-.sign-section{margin-top:6mm;}
-.sign-row{
-  display:flex;align-items:baseline;gap:6mm;
-  margin-bottom:4.5mm;font-size:13pt;
-}
-.sign-label{white-space:nowrap;flex:0 0 auto;min-width:110px;}
 .sign-line{flex:1;border-bottom:1px solid #555;}
+.sign-seal{font-size:12pt;color:#555;margin-left:4mm;white-space:nowrap;}
 
 /* 日期 */
 .date-row{
-  margin-top:7mm;
-  font-size:13pt;
-  display:flex;align-items:baseline;gap:3mm;
+  margin-top:14mm;
+  font-size:14pt;
+  display:flex;align-items:baseline;gap:2mm;
 }
 .date-box{
-  display:inline-block;width:30px;
+  display:inline-block;width:36px;
   border-bottom:1px solid #555;text-align:center;
 }
 
-/* 騎縫章提示 */
-.stamp-hint{
-  position:absolute;right:6mm;top:50%;
-  transform:translateY(-50%) rotate(90deg);
-  font-size:9pt;color:#bbb;letter-spacing:.1em;
-  white-space:nowrap;
-}
+/* 空白備用提示 */
+.blank-hint{text-align:center;font-size:12pt;color:#bbb;margin-top:4mm;}
 
 /* 頁碼 */
-.page-no{position:absolute;bottom:10mm;right:22mm;font-size:10pt;color:#aaa;}
-
-/* 空白表格提示 */
-.blank-hint{text-align:center;font-size:12pt;color:#bbb;margin-bottom:3mm;}
+.page-no{position:absolute;bottom:12mm;right:25mm;font-size:10pt;color:#aaa;}
 
 @media screen{
   .page{box-shadow:0 2px 8px rgba(0,0,0,.15);}
 }
 @media print{
   body{background:#fff;}
-  .page{margin:0;box-shadow:none;padding:20mm 20mm 16mm;}
+  .page{margin:0;box-shadow:none;padding:28mm 22mm 18mm;}
   .no-print{display:none!important;}
 }
 </style>
 </head>
 <body>
 
-<!-- 列印按鈕（螢幕才看得到） -->
 <div class="no-print" style="text-align:center;padding:12px;background:#1A3A6B;color:#fff;position:sticky;top:0;z-index:99;font-size:14px">
   共 43 張（38 人 + 5 空白）
   <button onclick="window.print()" style="background:#B7860B;color:#fff;border:none;border-radius:8px;padding:.5rem 1.4rem;font-size:14px;cursor:pointer;font-family:inherit;font-weight:700">🖨️ 列印全部</button>
@@ -109,30 +115,39 @@ var NAMES=[
 
 function makePage(name, idx, total){
   var isBlank = !name;
-  var nameHtml = isBlank
-    ? '<span class="name-inline" style="min-width:80px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'
-    : '<span class="name-inline">'+name+'</span>';
+  var nameCell = isBlank
+    ? '<span class="sign-name" style="min-width:120px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'
+    : '<span class="sign-name">'+name+'</span>';
 
-  return '<div class="page">'+
-    '<div class="org-top">高雄榮民總醫院企業工會（籌備中）</div>'+
-    '<div class="title">發起人從業切結書</div>'+
-    (isBlank?'<div class="blank-hint">（空白備用）</div>':'')+
-    '<div class="body-text">'+
-      '本人 '+nameHtml+' 茲切結聲明，確在高雄市高雄榮民總醫院從事工作，'+
-      '且非代表雇主行使管理權之主管人員，具有發起高雄榮民總醫院企業工會之'+
-      '資格，如有不實，願負一切法律責任。'+
-    '</div>'+
-    '<div style="text-align:right;font-size:12pt;margin-bottom:5mm;color:#555">此致　高雄市政府勞工局</div>'+
-    '<div class="sign-section">'+
-      '<div class="sign-row"><span class="sign-label">切結人（簽名蓋章）</span><span class="sign-line"></span></div>'+
-      '<div class="sign-row"><span class="sign-label">身分證統一編號</span><span class="sign-line"></span></div>'+
-      '<div class="sign-row"><span class="sign-label">服務單位（部門）</span><span class="sign-line"></span></div>'+
-      '<div class="sign-row"><span class="sign-label">職稱</span><span class="sign-line"></span></div>'+
-      '<div class="sign-row"><span class="sign-label">聯絡電話</span><span class="sign-line"></span></div>'+
-      '<div class="sign-row"><span class="sign-label">戶籍地址</span><span class="sign-line"></span></div>'+
-    '</div>'+
-    '<div class="date-row">中華民國<span class="date-box"></span>年<span class="date-box"></span>月<span class="date-box"></span>日</div>'+
-    '<div class="page-no">第 '+idx+' / '+total+' 頁</div>'+
+  return '<div class="page">' +
+    '<div class="title-block">' +
+      '<div class="title-line1">（高雄市）高雄榮民總醫院企業工會籌組發起人</div>' +
+      '<div class="title-line2">從　業　切　結　書</div>' +
+      (isBlank ? '<div class="blank-hint">（空白備用）</div>' : '') +
+    '</div>' +
+    '<div class="body-text">' +
+      '茲切結本人目前確實於高雄市依法從事' +
+      '<span class="work-blank"></span>' +
+      '工作，並由此獲得薪酬，如有不實，願負一切法律責任。' +
+    '</div>' +
+    '<div class="zhici"><div class="zhici-indent">此　致<br>高雄市政府勞工局</div></div>' +
+    '<div class="sign-section">' +
+      '<div class="sign-row">' +
+        '<span class="sign-label">立書人：</span>' +
+        nameCell +
+        '<span class="sign-seal">（簽章）</span>' +
+      '</div>' +
+      '<div class="sign-row"><span class="sign-label">身分證字號：</span><span class="sign-line"></span></div>' +
+      '<div class="sign-row"><span class="sign-label">戶籍地址：</span><span class="sign-line"></span></div>' +
+      '<div class="sign-row"><span class="sign-label">聯絡地址：</span><span class="sign-line"></span></div>' +
+      '<div class="sign-row"><span class="sign-label">聯絡電話：</span><span class="sign-line"></span></div>' +
+    '</div>' +
+    '<div class="date-row">' +
+      '中華民國<span class="date-box"></span>年' +
+      '<span class="date-box"></span>月' +
+      '<span class="date-box"></span>日' +
+    '</div>' +
+    '<div class="page-no">第 '+idx+' / '+total+' 頁</div>' +
   '</div>';
 }
 
