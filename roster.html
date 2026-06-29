@@ -107,6 +107,14 @@
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:13.5px;padding:.6rem 1.1rem;border-radius:30px;opacity:0;pointer-events:none;transition:.25s;z-index:300;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+  .vtabs{display:flex;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .9rem}
+  .vtabs button{flex:1;padding:.75rem;border:none;background:#fff;font:700 14px/1 'Noto Sans TC',sans-serif;cursor:pointer;color:#555;transition:.15s}
+  .vtabs button.on{background:var(--navy);color:#fff}
+  .audit-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem;margin-bottom:.8rem}
+  .audit-row{display:flex;align-items:center;gap:10px;padding:.65rem .85rem;border-bottom:1px solid var(--border)}
+  .audit-row:last-child{border-bottom:none}
+  .audit-pos{width:110px;font-size:13px;padding:.3rem .5rem;border:1.3px solid var(--border);border-radius:6px;font-family:inherit;background:#fff;color:var(--ink);text-align:center}
+  .audit-pos:focus{outline:none;border-color:var(--navy-mid)}
   @media print{
     .toolbar,.chips,.stats,.btn,.btn-row,.form,.back,.note,.m-act{display:none!important;}
     .header{background:#fff;color:#000;border-bottom:2px solid #000;}
@@ -140,6 +148,11 @@
   </header>
 
   <main>
+  <div class="vtabs">
+    <button id="vtab-roster" class="on">👥 會員名冊</button>
+    <button id="vtab-audit">📋 稽核名單</button>
+  </div>
+  <div id="view-roster">
     <div class="stats" id="stats"></div>
     <div id="warnbar" style="display:none;background:#FDECEA;border:1px solid #F5C6C0;border-radius:12px;padding:.7rem .9rem;font-size:13px;color:#7B1818;line-height:1.7;margin-bottom:12px">
       ⚠️ <b>名冊只存在這台瀏覽器、不上傳</b>（保護個資）。<b>Brave／無痕可能在關閉視窗時清空</b>！請：① 在 Brave 把本站設成<b>關閉時不清除</b>的例外；② 每次更動後<b>備份</b>一份。
@@ -280,6 +293,41 @@
     <input type="file" id="import-file" accept="application/json" style="display:none">
     <div class="note">🔐 名冊含<b>個人資料</b>，<b>只存這台瀏覽器、不上傳</b>（保護個資）。⚠️ Brave／無痕可能在關閉時清空——請把本站設為<b>不清除例外</b>，並<b>每次更動後備份</b>。換裝置／清資料前務必先「備份→匯入」。</div>
     <p class="law">章程：會員入會須填申請書、經理事會審查通過。新增時可先設「入會申請中（待審）」，理事會審過後按「✓ 核准入會」轉為在會。贊助會員不具表決、選舉、被選舉、罷免權。</p>
+  </div><!-- /view-roster -->
+
+  <div id="view-audit" style="display:none">
+    <div class="audit-card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:.65rem">
+        <span style="font-size:13px;font-weight:700;white-space:nowrap">稽核期別</span>
+        <input id="audit-period" value="115-07" style="width:88px;padding:.35rem .6rem;border:1.4px solid var(--border);border-radius:8px;font-size:14px;text-align:center;background:#fff" placeholder="115-07">
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:.4rem;flex-wrap:wrap">
+        <input id="audit-gas-url" type="url" placeholder="GAS 同步網址（選填）" style="flex:1;min-width:120px;padding:.4rem .7rem;border:1.4px solid var(--border);border-radius:8px;font-size:13px;background:#fff" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button class="btn sm" id="audit-sync-btn" style="white-space:nowrap">🔄 同步</button>
+      </div>
+      <div id="audit-sync-msg" style="font-size:12px;min-height:1rem;margin-bottom:.4rem"></div>
+      <div class="btn-row">
+        <button class="btn ghost sm" id="audit-paste-btn">📋 貼上玉繡排</button>
+        <button class="btn ghost sm" id="audit-fill-btn">👥 從名冊補全</button>
+        <button class="btn ghost sm" id="audit-csv-btn">⬇ 匯出 CSV</button>
+      </div>
+    </div>
+
+    <div class="form" id="audit-paste-panel">
+      <label>貼上玉繡排稽核表格（含標題列；欄位含<b>姓名</b>、<b>區</b>、<b>組</b>、<b>班次</b>、<b>稽核位置</b>）</label>
+      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8;margin:4px 0 8px">① 開玉繡排匯出的試算表 → ② 框選含<b>標題列</b>的資料 → ③ 複製 → ④ 貼到下框 → ⑤ 按「分析並匯入」。同名的人自動更新，不會重複。</p>
+      <textarea id="audit-paste-data" style="min-height:120px;width:100%;font-size:13px" placeholder="姓名（Tab）區（Tab）組（Tab）班次（Tab）稽核位置&#10;直接從試算表複製整片貼上即可"></textarea>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn" id="audit-paste-go">分析並匯入</button>
+        <button class="btn ghost" id="audit-paste-cancel">取消</button>
+      </div>
+      <div id="audit-paste-result" style="font-size:13px;margin-top:8px;line-height:1.7"></div>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);margin-top:.3rem">
+      <div id="audit-list"></div>
+    </div>
+  </div><!-- /view-audit -->
   </main>
 </div>
 
@@ -762,6 +810,185 @@ else { showGate(); }
     }
   };
 })();
+
+/* ── 稽核名單 ── */
+const AUDIT_KEY='ebn_audit_v1', AUDIT_URL_KEY='ebn_audit_gas_v1';
+let auditData={period:'115-07',entries:[]};
+
+function auditLoad(){
+  try{ auditData=JSON.parse(localStorage.getItem(AUDIT_KEY))||{period:'115-07',entries:[]}; }catch(_){ auditData={period:'115-07',entries:[]}; }
+  const u=localStorage.getItem(AUDIT_URL_KEY)||'';
+  const ge=$('audit-gas-url'); if(ge) ge.value=u;
+  const pe=$('audit-period'); if(pe) pe.value=auditData.period||'115-07';
+}
+function auditSave(){
+  const pe=$('audit-period'); if(pe) auditData.period=pe.value.trim()||'115-07';
+  try{ localStorage.setItem(AUDIT_KEY,JSON.stringify(auditData)); }catch(_){}
+}
+function setAuditMsg(m,c){ const el=$('audit-sync-msg'); if(el){ el.textContent=m; el.style.color=c||'#777'; } }
+
+function auditRender(){
+  const box=$('audit-list'); if(!box) return;
+  const entries=auditData.entries||[];
+  if(!entries.length){
+    box.innerHTML='<div style="text-align:center;color:#999;padding:2rem 1rem;font-size:13.5px">尚無稽核資料。<br>按「貼上玉繡排」匯入，或按「從名冊補全」建立空白框架。</div>';
+    return;
+  }
+  box.innerHTML=entries.map((e,i)=>`<div class="audit-row">
+    <div style="flex:1;min-width:0">
+      <div style="font-size:15px;font-weight:700">${esc(e.name||'')}</div>
+      <div style="font-size:12px;color:var(--ink-soft)">${[e.area,e.group,e.shift].filter(Boolean).map(esc).join(' · ')}</div>
+    </div>
+    <input class="audit-pos" value="${esc(e.auditPos||'')}" placeholder="稽核位置" data-idx="${i}" data-nodraft>
+  </div>`).join('');
+  box.querySelectorAll('.audit-pos').forEach(inp=>{
+    inp.addEventListener('change',function(){
+      const idx=+this.dataset.idx;
+      if(auditData.entries[idx]){ auditData.entries[idx].auditPos=this.value.trim(); auditSave(); toast('已儲存'); }
+    });
+  });
+}
+
+/* GAS 同步：逾時 10s，失敗自動指數退避重試最多 3 次 */
+async function fetchAuditGAS(url,attempt){
+  attempt=attempt||0;
+  const MAX=3, TIMEOUT=10000;
+  const ctrl=new AbortController();
+  const t=setTimeout(()=>ctrl.abort(),TIMEOUT);
+  try{
+    const r=await fetch(url,{signal:ctrl.signal}); clearTimeout(t);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  }catch(e){
+    clearTimeout(t);
+    if(attempt<MAX-1){
+      const wait=1000*Math.pow(2,attempt);
+      setAuditMsg('⏳ 第 '+(attempt+2)+' 次重試（'+wait/1000+'s 後）…','#7A5800');
+      await new Promise(res=>setTimeout(res,wait));
+      return fetchAuditGAS(url,attempt+1);
+    }
+    throw e;
+  }
+}
+
+function parseYuxiuTable(txt){
+  const lines=txt.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  if(lines.length<2) return {error:'沒有資料，請貼上含標題列的稽核表格'};
+  const d=lines[0].indexOf('\t')>=0?'\t':',';
+  const headers=lines[0].split(d).map(s=>s.trim());
+  const map={};
+  headers.forEach((h,i)=>{
+    if(/^(姓名|名字)$/.test(h)&&map.name==null) map.name=i;
+    else if(/^(區|區域)$/.test(h)&&map.area==null) map.area=i;
+    else if(/^(組|班組)$/.test(h)&&map.group==null) map.group=i;
+    else if(/^(班次|班別)$/.test(h)&&map.shift==null) map.shift=i;
+    else if(/^(稽核位置|稽核點|位置)$/.test(h)&&map.auditPos==null) map.auditPos=i;
+  });
+  if(map.name==null) return {error:'找不到「姓名」欄，請確認有把標題列一起貼進來'};
+  const entries=[];
+  for(let i=1;i<lines.length;i++){
+    const cols=lines[i].split(d).map(s=>s.trim());
+    const name=cols[map.name]||''; if(!name) continue;
+    entries.push({
+      name,
+      area:map.area!=null?(cols[map.area]||''):'',
+      group:map.group!=null?(cols[map.group]||''):'',
+      shift:map.shift!=null?(cols[map.shift]||''):'',
+      auditPos:map.auditPos!=null?(cols[map.auditPos]||''):''
+    });
+  }
+  if(!entries.length) return {error:'解析不到任何資料列'};
+  return {entries};
+}
+
+let _auditInited=false;
+function initAudit(){
+  if(_auditInited) return; _auditInited=true;
+  auditLoad(); auditRender();
+
+  const pe=$('audit-period');
+  if(pe) pe.addEventListener('change',()=>{ auditData.period=pe.value.trim()||'115-07'; auditSave(); });
+
+  const ge=$('audit-gas-url');
+  if(ge) ge.addEventListener('change',()=>{ try{ localStorage.setItem(AUDIT_URL_KEY,ge.value.trim()); }catch(_){} });
+
+  const syncBtn=$('audit-sync-btn');
+  if(syncBtn) syncBtn.addEventListener('click',async function(){
+    const url=(ge&&ge.value.trim())||localStorage.getItem(AUDIT_URL_KEY)||'';
+    if(!url){ setAuditMsg('請先填入 GAS 同步網址','#C0392B'); return; }
+    try{ localStorage.setItem(AUDIT_URL_KEY,url); }catch(_){}
+    this.disabled=true; this.textContent='⏳…';
+    setAuditMsg('🔄 連線中，逾時自動重試（最多 3 次，每次 10s）…','#7A5800');
+    try{
+      const json=await fetchAuditGAS(url);
+      const entries=Array.isArray(json)?json:(json.entries||[]);
+      if(!Array.isArray(entries)) throw new Error('回傳格式錯誤');
+      auditData.entries=entries; auditSave(); auditRender();
+      setAuditMsg('✅ 同步成功，共 '+entries.length+' 筆（'+new Date().toLocaleTimeString('zh-TW')+'）','#0F5C36');
+    }catch(e){ setAuditMsg('❌ 同步失敗：'+(e.message||e)+'（確認網址正確且 GAS 已部署）','#C0392B'); }
+    this.disabled=false; this.textContent='🔄 同步';
+  });
+
+  const pasteBtn=$('audit-paste-btn'), pastePanel=$('audit-paste-panel');
+  if(pasteBtn&&pastePanel) pasteBtn.addEventListener('click',()=>{
+    pastePanel.classList.toggle('show');
+    if(pastePanel.classList.contains('show')) $('audit-paste-data').focus();
+  });
+  const cancelBtn=$('audit-paste-cancel');
+  if(cancelBtn) cancelBtn.addEventListener('click',()=>{
+    pastePanel.classList.remove('show'); $('audit-paste-data').value=''; $('audit-paste-result').innerHTML='';
+  });
+  const pasteGo=$('audit-paste-go');
+  if(pasteGo) pasteGo.addEventListener('click',()=>{
+    const txt=$('audit-paste-data').value;
+    const res=parseYuxiuTable(txt);
+    const out=$('audit-paste-result');
+    if(res.error){ out.innerHTML='<span style="color:#C0392B">'+esc(res.error)+'</span>'; return; }
+    const byName={}; auditData.entries.forEach(e=>{ byName[e.name]=e; });
+    let added=0,updated=0;
+    res.entries.forEach(e=>{
+      if(byName[e.name]){ Object.assign(byName[e.name],e); updated++; }
+      else{ auditData.entries.push(e); byName[e.name]=e; added++; }
+    });
+    auditSave(); auditRender();
+    out.innerHTML='✅ 新增 <b>'+added+'</b> 筆，更新 <b>'+updated+'</b> 筆。';
+    toast('已匯入稽核名單');
+  });
+
+  const fillBtn=$('audit-fill-btn');
+  if(fillBtn) fillBtn.addEventListener('click',()=>{
+    const existing=new Set(auditData.entries.map(e=>e.name));
+    let added=0;
+    members.filter(m=>m.status==='active'||m.status==='applicant').forEach(m=>{
+      if(!existing.has(m.name)){ auditData.entries.push({name:m.name,area:'',group:'',shift:'',auditPos:''}); existing.add(m.name); added++; }
+    });
+    auditSave(); auditRender();
+    toast(added?'已補全 '+added+' 筆':'全部已在稽核名單中');
+  });
+
+  const csvBtn=$('audit-csv-btn');
+  if(csvBtn) csvBtn.addEventListener('click',()=>{
+    const period=auditData.period||'';
+    const head=['姓名','區','組','班次','稽核位置','稽核期別'];
+    const rows=auditData.entries.map(e=>[e.name,e.area,e.group,e.shift,e.auditPos,period]);
+    const csv=[head,...rows].map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
+    const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='稽核名單_'+period+'.csv'; a.click();
+    toast('已匯出稽核名單 CSV');
+  });
+}
+
+/* 頁籤切換：會員名冊 ↔ 稽核名單 */
+function switchView(v){
+  const isRoster=v==='roster';
+  $('view-roster').style.display=isRoster?'':'none';
+  $('view-audit').style.display=isRoster?'none':'';
+  $('vtab-roster').classList.toggle('on',isRoster);
+  $('vtab-audit').classList.toggle('on',!isRoster);
+  if(!isRoster) initAudit();
+}
+$('vtab-roster').addEventListener('click',()=>switchView('roster'));
+$('vtab-audit').addEventListener('click',()=>switchView('audit'));
 
 </script>
 <script src="law-tips.js" defer></script>
