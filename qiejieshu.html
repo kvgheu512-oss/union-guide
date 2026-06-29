@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>發起人從業切結書（全體）｜高榮企業工會</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'標楷體','DFKai-SB','BiauKai',serif;background:#f5f5f5;font-size:14pt;}
+
+.page{
+  width:210mm;min-height:297mm;
+  background:#fff;
+  margin:12px auto;
+  padding:22mm 22mm 18mm;
+  page-break-after:always;
+  position:relative;
+}
+.page:last-child{page-break-after:auto;}
+
+/* 標題區 */
+.org-top{text-align:center;font-size:13pt;margin-bottom:2mm;}
+.title{text-align:center;font-size:20pt;font-weight:bold;letter-spacing:.15em;margin:4mm 0 6mm;}
+.subtitle{text-align:center;font-size:12pt;color:#444;margin-bottom:8mm;letter-spacing:.05em;}
+
+/* 正文 */
+.body-text{
+  font-size:14pt;line-height:2.2;
+  text-align:justify;
+  margin-bottom:8mm;
+  border:1px solid #ccc;
+  border-radius:4px;
+  padding:6mm 7mm;
+  background:#FAFAF8;
+}
+.name-inline{
+  display:inline-block;
+  min-width:60px;
+  border-bottom:1.5px solid #333;
+  text-align:center;
+  font-weight:bold;
+  vertical-align:bottom;
+  padding:0 4px;
+}
+
+/* 簽署欄 */
+.sign-section{margin-top:6mm;}
+.sign-row{
+  display:flex;align-items:baseline;gap:6mm;
+  margin-bottom:4.5mm;font-size:13pt;
+}
+.sign-label{white-space:nowrap;flex:0 0 auto;min-width:110px;}
+.sign-line{flex:1;border-bottom:1px solid #555;}
+
+/* 日期 */
+.date-row{
+  margin-top:7mm;
+  font-size:13pt;
+  display:flex;align-items:baseline;gap:3mm;
+}
+.date-box{
+  display:inline-block;width:30px;
+  border-bottom:1px solid #555;text-align:center;
+}
+
+/* 騎縫章提示 */
+.stamp-hint{
+  position:absolute;right:6mm;top:50%;
+  transform:translateY(-50%) rotate(90deg);
+  font-size:9pt;color:#bbb;letter-spacing:.1em;
+  white-space:nowrap;
+}
+
+/* 頁碼 */
+.page-no{position:absolute;bottom:10mm;right:22mm;font-size:10pt;color:#aaa;}
+
+/* 空白表格提示 */
+.blank-hint{text-align:center;font-size:12pt;color:#bbb;margin-bottom:3mm;}
+
+@media screen{
+  .page{box-shadow:0 2px 8px rgba(0,0,0,.15);}
+}
+@media print{
+  body{background:#fff;}
+  .page{margin:0;box-shadow:none;padding:20mm 20mm 16mm;}
+  .no-print{display:none!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- 列印按鈕（螢幕才看得到） -->
+<div class="no-print" style="text-align:center;padding:12px;background:#1A3A6B;color:#fff;position:sticky;top:0;z-index:99;font-size:14px">
+  共 43 張（38 人 + 5 空白）
+  <button onclick="window.print()" style="background:#B7860B;color:#fff;border:none;border-radius:8px;padding:.5rem 1.4rem;font-size:14px;cursor:pointer;font-family:inherit;font-weight:700">🖨️ 列印全部</button>
+</div>
+
+<script>
+var NAMES=[
+  '巫佳容','麥嘉宜','葉柏宏','陳怡筠','楊淯涵',
+  '張巧蓉','黃淑妍','劉于甄','王聖涵','黃鈺庭',
+  '陳依婷','莊瑋聆','林欣儀','潘奕萱','黃敏',
+  '郭俞君','蘇佳俞','柯慧淳','蔣雅竹','黃韻璇',
+  '陳郁蕙','謝宗慈','蘇恩瑜','吳佩珊','曾韻凌',
+  '陳泓瑾','蔡心妤','黃子懿','李宗樺','李婉瑜',
+  '林品全','范育苹','蔡宜樺','楊舒閔','吳珮菱',
+  '鍾雅玲','翁毓雯','張芳瑜'
+];
+
+function makePage(name, idx, total){
+  var isBlank = !name;
+  var nameHtml = isBlank
+    ? '<span class="name-inline" style="min-width:80px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'
+    : '<span class="name-inline">'+name+'</span>';
+
+  return '<div class="page">'+
+    '<div class="org-top">高雄榮民總醫院企業工會（籌備中）</div>'+
+    '<div class="title">發起人從業切結書</div>'+
+    (isBlank?'<div class="blank-hint">（空白備用）</div>':'')+
+    '<div class="body-text">'+
+      '本人 '+nameHtml+' 茲切結聲明，確在高雄市高雄榮民總醫院從事工作，'+
+      '且非代表雇主行使管理權之主管人員，具有發起高雄榮民總醫院企業工會之'+
+      '資格，如有不實，願負一切法律責任。'+
+    '</div>'+
+    '<div style="text-align:right;font-size:12pt;margin-bottom:5mm;color:#555">此致　高雄市政府勞工局</div>'+
+    '<div class="sign-section">'+
+      '<div class="sign-row"><span class="sign-label">切結人（簽名蓋章）</span><span class="sign-line"></span></div>'+
+      '<div class="sign-row"><span class="sign-label">身分證統一編號</span><span class="sign-line"></span></div>'+
+      '<div class="sign-row"><span class="sign-label">服務單位（部門）</span><span class="sign-line"></span></div>'+
+      '<div class="sign-row"><span class="sign-label">職稱</span><span class="sign-line"></span></div>'+
+      '<div class="sign-row"><span class="sign-label">聯絡電話</span><span class="sign-line"></span></div>'+
+      '<div class="sign-row"><span class="sign-label">戶籍地址</span><span class="sign-line"></span></div>'+
+    '</div>'+
+    '<div class="date-row">中華民國<span class="date-box"></span>年<span class="date-box"></span>月<span class="date-box"></span>日</div>'+
+    '<div class="page-no">第 '+idx+' / '+total+' 頁</div>'+
+  '</div>';
+}
+
+var total = NAMES.length + 5;
+var html = '';
+NAMES.forEach(function(n,i){ html += makePage(n, i+1, total); });
+for(var b=0;b<5;b++){ html += makePage('', NAMES.length+b+1, total); }
+document.write(html);
+</script>
+</body>
+</html>
