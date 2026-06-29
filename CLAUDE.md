@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-29
 
 最近 commits：
+  7303d1d 切結書改為正確官方格式版本 2026062905
+  b2989c4 自動更新 CLAUDE.md 最近進度（Stop hook）
   5f539fe 官方範本加切結書預填版連結版本 2026062904
   ff042a9 自動更新 CLAUDE.md 最近進度（Stop hook）
   05a90cf 新增發起人從業切結書（38人+5空白共43張）版本 2026062903
-  62689a2 自動更新 CLAUDE.md 最近進度（Stop hook）
-  ee5947f 移除 roster.html 稽核名單 tab（還原工會名冊原始狀態）版本 2026062903
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
