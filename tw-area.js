@@ -63,6 +63,7 @@
     var mount = opts.mount;
     var iStyle = "box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:8px;padding:8px 10px;font-size:15px;background:#FEF9E7;font-family:inherit";
 
+    var dlId = "ap-road-dl-" + Math.random().toString(36).slice(2,7);
     var wrap = document.createElement("div");
     wrap.innerHTML =
       '<div style="display:flex;gap:6px;margin-bottom:6px">'+
@@ -78,8 +79,8 @@
       '</div>'+
       '<select class="ap-roadsel" style="width:100%;'+iStyle+';margin-bottom:6px;display:none"></select>'+
       '<select class="ap-seg" style="width:100%;'+iStyle+';margin-bottom:6px;display:none"></select>'+
-      '<input class="ap-road" type="text" placeholder="路／街名（輸入一個字即有選項）" autocomplete="new-password" list="ap-road-dl" style="width:100%;'+iStyle+';margin-bottom:6px">'+
-      '<datalist id="ap-road-dl"></datalist>'+
+      '<input class="ap-road" type="text" placeholder="路／街名（輸入一個字即有選項）" autocomplete="new-password" list="'+dlId+'" style="width:100%;'+iStyle+';margin-bottom:6px">'+
+      '<datalist id="'+dlId+'"></datalist>'+
       '<div style="font-size:12px;color:#7A5600;margin-bottom:3px">門牌（只填數字，沒有的免填）</div>'+
       '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">'+
         '<input class="ap-sec" type="text" inputmode="tel" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">段</span>'+
@@ -145,7 +146,7 @@
         roadIn.style.display = "";
         var key = (citySel.value||"") + (distSel.value||"");
         var streets = (window.TW_STREETS && window.TW_STREETS[key]) || [];
-        var dl = document.getElementById("ap-road-dl");
+        var dl = wrap.querySelector("datalist");
         if(dl) dl.innerHTML = streets.map(function(s){ return '<option value="'+s+'">'; }).join("");
         if(keepRoad) roadIn.value = keepRoad;
       }
