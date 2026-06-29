@@ -50,11 +50,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-06-29
 
 最近 commits：
+  36556d1 修復 help.html 案件單開啟流程並補通過全部測試版本 2026062908
+  c0c1681 自動更新 CLAUDE.md 最近進度（Stop hook）
   3efbd33 大盤點：修復 14 個 bug（sw/org/nav/union/meeting/founders/roster/gongwen）版本 2026062907
   508629f 自動更新 CLAUDE.md 最近進度（Stop hook）
   ef1cf56 自動更新 CLAUDE.md 最近進度（Stop hook）
-  a4b7871 自動更新 CLAUDE.md 最近進度（Stop hook）
-  a968f55 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
