@@ -78,7 +78,8 @@
       '</div>'+
       '<select class="ap-roadsel" style="width:100%;'+iStyle+';margin-bottom:6px;display:none"></select>'+
       '<select class="ap-seg" style="width:100%;'+iStyle+';margin-bottom:6px;display:none"></select>'+
-      '<input class="ap-road" type="text" placeholder="路／街名（例：澄清路）" autocomplete="off" style="width:100%;'+iStyle+';margin-bottom:6px">'+
+      '<input class="ap-road" type="text" placeholder="路／街名（輸入一個字即有選項）" autocomplete="new-password" list="ap-road-dl" style="width:100%;'+iStyle+';margin-bottom:6px">'+
+      '<datalist id="ap-road-dl"></datalist>'+
       '<div style="font-size:12px;color:#7A5600;margin-bottom:3px">門牌（只填數字，沒有的免填）</div>'+
       '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">'+
         '<input class="ap-sec" type="text" inputmode="tel" style="width:40px;text-align:center;'+iStyle+'"><span style="font-size:13px;color:#7A5600">段</span>'+
@@ -142,6 +143,11 @@
         roadSel.style.display = "none";
         segSel.style.display = "none";
         roadIn.style.display = "";
+        var key = (citySel.value||"") + (distSel.value||"");
+        var streets = (window.TW_STREETS && window.TW_STREETS[key]) || [];
+        var dl = document.getElementById("ap-road-dl");
+        if(dl) dl.innerHTML = streets.map(function(s){ return '<option value="'+s+'">'; }).join("");
+        if(keepRoad) roadIn.value = keepRoad;
       }
     }
     function onRoadSel(){
