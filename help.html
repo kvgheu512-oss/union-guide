@@ -359,7 +359,7 @@
       .filter(function(id){return id!==e.id;}).slice(0,3)
       .map(function(id){return {t:BYID[id].t,fn:function(){answer(BYID[id]);}};});
     items=items.concat(sib);
-    items.push({t:"📋 還沒解決？找工會撐腰",fn:function(){startScreening(CASEMAP[e.id]||"other", LASTQ||e.t);}});
+    items.push({t:"📋 交給工會整理案件",fn:function(){openCaseBox(CASEMAP[e.id]||"other", LASTQ||e.t);}});
     items.push({t:"📂 其它分類",cls:"cat",fn:showCats});
     chips(items);
   }
