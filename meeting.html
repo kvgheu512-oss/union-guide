@@ -324,7 +324,7 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function rocDate(ds){ if(!ds) return '中華民國　年　月　日'; const p=ds.split('-'); return `中華民國${p[0]-1911}年${+p[1]}月${+p[2]}日`; }
 const $=id=>document.getElementById(id);
-const AG_KINDS=['報告事項','討論事項','選舉事項','臨時動議'];
+const AG_KINDS=['報告事項','說明事項','討論事項','選舉事項','臨時動議'];
 const SEEDS={
  '發起人會議':[
   {kind:'報告事項',title:'連署及發起經過報告',decision:''},
@@ -784,7 +784,7 @@ let toastT; function toast(m){ const e=$('toast'); e.textContent=m; e.classList.
 
 /* ===== 參加者掃碼入口（Google 雲端報到） ===== */
 function b64urlEncode(s){ return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
-function b64urlDecode(s){ s=s.replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4)s+='='; return decodeURIComponent(escape(atob(s))); }
+function b64urlDecode(s){ s=s.replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4)s+='='; return new TextDecoder().decode(Uint8Array.from(atob(s),c=>c.charCodeAt(0))); }
 function joinURL(){
   var data={ t:cur.type||'會議', no:cur.no||'', d:cur.date||'', tm:cur.time||'', p:cur.place||'',
     ag:(cur.agenda||[]).filter(a=>a&&a.title).map(a=>({k:a.kind||'討論事項',t:a.title})),
@@ -810,9 +810,9 @@ function renderJoinView(data){
   var gt=$('gate'); if(gt){ gt.classList.remove('show'); gt.style.display='none'; }
   var v=$('join-view'); v.style.display='block';
   var kinds=['報告事項','說明事項','討論事項','選舉事項','臨時動議'], ag='';
-  (data.ag||[]).slice().sort((a,b)=>{var ia=kinds.indexOf(a.k),ib=kinds.indexOf(b.k);return (ia<0?9:ia)-(ib<0?9:ib);});
-  kinds.forEach(function(k){ var items=(data.ag||[]).filter(a=>a.k===k); if(items.length){ ag+='<div class="jh">'+esc(k)+'</div><ol>'+items.map(a=>'<li>'+esc(a.t)+'</li>').join('')+'</ol>'; } });
-  var others=(data.ag||[]).filter(a=>kinds.indexOf(a.k)<0); if(others.length){ ag+='<ol>'+others.map(a=>'<li>'+esc(a.t)+'</li>').join('')+'</ol>'; }
+  var sortedAg=(data.ag||[]).slice().sort((a,b)=>{var ia=kinds.indexOf(a.k),ib=kinds.indexOf(b.k);return (ia<0?9:ia)-(ib<0?9:ib);});
+  kinds.forEach(function(k){ var items=sortedAg.filter(a=>a.k===k); if(items.length){ ag+='<div class="jh">'+esc(k)+'</div><ol>'+items.map(a=>'<li>'+esc(a.t)+'</li>').join('')+'</ol>'; } });
+  var others=sortedAg.filter(a=>kinds.indexOf(a.k)<0); if(others.length){ ag+='<ol>'+others.map(a=>'<li>'+esc(a.t)+'</li>').join('')+'</ol>'; }
   if(!ag) ag='<p style="color:#888;font-size:14px">（議程待主辦補上）</p>';
   var when=((data.d?rocDate(data.d):'')+' '+(data.tm||'')).trim();
   var ok=/^https?:\/\//;

@@ -68,6 +68,6 @@ self.addEventListener("fetch", e => {
   e.respondWith(
     caches.match(req).then(m => m || fetch(req).then(r => {
       const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return r;
-    }).catch(() => m))
+    }).catch(() => m || new Response('', {status:503})))
   );
 });

@@ -490,7 +490,7 @@ table.dt td.nm{min-width:62px;}
   <div style="background:#fff;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.9rem;box-shadow:0 2px 10px rgba(0,0,0,.07)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
       <div style="font-size:13px;font-weight:700;color:#1A3A6B">📋 籌備進度</div>
-      <div style="font-size:13px;color:#555">完成 <span id="task-done-count" style="font-weight:700;color:#0F5C36">0</span> / 9 項
+      <div style="font-size:13px;color:#555">完成 <span id="task-done-count" style="font-weight:700;color:#0F5C36">0</span> / <span id="task-total-count">9</span> 項
         <span id="task-all-done" style="display:none;color:#0F5C36;font-weight:700"> 🎉 全部完成！</span>
       </div>
     </div>
@@ -503,18 +503,18 @@ table.dt td.nm{min-width:62px;}
   <div class="grp-card" style="border-left:4px solid #C0392B;margin-bottom:.6rem">
     <div class="grp-h" style="background:#C0392B">① 擬定基本文件草案</div>
     <div class="grp-b" style="display:flex;flex-direction:column;gap:.1rem">
-      <label class="task-row" onclick="toggleTask('t_charter')">
+      <div class="task-row" onclick="toggleTask('t_charter')">
         <div class="task-cb" id="cb_t_charter"></div>
         <div class="task-lbl" id="lb_t_charter">📜 <strong>工會章程</strong>（草案）<small>成立大會提交全體會員表決通過</small></div>
-      </label>
-      <label class="task-row" onclick="toggleTask('t_plan')">
+      </div>
+      <div class="task-row" onclick="toggleTask('t_plan')">
         <div class="task-cb" id="cb_t_plan"></div>
         <div class="task-lbl" id="lb_t_plan">📋 <strong>年度工作計畫</strong><small>第一年要做什麼，列出來</small></div>
-      </label>
-      <label class="task-row" onclick="toggleTask('t_budget')">
+      </div>
+      <div class="task-row" onclick="toggleTask('t_budget')">
         <div class="task-cb" id="cb_t_budget"></div>
         <div class="task-lbl" id="lb_t_budget">💰 <strong>年度經費預算</strong><small>收入來源（會費）、支出估算</small></div>
-      </label>
+      </div>
       <div style="background:#FFF0F0;border-radius:6px;padding:.4rem .7rem;font-size:12px;color:#7B1818;margin-top:.3rem;line-height:1.7">
         ⚠️ 以上都是「草案」，需在成立大會提交<strong>全體會員表決</strong>才算數。
       </div>
@@ -525,12 +525,12 @@ table.dt td.nm{min-width:62px;}
   <div class="grp-card" style="border-left:4px solid #1A3A6B;margin-bottom:.6rem">
     <div class="grp-h" style="background:#1A3A6B">② 公開徵求會員</div>
     <div class="grp-b">
-      <label class="task-row" onclick="toggleTask('t_recruit')">
+      <div class="task-row" onclick="toggleTask('t_recruit')">
         <div class="task-cb" id="cb_t_recruit"></div>
         <div class="task-lbl" id="lb_t_recruit"><strong>透過各管道讓有資格的人都知道</strong>
           <small>公告欄 · LINE · IG · FB · Threads · Dcard · Email · 口耳相傳</small>
         </div>
-      </label>
+      </div>
     </div>
   </div>
 
@@ -538,36 +538,36 @@ table.dt td.nm{min-width:62px;}
   <div class="grp-card" style="border-left:4px solid #0F5C36;margin-bottom:.9rem">
     <div class="grp-h" style="background:#0F5C36">③ 籌備成立大會（5 步驟）</div>
     <div class="grp-b" style="display:flex;flex-direction:column;gap:.3rem">
-      <label class="task-row" onclick="toggleTask('t_proposal')">
+      <div class="task-row" onclick="toggleTask('t_proposal')">
         <div class="task-cb" id="cb_t_proposal"></div>
         <div class="task-lbl" id="lb_t_proposal"><strong>（1）徵集提案</strong>
           <small>向會員收集「想討論的議題」，例如：提案加入高雄市產業總工會</small>
         </div>
-      </label>
-      <label class="task-row" onclick="toggleTask('t_venue')">
+      </div>
+      <div class="task-row" onclick="toggleTask('t_venue')">
         <div class="task-cb" id="cb_t_venue"></div>
         <div class="task-lbl" id="lb_t_venue"><strong>（2）洽借場地</strong>
           <small>容納全體會員的空間，提早聯繫借用（院內會議室或外部場地）</small>
         </div>
-      </label>
-      <label class="task-row" onclick="toggleTask('t_notify')" style="background:#FFFBF0;border-radius:8px;padding:.42rem .6rem">
+      </div>
+      <div class="task-row" onclick="toggleTask('t_notify')" style="background:#FFFBF0;border-radius:8px;padding:.42rem .6rem">
         <div class="task-cb" id="cb_t_notify"></div>
         <div class="task-lbl" id="lb_t_notify"><strong>（3）通知出（列）席人員 ⭐</strong>
           <small>寄發開會通知書。<span style="color:#7B1818;font-weight:700">若當天還要開第1次理事會、監事會，要在通知書一起寫明！</span></small>
         </div>
-      </label>
-      <label class="task-row" onclick="toggleTask('t_handbook')">
+      </div>
+      <div class="task-row" onclick="toggleTask('t_handbook')">
         <div class="task-cb" id="cb_t_handbook"></div>
         <div class="task-lbl" id="lb_t_handbook"><strong>（4）編印大會手冊</strong>
           <small>含籌備會工作報告、討論提案（含選舉事項）、各項附件</small>
         </div>
-      </label>
-      <label class="task-row" onclick="toggleTask('t_election')">
+      </div>
+      <div class="task-row" onclick="toggleTask('t_election')">
         <div class="task-cb" id="cb_t_election"></div>
         <div class="task-lbl" id="lb_t_election"><strong>（5）準備選舉事宜</strong>
           <small>選票 · 投票箱 · 領取選票名冊 · 計票單</small>
         </div>
-      </label>
+      </div>
     </div>
   </div>
 
@@ -694,6 +694,8 @@ function renderTasks(){
   });
   var cnt=document.getElementById('task-done-count');
   if(cnt) cnt.textContent=done;
+  var tot=document.getElementById('task-total-count');
+  if(tot) tot.textContent=ALL_TASKS.length;
   var fill=document.getElementById('task-pg-fill');
   if(fill) fill.style.width=Math.round(done/ALL_TASKS.length*100)+'%';
   var all=document.getElementById('task-all-done');

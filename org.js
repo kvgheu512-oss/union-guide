@@ -35,7 +35,7 @@
   ];
   var CADRE_DEFAULTS = { chair: "楊淯涵", fin: "莊瑋聆", fin2: "蔣雅", doc: "巫佳容", doc2: "葉柏宏", wel: "黃淑姸", sup: "陳依婷" };
   function cadreDraft() { try { return JSON.parse(localStorage.getItem(CKEY)) || {}; } catch (e) { return {}; } }
-  function cadres() { return Object.assign({}, CADRE_DEFAULTS, (_pub && _pub.cadres) || {}, cadreDraft()); }
+  function cadres() { return Object.assign({}, CADRE_DEFAULTS, cadreDraft(), (_pub && _pub.cadres) || {}); }
   function setCadres(o) { try { localStorage.setItem(CKEY, JSON.stringify(o || {})); } catch (e) {} }
   function cadreName(key) { return cadres()[key] || CADRE_DEFAULTS[key] || ""; }
 
@@ -88,7 +88,7 @@
   function nextDocNo(subject) {
     var o = get(); var seq = parseInt(o.docSeq, 10) || 1;
     var no = fmtDocNo(o, seq);
-    o.docSeq = seq + 1; set(o);
+    var d = draft(); d.docSeq = seq + 1; set(d);
     try {
       var log = JSON.parse(localStorage.getItem(LOG) || "[]");
       log.push({ no: no, date: new Date().toISOString().slice(0, 10), subject: subject || "" });

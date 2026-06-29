@@ -300,7 +300,7 @@ document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='E
 const KEY="roster_members_v1";
 const STATUS={applicant:'入會申請中',active:'在會',suspended:'停權',left:'出會'};
 let members=[], filter='all', q='';
-function load(){ try{members=JSON.parse(localStorage.getItem(KEY))||[];}catch(_){members=[];} }
+function load(){ try{var _d=JSON.parse(localStorage.getItem(KEY));members=Array.isArray(_d)?_d:[];}catch(_){members=[];} }
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(members));}catch(_){} try{ idbPut(members.slice()); }catch(_){} try{ scheduleFileBackup(); }catch(_){} }
 
 /* 🛟 備援存放：IndexedDB 第二把鑰匙（比 localStorage 耐清）。localStorage 被清空時，
@@ -622,7 +622,7 @@ var _wbk=document.getElementById('warn-bk'); if(_wbk) _wbk.addEventListener('cli
 $('import-btn').addEventListener('click',()=>$('import-file').click());
 $('import-file').addEventListener('change',e=>{
   const f=e.target.files[0]; if(!f) return; const r=new FileReader();
-  r.onload=()=>{ try{ const arr=JSON.parse(r.result); if(!Array.isArray(arr)) throw 0;
+  r.onload=()=>{ try{ const arr=JSON.parse(r.result); if(!Array.isArray(arr)||arr.some(x=>typeof x!=='object'||x===null||!x.id)) throw 0;
     if(confirm('匯入將「取代」目前名冊，確定？')){ members=arr; save(); render(); toast('已匯入'); }
   }catch(_){ toast('檔案格式不正確'); } e.target.value=''; };
   r.readAsText(f);
