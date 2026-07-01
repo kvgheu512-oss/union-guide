@@ -293,12 +293,18 @@ var SCENARIOS = [
   {id:'family',   label:'家屬溝通 / 複雜衛教',    desc:'病情解釋、情緒支持、排解糾紛',mins:30,urg:'s'},
   {id:'procedure',label:'緊急侵入性處置協助',      desc:'插管、CVC、胸腔引流等',     mins:30, urg:'s'},
   {id:'transfer', label:'出院協調 / 後送等待',     desc:'等候家屬來或復健機構床位',   mins:30, urg:'s'},
+  // 次級（洗腎室）
+  {id:'hd_acute', label:'〔洗腎〕透析中急性不適', desc:'低血壓、抽筋、噁心嘔吐等處置',mins:30,urg:'s'},
+  {id:'hd_emerg', label:'〔洗腎〕臨時增加緊急透析排程', desc:'急性腎損傷或電解質危機緊急加透',mins:30,urg:'s'},
   // 非緊急
   {id:'charting', label:'文書補寫',               desc:'護理記錄、電子病歷未完成',   mins:20, urg:'n'},
   {id:'stock',    label:'藥品 / 耗材盤點超時',    desc:'班次交接前盤點未完成',       mins:20, urg:'n'},
   {id:'equip',    label:'設備故障排除等待',        desc:'輸液幫浦、監視器、電腦當機', mins:15, urg:'n'},
   {id:'meeting',  label:'下班後留開臨時會議',      desc:'未事先通知的強制集合',       mins:30, urg:'n'},
   {id:'order',    label:'主管要求加班未填加班單',  desc:'口頭要求留下工作，無書面記錄',mins:30,urg:'n'},
+  // 非緊急（洗腎室）
+  {id:'hd_mach',  label:'〔洗腎〕透析機器警報 / 管路或通路問題', desc:'機器警報排除、血管通路滲血或阻塞',mins:20,urg:'n'},
+  {id:'hd_wait',  label:'〔洗腎〕透析後病人等待接送 / 護送', desc:'等候家屬、輪椅或病房護理師接送',mins:20,urg:'n'},
 ];
 
 /* ===== Keys ===== */
