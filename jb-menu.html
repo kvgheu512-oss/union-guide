@@ -294,17 +294,36 @@ var SCENARIOS = [
   {id:'procedure',label:'緊急侵入性處置協助',      desc:'插管、CVC、胸腔引流等',     mins:30, urg:'s'},
   {id:'transfer', label:'出院協調 / 後送等待',     desc:'等候家屬來或復健機構床位',   mins:30, urg:'s'},
   // 次級（洗腎室）
-  {id:'hd_acute', label:'〔洗腎〕透析中急性不適', desc:'低血壓、抽筋、噁心嘔吐等處置',mins:30,urg:'s'},
-  {id:'hd_emerg', label:'〔洗腎〕臨時增加緊急透析排程', desc:'急性腎損傷或電解質危機緊急加透',mins:30,urg:'s'},
+  {id:'hd_acute',   label:'〔洗腎〕透析中急性不適',           desc:'低血壓、抽筋、噁心嘔吐等處置',               mins:30, urg:'s'},
+  {id:'hd_emerg',   label:'〔洗腎〕臨時增加緊急透析排程',     desc:'急性腎損傷或電解質危機緊急加透',             mins:30, urg:'s'},
+  {id:'hd_roaming', label:'〔洗腎〕跨病房推 e化車執行 HD／CRRT', desc:'推車至 ICU、急診、一般病房，含架機與撤機時間', mins:45, urg:'s'},
+  {id:'hd_crrt',    label:'〔洗腎〕CRRT 濾心或管路更換',      desc:'床邊連續性腎臟替代治療，套組更換耗時',       mins:30, urg:'s'},
+  // 次級（ICU）
+  {id:'icu_hov',    label:'〔ICU〕病情不穩定無法正常交班',     desc:'病人狀況危急，接班前處置未完成',             mins:30, urg:'s'},
+  {id:'icu_tube',   label:'〔ICU〕多重管路整理／特殊照護超時', desc:'動脈線、CVP、多條滴注、呼吸器管路整理',     mins:30, urg:'s'},
+  {id:'icu_fam',    label:'〔ICU〕家屬情緒崩潰長時間支持',     desc:'突發重症、病危通知後的溝通與陪伴',           mins:30, urg:'s'},
+  {id:'icu_death',  label:'〔ICU〕往生後大體護理及家屬告別',   desc:'急救後往生、後續遺體整理與家屬支持',         mins:40, urg:'s'},
+  // 緊急（急診）
+  {id:'ed_mci',     label:'〔急診〕大量傷患同時湧入（MCI）',   desc:'多重傷亡事故、大型災難緊急動員',             mins:60, urg:'u'},
+  // 次級（急診）
+  {id:'ed_board',   label:'〔急診〕超量候床病人超收照護',       desc:'內科床位不足、急診病人長時間滯留',           mins:30, urg:'s'},
+  {id:'ed_violence',label:'〔急診〕病人情緒失控／攻擊事件',     desc:'暴力言行、攻擊後的記錄與事後處置',           mins:30, urg:'s'},
+  // 次級（安寧）
+  {id:'pc_fam',     label:'〔安寧〕臨終家屬長時間陪伴支持',     desc:'最後階段心理支持、家屬悲傷陪伴',             mins:40, urg:'s'},
+  {id:'pc_death',   label:'〔安寧〕往生後大體護理及家屬告別',   desc:'善終護理、遺體整理、家屬最後告別',           mins:40, urg:'s'},
+  {id:'pc_symptom', label:'〔安寧〕難治性症狀處置超時',         desc:'疼痛、呼吸困難、譫妄等複雜症狀控制',         mins:30, urg:'s'},
   // 非緊急
-  {id:'charting', label:'文書補寫',               desc:'護理記錄、電子病歷未完成',   mins:20, urg:'n'},
-  {id:'stock',    label:'藥品 / 耗材盤點超時',    desc:'班次交接前盤點未完成',       mins:20, urg:'n'},
-  {id:'equip',    label:'設備故障排除等待',        desc:'輸液幫浦、監視器、電腦當機', mins:15, urg:'n'},
-  {id:'meeting',  label:'下班後留開臨時會議',      desc:'未事先通知的強制集合',       mins:30, urg:'n'},
-  {id:'order',    label:'主管要求加班未填加班單',  desc:'口頭要求留下工作，無書面記錄',mins:30,urg:'n'},
+  {id:'charting',   label:'文書補寫',                          desc:'護理記錄、電子病歷未完成',                   mins:20, urg:'n'},
+  {id:'stock',      label:'藥品 / 耗材盤點超時',               desc:'班次交接前盤點未完成',                       mins:20, urg:'n'},
+  {id:'equip',      label:'設備故障排除等待',                   desc:'輸液幫浦、監視器、電腦當機',                 mins:15, urg:'n'},
+  {id:'meeting',    label:'下班後留開臨時會議',                  desc:'未事先通知的強制集合',                       mins:30, urg:'n'},
+  {id:'order',      label:'主管要求加班未填加班單',              desc:'口頭要求留下工作，無書面記錄',               mins:30, urg:'n'},
   // 非緊急（洗腎室）
-  {id:'hd_mach',  label:'〔洗腎〕透析機器警報 / 管路或通路問題', desc:'機器警報排除、血管通路滲血或阻塞',mins:20,urg:'n'},
-  {id:'hd_wait',  label:'〔洗腎〕透析後病人等待接送 / 護送', desc:'等候家屬、輪椅或病房護理師接送',mins:20,urg:'n'},
+  {id:'hd_mach',    label:'〔洗腎〕透析機器警報 / 管路或通路問題', desc:'機器警報排除、血管通路滲血或阻塞',       mins:20, urg:'n'},
+  {id:'hd_wait',    label:'〔洗腎〕透析後病人等待接送 / 護送',  desc:'等候家屬、輪椅或病房護理師接送',             mins:20, urg:'n'},
+  {id:'hd_clean',   label:'〔洗腎〕透析設備消毒清潔歸位',        desc:'e化車及透析機消毒、耗材補充歸定位',          mins:20, urg:'n'},
+  // 非緊急（急診）
+  {id:'ed_cleanup', label:'〔急診〕急救後場地整理與物資補充',    desc:'急救台清理、補充急救藥物與耗材',             mins:20, urg:'n'},
 ];
 
 /* ===== Keys ===== */

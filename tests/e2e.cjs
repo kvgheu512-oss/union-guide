@@ -199,8 +199,8 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
 
   await T('加班情境回報 情境可勾選並更新摘要', async p => { await go(p, 'jb-menu.html'); await p.waitForTimeout(300);
     const items = await p.$$('.sc-item');
-    if (items.length < 19) { bad('jb-sc-count', '情境數 ' + items.length + ' < 19'); return; }
-    ok('19 個情境（含洗腎室）全部渲染');
+    if (items.length < 33) { bad('jb-sc-count', '情境數 ' + items.length + ' < 33'); return; }
+    ok('33 個情境（含洗腎／ICU／急診／安寧）全部渲染');
     await items[0].click(); await p.waitForTimeout(120);
     const sel = await items[0].evaluate(el => el.classList.contains('sel'));
     const summary = await p.textContent('#summary-tags');
