@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  © 2026 巫佳容（WU CHIA-JUNG） 著作權所有，保留一切權利 All Rights Reserved.
+  作品：加班情境回報（jb-menu.html）
+  著作人：巫佳容　著作權自創作完成時自動取得（著作權法 §10）。
+  存證時間（UTC）：2026-07-01T00:00:00Z　存證日：2026-07-01
+  作者印記（浮水印）：WJR-UNIONGUIDE-jbmenu-2026070101-jb-menu.html
+  未經著作人巫佳容授權，不得重製、改作、公開傳輸、散布或為營利使用。
+  ============================================================
+-->
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>加班情境回報 — 高雄榮總工會</title>
+<script src="version.js"></script>
+<link rel="stylesheet" href="common.css">
+<style>
+:root{
+  --green:#1A7A4A;--green-light:#EAFAF1;--green-mid:#2D9D6E;--green-deep:#0F5C36;
+  --ink:#1A1A1A;--ink-mid:#444;--ink-soft:#777;--bg:#FAFAF8;
+  --card:#FFFFFF;--border:#E8E4DE;
+  --urg:#C0392B;--urg-bg:#FDECEA;--urg-br:#F5C6C2;
+  --sec:#B7860B;--sec-bg:#FEF9E7;--sec-br:#E8C96A;
+  --nor:#2E5C8A;--nor-bg:#EBF3FB;--nor-br:#A8C8E8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC','PingFang TC',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7}
+.header{background:linear-gradient(160deg,#1B7536 0%,#0E5023 100%);color:#fff;padding:3.5rem 1.25rem 1.5rem;text-align:center;position:relative;overflow:hidden}
+.header::before,.header::after{display:none}
+.header-label{font-size:11px;letter-spacing:.15em;opacity:.75;margin-bottom:6px}
+.header h1{font-size:21px;font-weight:700;line-height:1.4;margin-bottom:4px}
+.header-sub{font-size:13px;opacity:.8}
+#verBadge{color:rgba(255,255,255,.4)}
+
+.tab-bar{display:flex;border-bottom:2px solid var(--border);background:var(--card);position:sticky;top:0;z-index:40}
+.tab-btn{flex:1;padding:.85rem;font-size:14px;font-weight:600;color:var(--ink-soft);border:none;background:transparent;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab-btn.on{color:var(--green);border-bottom-color:var(--green)}
+
+main{max-width:600px;margin:0 auto;padding:1.25rem 1.1rem 5rem}
+.tab-panel{display:none}.tab-panel.on{display:block}
+
+/* ── setup guide ── */
+.setup-wrap{background:#F0EEFF;border:1px solid #C8BCFF;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:1.25rem;font-size:13px;color:#3D2E8C;line-height:1.8}
+.setup-wrap.ok{background:var(--green-light);border-color:#B0DCC4;color:var(--green-deep)}
+.setup-toggle{font-size:13px;cursor:pointer;text-decoration:underline;color:inherit}
+.setup-body{margin-top:.75rem}
+.code-pre{background:#1A1A2E;color:#A0D8C0;border-radius:8px;padding:10px;font-size:11.5px;font-family:'Courier New',monospace;white-space:pre;overflow-x:auto;line-height:1.6;margin:6px 0}
+.gas-row{display:flex;gap:8px;align-items:center;margin-top:.6rem}
+.gas-input{flex:1;padding:.55rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:#fff}
+.gas-input:focus{outline:none;border-color:var(--green-mid)}
+.gas-save-btn{padding:.55rem .85rem;background:var(--green);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+
+/* ── urgency groups ── */
+.urg-label{display:flex;align-items:center;gap:8px;margin:1.25rem 0 .6rem;font-weight:700;font-size:12px;letter-spacing:.05em}
+.urg-badge{padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:600}
+.urg-badge.u{background:var(--urg-bg);color:var(--urg);border:1px solid var(--urg-br)}
+.urg-badge.s{background:var(--sec-bg);color:var(--sec);border:1px solid var(--sec-br)}
+.urg-badge.n{background:var(--nor-bg);color:var(--nor);border:1px solid var(--nor-br)}
+.urg-hint{font-size:11px;color:var(--ink-soft);font-weight:400;margin-left:auto}
+
+/* ── scenario item ── */
+.sc-item{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:.85rem 1rem;display:flex;align-items:flex-start;gap:11px;cursor:pointer;margin-bottom:7px;transition:border-color .12s,background .12s;-webkit-tap-highlight-color:transparent}
+.sc-item.sel{border-color:var(--green);background:var(--green-light)}
+.sc-check{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;flex-shrink:0;margin-top:1px;transition:background .12s,border-color .12s;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:transparent}
+.sc-item.sel .sc-check{background:var(--green);border-color:var(--green);color:#fff}
+.sc-info{flex:1;min-width:0}
+.sc-name{font-size:14.5px;font-weight:600;color:var(--ink)}
+.sc-desc{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+.sc-foot{display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap}
+.sc-mins-tag{font-size:11.5px;background:var(--green-light);color:var(--green-deep);border:1px solid #C3E6D4;border-radius:20px;padding:1px 8px}
+.sc-mins-edit{display:none;width:72px;font-size:13px;padding:2px 6px;border:1px solid var(--border);border-radius:6px;font-family:inherit;background:#fff}
+.sc-item.sel .sc-mins-tag{display:none}
+.sc-item.sel .sc-mins-edit{display:inline-block}
+
+/* ── form ── */
+.form-section{margin-top:1.5rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:.9rem}
+.form-row{margin-bottom:.9rem}
+.fld-lbl{font-size:12.5px;font-weight:600;color:var(--ink-mid);display:block;margin-bottom:5px}
+input.fi,select.fi,textarea.fi{width:100%;padding:.6rem .8rem;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink)}
+input.fi:focus,select.fi:focus,textarea.fi:focus{outline:none;border-color:var(--green-mid);box-shadow:0 0 0 3px rgba(45,157,110,.1)}
+textarea.fi{resize:vertical;min-height:72px}
+.fld-hint{font-size:11.5px;color:var(--ink-soft);margin-top:3px}
+
+/* ── summary ── */
+.summary-box{background:var(--green-light);border:1.5px solid #B0DCC4;border-radius:12px;padding:.9rem 1rem;margin-bottom:1rem}
+.summary-title{font-size:12.5px;font-weight:600;color:var(--green-deep);margin-bottom:7px}
+.summary-tags{display:flex;flex-wrap:wrap;gap:5px;min-height:26px}
+.s-tag{font-size:11.5px;padding:2px 9px;background:#fff;border:1px solid #B0DCC4;border-radius:20px;color:var(--green-deep)}
+.summary-empty{font-size:13px;color:var(--ink-soft)}
+.summary-total{font-size:14px;font-weight:700;color:var(--green);margin-top:9px;padding-top:8px;border-top:1px solid #C3E6D4}
+
+/* ── buttons ── */
+.btn-submit{width:100%;padding:1rem;background:var(--green);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-submit:active{background:var(--green-deep)}
+.btn-submit:disabled{background:#9CBFAD;cursor:not-allowed}
+.btn-clear{display:block;width:100%;margin-top:.6rem;padding:.7rem;background:#fff;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--ink-soft);cursor:pointer;font-family:inherit}
+.btn-clear:active{background:var(--bg)}
+
+/* ── status ── */
+.status-msg{padding:.85rem 1rem;border-radius:10px;margin-top:1rem;font-size:13.5px;line-height:1.7;display:none}
+.status-msg.ok{background:var(--green-light);color:var(--green-deep);border:1px solid #B0DCC4}
+.status-msg.warn{background:var(--sec-bg);color:#6B4800;border:1px solid var(--sec-br)}
+.status-msg.err{background:var(--urg-bg);color:var(--urg);border:1px solid var(--urg-br)}
+.status-msg.show{display:block}
+
+/* ── history ── */
+.hist-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;margin-bottom:9px}
+.hist-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.hist-date{font-size:13px;font-weight:600;color:var(--ink)}
+.hist-shift{font-size:11.5px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:1px 8px;color:var(--ink-soft)}
+.hist-cloud{font-size:11px;margin-left:auto;padding:1px 7px;border-radius:20px}
+.hist-cloud.ok{background:var(--green-light);color:var(--green)}
+.hist-cloud.local{background:var(--sec-bg);color:var(--sec)}
+.hist-tags{display:flex;flex-wrap:wrap;gap:4px}
+.hist-tag{font-size:11.5px;padding:2px 8px;background:var(--green-light);color:var(--green-deep);border:1px solid #C3E6D4;border-radius:12px}
+.hist-total{font-size:12px;color:var(--ink-soft);margin-top:6px}
+.hist-note{font-size:12px;color:var(--ink-mid);margin-top:4px;font-style:italic}
+.hist-empty{text-align:center;color:var(--ink-soft);padding:3rem 1rem;font-size:14px}
+.hist-clear-btn{display:block;width:100%;padding:.65rem;margin-top:.5rem;background:#fff;border:1.5px solid #F5C6C2;border-radius:10px;font-size:13px;color:var(--urg);cursor:pointer;font-family:inherit}
+
+/* ── toast ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1A2433;color:#fff;border-radius:30px;padding:.65rem 1.2rem;font-size:13px;opacity:0;pointer-events:none;transition:.22s;z-index:200;white-space:nowrap;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:420px){.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-home="index.html">
+<span id="verBadge"></span>
+
+<div class="header">
+  <div class="header-label">高雄榮民總醫院企業工會（籌備中）</div>
+  <h1>加班情境回報</h1>
+  <div class="header-sub">勾選今日加班情境，一鍵傳給工會匯整</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn on" data-tab="report">📋 回報加班</button>
+  <button class="tab-btn" data-tab="history">📂 我的紀錄</button>
+</div>
+
+<main>
+
+<!-- ===== 回報加班 ===== -->
+<div class="tab-panel on" id="tab-report">
+
+  <!-- GAS 設定 -->
+  <div class="setup-wrap" id="setup-wrap">
+    <div id="setup-summary">
+      ⚙️ <strong>尚未設定回報網址</strong>——勾情境可先試用，紀錄只存手機。
+      設定完才會傳給工會 Google Sheets。
+      <span class="setup-toggle" id="setup-toggle-btn">展開設定 ▾</span>
+    </div>
+    <div class="setup-body" id="setup-body" style="display:none">
+      <strong>理事長一次性設定：</strong>
+      <ol style="margin:.5rem 0 .75rem;padding-left:18px;font-size:13px;line-height:2">
+        <li>開你的「<strong>工會名冊</strong>」Google 試算表</li>
+        <li>上方選單 → <strong>擴充功能 → Apps Script</strong></li>
+        <li>把下面整段程式碼加進 <code>程式碼.gs</code>（不要刪原有的）</li>
+        <li>右上「<strong>部署 → 新增部署</strong>」→ 類型選「<strong>網路應用程式</strong>」</li>
+        <li>執行身分選「<strong>我</strong>」、存取權選「<strong>任何人</strong>」→ 部署 → 複製網址</li>
+        <li>把網址貼到下方 → 儲存 → 傳給所有會員</li>
+      </ol>
+      <strong>複製貼進 Apps Script 的程式碼：</strong>
+      <div class="code-pre">// ── 加班情境回報 doPost（加進 程式碼.gs）──
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss   = SpreadsheetApp.getActiveSpreadsheet();
+    var sh   = ss.getSheetByName('加班回報');
+    if (!sh) {
+      sh = ss.insertSheet('加班回報');
+      sh.appendRow(['回報時間','加班日期','班別','姓名/匿名',
+                    '情境','緊急程度','加班分鐘','備註']);
+      sh.setFrozenRows(1);
+    }
+    var ts   = Utilities.formatDate(new Date(),'Asia/Taipei','yyyy-MM-dd HH:mm:ss');
+    var name = data.name || '（匿名）';
+    var note = data.note || '';
+    (data.items || []).forEach(function(item) {
+      sh.appendRow([ts, data.date, data.shift, name,
+                    item.label, item.urgency, item.mins, note]);
+    });
+    return ContentService
+      .createTextOutput(JSON.stringify({ok:true}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ok:false,error:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</div>
+      <div class="gas-row">
+        <input class="gas-input" id="gas-url-input" type="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-nodraft>
+        <button class="gas-save-btn" id="gas-save-btn">儲存</button>
+      </div>
+      <div style="font-size:11.5px;color:var(--ink-soft);margin-top:6px">網址只存在你的手機，不上傳。</div>
+    </div>
+  </div>
+
+  <!-- ── 緊急 ── -->
+  <div class="urg-label">
+    <span class="urg-badge u">緊急</span>
+    <span class="urg-hint">立即影響病人安全</span>
+  </div>
+  <div id="sc-list-u"></div>
+
+  <!-- ── 次級 ── -->
+  <div class="urg-label" style="margin-top:1.4rem">
+    <span class="urg-badge s">次級</span>
+    <span class="urg-hint">流程或人力超載</span>
+  </div>
+  <div id="sc-list-s"></div>
+
+  <!-- ── 非緊急 ── -->
+  <div class="urg-label" style="margin-top:1.4rem">
+    <span class="urg-badge n">非緊急</span>
+    <span class="urg-hint">行政或系統問題</span>
+  </div>
+  <div id="sc-list-n"></div>
+
+  <!-- ── 表單 ── -->
+  <div class="form-section">
+    <div class="form-grid">
+      <div>
+        <label class="fld-lbl" for="f-date">加班日期</label>
+        <input class="fi" id="f-date" type="date">
+      </div>
+      <div>
+        <label class="fld-lbl" for="f-shift">班別</label>
+        <select class="fi" id="f-shift">
+          <option value="白班">白班（8:00–16:00）</option>
+          <option value="小夜">小夜（16:00–24:00）</option>
+          <option value="大夜">大夜（24:00–8:00）</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="fld-lbl" for="f-name">姓名（選填・可留空匿名）</label>
+      <input class="fi" id="f-name" type="text" placeholder="例：王小明　（不填視為匿名）" autocomplete="off">
+      <div class="fld-hint">姓名只送進工會自己的 Google Sheets，不公開。</div>
+    </div>
+    <div class="form-row">
+      <label class="fld-lbl" for="f-note">補充說明（選填）</label>
+      <textarea class="fi" id="f-note" placeholder="例：急救後還需清理場地、資材歸位，共多加班約 30 分鐘。"></textarea>
+    </div>
+  </div>
+
+  <!-- ── 送出前摘要 ── -->
+  <div class="summary-box">
+    <div class="summary-title">已勾選情境</div>
+    <div class="summary-tags" id="summary-tags">
+      <span class="summary-empty">還沒勾選任何情境</span>
+    </div>
+    <div class="summary-total" id="summary-total" style="display:none"></div>
+  </div>
+
+  <button class="btn-submit" id="submit-btn">送出回報</button>
+  <button class="btn-clear" id="clear-btn">清除重新填</button>
+  <div class="status-msg" id="status-msg"></div>
+
+</div><!-- /tab-report -->
+
+<!-- ===== 我的紀錄 ===== -->
+<div class="tab-panel" id="tab-history">
+  <div style="font-size:13px;color:var(--ink-soft);margin-bottom:1rem;line-height:1.7">
+    以下是儲存在這台手機的回報紀錄（保留最近 50 筆）。<br>
+    ☁️ 綠色 = 已同步至工會試算表；🟡 黃色 = 僅本機。
+  </div>
+  <div id="hist-list"></div>
+  <button class="hist-clear-btn" id="hist-clear-btn" style="display:none">🗑 清除所有本機紀錄</button>
+</div>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="common.js"></script>
+<script>
+/* ===== 情境資料 ===== */
+var SCENARIOS = [
+  // 緊急
+  {id:'rescue',   label:'急救 / CPR',           desc:'含後續搶救與環境整理',       mins:60, urg:'u'},
+  {id:'critical', label:'病人突發失代償',         desc:'呼吸衰竭、休克等緊急處置',   mins:30, urg:'u'},
+  {id:'multi_er', label:'急診多名重症同時轉入',   desc:'3 位以上同時入科',           mins:30, urg:'u'},
+  // 次級
+  {id:'handover', label:'交班超時',               desc:'交接複雜案件、說明時間過長', mins:20, urg:'s'},
+  {id:'new_pts',  label:'接新病人 3 位以上',       desc:'入院作業、評估、衛教',       mins:30, urg:'s'},
+  {id:'fullbed',  label:'滿床 / 加床照護',         desc:'超出護病比，額外照護工作',   mins:30, urg:'s'},
+  {id:'consult',  label:'跨科會診 / 轉科協調',    desc:'床位、文件、病人護送協調',   mins:20, urg:'s'},
+  {id:'family',   label:'家屬溝通 / 複雜衛教',    desc:'病情解釋、情緒支持、排解糾紛',mins:30,urg:'s'},
+  {id:'procedure',label:'緊急侵入性處置協助',      desc:'插管、CVC、胸腔引流等',     mins:30, urg:'s'},
+  {id:'transfer', label:'出院協調 / 後送等待',     desc:'等候家屬來或復健機構床位',   mins:30, urg:'s'},
+  // 非緊急
+  {id:'charting', label:'文書補寫',               desc:'護理記錄、電子病歷未完成',   mins:20, urg:'n'},
+  {id:'stock',    label:'藥品 / 耗材盤點超時',    desc:'班次交接前盤點未完成',       mins:20, urg:'n'},
+  {id:'equip',    label:'設備故障排除等待',        desc:'輸液幫浦、監視器、電腦當機', mins:15, urg:'n'},
+  {id:'meeting',  label:'下班後留開臨時會議',      desc:'未事先通知的強制集合',       mins:30, urg:'n'},
+  {id:'order',    label:'主管要求加班未填加班單',  desc:'口頭要求留下工作，無書面記錄',mins:30,urg:'n'},
+];
+
+/* ===== Keys ===== */
+var GAS_KEY  = 'jbmenu_gas_v1';
+var HIST_KEY = 'jbmenu_hist_v1';
+var DRAFT_NAME_KEY = 'jbmenu_name';
+
+/* ===== Helpers ===== */
+function $$(s){ return document.querySelectorAll(s); }
+function $(id){ return document.getElementById(id); }
+
+function getGasUrl(){ return (localStorage.getItem(GAS_KEY)||'').trim(); }
+function setGasUrl(u){ localStorage.setItem(GAS_KEY, u.trim()); }
+
+function getHist(){try{return JSON.parse(localStorage.getItem(HIST_KEY))||[];}catch(_){return[];}}
+function setHist(h){ localStorage.setItem(HIST_KEY, JSON.stringify(h)); }
+
+function showToast(msg, dur){
+  var t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._tmr); t._tmr=setTimeout(function(){ t.classList.remove('show'); }, dur||2200);
+}
+
+/* ===== Build scenario items ===== */
+function buildScenarios(){
+  ['u','s','n'].forEach(function(g){
+    var list = $('sc-list-'+g);
+    SCENARIOS.filter(function(s){ return s.urg===g; }).forEach(function(sc){
+      var div=document.createElement('div');
+      div.className='sc-item'; div.dataset.id=sc.id;
+      div.innerHTML=
+        '<div class="sc-check">✓</div>'+
+        '<div class="sc-info">'+
+          '<div class="sc-name">'+sc.label+'</div>'+
+          '<div class="sc-desc">'+sc.desc+'</div>'+
+          '<div class="sc-foot">'+
+            '<span class="sc-mins-tag">⏱ 約 '+sc.mins+' 分鐘</span>'+
+            '<input class="sc-mins-edit fi" type="number" data-mins="'+sc.id+'" value="'+sc.mins+'" min="1" max="480" title="實際分鐘數">'+
+            '<span style="font-size:11px;color:var(--ink-soft);display:none" id="mins-lbl-'+sc.id+'">分鐘</span>'+
+          '</div>'+
+        '</div>';
+      div.addEventListener('click', function(e){
+        if(e.target.tagName==='INPUT') return; // let user type
+        toggleSc(sc.id, div);
+      });
+      list.appendChild(div);
+    });
+  });
+}
+
+function toggleSc(id, el){
+  el.classList.toggle('sel');
+  var lbl=$('mins-lbl-'+id);
+  if(lbl) lbl.style.display = el.classList.contains('sel') ? 'inline' : 'none';
+  updateSummary();
+}
+
+function getSelected(){
+  var sel=[];
+  $$('.sc-item.sel').forEach(function(el){ sel.push(el.dataset.id); });
+  return sel;
+}
+
+function getItemData(id){
+  var sc=SCENARIOS.find(function(s){ return s.id===id; });
+  var inp=document.querySelector('[data-mins="'+id+'"]');
+  var mins = inp ? (parseInt(inp.value)||sc.mins) : sc.mins;
+  return {id:sc.id, label:sc.label, mins:mins, urgency:urgLabel(sc.urg)};
+}
+
+function urgLabel(g){ return g==='u'?'緊急': g==='s'?'次級':'非緊急'; }
+
+function updateSummary(){
+  var sel=getSelected();
+  var tags=$('summary-tags');
+  var tot=$('summary-total');
+  if(sel.length===0){
+    tags.innerHTML='<span class="summary-empty">還沒勾選任何情境</span>';
+    tot.style.display='none';
+    return;
+  }
+  var html=''; var total=0;
+  sel.forEach(function(id){
+    var d=getItemData(id);
+    total+=d.mins;
+    html+='<span class="s-tag">'+d.label+'（'+d.mins+'分）</span>';
+  });
+  tags.innerHTML=html;
+  tot.textContent='合計約 '+total+' 分鐘加班 （'+sel.length+' 個情境）';
+  tot.style.display='block';
+}
+
+/* ===== Submit ===== */
+function doSubmit(){
+  var sel=getSelected();
+  if(sel.length===0){ showToast('請至少勾選一個情境'); return; }
+
+  var date=$('f-date').value;
+  var shift=$('f-shift').value;
+  var name=($('f-name').value||'').trim();
+  var note=($('f-note').value||'').trim();
+  if(!date){ showToast('請選加班日期'); return; }
+
+  // Save name for next time
+  if(name) localStorage.setItem(DRAFT_NAME_KEY, name);
+
+  var items=sel.map(getItemData);
+  var total=items.reduce(function(a,x){ return a+x.mins; }, 0);
+
+  var payload={
+    ts: new Date().toISOString(),
+    date: date,
+    shift: shift,
+    name: name,
+    note: note,
+    items: items,
+    total_mins: total
+  };
+
+  // Save locally first
+  var hist=getHist();
+  var entry=Object.assign({}, payload, {cloud:false});
+  hist.unshift(entry);
+  setHist(hist.slice(0,50));
+
+  var gasUrl=getGasUrl();
+  var btn=$('submit-btn');
+  var statusEl=$('status-msg');
+
+  function showStatus(type, msg){
+    statusEl.className='status-msg '+type+' show';
+    statusEl.innerHTML=msg;
+    statusEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  if(!gasUrl){
+    showStatus('warn',
+      '✓ 已儲存在這台手機（'+total+' 分鐘，'+items.length+' 個情境）。<br>'+
+      '若要傳給工會統計，請先在上方貼入 Apps Script 網址。'
+    );
+    return;
+  }
+
+  btn.disabled=true; btn.textContent='傳送中…';
+
+  // no-cors：Content-Type=text/plain 避免預檢（simple request）
+  fetch(gasUrl, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload),
+    mode:'no-cors'
+  }).then(function(){
+    // no-cors → opaque response，假設成功
+    hist[0].cloud=true;
+    setHist(hist);
+    showStatus('ok',
+      '✅ 已回報！共 <strong>'+total+' 分鐘</strong>，'+items.length+' 個情境，已同步至工會統計表。<br>'+
+      '<span style="font-size:12px">班別：'+shift+'　日期：'+date+'</span>'
+    );
+    clearForm();
+  }).catch(function(err){
+    showStatus('warn',
+      '⚠️ 已儲存在手機（'+total+' 分鐘），但網路傳送失敗。<br>'+
+      '請確認網路後在「我的紀錄」重試，或截圖交給理事長。<br>'+
+      '<span style="font-size:12px;color:#999">'+err+'</span>'
+    );
+  }).finally(function(){
+    btn.disabled=false; btn.textContent='送出回報';
+  });
+}
+
+function clearForm(){
+  $$('.sc-item.sel').forEach(function(el){
+    el.classList.remove('sel');
+    var id=el.dataset.id;
+    var lbl=$('mins-lbl-'+id);
+    if(lbl) lbl.style.display='none';
+    // reset mins to default
+    var inp=el.querySelector('[data-mins]');
+    var sc=SCENARIOS.find(function(s){ return s.id===id; });
+    if(inp && sc) inp.value=sc.mins;
+  });
+  $('f-note').value='';
+  $('status-msg').className='status-msg';
+  updateSummary();
+}
+
+/* ===== History ===== */
+function renderHistory(){
+  var hist=getHist();
+  var el=$('hist-list');
+  var clrBtn=$('hist-clear-btn');
+  if(hist.length===0){
+    el.innerHTML='<div class="hist-empty">目前沒有紀錄。<br>回報加班後會出現在這裡。</div>';
+    clrBtn.style.display='none'; return;
+  }
+  clrBtn.style.display='block';
+  var html='';
+  hist.forEach(function(h){
+    var cloudCls = h.cloud ? 'ok' : 'local';
+    var cloudTxt = h.cloud ? '☁️ 已同步' : '🟡 僅本機';
+    html+='<div class="hist-item">'+
+      '<div class="hist-head">'+
+        '<span class="hist-date">'+h.date+'</span>'+
+        '<span class="hist-shift">'+h.shift+'</span>'+
+        '<span class="hist-cloud '+cloudCls+'">'+cloudTxt+'</span>'+
+      '</div>'+
+      '<div class="hist-tags">';
+    (h.items||[]).forEach(function(it){
+      html+='<span class="hist-tag">'+it.label+'（'+it.mins+'分）</span>';
+    });
+    html+='</div>'+
+      '<div class="hist-total">合計 '+(h.total_mins||0)+' 分鐘';
+    if(h.name) html+='　姓名：'+h.name;
+    html+='</div>';
+    if(h.note) html+='<div class="hist-note">備註：'+h.note+'</div>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+/* ===== Setup panel ===== */
+function updateSetupUI(){
+  var url=getGasUrl();
+  var wrap=$('setup-wrap');
+  var sumEl=$('setup-summary');
+  if(url){
+    wrap.className='setup-wrap ok';
+    sumEl.innerHTML='✅ <strong>已設定回報網址</strong>——回報將自動同步至工會試算表。'+
+      '　<span class="setup-toggle" id="setup-toggle-btn">修改 ▾</span>';
+  } else {
+    wrap.className='setup-wrap';
+    sumEl.innerHTML='⚙️ <strong>尚未設定回報網址</strong>——勾情境可先試用，紀錄只存手機。'+
+      '設定完才會傳給工會 Google Sheets。'+
+      '　<span class="setup-toggle" id="setup-toggle-btn">展開設定 ▾</span>';
+  }
+  // re-bind toggle
+  var tBtn=sumEl.querySelector('#setup-toggle-btn');
+  if(tBtn) tBtn.addEventListener('click', toggleSetup);
+}
+
+function toggleSetup(){
+  var body=$('setup-body');
+  var showing=body.style.display!=='none';
+  body.style.display=showing?'none':'block';
+  var inp=$('gas-url-input');
+  if(!showing && inp){ inp.value=getGasUrl(); inp.focus(); }
+}
+
+/* ===== Init ===== */
+document.addEventListener('DOMContentLoaded', function(){
+  buildScenarios();
+
+  // Tab switching
+  $$('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      $$('.tab-btn').forEach(function(b){ b.classList.remove('on'); });
+      $$('.tab-panel').forEach(function(p){ p.classList.remove('on'); });
+      btn.classList.add('on');
+      var panel=$('tab-'+btn.dataset.tab);
+      if(panel){ panel.classList.add('on'); if(btn.dataset.tab==='history') renderHistory(); }
+    });
+  });
+
+  // Date default = today
+  var today=new Date().toISOString().slice(0,10);
+  $('f-date').value=today;
+
+  // Shift guess by hour
+  var h=new Date().getHours();
+  $('f-shift').value = h<8?'大夜': h<16?'白班':'小夜';
+
+  // Restore saved name
+  var savedName=localStorage.getItem(DRAFT_NAME_KEY)||'';
+  if(savedName && !$('f-name').value) $('f-name').value=savedName;
+
+  // Setup panel
+  updateSetupUI();
+  var initToggle=$('setup-toggle-btn');
+  if(initToggle) initToggle.addEventListener('click', toggleSetup);
+
+  // GAS save
+  $('gas-save-btn').addEventListener('click', function(){
+    var url=$('gas-url-input').value.trim();
+    if(url && !url.startsWith('https://script.google.com/')){
+      showToast('網址格式不對，應為 https://script.google.com/macros/… 開頭'); return;
+    }
+    setGasUrl(url);
+    $('setup-body').style.display='none';
+    updateSetupUI();
+    showToast(url ? '✓ 已儲存回報網址' : '已清除網址（改回僅本機模式）');
+  });
+
+  // Summary live update: when mins input changes
+  document.addEventListener('input', function(e){
+    if(e.target && e.target.dataset && e.target.dataset.mins) updateSummary();
+  });
+
+  // Submit
+  $('submit-btn').addEventListener('click', doSubmit);
+
+  // Clear form
+  $('clear-btn').addEventListener('click', function(){
+    clearForm();
+    $('f-date').value=today;
+    $('f-shift').value = h<8?'大夜': h<16?'白班':'小夜';
+    $('f-name').value=savedName;
+  });
+
+  // History clear
+  $('hist-clear-btn').addEventListener('click', function(){
+    if(!confirm('確定清除所有本機紀錄？（已同步到試算表的不受影響）')) return;
+    setHist([]);
+    renderHistory();
+  });
+});
+</script>
+</body>
+</html>

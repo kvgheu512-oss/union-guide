@@ -197,6 +197,15 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const cat = await p.$eval('#c-cat', e => e.value).catch(() => ''); const nm = await p.$eval('#c-name', e => e.value).catch(() => '');
     (cat === 'ot' && nm === '陳大文') ? ok('案件自動分類+帶入') : bad('caseimport', 'cat=' + cat + ' nm=' + nm); });
 
+  await T('加班情境回報 情境可勾選並更新摘要', async p => { await go(p, 'jb-menu.html'); await p.waitForTimeout(300);
+    const items = await p.$$('.sc-item');
+    if (items.length < 15) { bad('jb-sc-count', '情境數 ' + items.length + ' < 15'); return; }
+    ok('15 個情境全部渲染');
+    await items[0].click(); await p.waitForTimeout(120);
+    const sel = await items[0].evaluate(el => el.classList.contains('sel'));
+    const summary = await p.textContent('#summary-tags');
+    (sel && !/還沒勾選/.test(summary)) ? ok('勾選情境摘要即時更新') : bad('jb-summary', summary.slice(0, 40)); });
+
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);
   if (fails.length) { console.log('--- 失敗項目 ---'); fails.forEach(f => console.log(' • ' + f)); }
