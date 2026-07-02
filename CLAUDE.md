@@ -48,14 +48,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-07-01
+最後更新：2026-07-02
 
 最近 commits：
+  f63b214 jb-menu 新增「管理情境」分頁——自行增刪項目
+  47ab78f 自動更新 CLAUDE.md 最近進度（Stop hook）
   e2ac61c 自動更新 CLAUDE.md 最近進度（Stop hook）
   6b7f240 jb-menu 新增 ICU／急診／安寧及洗腎移動透析情境（共 33 項）
   2974250 自動更新 CLAUDE.md 最近進度（Stop hook）
-  5b27219 jb-menu 新增洗腎室加班情境（4 項）
-  3f437c3 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
