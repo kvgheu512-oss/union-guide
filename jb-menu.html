@@ -126,6 +126,24 @@ textarea.fi{resize:vertical;min-height:72px}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media(max-width:420px){.form-grid{grid-template-columns:1fr}}
+
+/* ── manage ── */
+.mg-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
+.mg-title{font-size:13px;font-weight:600;color:var(--ink-mid);margin-bottom:.85rem}
+.mg-row{display:flex;align-items:center;gap:8px;padding:.55rem 0;border-bottom:1px solid var(--border)}
+.mg-row:last-child{border-bottom:none}
+.mg-badge{font-size:10.5px;padding:1px 7px;border-radius:20px;flex-shrink:0;font-weight:600;white-space:nowrap}
+.mg-badge.u{background:var(--urg-bg);color:var(--urg);border:1px solid var(--urg-br)}
+.mg-badge.s{background:var(--sec-bg);color:var(--sec);border:1px solid var(--sec-br)}
+.mg-badge.n{background:var(--nor-bg);color:var(--nor);border:1px solid var(--nor-br)}
+.mg-lbl{flex:1;font-size:13.5px;color:var(--ink);min-width:0}
+.mg-lbl.dim{color:var(--ink-soft);text-decoration:line-through}
+.mg-lbl small{display:block;font-size:11px;color:var(--ink-soft);margin-top:1px}
+.mg-mins{font-size:11.5px;color:var(--ink-soft);flex-shrink:0;white-space:nowrap}
+.mg-btn{padding:4px 10px;border-radius:8px;font-size:12px;border:none;cursor:pointer;font-family:inherit;flex-shrink:0;white-space:nowrap}
+.mg-btn.del{background:var(--urg-bg);color:var(--urg);border:1px solid var(--urg-br)}
+.mg-btn.restore{background:var(--green-light);color:var(--green);border:1px solid #B0DCC4}
+.mg-urg-head{font-size:11.5px;font-weight:600;color:var(--ink-soft);margin:.85rem 0 .3rem;padding-bottom:.3rem;border-bottom:1px dashed var(--border)}
 </style>
 </head>
 <body data-home="index.html">
@@ -140,6 +158,7 @@ textarea.fi{resize:vertical;min-height:72px}
 <div class="tab-bar">
   <button class="tab-btn on" data-tab="report">📋 回報加班</button>
   <button class="tab-btn" data-tab="history">📂 我的紀錄</button>
+  <button class="tab-btn" data-tab="manage">⚙️ 管理情境</button>
 </div>
 
 <main>
@@ -274,6 +293,32 @@ function doPost(e) {
   <button class="hist-clear-btn" id="hist-clear-btn" style="display:none">🗑 清除所有本機紀錄</button>
 </div>
 
+<!-- ===== 管理情境 ===== -->
+<div class="tab-panel" id="tab-manage">
+  <div class="mg-section">
+    <div class="mg-title">➕ 新增自訂情境</div>
+    <div class="form-row"><label class="fld-lbl">情境名稱（必填）</label><input class="fi" id="mg-label" placeholder="例：〔安寧〕家屬持續電話追蹤超時"></div>
+    <div class="form-row"><label class="fld-lbl">說明（選填）</label><input class="fi" id="mg-desc" placeholder="例：跨班次電話追蹤病人狀況"></div>
+    <div class="form-grid">
+      <div><label class="fld-lbl">預設分鐘</label><input class="fi" id="mg-mins" type="number" value="20" min="1" max="480"></div>
+      <div><label class="fld-lbl">緊急程度</label>
+        <select class="fi" id="mg-urg">
+          <option value="u">緊急</option>
+          <option value="s" selected>次級</option>
+          <option value="n">非緊急</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-submit" id="mg-add-btn">新增情境</button>
+  </div>
+
+  <div class="mg-section" style="margin-top:1.1rem">
+    <div class="mg-title">目前所有情境（🗑 隱藏 / ↩ 還原）</div>
+    <div id="mg-list"></div>
+    <button class="btn-clear" id="mg-reset-btn" style="margin-top:.6rem">↩ 還原全部隱藏的內建項目</button>
+  </div>
+</div>
+
 </main>
 <div class="toast" id="toast"></div>
 
@@ -327,9 +372,29 @@ var SCENARIOS = [
 ];
 
 /* ===== Keys ===== */
-var GAS_KEY  = 'jbmenu_gas_v1';
-var HIST_KEY = 'jbmenu_hist_v1';
+var GAS_KEY    = 'jbmenu_gas_v1';
+var HIST_KEY   = 'jbmenu_hist_v1';
+var MANAGE_KEY = 'jbmenu_manage_v1';
 var DRAFT_NAME_KEY = 'jbmenu_name';
+
+/* ===== 情境管理（自訂新增／隱藏內建） ===== */
+function getManageConf(){
+  try{ return JSON.parse(localStorage.getItem(MANAGE_KEY))||{hidden:[],custom:[]}; }
+  catch(_){ return {hidden:[],custom:[]}; }
+}
+function setManageConf(c){ localStorage.setItem(MANAGE_KEY, JSON.stringify(c)); }
+
+function getEffectiveScenarios(){
+  var conf=getManageConf();
+  var hidden=conf.hidden||[];
+  var custom=conf.custom||[];
+  return SCENARIOS.filter(function(s){ return hidden.indexOf(s.id)<0; }).concat(custom);
+}
+
+function rebuildScenarios(){
+  ['u','s','n'].forEach(function(g){ var l=$('sc-list-'+g); if(l) l.innerHTML=''; });
+  buildScenarios();
+}
 
 /* ===== Helpers ===== */
 function $$(s){ return document.querySelectorAll(s); }
@@ -350,7 +415,7 @@ function showToast(msg, dur){
 function buildScenarios(){
   ['u','s','n'].forEach(function(g){
     var list = $('sc-list-'+g);
-    SCENARIOS.filter(function(s){ return s.urg===g; }).forEach(function(sc){
+    getEffectiveScenarios().filter(function(s){ return s.urg===g; }).forEach(function(sc){
       var div=document.createElement('div');
       div.className='sc-item'; div.dataset.id=sc.id;
       div.innerHTML=
@@ -387,7 +452,7 @@ function getSelected(){
 }
 
 function getItemData(id){
-  var sc=SCENARIOS.find(function(s){ return s.id===id; });
+  var sc=getEffectiveScenarios().find(function(s){ return s.id===id; });
   var inp=document.querySelector('[data-mins="'+id+'"]');
   var mins = inp ? (parseInt(inp.value)||sc.mins) : sc.mins;
   return {id:sc.id, label:sc.label, mins:mins, urgency:urgLabel(sc.urg)};
@@ -544,6 +609,40 @@ function renderHistory(){
   el.innerHTML=html;
 }
 
+/* ===== 管理情境 ===== */
+function renderManage(){
+  var conf=getManageConf();
+  var hidden=conf.hidden||[];
+  var custom=conf.custom||[];
+  var groups={u:[],s:[],n:[]};
+  SCENARIOS.forEach(function(s){ groups[s.urg].push({src:'builtin',sc:s}); });
+  custom.forEach(function(s){ groups[s.urg].push({src:'custom',sc:s}); });
+  var urgName={u:'緊急',s:'次級',n:'非緊急'};
+  var html='';
+  ['u','s','n'].forEach(function(g){
+    if(!groups[g].length) return;
+    html+='<div class="mg-urg-head">'+urgName[g]+'</div>';
+    groups[g].forEach(function(x){
+      var sc=x.sc; var isHidden=hidden.indexOf(sc.id)>=0; var isCustom=x.src==='custom';
+      html+='<div class="mg-row">'+
+        '<span class="mg-badge '+g+'">'+urgName[g]+'</span>'+
+        '<div class="mg-lbl'+(isHidden?' dim':'')+'">'+
+          sc.label+(sc.desc?'<small>'+sc.desc+'</small>':'')+
+        '</div>'+
+        '<span class="mg-mins">'+sc.mins+'分</span>';
+      if(isHidden){
+        html+='<button class="mg-btn restore" data-restore="'+sc.id+'">↩ 還原</button>';
+      } else if(isCustom){
+        html+='<button class="mg-btn del" data-del-custom="'+sc.id+'">🗑 刪除</button>';
+      } else {
+        html+='<button class="mg-btn del" data-hide="'+sc.id+'">🗑 隱藏</button>';
+      }
+      html+='</div>';
+    });
+  });
+  $('mg-list').innerHTML=html;
+}
+
 /* ===== Setup panel ===== */
 function updateSetupUI(){
   var url=getGasUrl();
@@ -583,7 +682,10 @@ document.addEventListener('DOMContentLoaded', function(){
       $$('.tab-panel').forEach(function(p){ p.classList.remove('on'); });
       btn.classList.add('on');
       var panel=$('tab-'+btn.dataset.tab);
-      if(panel){ panel.classList.add('on'); if(btn.dataset.tab==='history') renderHistory(); }
+      if(panel){ panel.classList.add('on');
+        if(btn.dataset.tab==='history') renderHistory();
+        if(btn.dataset.tab==='manage') renderManage();
+      }
     });
   });
 
@@ -637,6 +739,49 @@ document.addEventListener('DOMContentLoaded', function(){
     if(!confirm('確定清除所有本機紀錄？（已同步到試算表的不受影響）')) return;
     setHist([]);
     renderHistory();
+  });
+
+  // ── 管理情境：新增 ──
+  $('mg-add-btn').addEventListener('click', function(){
+    var label=($('mg-label').value||'').trim();
+    if(!label){ showToast('請輸入情境名稱'); return; }
+    var conf=getManageConf();
+    (conf.custom=conf.custom||[]).push({
+      id:'custom_'+Date.now(),
+      label:label,
+      desc:($('mg-desc').value||'').trim(),
+      mins:parseInt($('mg-mins').value)||20,
+      urg:$('mg-urg').value
+    });
+    setManageConf(conf);
+    $('mg-label').value=''; $('mg-desc').value=''; $('mg-mins').value='20';
+    rebuildScenarios(); renderManage();
+    showToast('✓ 已新增「'+label+'」');
+  });
+
+  // ── 管理情境：隱藏 / 還原 / 刪除（事件委派）──
+  $('mg-list').addEventListener('click', function(e){
+    var t=e.target.closest('button'); if(!t) return;
+    var conf=getManageConf();
+    if(t.dataset.hide){
+      conf.hidden=conf.hidden||[];
+      if(conf.hidden.indexOf(t.dataset.hide)<0) conf.hidden.push(t.dataset.hide);
+      setManageConf(conf); rebuildScenarios(); renderManage(); showToast('已隱藏，可隨時還原');
+    } else if(t.dataset.restore){
+      conf.hidden=(conf.hidden||[]).filter(function(id){ return id!==t.dataset.restore; });
+      setManageConf(conf); rebuildScenarios(); renderManage(); showToast('✓ 已還原');
+    } else if(t.dataset.delCustom){
+      if(!confirm('確定刪除這個自訂情境？')) return;
+      conf.custom=(conf.custom||[]).filter(function(s){ return s.id!==t.dataset.delCustom; });
+      setManageConf(conf); rebuildScenarios(); renderManage(); showToast('已刪除');
+    }
+  });
+
+  // ── 管理情境：全部還原 ──
+  $('mg-reset-btn').addEventListener('click', function(){
+    if(!confirm('還原所有隱藏的內建情境？（不影響自訂新增的）')) return;
+    var conf=getManageConf(); conf.hidden=[]; setManageConf(conf);
+    rebuildScenarios(); renderManage(); showToast('✓ 所有內建情境已還原');
   });
 });
 </script>
