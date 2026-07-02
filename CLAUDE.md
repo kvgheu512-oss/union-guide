@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-02
 
 最近 commits：
+  0df782f 章程草案第八章保護補強：§41加不作為訴訟、§42明訂會務假時數、新增§44職場霸凌防治，章程擴至50條 版本 2026070209
+  fca48be 自動更新 CLAUDE.md 最近進度（Stop hook）
   9761eb8 自動更新 CLAUDE.md 最近進度（Stop hook）
   5ae6635 章程草案新增贊助會員條款（§13），收入來源補贊助會員費，條文擴至49條 版本 2026070208
   10d98f6 自動更新 CLAUDE.md 最近進度（Stop hook）
-  d78c947 自動更新 CLAUDE.md 最近進度（Stop hook）
-  71fe9d9 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
