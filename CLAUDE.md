@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-02
 
 最近 commits：
+  6acbb9f 自動更新 CLAUDE.md 最近進度（Stop hook）
   ad64ee1 自動更新 CLAUDE.md 最近進度（Stop hook）
   e265ffd 章程攻防補強：§9除名明確化/§33代扣同意書形式/§37區分催告與裁決門檻/§41補§35第2項支配介入/§24補理事長拒絕召集救濟/§48補電子簽章相對人同意 版本 2026070213
   9c72ad0 自動更新 CLAUDE.md 最近進度（Stop hook）
   be2c011 自動更新 CLAUDE.md 最近進度（Stop hook）
-  8a89c08 章程六處法條精修：§18補選門檻/§24緊急召集/§33代扣同意前提/§37仲裁引用§6/§43罷工票數/§16施行細則條號 版本 2026070212
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
