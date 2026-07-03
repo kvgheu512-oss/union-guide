@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-03
 
 最近 commits：
+  7a9cf56 自動更新 CLAUDE.md 最近進度（Stop hook）
   3c55810 自動更新 CLAUDE.md 最近進度（Stop hook）
   7a6cf58 章程攻防第五輪：§41勞動事件法§47定暫時狀態假處分/§44性平法§13性騷擾外部委員 版本 2026070216
   4209ab2 自動更新 CLAUDE.md 最近進度（Stop hook）
   274118b 自動更新 CLAUDE.md 最近進度（Stop hook）
-  92442f4 章程攻防第四輪：§36協商代表書面授權/§43罷工前提調解不成立+必要服務條款訂定前不得宣告 版本 2026070215
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
