@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-04
 
 最近 commits：
+  eaed3c5 自動更新 CLAUDE.md 最近進度（Stop hook）
   e28c429 章程本文（§1-51）大幅簡化：依北榮企業工會理事長實務建議，移除全部法條括號引用，改採一般白話行文（附錄範本因本身即依附特定法規之操作辦法，暫不變動）；同時移除§6入會資格之十六歲年齡限制 版本 2026070403
   7de79a1 自動更新 CLAUDE.md 最近進度（Stop hook）
   b75df25 自動更新 CLAUDE.md 最近進度（Stop hook）
   22a780e 自動更新 CLAUDE.md 最近進度（Stop hook）
-  b3e9e47 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
