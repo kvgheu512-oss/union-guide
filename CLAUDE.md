@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-04
 
 最近 commits：
+  fd91bef 自動更新 CLAUDE.md 最近進度（Stop hook）
   477082d 自動更新 CLAUDE.md 最近進度（Stop hook）
   075c54b 自動更新 CLAUDE.md 最近進度（Stop hook）
   41c46a1 自動更新 CLAUDE.md 最近進度（Stop hook）
   adf9de9 修正附錄③高雄市政府勞工局地址錯誤：改為官網登載之806604高雄市前鎮區鎮中路6號，並補上電話(07)812-4613 版本 2026070322
-  8c26f4e 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
