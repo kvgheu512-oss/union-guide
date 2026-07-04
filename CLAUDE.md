@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-04
 
 最近 commits：
+  b75df25 自動更新 CLAUDE.md 最近進度（Stop hook）
   22a780e 自動更新 CLAUDE.md 最近進度（Stop hook）
   b3e9e47 自動更新 CLAUDE.md 最近進度（Stop hook）
   abbe66e 語音導覽腳本移除幹部個人姓名稱呼，改為職稱通用稱呼：為後續改用預錄音檔＋背景播放（Media Session API）做準備，讓fin/fin2文字稿可共用同一組音檔，不受幹部改名影響 版本 2026070402
   39ae08c 自動更新 CLAUDE.md 最近進度（Stop hook）
-  f541c9b 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
