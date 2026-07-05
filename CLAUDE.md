@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-05
 
 最近 commits：
+  e3e525c 全站排查並修正vh視窗高度單位在可捲動區塊的隱患：max-height:XXvh在部分內建瀏覽器（如LINE）已知會算錯（甚至算成0），導致整個區塊直接空白不可見；改用固定px高度，涵蓋小幫手對話框（index/buzhu/help/zhizai）與彈出視窗（fanben/org/founders/evidence），這正是使用者回報「Android點進去子功能一片空白」最可能的根因 版本 2026070505
+  3ff7d04 自動更新 CLAUDE.md 最近進度（Stop hook）
   f3e140b 自動更新 CLAUDE.md 最近進度（Stop hook）
   69c57ec 修正小幫手聊天室在LINE內建瀏覽器的疊字/殘影問題：拿掉會加劇舊版WebView動態內容殘影的-webkit-overflow-scrolling:touch，改用transform:translateZ(0)強制獨立合成層＋JS端在插入對話泡泡後強制觸發同步reflow，這是WebView動態DOM更新殘影的常見對症寫法 版本 2026070504
   2f6a6b8 自動更新 CLAUDE.md 最近進度（Stop hook）
-  8b05caa 小幫手對話框CSS加強防禦性寫法：bubble/chip加上box-sizing、flex:0 0 auto、word-break，避免部分瀏覽器（尤其App內建瀏覽器）在動態插入聊天泡泡時文字框意外撐開或重疊 版本 2026070503
-  4e7d66b 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
