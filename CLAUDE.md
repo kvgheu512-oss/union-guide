@@ -48,14 +48,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-07-04
+最後更新：2026-07-05
 
 最近 commits：
+  9451158 修正語音導覽缺漏：法規（二）葉柏宏一直沒有自己的幹部語音導覽項目（picker清單裡roleKeys有列doc2，但ROLES物件裡沒有對應資料，被靜默篩掉），現補上獨立條目；並修正fin/fin2/doc職稱標籤與org.js的CADRE_ROLES（總務一/二、法規一/二）不一致的問題 版本 2026070501
+  0dd9862 自動更新 CLAUDE.md 最近進度（Stop hook）
   b1c8d1b 章程Word/PDF全篇統一改用標楷體（含標題、章名、條號），改以字級大小與深藍色區分層次而非切換字體：符合台灣公文製作規範全篇統一標楷體之慣例 版本 2026070410
   8f6ccdb 自動更新 CLAUDE.md 最近進度（Stop hook）
   a5f3bb0 自動更新 CLAUDE.md 最近進度（Stop hook）
-  0d246d1 自動更新 CLAUDE.md 最近進度（Stop hook）
-  41f7b6c 章程Word/PDF內文字體改用標楷體（正文），標題與條號保留黑體：標楷體是台灣公文書慣用的正式字體，比明體更符合正式文件觀感 版本 2026070409
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
