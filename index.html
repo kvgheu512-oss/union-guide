@@ -141,14 +141,14 @@
   .bot-top .bot-ava{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:16px;}
   .bot-top .bot-name{font-weight:500;font-size:14.5px;}
   .bot-top .bot-tag{font-size:11px;opacity:.85;}
-  .bot-log{padding:1rem;display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow-y:auto;background:#FBF8F5;}
-  .bubble{max-width:85%;padding:.7rem .9rem;border-radius:14px;font-size:13.5px;line-height:1.75;}
+  .bot-log{padding:1rem;display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#FBF8F5;}
+  .bubble{box-sizing:border-box;max-width:85%;width:fit-content;padding:.7rem .9rem;border-radius:14px;font-size:13.5px;line-height:1.75;word-break:break-word;overflow-wrap:break-word;flex:0 0 auto;}
   .bubble.bot{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;}
   .bubble.me{align-self:flex-end;background:var(--red);color:#fff;border-bottom-right-radius:4px;}
   .bubble.bot strong{color:var(--red-deep);}
   .bubble .vflag{display:inline-block;background:var(--gold-light);color:#8A6300;font-size:11px;padding:0 6px;border-radius:6px;margin:0 2px;}
-  .bot-chips{display:flex;flex-wrap:wrap;gap:7px;padding:.8rem 1rem;border-top:1px solid var(--border);background:#fff;}
-  .bot-chips .chip{font-size:12.5px;background:var(--gold-light);color:#7A5600;border:1px solid #EAD67A;border-radius:20px;padding:5px 11px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .bot-chips{display:flex;flex-wrap:wrap;align-content:flex-start;gap:7px;padding:.8rem 1rem;border-top:1px solid var(--border);background:#fff;}
+  .bot-chips .chip{box-sizing:border-box;flex:0 0 auto;width:fit-content;max-width:100%;font-size:12.5px;background:var(--gold-light);color:#7A5600;border:1px solid #EAD67A;border-radius:20px;padding:5px 11px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
   .bot-chips .chip:active{background:#F6ECC2;}
   .bot-input{display:flex;gap:8px;padding:.8rem 1rem;border-top:1px solid var(--border);background:#fff;}
   .bot-input input{flex:1;border:1.5px solid var(--border);border-radius:22px;padding:.6rem 1rem;font-size:16px;}
