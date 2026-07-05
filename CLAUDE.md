@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-05
 
 最近 commits：
+  2604045 自動更新 CLAUDE.md 最近進度（Stop hook）
   d404329 新增 tools/gen_charter_docs.py：把章程Word/PDF產生流程存進repo，直接從charter.html解析條文、輸出全篇標楷體排版的正式文件，之後章程異動可重複執行，不用重寫產生腳本 版本 2026070502
   2a41c61 自動更新 CLAUDE.md 最近進度（Stop hook）
   9451158 修正語音導覽缺漏：法規（二）葉柏宏一直沒有自己的幹部語音導覽項目（picker清單裡roleKeys有列doc2，但ROLES物件裡沒有對應資料，被靜默篩掉），現補上獨立條目；並修正fin/fin2/doc職稱標籤與org.js的CADRE_ROLES（總務一/二、法規一/二）不一致的問題 版本 2026070501
   0dd9862 自動更新 CLAUDE.md 最近進度（Stop hook）
-  b1c8d1b 章程Word/PDF全篇統一改用標楷體（含標題、章名、條號），改以字級大小與深藍色區分層次而非切換字體：符合台灣公文製作規範全篇統一標楷體之慣例 版本 2026070410
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
