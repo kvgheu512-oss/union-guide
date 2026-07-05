@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-05
 
 最近 commits：
+  1177865 自動更新 CLAUDE.md 最近進度（Stop hook）
   70a50ce 自動更新 CLAUDE.md 最近進度（Stop hook）
   68fd70c 自動更新 CLAUDE.md 最近進度（Stop hook）
   a637748 自動更新 CLAUDE.md 最近進度（Stop hook）
   e3e525c 全站排查並修正vh視窗高度單位在可捲動區塊的隱患：max-height:XXvh在部分內建瀏覽器（如LINE）已知會算錯（甚至算成0），導致整個區塊直接空白不可見；改用固定px高度，涵蓋小幫手對話框（index/buzhu/help/zhizai）與彈出視窗（fanben/org/founders/evidence），這正是使用者回報「Android點進去子功能一片空白」最可能的根因 版本 2026070505
-  3ff7d04 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
