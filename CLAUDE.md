@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-05
 
 最近 commits：
+  69c57ec 修正小幫手聊天室在LINE內建瀏覽器的疊字/殘影問題：拿掉會加劇舊版WebView動態內容殘影的-webkit-overflow-scrolling:touch，改用transform:translateZ(0)強制獨立合成層＋JS端在插入對話泡泡後強制觸發同步reflow，這是WebView動態DOM更新殘影的常見對症寫法 版本 2026070504
+  2f6a6b8 自動更新 CLAUDE.md 最近進度（Stop hook）
   8b05caa 小幫手對話框CSS加強防禦性寫法：bubble/chip加上box-sizing、flex:0 0 auto、word-break，避免部分瀏覽器（尤其App內建瀏覽器）在動態插入聊天泡泡時文字框意外撐開或重疊 版本 2026070503
   4e7d66b 自動更新 CLAUDE.md 最近進度（Stop hook）
   2604045 自動更新 CLAUDE.md 最近進度（Stop hook）
-  d404329 新增 tools/gen_charter_docs.py：把章程Word/PDF產生流程存進repo，直接從charter.html解析條文、輸出全篇標楷體排版的正式文件，之後章程異動可重複執行，不用重寫產生腳本 版本 2026070502
-  2a41c61 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
