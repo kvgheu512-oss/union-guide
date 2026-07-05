@@ -141,7 +141,7 @@
   .bot-top .bot-ava{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:16px;}
   .bot-top .bot-name{font-weight:500;font-size:14.5px;}
   .bot-top .bot-tag{font-size:11px;opacity:.85;}
-  .bot-log{padding:1rem;display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow-y:auto;background:#FBF8F5;transform:translateZ(0);}
+  .bot-log{padding:1rem;display:flex;flex-direction:column;gap:10px;max-height:420px;overflow-y:auto;background:#FBF8F5;transform:translateZ(0);}
   .bubble{box-sizing:border-box;max-width:85%;width:fit-content;padding:.7rem .9rem;border-radius:14px;font-size:13.5px;line-height:1.75;word-break:break-word;overflow-wrap:break-word;flex:0 0 auto;}
   .bubble.bot{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px;}
   .bubble.me{align-self:flex-end;background:var(--red);color:#fff;border-bottom-right-radius:4px;}
@@ -597,7 +597,7 @@ function showPledgeIntro(next){
   var ex=document.getElementById('pledge-intro'); if(ex) ex.remove();
   var wrap=document.createElement('div'); wrap.id='pledge-intro';
   wrap.style.cssText='position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1.1rem;';
-  wrap.innerHTML='<div style="background:#fff;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;border-radius:18px;padding:1.4rem 1.2rem 1.1rem;box-shadow:0 20px 60px rgba(0,0,0,.45)">'
+  wrap.innerHTML='<div style="background:#fff;width:100%;max-width:420px;max-height:640px;overflow-y:auto;border-radius:18px;padding:1.4rem 1.2rem 1.1rem;box-shadow:0 20px 60px rgba(0,0,0,.45)">'
     +'<div style="text-align:center;font-family:\'Noto Serif TC\',serif;font-weight:700;font-size:20px;color:#7B1818">✋ 連署前，先說好三件事</div>'
     +'<div style="text-align:center;font-size:12.5px;color:#777;margin:5px 0 14px">30 秒看完，免得以後失望 🙏</div>'
     +'<div style="background:#EAF4FB;border:1px solid #C4DCEF;border-radius:12px;padding:.8rem .9rem;margin-bottom:14px;font-size:13.5px;line-height:1.85;color:#1A4E7A">🩺 <b>用看病來比喻最好懂：</b>病要治好，靠「<b>醫生＋病人＋家屬</b>」三方一起。醫生再厲害、設備再好，<b>病人自己不配合（不吃藥、不回診），也治不好</b>。<br>工會也一樣——<b>你就是病人本人</b>：工會像醫療團隊能幫你，但<b>你不參與、不開口，問題一樣好不了</b>。</div>'
