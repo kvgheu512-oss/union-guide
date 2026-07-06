@@ -154,6 +154,13 @@
         <button class="btn ghost sm" id="bk-share">☁️ 備份到雲端／檔案</button>
       </div>
       <div id="bk-hint" style="font-size:11.5px;color:#5A6E85;margin-top:6px"></div>
+      <div style="border-top:1px dashed #C7DEF5;margin-top:10px;padding-top:8px">
+        <div style="font-size:12px;color:#143A66;line-height:1.7">🔒 <b>要放到工會共用 Google 雲端</b>給其他幹部存取？用下面「加密備份」——沒有密碼的人打開檔案只會看到亂碼，不是明文個資。</div>
+        <div class="btn-row" style="margin-top:6px">
+          <button class="btn ghost sm" id="bk-enc-out">🔒 產生加密備份</button>
+          <button class="btn ghost sm" id="bk-enc-in">🔓 匯入加密備份</button>
+        </div>
+      </div>
     </div>
 
     <div class="btn-row" style="margin-bottom:.8rem">
@@ -259,7 +266,7 @@
       </div>
     </div>
 
-    <div class="toolbar"><input id="search" placeholder="🔍 搜尋姓名／單位／工號"></div>
+    <div class="toolbar"><input id="search" placeholder="🔍 搜尋姓名／單位／工號／繳費代碼"></div>
     <div class="chips" id="chips">
       <button class="chip on" data-f="all">全部</button>
       <button class="chip" data-f="applicant">待審</button>
@@ -334,6 +341,24 @@ function idbGet(){ return idbOpen().then(function(db){ return new Promise(functi
 /* 通用 IDB KV（存自動備份檔的 handle，可跨重開保存） */
 function idbSetK(k,v){ return idbOpen().then(function(db){ return new Promise(function(res){ var tx=db.transaction(IDB_STORE,"readwrite"); tx.objectStore(IDB_STORE).put(v,k); tx.oncomplete=function(){res(1);}; tx.onerror=function(){res(0);}; }); }).catch(function(){}); }
 function idbGetK(k){ return idbOpen().then(function(db){ return new Promise(function(res){ var tx=db.transaction(IDB_STORE,"readonly"); var g=tx.objectStore(IDB_STORE).get(k); g.onsuccess=function(){res(g.result||null);}; g.onerror=function(){res(null);}; }); }).catch(function(){ return null; }); }
+
+/* 🔒 加密備份（給存進共用雲端用）：PBKDF2(15萬次)+AES-GCM 256，跟 seclock.js 同規格。沒密碼打開只有亂碼，不是明文個資。 */
+function b64eR(buf){var u=new Uint8Array(buf),s='';for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s);}
+function b64dR(str){var bin=atob(str),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;}
+async function encBackup(pw,obj){
+  const salt=crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12));
+  const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:150000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt']);
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,new TextEncoder().encode(JSON.stringify(obj)));
+  return {_enc:true,_type:'高榮工會名冊加密備份',salt:b64eR(salt),iv:b64eR(iv),ct:b64eR(ct)};
+}
+async function decBackup(pw,env){
+  const salt=b64dR(env.salt), iv=b64dR(env.iv);
+  const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:150000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:iv},key,b64dR(env.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
 
 /* 🔐 自動備份：電腦端綁定一個檔當「儲存點」，之後每次更動自動寫入；手機端一鍵存到雲端／檔案。 */
 var fileHandle=null, _wtmr=null;
@@ -434,13 +459,20 @@ function visible(){
     list=list.filter(m=>cnt[(m.name||'').trim()]>1);
   }
   else if(filter!=='all') list=list.filter(m=>m.status===filter);
-  if(q){ const k=q.toLowerCase(); list=list.filter(m=>((m.name||'')+(m.dept||'')+(m.no||'')+(m.title||'')).toLowerCase().includes(k)); }
+  if(q){ const k=q.toLowerCase(); list=list.filter(m=>((m.name||'')+(m.dept||'')+(m.no||'')+(m.title||'')+(m.payCode||'')).toLowerCase().includes(k)); }
   const order={applicant:0,active:1,suspended:2,left:3};
   list.sort((a,b)=>(order[a.status]-order[b.status])||(a.name||'').localeCompare(b.name||'','zh-Hant'));
   return list;
 }
 
+/* 繳費代碼：每人一組固定 4 碼流水號，轉帳/ATM存款附言寫這組，方便總務對帳；已有的人不會被改號 */
+function assignPayCodes(){
+  let seq=parseInt(localStorage.getItem('roster_paycode_seq_v1')||'0',10), changed=false;
+  members.forEach(m=>{ if(!m.payCode){ seq++; m.payCode=String(seq).padStart(4,'0'); changed=true; } });
+  if(changed){ try{ localStorage.setItem('roster_paycode_seq_v1',String(seq)); }catch(_){} save(); }
+}
 function render(){
+  assignPayCodes();
   renderStats();
   const list=visible(), box=$('list');
   if(!list.length){ box.innerHTML='<div class="empty">沒有符合的會員。<br>按「＋ 新增會員／申請」開始建立名冊。</div>'; return; }
@@ -463,6 +495,7 @@ function render(){
         ${m.pubOfficial?'<span class="pill" style="background:#FDECEA;color:#7B1818">🏛 公職</span>':''}
         ${feeTxt}
         ${m.phone?`<span class="pill" style="background:#EEF1F4;color:#444">📞 ${esc(m.phone)}</span>`:''}
+        ${m.payCode?`<span class="pill" style="background:#EAF0FA;color:#1A3A6B">💳 繳費代碼 ${esc(m.payCode)}</span>`:''}
       </div>
       <div class="m-act">${approve}<button data-act="edit" data-id="${m.id}">✏️ 編輯</button><button class="del" data-act="del" data-id="${m.id}">🗑 刪除</button></div>
       </div>
@@ -574,8 +607,17 @@ function applyPubOfficialLock(){
   const on=$('f-pubofficial').checked, sel=$('f-type');
   if(on) sel.value='sponsor';
   sel.disabled=on;
+  suggestTitle();
 }
 $('f-pubofficial').addEventListener('change',applyPubOfficialLock);
+/* 會員身分連動職稱：正式會員→契約護理師、贊助會員→公職護理師（職稱是空的或還是預設值才會帶，已手動改過的不覆蓋） */
+function suggestTitle(){
+  const t=$('f-title'), cur=t.value.trim();
+  if(cur===''||cur==='護理師'||cur==='契約護理師'||cur==='公職護理師'){
+    t.value=$('f-type').value==='sponsor'?'公職護理師':'契約護理師';
+  }
+}
+$('f-type').addEventListener('change',suggestTitle);
 /* 信箱常用結尾一鍵帶入：取 @ 前面的帳號，接上所點的網域（已有 @ 則取代後面） */
 (function(){ var box=$('mailchips'); if(!box) return;
   box.addEventListener('click',function(e){ var b=e.target.closest('[data-dom]'); if(!b) return; e.preventDefault();
@@ -658,8 +700,8 @@ $('search').addEventListener('input',e=>{ q=e.target.value.trim(); render(); });
 
 /* 匯出 CSV（Excel） */
 $('csv-btn').addEventListener('click',()=>{
-  const head=['姓名','工號','單位','職稱','身分','狀態','入會日期','會費已繳至','是否欠費','手機','Line/Email','備註'];
-  const rows=members.map(m=>[m.name,m.no,m.dept,m.title,m.type==='sponsor'?'贊助會員':'正式會員',STATUS[m.status],m.join,m.feeTo,isOwe(m)?'欠費':'',m.phone,m.contact,m.note]);
+  const head=['姓名','工號','單位','職稱','身分','狀態','入會日期','會費已繳至','是否欠費','手機','Line/Email','備註','繳費代碼'];
+  const rows=members.map(m=>[m.name,m.no,m.dept,m.title,m.type==='sponsor'?'贊助會員':'正式會員',STATUS[m.status],m.join,m.feeTo,isOwe(m)?'欠費':'',m.phone,m.contact,m.note,m.payCode]);
   const csv=[head,...rows].map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
   const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='會員名冊_'+curMonth()+'.csv'; a.click(); toast('已匯出 CSV，可用 Excel 開');
@@ -683,6 +725,44 @@ $('import-file').addEventListener('change',e=>{
     if(confirm('匯入將「取代」目前名冊，確定？')){ members=arr; save(); render(); toast('已匯入'); }
   }catch(_){ toast('檔案格式不正確'); } e.target.value=''; };
   r.readAsText(f);
+});
+$('bk-enc-out').addEventListener('click',async()=>{
+  if(!members.length){ toast('名冊是空的，沒東西可備份'); return; }
+  const pw=prompt('設一組加密密碼（幹部之間共用，之後要用同一組才能解開）：\n⚠️ 這組密碼沒有救回機制，忘記就打不開，請務必記好。');
+  if(!pw){ return; }
+  if(pw.length<4){ toast('密碼太短，至少 4 字'); return; }
+  try{
+    const env=await encBackup(pw,members);
+    const blob=new Blob([JSON.stringify(env)],{type:'application/json'});
+    const name='高榮工會名冊加密備份_'+curMonth()+'.json';
+    try{
+      const file=new File([blob],name,{type:'application/json'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'高榮工會名冊加密備份',text:'需要密碼才能解開'});
+        toast('✅ 加密備份已產生，存到雲端後其他幹部要用同一組密碼才能解開'); return;
+      }
+    }catch(e){}
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+    toast('✅ 加密備份檔已產生，手動存到 Google 雲端；解開要用同一組密碼');
+  }catch(e){ toast('加密失敗：'+e.message); }
+});
+$('bk-enc-in').addEventListener('click',()=>{
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json';
+  inp.addEventListener('change',e=>{
+    const f=e.target.files[0]; if(!f) return; const r=new FileReader();
+    r.onload=async()=>{
+      try{
+        const env=JSON.parse(r.result);
+        if(!env||!env._enc) throw new Error('這不是加密備份檔');
+        const pw=prompt('輸入解密密碼：'); if(!pw) return;
+        const arr=await decBackup(pw,env);
+        if(!Array.isArray(arr)) throw new Error('內容格式不正確');
+        if(confirm('匯入將「取代」目前名冊（共 '+arr.length+' 筆），確定？')){ members=arr; save(); render(); toast('✅ 已從加密備份匯入'); }
+      }catch(err){ toast('解密失敗（密碼錯或檔案毀損）'); }
+    };
+    r.readAsText(f);
+  });
+  inp.click();
 });
 $('print-btn').addEventListener('click',()=>window.print());
 
