@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  3141135 首頁導覽列新增「📜 工會章程」連結，直接連到charter.html（含線上閱讀＋Word/PDF下載）：不分籌備中/正式成立階段皆顯示，方便會員隨時查看章程 版本 2026070604
+  7b5f36d 自動更新 CLAUDE.md 最近進度（Stop hook）
   38ad71a 修正小幫手類對話框（help/buzhu/zhizai）在Android看不到最新答案、要手動往上滑的問題：新增泡泡後在讀取scrollHeight前先強制觸發同步reflow（void jlog.offsetHeight），避免Android WebView用到尚未更新的舊scrollHeight導致自動捲動不完全，字體放大的使用者尤其明顯 版本 2026070603
   2576f5e 自動更新 CLAUDE.md 最近進度（Stop hook）
   f2b29e4 自動更新 CLAUDE.md 最近進度（Stop hook）
-  051ef7d 新增App內建瀏覽器（LINE/FB/IG/微信/Twitter）偵測提示條：這類內嵌瀏覽器常有Service Worker/Cache Storage支援不全的問題，實測會讓子頁面顯示不完整，偵測到就在頁面頂部提醒改用手機預設瀏覽器開啟（iOS提示點羅盤圖示、Android提示點三個點選單），關閉後24小時內不再重複提醒 版本 2026070602
-  f500c27 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
