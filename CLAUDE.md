@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  99a8dc1 自動更新 CLAUDE.md 最近進度（Stop hook）
   4f164e9 自動更新 CLAUDE.md 最近進度（Stop hook）
   35815ea 幹部登入密碼改用 localStorage 記憶，同裝置重開瀏覽器免重輸；收據場地費標籤修正為3小時制並新增臨時會議室(30元/時)快速標籤；移除支出科目下拉選單中的退休撫恤費選項
   fac6676 自動更新 CLAUDE.md 最近進度（Stop hook）
   cf9a0d0 記帳單據新增「場地費（約1000元/小時）」快速標籤（歸類事業費）；點「其他」標籤自動反白摘要欄方便直接打字覆蓋；全站排查修正多處數字欄位誤用inputmode="tel"（電話鍵盤）的問題，改為inputmode="numeric"（純數字鍵盤），涵蓋收據批次列印、加班費試算、基本資料中心之文件年度/序號/統一編號、連署進度人數等欄位 版本 2026070605
-  3dbbe14 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
