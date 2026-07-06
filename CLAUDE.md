@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  82006fa 收據金額快選改為點哪個標籤就直接帶入該金額（不再有手動鎖定邏輯）；經辦人改回下拉選單(datalist)，平常不顯示名單、點箭頭才選，選項同步org.js幹部名單
+  27bd74e 自動更新 CLAUDE.md 最近進度（Stop hook）
   93597a4 自動更新 CLAUDE.md 最近進度（Stop hook）
   aba9577 自動更新 CLAUDE.md 最近進度（Stop hook）
   db8ed31 自動更新 CLAUDE.md 最近進度（Stop hook）
-  f7e7f9c 自動更新 CLAUDE.md 最近進度（Stop hook）
-  0d6e5ef 收據經辦人改為快選標籤（幹部名單同步org.js），點名字直接覆蓋不用先刪除；標籤只顯示姓名不帶職稱；金額快選改為可隨切換標籤持續更新，手動打過的金額才不被覆蓋
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
