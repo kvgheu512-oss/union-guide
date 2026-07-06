@@ -41,33 +41,62 @@ self.addEventListener("fetch", e => {
   const fresh = req.mode === "navigate" || req.destination === "document"
     || /(^|\/)(version|common|law-tips|finance-law)\.js$/.test(url.pathname)
     || /(^|\/)common\.css$/.test(url.pathname);
+  // ⚠️ 防禦：部分內建瀏覽器（LINE等App內嵌WebView）的 Cache Storage API 可能整個不可用或會拋例外；
+  // 一旦 caches.match/caches.open 出錯又沒接住，respondWith 拿到的 Promise 會 reject，
+  // 瀏覽器就把這次導覽當成「網路錯誤」處理——實測會讓子頁面直接整片空白，這是本檔最需要避免的情況。
+  // 因此：任何一步出錯，一律退回「直接用瀏覽器原生 fetch 抓網路」，絕不讓錯誤往外丟。
   if (fresh) {
     e.respondWith((async () => {
-      const cached = await caches.match(req);
-      const net = fetch(req).then(r => { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return r; });
+      let cached = null;
+      try { cached = await caches.match(req); } catch (_) { cached = null; }
+
+      const net = fetch(req).then(r => {
+        try { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)).catch(() => {}); } catch (_) {}
+        return r;
+      });
+
       if (!cached) {
-        // 沒有快取（第一次）→ 只能等網路；失敗才退回對應首頁
+        // 沒有快取（第一次，或 Cache API 不可用）→ 直接等網路；失敗才嘗試退回快取或對應首頁
         try { return await net; }
         catch (_) {
-          return (await caches.match(req)) || caches.match(
-            url.pathname.indexOf("lawyer") >= 0 ? "./lawyer.html"
-            : url.pathname.indexOf("search") >= 0 ? "./search.html"
-            : url.pathname.indexOf("evidence") >= 0 ? "./evidence.html" : "./union.html");
+          try {
+            const fallback = await caches.match(req);
+            if (fallback) return fallback;
+            const home = url.pathname.indexOf("lawyer") >= 0 ? "./lawyer.html"
+              : url.pathname.indexOf("search") >= 0 ? "./search.html"
+              : url.pathname.indexOf("evidence") >= 0 ? "./evidence.html" : "./union.html";
+            const fb2 = await caches.match(home);
+            if (fb2) return fb2;
+          } catch (_) {}
+          // 連快取備援都不可用 → 最後手段：直接再 fetch 一次，讓瀏覽器自行處理網路錯誤畫面
+          return fetch(req);
         }
       }
+
       // 有快取 → 網路與「1.2 秒逾時」賽跑：誰快用誰；網路即使較慢仍會背景更新快取
-      return Promise.race([
-        net.catch(() => cached),
-        new Promise(res => setTimeout(() => res(cached), 1200))
-      ]);
+      try {
+        return await Promise.race([
+          net.catch(() => cached),
+          new Promise(res => setTimeout(() => res(cached), 1200))
+        ]);
+      } catch (_) {
+        return cached;
+      }
     })());
     return;
   }
 
-  // 其他靜態資源（圖示/設定/CDN）：快取優先，沒有才上網抓並順手存起來
-  e.respondWith(
-    caches.match(req).then(m => m || fetch(req).then(r => {
-      const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return r;
-    }).catch(() => m || new Response('', {status:503})))
-  );
+  // 其他靜態資源（圖示/設定/CDN）：快取優先，沒有才上網抓並順手存起來；任何一步出錯都退回直接 fetch
+  e.respondWith((async () => {
+    let m = null;
+    try { m = await caches.match(req); } catch (_) { m = null; }
+    if (m) return m;
+    try {
+      const r = await fetch(req);
+      try { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)).catch(() => {}); } catch (_) {}
+      return r;
+    } catch (_) {
+      return fetch(req);
+    }
+  })());
 });
