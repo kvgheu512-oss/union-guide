@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  a8733d7 會員名冊：LINE/Email 從合併一欄改成分開兩欄位，避免連署試算表兩欄都有時只抓到一個、漏掉另一個資料；舊資料自動判斷(有@算Email、沒有算LINE)相容顯示；CSV匯出也拆成LINE、Email兩欄
+  4b10349 自動更新 CLAUDE.md 最近進度（Stop hook）
   298d33c 自動更新 CLAUDE.md 最近進度（Stop hook）
   ee2de62 新增繳費方式架構：org.js加轉帳戶名/金融機構/帳號/中國信託ATM戶名帳號欄位(基本資料中心可填)；新增pay.html公開頁自動帶入這些欄位，帳號未填前顯示待公布；首頁導覽列加「💳 繳費方式」連結
   9c1ec4d 自動更新 CLAUDE.md 最近進度（Stop hook）
-  126a4d9 自動更新 CLAUDE.md 最近進度（Stop hook）
-  b0c0ec4 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
