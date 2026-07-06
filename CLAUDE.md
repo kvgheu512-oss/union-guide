@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  582d0f1 待辦事項升級成真的可用：workplan.html每個工作項目加對應工具連結(data-href)與完成勾選框(勾了會刪除線標示、存本機)；nav.html「我的待辦」項目可直接點擊前往對應工具頁，也能直接在待辦清單打勾標記完成(跟workplan.html共用同一份完成紀錄，兩邊同步)，完成的項目會自動從待辦清單移除
+  6a1a7b0 自動更新 CLAUDE.md 最近進度（Stop hook）
   5a04ae9 幹部專用密碼解鎖狀態(union_panel_unlocked)全面改用localStorage記憶，同裝置重開瀏覽器免重輸(原本用sessionStorage，每次重開都要重新輸入)，影響union/roster/meeting/gongwen/plan/jianshi/activity.html共用的幹部密碼閘門
   3b5ad57 自動更新 CLAUDE.md 最近進度（Stop hook）
   3266cce 互動導覽(nav.html)新增「📋 我的待辦」：選好自己是哪位幹部後，自動抓年度工作計畫(workplan.html)裡負責人對到自己的項目顯示出來，不用重複維護一份任務清單；沒有指派項目時顯示空狀態提示
-  069aedf 自動更新 CLAUDE.md 最近進度（Stop hook）
-  9b39c6f 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
