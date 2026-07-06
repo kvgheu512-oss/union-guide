@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  cf9a0d0 記帳單據新增「場地費（約1000元/小時）」快速標籤（歸類事業費）；點「其他」標籤自動反白摘要欄方便直接打字覆蓋；全站排查修正多處數字欄位誤用inputmode="tel"（電話鍵盤）的問題，改為inputmode="numeric"（純數字鍵盤），涵蓋收據批次列印、加班費試算、基本資料中心之文件年度/序號/統一編號、連署進度人數等欄位 版本 2026070605
+  3dbbe14 自動更新 CLAUDE.md 最近進度（Stop hook）
   3141135 首頁導覽列新增「📜 工會章程」連結，直接連到charter.html（含線上閱讀＋Word/PDF下載）：不分籌備中/正式成立階段皆顯示，方便會員隨時查看章程 版本 2026070604
   7b5f36d 自動更新 CLAUDE.md 最近進度（Stop hook）
   38ad71a 修正小幫手類對話框（help/buzhu/zhizai）在Android看不到最新答案、要手動往上滑的問題：新增泡泡後在讀取scrollHeight前先強制觸發同步reflow（void jlog.offsetHeight），避免Android WebView用到尚未更新的舊scrollHeight導致自動捲動不完全，字體放大的使用者尤其明顯 版本 2026070603
-  2576f5e 自動更新 CLAUDE.md 最近進度（Stop hook）
-  f2b29e4 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
