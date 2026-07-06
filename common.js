@@ -198,3 +198,32 @@
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", build); else build();
 })();
+
+/* ⑦ App內建瀏覽器（LINE／FB／IG等）提示條：這類「小瀏覽器」常常連Service Worker、Cache
+   Storage都跑不全，實測會讓子頁面整片空白；偵測到就提醒改用手機真正的瀏覽器開。
+   一天內關掉一次就不再彈（localStorage記錄），不會每頁都吵。 */
+(function(){
+  var ua = navigator.userAgent || "";
+  var isInApp = /\bLine\//i.test(ua) || /FBAN|FBAV|FB_IAB|FBIOS|MessengerForiOS/i.test(ua)
+    || /Instagram/i.test(ua) || /MicroMessenger/i.test(ua) || /\bTwitter\b/i.test(ua);
+  if(!isInApp) return;
+  var K="ebn_inapp_dismiss", DAY=24*60*60*1000;
+  function build(){
+    var b=document.body; if(!b) return;
+    if(b.hasAttribute("data-noinapp")) return;
+    if(document.getElementById("ebnInApp")) return;
+    try{ var last=+localStorage.getItem(K)||0; if(Date.now()-last<DAY) return; }catch(e){}
+    var isIOS = /iPhone|iPad|iPod/i.test(ua);
+    var bar=document.createElement("div"); bar.id="ebnInApp"; bar.className="noprint";
+    bar.style.cssText="position:fixed;left:10px;right:10px;top:10px;z-index:99999;background:#7B1818;color:#fff;font:600 12.5px/1.6 'Noto Sans TC',system-ui,sans-serif;padding:10px 12px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.32);";
+    var tip = isIOS ? "畫面顯示不完整？點上面網址列的「羅盤」圖示或右下角「⋯」，選「使用預設瀏覽器開啟」。"
+                     : "畫面顯示不完整？點右下角「⋯」（三個點），選「使用預設瀏覽器開啟」。";
+    bar.innerHTML = "<div style='display:flex;justify-content:space-between;gap:10px;align-items:flex-start'>"
+      + "<span>📱 目前可能在App內建瀏覽器開啟——" + tip + "</span>"
+      + "<button id='ebnInAppX' style='background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:12px;padding:2px 9px;font:700 13px/1.6 inherit;cursor:pointer;flex-shrink:0'>✕</button></div>";
+    b.appendChild(bar);
+    var x=document.getElementById("ebnInAppX");
+    if(x) x.addEventListener("click",function(){ try{ localStorage.setItem(K, String(Date.now())); }catch(e){} bar.remove(); });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", build); else build();
+})();
