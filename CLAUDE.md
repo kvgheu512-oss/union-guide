@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  87a9ead 自動更新 CLAUDE.md 最近進度（Stop hook）
   5b0dc1d 自動更新 CLAUDE.md 最近進度（Stop hook）
   99a8dc1 自動更新 CLAUDE.md 最近進度（Stop hook）
   4f164e9 自動更新 CLAUDE.md 最近進度（Stop hook）
   35815ea 幹部登入密碼改用 localStorage 記憶，同裝置重開瀏覽器免重輸；收據場地費標籤修正為3小時制並新增臨時會議室(30元/時)快速標籤；移除支出科目下拉選單中的退休撫恤費選項
-  fac6676 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
