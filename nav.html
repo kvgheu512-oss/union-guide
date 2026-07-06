@@ -397,8 +397,13 @@ function choosePerson(key){
 }
 
 /* 📋 我的待辦：抓 workplan.html 的年度工作計畫表，篩出「負責人」對到這位幹部的項目。
-   單一資料源仍是 workplan.html 那張表，這裡只是抓來過濾顯示，不重複維護一份資料。 */
+   單一資料源仍是 workplan.html 那張表，這裡只是抓來過濾顯示，不重複維護一份資料。
+   每列的 data-href 帶去對應工具頁（可直接點進去做）；完成狀態(workplan_done_v1)兩邊共用，
+   在這裡打勾跟在 workplan.html 打勾是同一份資料。 */
 var _todoCache=null;
+var WPK='workplan_done_v1';
+function wpDone(){ try{ var a=JSON.parse(localStorage.getItem(WPK)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function wpSaveDone(a){ try{ localStorage.setItem(WPK, JSON.stringify(a)); }catch(e){} }
 function renderTodo(c){
   var box=document.getElementById('person-todo'); if(!box) return;
   if(!c.nick || !c.nick.length || c.full){ box.innerHTML=''; return; }
@@ -407,25 +412,36 @@ function renderTodo(c){
   p.then(function(html){
     var doc=new DOMParser().parseFromString(html,'text/html');
     var rows=Array.prototype.slice.call(doc.querySelectorAll('table tr')).slice(1); // 略過標題列
+    var done=wpDone();
     var mine=rows.map(function(tr){
       var td=tr.querySelectorAll('td');
-      if(td.length<6) return null;
-      return { item:td[1].textContent.trim(), cat:td[2].textContent.trim(), period:td[3].textContent.trim(), owner:td[4].textContent.trim() };
-    }).filter(function(r){ return r && c.nick.indexOf(r.owner)>=0; });
+      if(td.length<7) return null;
+      var idx=parseInt(td[1].textContent.trim(),10);
+      return { idx:idx, item:td[2].textContent.trim(), cat:td[3].textContent.trim(), period:td[4].textContent.trim(), owner:td[5].textContent.trim(), href:tr.getAttribute('data-href')||'' };
+    }).filter(function(r){ return r && c.nick.indexOf(r.owner)>=0 && !done[r.idx-1]; });
     renderTodoList(mine);
   }).catch(function(){
     box.innerHTML='';
   });
 }
+function todoToggleDone(idx){
+  var done=wpDone(); done[idx-1]=true; wpSaveDone(done);
+  _todoCache=null; // 讓 workplan.html 內容下次重新抓（其實表格本身沒變，只是保險）
+  renderTodo(CADRES.find(function(x){ var p; try{p=JSON.parse(localStorage.getItem(NAV_KEY)||'null');}catch(e){} return p&&x.key===p.person; }));
+}
 function renderTodoList(mine){
   var box=document.getElementById('person-todo'); if(!box) return;
-  if(!mine.length){ box.innerHTML='<div class="todo-box"><div class="tt">📋 我的待辦（年度工作計畫）</div><div class="todo-empty">目前工作計畫表裡沒有指派給你的項目。</div></div>'; return; }
+  if(!mine.length){ box.innerHTML='<div class="todo-box"><div class="tt">📋 我的待辦（年度工作計畫）</div><div class="todo-empty">目前工作計畫表裡沒有指派給你的項目（或都已勾完成）。</div></div>'; return; }
   box.innerHTML='<div class="todo-box"><div class="tt">📋 我的待辦（年度工作計畫，共 '+mine.length+' 項）</div>'
     +mine.map(function(m){
-      return '<div class="todo-item"><span class="tc">'+m.cat+'</span><span class="tp">'+m.period+'</span><span>'+m.item+'</span></div>';
+      var body = m.href ? '<a href="'+m.href+'" style="color:var(--ink);text-decoration:none;flex:1">'+m.item+' <span style="color:var(--navy)">→</span></a>' : '<span style="flex:1">'+m.item+'</span>';
+      return '<div class="todo-item"><input type="checkbox" class="todo-chk" data-idx="'+m.idx+'" style="width:18px;height:18px;flex-shrink:0;cursor:pointer"><span class="tc">'+m.cat+'</span><span class="tp">'+m.period+'</span>'+body+'</div>';
     }).join('')
-    +'<div style="font-size:11px;color:var(--ink-soft);margin-top:.5rem">資料來自「年度工作計畫」，要調整期程/項目請到 <a href="workplan.html" style="color:var(--navy)">workplan.html</a> 改。</div>'
+    +'<div style="font-size:11px;color:var(--ink-soft);margin-top:.5rem">點項目名稱可直接前往對應工具；打勾＝標記完成（跟 <a href="workplan.html" style="color:var(--navy)">workplan.html</a> 共用同一份紀錄）。</div>'
     +'</div>';
+  box.querySelectorAll('.todo-chk').forEach(function(cb){
+    cb.addEventListener('change', function(){ if(cb.checked) todoToggleDone(parseInt(cb.dataset.idx,10)); });
+  });
 }
 
 function goBack(to){
