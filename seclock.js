@@ -39,7 +39,7 @@
     var e={v:1,saltPw:b64e(saltPw),wrapPwIv:wrapPw.iv,wrapPw:wrapPw.ct,saltRec:b64e(saltRec),wrapRecIv:wrapRec.iv,wrapRec:wrapRec.ct,dataIv:blob.iv,data:blob.ct};
     localStorage.setItem(ENC,JSON.stringify(e));
     if(PLAIN){ try{localStorage.removeItem(PLAIN);}catch(_){} }   // 移除明文
-    try{sessionStorage.setItem(SK,b64e(dekRaw));}catch(_){}
+    try{localStorage.setItem(SK,b64e(dekRaw));}catch(_){}
     mode='enc'; return rec;
   }
   async function loadBlob(e){var pt=await aesDec(dekKey,e.dataIv,e.data);var s=new TextDecoder().decode(pt);return s?JSON.parse(s):null;}
@@ -48,7 +48,7 @@
     var kek=await deriveKEK(pw,b64d(e.saltPw));
     var dekRaw=await aesDec(kek,e.wrapPwIv,e.wrapPw);
     dekKey=await importDek(dekRaw); dataObj=await loadBlob(e);
-    try{sessionStorage.setItem(SK,b64e(dekRaw));}catch(_){}
+    try{localStorage.setItem(SK,b64e(dekRaw));}catch(_){}
   }
   async function recoverReset(code,newPw){
     var e=JSON.parse(localStorage.getItem(ENC));
@@ -58,12 +58,12 @@
     e.saltPw=b64e(saltPw);e.wrapPwIv=wrapPw.iv;e.wrapPw=wrapPw.ct;
     localStorage.setItem(ENC,JSON.stringify(e));
     dekKey=await importDek(dekRaw); dataObj=await loadBlob(e);
-    try{sessionStorage.setItem(SK,b64e(dekRaw));}catch(_){}
+    try{localStorage.setItem(SK,b64e(dekRaw));}catch(_){}
   }
   async function tryResume(){
-    var sk=null; try{sk=sessionStorage.getItem(SK);}catch(_){}
+    var sk=null; try{sk=localStorage.getItem(SK);}catch(_){}
     var e=localStorage.getItem(ENC);
-    if(sk&&e){ try{ dekKey=await importDek(b64d(sk)); dataObj=await loadBlob(JSON.parse(e)); return true; }catch(_){ try{sessionStorage.removeItem(SK);}catch(__){} } }
+    if(sk&&e){ try{ dekKey=await importDek(b64d(sk)); dataObj=await loadBlob(JSON.parse(e)); return true; }catch(_){ try{localStorage.removeItem(SK);}catch(__){} } }
     return false;
   }
 
@@ -184,7 +184,7 @@
       if(!dekKey){ alert('請先解鎖'); return false; }
       var v=prompt('輸入新通行碼（至少 6 字）：'); if(v==null) return false; v=v.trim();
       if(v.length<6){ alert('通行碼至少 6 字'); return false; }
-      try{ var e=JSON.parse(localStorage.getItem(ENC)),dekRaw=b64d(sessionStorage.getItem(SK));
+      try{ var e=JSON.parse(localStorage.getItem(ENC)),dekRaw=b64d(localStorage.getItem(SK));
         var saltPw=rnd(16),kekPw=await deriveKEK(v,saltPw),wrapPw=await aesEnc(kekPw,dekRaw);
         e.saltPw=b64e(saltPw);e.wrapPwIv=wrapPw.iv;e.wrapPw=wrapPw.ct;localStorage.setItem(ENC,JSON.stringify(e));
         alert('✅ 已更新通行碼，下次解鎖請用新碼。'); return true;
@@ -193,13 +193,13 @@
     regenRecovery:async function(){
       if(!dekKey){ alert('請先解鎖'); return; }
       if(!confirm('重新產生救回碼？舊的救回碼將立即失效。')) return;
-      try{ var e=JSON.parse(localStorage.getItem(ENC)),dekRaw=b64d(sessionStorage.getItem(SK)),rec=genRecovery();
+      try{ var e=JSON.parse(localStorage.getItem(ENC)),dekRaw=b64d(localStorage.getItem(SK)),rec=genRecovery();
         var saltRec=rnd(16),kekRec=await deriveKEK(normCode(rec),saltRec),wrapRec=await aesEnc(kekRec,dekRaw);
         e.saltRec=b64e(saltRec);e.wrapRecIv=wrapRec.iv;e.wrapRec=wrapRec.ct;localStorage.setItem(ENC,JSON.stringify(e));
         window.prompt('新的救回碼（請抄下來，舊碼已失效）：',rec);
       }catch(e){ alert('失敗：'+e.message); }
     },
-    lockNow:function(){ try{sessionStorage.removeItem(SK);}catch(_){} dekKey=null; dataObj=null; location.reload(); }
+    lockNow:function(){ try{localStorage.removeItem(SK);}catch(_){} dekKey=null; dataObj=null; location.reload(); }
   };
   window.SecLock=API;
 })();
