@@ -88,7 +88,7 @@
 </style>
 <link rel="stylesheet" href="common.css">
 <!-- 已解鎖（同一 session）就讓功能表「第一畫面就顯示」，消除每次返回的空白閃爍 -->
-<script>try{if(sessionStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
+<script>try{if(localStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
 <style>html.u #app{display:block!important}html.u #gate{display:none!important}</style>
 </head>
 <body>
@@ -617,11 +617,11 @@ function showApp(){ gate.classList.remove('show'); app.style.display='block'; }
 function showGate(){ gate.classList.add('show'); app.style.display='none'; setTimeout(function(){document.getElementById('gate-pw').focus();},100); }
 function tryUnlock(){
   const v=document.getElementById('gate-pw').value.trim();
-  if(cyrb53(v)===PW_HASH){ try{sessionStorage.setItem(UNLOCK_KEY,'1');}catch(_){} showApp(); }
+  if(cyrb53(v)===PW_HASH){ try{localStorage.setItem(UNLOCK_KEY,'1');}catch(_){} showApp(); }
   else { document.getElementById('gate-err').textContent='通行碼不對，請再試一次或詢問負責幹部'; }
 }
 if(!LOCK){ showApp(); }
-else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
+else if(localStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
 document.getElementById('gate-go').addEventListener('click',tryUnlock);
 document.getElementById('gate-pw').addEventListener('keydown',function(e){ if(e.key==='Enter') tryUnlock(); });

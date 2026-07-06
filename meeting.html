@@ -99,7 +99,7 @@
 <link rel="prefetch" href="union.html">
 <link rel="stylesheet" href="common.css">
 <!-- 已解鎖就讓內容第一畫面就顯示，消除返回/進入時的空白閃爍 -->
-<script>try{if(sessionStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
+<script>try{if(localStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
 <style>html.u #app{display:block!important}html.u #gate{display:none!important}
   /* 參加者掃碼入口頁 */
   #join-view{min-height:100vh;background:var(--bg);}
@@ -310,7 +310,7 @@ function cyrb53(s,seed=0){ s=s||""; let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed; f
 const gate=document.getElementById('gate'),app=document.getElementById('app');
 function showApp(){ gate.classList.remove('show'); app.style.display='block'; init(); }
 function showGate(){ gate.classList.add('show'); app.style.display='none'; setTimeout(()=>document.getElementById('gate-pw').focus(),100); }
-function tryUnlock(){ const v=document.getElementById('gate-pw').value.trim(); if(cyrb53(v)===PW_HASH){ try{sessionStorage.setItem(UNLOCK_KEY,'1');}catch(_){} showApp(); } else { document.getElementById('gate-err').textContent='通行碼不對，請再試一次或詢問負責幹部'; } }
+function tryUnlock(){ const v=document.getElementById('gate-pw').value.trim(); if(cyrb53(v)===PW_HASH){ try{localStorage.setItem(UNLOCK_KEY,'1');}catch(_){} showApp(); } else { document.getElementById('gate-err').textContent='通行碼不對，請再試一次或詢問負責幹部'; } }
 document.getElementById('gate-go').addEventListener('click',tryUnlock);
 document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
 
@@ -853,7 +853,7 @@ if(location.hash.indexOf('#join=')===0){
   catch(e){ document.documentElement.classList.remove('u'); var jv=$('join-view'); jv.style.display='block'; jv.innerHTML='<div class="jwrap"><div class="jcard">⚠ 這個參加者 QR／連結無法解讀，請向主辦索取最新的連結。</div></div>'; var ap=$('app'); if(ap) ap.style.display='none'; }
 }
 else if(!LOCK){ showApp(); }
-else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
+else if(localStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
 
 </script>

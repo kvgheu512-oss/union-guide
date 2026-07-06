@@ -316,12 +316,16 @@ function goMember(){
 var NAV_GATE_PW_HASH="1621267407177439";
 function cyrb53Nav(s,seed){seed=seed||0;s=s||"";var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(var i=0,c;i<s.length;i++){c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return""+(4294967296*(2097151&h2)+(h1>>>0));}
 function openCadreAfterAuth(){
+  // 這台裝置如果已經記得你是哪位幹部，解鎖後直接進你的個人畫面，不用再選一次
+  var prevPerson=null;
+  try{ var pd=JSON.parse(localStorage.getItem(NAV_KEY)||'null'); if(pd&&pd.role==='cadre'&&pd.person) prevPerson=pd.person; }catch(e){}
+  if(prevPerson){ buildCadreGrid(); choosePerson(prevPerson); return; }
   try{ localStorage.setItem(NAV_KEY, JSON.stringify({role:'cadre'})); }catch(e){}
   buildCadreGrid(); show('s-cadre');
 }
 function goCadre(){
   // 本 session 已驗過，直接進
-  try{ if(sessionStorage.getItem('union_panel_unlocked')==='1'){ openCadreAfterAuth(); return; }}catch(e){}
+  try{ if(localStorage.getItem('union_panel_unlocked')==='1'){ openCadreAfterAuth(); return; }}catch(e){}
   // 否則顯示密碼 modal
   var g=document.getElementById('nav-gate');
   g.classList.add('show');
@@ -335,7 +339,7 @@ function closeNavGate(){
 function tryNavUnlock(){
   var v=document.getElementById('ng-pw').value.trim();
   if(cyrb53Nav(v)===NAV_GATE_PW_HASH){
-    try{ sessionStorage.setItem('union_panel_unlocked','1'); }catch(e){}
+    try{ localStorage.setItem('union_panel_unlocked','1'); }catch(e){}
     closeNavGate(); openCadreAfterAuth();
   } else {
     document.getElementById('ng-err').textContent='通行碼不對，請再試一次';
@@ -442,11 +446,18 @@ window.addEventListener('DOMContentLoaded', function(){
   show('s-who');
   var p; try{ p = JSON.parse(localStorage.getItem(NAV_KEY)||'null'); }catch(e){ p=null; }
   if(!p) return;
+  var unlocked=false; try{ unlocked = localStorage.getItem('union_panel_unlocked')==='1'; }catch(e){}
+
+  // 私人裝置：這台記得你是誰、也已經解鎖過 → 不用選、不用按繼續，直接進你的畫面
+  if(p.role==='member'){ goMember(); return; }
+  if(p.role==='cadre' && p.person && unlocked){ buildCadreGrid(); choosePerson(p.person); return; }
+  if(p.role==='cadre' && !p.person && unlocked){ openCadreAfterAuth(); return; }
+
   var label='', go=null;
-  if(p.role==='member'){ label='會員'; go=goMember; }
-  else if(p.role==='cadre' && p.person){
+  if(p.role==='cadre' && p.person){
+    // 還沒在這台裝置解鎖過：一樣要先輸入通行碼，通過後 openCadreAfterAuth() 會自動接回這個人
     var c=CADRES.find(function(x){return x.key===p.person;});
-    label='幹部 · '+(c?cname(c):'') ; go=function(){ buildCadreGrid(); choosePerson(p.person); };
+    label='幹部 · '+(c?cname(c):'') ; go=goCadre;
   }
   else if(p.role==='cadre'){ label='幹部'; go=goCadre; }
   if(!go) return;
