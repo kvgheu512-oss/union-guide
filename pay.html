@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1A7A4A">
+<title>💳 繳費方式｜高榮企業工會</title>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">
+<style>
+ :root{--ac:#1A7A4A;--ac-deep:#0F5C36;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F7F6F3;--card:#fff;--border:#E6E1D8;--gold-light:#FEF9E7;}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8}
+ .header{background:linear-gradient(160deg,var(--ac),var(--ac-deep));color:#fff;padding:1.8rem 1.25rem 1.4rem;text-align:center}
+ .header h1{font-family:'Noto Serif TC',serif;font-size:20px} .header p{font-size:12.5px;opacity:.92;margin-top:6px}
+ main{max-width:600px;margin:0 auto;padding:1.1rem 1.05rem 4rem}
+ .topnote{background:var(--gold-light);border:1px solid #EAD67A;border-radius:10px;padding:.8rem .95rem;font-size:13px;color:#5C4000;margin-bottom:1rem;line-height:1.8}
+ .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.05rem 1.15rem;margin-bottom:1rem;border-top:4px solid var(--ac)}
+ .card h2{font-family:'Noto Serif TC',serif;color:var(--ac-deep);font-size:16px;margin-bottom:.6rem}
+ .info-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #F2EFE9;font-size:14.5px}
+ .info-row:last-child{border-bottom:none;padding-bottom:0}
+ .info-row:first-child{padding-top:0}
+ .info-key{color:var(--ink-soft);flex-shrink:0}
+ .info-val{font-weight:700;text-align:right;word-break:break-all}
+ .note{font-size:12.5px;color:var(--ink-soft);line-height:1.75;margin-top:.9rem}
+ .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.2rem;line-height:1.8}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+
+<div class="header"><h1>💳 繳費方式</h1><p>常年會費／入會費 繳納方式與對帳說明</p></div>
+<main>
+  <div class="topnote">📌 轉帳或 ATM 存款時，<b>備註／附言請填寫您的「繳費代碼」</b>（4 碼數字，總務發給您的）；不知道代碼的話填<b>姓名</b>也可以，總務會人工核對入帳，並更新您的會費紀錄。</div>
+
+  <div class="card">
+    <h2>① 銀行／郵局轉帳</h2>
+    <div class="info-row"><span class="info-key">戶名</span><span class="info-val" data-org-text="bankHolder">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">金融機構／分行</span><span class="info-val" data-org-text="bank">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">帳號</span><span class="info-val" data-org-text="bankAcct">（尚未公布，請洽總務）</span></div>
+  </div>
+
+  <div class="card">
+    <h2>② 中國信託 ATM 存款</h2>
+    <div class="info-row"><span class="info-key">戶名</span><span class="info-val" data-org-text="ctbcHolder">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">帳號</span><span class="info-val" data-org-text="ctbcAcct">（尚未公布，請洽總務）</span></div>
+    <div class="note">用 ATM「跨行／同行存款」功能，存入上面帳號即可；存款單據請保留，若總務對帳有疑問會用得上。</div>
+  </div>
+
+  <div class="note">🔐 本頁帳戶資訊為工會公開收款資料，非個人資料。會員個人的繳費紀錄與繳費代碼，只登記在幹部後台名冊、不會公開顯示。</div>
+  <div class="foot">高雄榮民總醫院企業工會（籌備中）</div>
+</main>
+
+<div id="verBadge"></div>
+<script src="org.js" defer></script>
+<script src="common.js" defer></script>
+</body></html>
