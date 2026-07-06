@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  40e401e 自動更新 CLAUDE.md 最近進度（Stop hook）
   6d5bde8 自動更新 CLAUDE.md 最近進度（Stop hook）
   b75ae9b 自動更新 CLAUDE.md 最近進度（Stop hook）
   e7e328a 線上會議室：會議連結參考文字從純網址改成可點擊的「🔗 一鍵進入會議」超連結
   2ca2c66 自動更新 CLAUDE.md 最近進度（Stop hook）
-  34b4dc6 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
