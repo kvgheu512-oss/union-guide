@@ -126,7 +126,7 @@
     </div>
     <div class="row">
       <div><label>日期</label><input id="fDate" type="date"></div>
-      <div><label>經辦人</label><input id="fHandler" list="handlerList" placeholder="你的名字" autocomplete="off"><datalist id="handlerList"></datalist></div>
+      <div><label>經辦人</label><div style="display:flex;gap:6px"><input id="fHandler" list="handlerList" placeholder="你的名字" autocomplete="off" style="flex:1"><button type="button" id="fHandlerSwap" title="換人" style="flex:0 0 auto;width:2.6rem;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-size:15px;cursor:pointer">🔄</button></div><datalist id="handlerList"></datalist></div>
     </div>
     <label>付款方式</label>
     <div class="seg">
@@ -371,6 +371,10 @@ document.addEventListener("DOMContentLoaded",function(){
     if(name && !seen[name]){ seen[name]=1; opts+='<option value="'+esc(name)+'">'; }
   });
   dl.innerHTML=opts;
+});
+document.getElementById('fHandlerSwap').addEventListener('click',function(){
+  var el=document.getElementById('fHandler');
+  el.value=''; el.focus();   // 清空並聚焦 → 瀏覽器會自動彈出完整名單，不用自己手動刪字
 });
 window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
     { sel:"#shootBox", title:"拍單據記一筆", text:"有支出嗎？這裡拍張單據、填上金額和用途，馬上記好一筆，可以存檔留底。" },

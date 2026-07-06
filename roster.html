@@ -165,7 +165,8 @@
       <label>把 Google 連署試算表的資料貼進來（要含<b>第一列標題</b>）</label>
       <div style="font-size:12px;color:var(--ink-soft,#777);line-height:1.8;margin:4px 0 8px">
         ① 開「高榮工會_發起人資料」試算表 → ② 框選含<b>標題列</b>的資料 → ③ 複製 → ④ 貼到下框 → ⑤ 按「分析並匯入」。<br>
-        會自動對應<b>姓名／單位／職稱／工號／手機／Email</b>，匯入狀態為<b>入會申請中（待審）</b>，重複的人自動略過。資料只進這台手機、不上傳。
+        會自動對應<b>姓名／單位／職稱／工號／手機／Email／時間戳記</b>。新的人會新增（狀態<b>入會申請中／待審</b>）；已經在名冊的人（用工號或姓名＋手機比對）會直接<b>更新</b>資料，以<b>最新時間戳記</b>那筆為準，方便大家隨時補填、重貼就能同步最新版。<br>
+        ⚠️ 如果試算表裡有一欄記載「身分別／任用／公職」等，只要值裡出現「<b>公職</b>」兩字，會自動鎖定該人為<b>贊助會員</b>（避免公職人員誤列正式會員觸法）；名單裡確認要正式入會、實際收到會費後，再到下方名單按「✓ 核准入會」轉為在會。資料只進這台手機、不上傳。
       </div>
       <textarea id="paste-data" style="min-height:120px;width:100%;font-size:13px" placeholder="姓名（Tab）單位（Tab）職稱（Tab）手機（Tab）Email&#10;直接從試算表複製整片貼上即可"></textarea>
       <div class="btn-row" style="margin-top:8px">
@@ -210,6 +211,7 @@
         <input id="f-dept" placeholder="或直接輸入單位">
       </div>
       <div><label>職稱</label><input id="f-title" placeholder="例：護理師"></div>
+      <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:13.5px;color:#7B5A00;background:var(--amber-light);border:1px solid #F0DBA8;border-radius:10px;padding:.5rem .7rem;margin-top:.4rem"><input type="checkbox" id="f-pubofficial" style="width:auto"> 此人為<b>公職人員</b>（勾選後自動鎖定為「贊助會員」，避免觸法）</label>
       <div class="grid2">
         <div><label>會員身分</label>
           <select id="f-type"><option value="full">正式會員</option><option value="sponsor">贊助會員</option></select></div>
@@ -437,6 +439,7 @@ function render(){
       ${sub?`<div class="m-sub">${sub}</div>`:''}
       <div class="m-pills">
         <span class="pill type ${m.type==='sponsor'?'sponsor':''}">${m.type==='sponsor'?'贊助會員':'正式會員'}</span>
+        ${m.pubOfficial?'<span class="pill" style="background:#FDECEA;color:#7B1818">🏛 公職</span>':''}
         <span class="pill st s-${m.status}">${STATUS[m.status]}</span>
         ${feeTxt}
         ${m.phone?`<span class="pill" style="background:#EEF1F4;color:#444">📞 ${esc(m.phone)}</span>`:''}
@@ -451,6 +454,7 @@ $('list').addEventListener('click',e=>{
   const m=members.find(x=>x.id===el.dataset.id); if(!m) return;
   const a=el.dataset.act;
   if(a==='approve'){
+    if(!m.feeTo&&!confirm('「'+(m.name||'')+'」目前「會費已繳至」還是空的，尚未看到繳費紀錄。\n確定總務已收到會費、要核准為正式在會嗎？')) return;
     const prevStatus=m.status, hadJoin=!!m.join;
     m.status='active'; if(!m.join) m.join=new Date().toISOString().slice(0,10);
     save(); render();
@@ -518,8 +522,16 @@ function openForm(m){
   $('f-type').value=m?(m.type||'full'):'full'; $('f-status').value=m?m.status:'applicant';
   $('f-join').value=m?(m.join||''):''; $('f-fee').value=m?(m.feeTo||''):'';
   $('f-phone').value=m?(m.phone||''):''; $('f-contact').value=m?(m.contact||''):''; $('f-note').value=m?(m.note||''):'';
+  $('f-pubofficial').checked=!!(m&&m.pubOfficial); applyPubOfficialLock();
   $('form').scrollIntoView({behavior:'smooth',block:'center'}); $('f-name').focus();
 }
+/* 公職人員一律鎖定贊助會員，避免觸法（勾選就強制帶入並鎖住不能選正式會員） */
+function applyPubOfficialLock(){
+  const on=$('f-pubofficial').checked, sel=$('f-type');
+  if(on) sel.value='sponsor';
+  sel.disabled=on;
+}
+$('f-pubofficial').addEventListener('change',applyPubOfficialLock);
 /* 信箱常用結尾一鍵帶入：取 @ 前面的帳號，接上所點的網域（已有 @ 則取代後面） */
 (function(){ var box=$('mailchips'); if(!box) return;
   box.addEventListener('click',function(e){ var b=e.target.closest('[data-dom]'); if(!b) return; e.preventDefault();
@@ -588,7 +600,8 @@ $('f-save').addEventListener('click',()=>{
   const name=$('f-name').value.trim(); if(!name){ toast('請輸入姓名'); return; }
   const data={name,no:$('f-no').value.trim(),dept:$('f-dept').value.trim(),title:$('f-title').value.trim(),
     type:$('f-type').value,status:$('f-status').value,join:$('f-join').value,feeTo:$('f-fee').value,
-    phone:$('f-phone').value.trim(),contact:$('f-contact').value.trim(),note:$('f-note').value.trim()};
+    phone:$('f-phone').value.trim(),contact:$('f-contact').value.trim(),note:$('f-note').value.trim(),
+    pubOfficial:$('f-pubofficial').checked};
   const id=$('f-id').value;
   if(id){ Object.assign(members.find(x=>x.id===id),data); } else { members.push(Object.assign({id:uid()},data)); }
   save(); $('form').classList.remove('show'); render(); toast('已儲存');
@@ -649,7 +662,22 @@ function mapHeaders(hs){ const map={};
     else if(/手機|電話/.test(h)&&map.phone==null) map.phone=i;
     else if(/email|e-mail|信箱|電子郵件|郵件|line/i.test(h)&&map.contact==null) map.contact=i;
     else if(/代表雇主|管理權/.test(h)&&map.mgr==null) map.mgr=i;
+    else if(/時間戳|時間戳記|timestamp/i.test(h)&&map.ts==null) map.ts=i;
+    else if(/公職|身分別|任用|聘僱|進用方式|職務類別/.test(h)&&map.pub==null) map.pub=i;
   }); return map;
+}
+/* 公職人員一律歸為贊助會員，避免觸法：試算表欄位值只要出現「公職」就判定為公職 */
+function isPubOfficial(v){ return /公職/.test(v||''); }
+/* 把 Google 表單常見的時間戳記字串（含中文上午/下午）轉成可比大小的字串，抓不到就回空字串 */
+function tsKey(s){
+  if(!s) return '';
+  const pm=/下午|pm/i.test(s), am=/上午|am/i.test(s);
+  const nums=(String(s).match(/\d+/g)||[]);
+  if(!nums.length) return '';
+  let h=parseInt(nums[3]||'0',10);
+  if(pm&&h<12) h+=12; else if(am&&h===12) h=0;
+  const pad=(v,n)=>{ v=''+v; while(v.length<n)v='0'+v; return v; };
+  return pad(nums[0]||'0',4)+pad(nums[1]||'0',2)+pad(nums[2]||'0',2)+pad(h,2)+pad(nums[4]||'0',2)+pad(nums[5]||'0',2);
 }
 $('paste-go').addEventListener('click',()=>{
   const txt=$('paste-data').value, out=$('paste-result');
@@ -659,25 +687,50 @@ $('paste-go').addEventListener('click',()=>{
   const rows=lines.map(l=>splitLine(l,d));
   const map=mapHeaders(rows[0]);
   if(map.name==null){ out.innerHTML='<span style="color:#C0392B">找不到「姓名」欄——請確認有把第一列標題一起貼進來。</span>'; return; }
-  const seen=new Set(members.map(m=>(m.name||'')+'|'+(m.phone||'')));
-  let added=0,skipped=0,mgr=0;
+  // ① 同一次貼上裡，同一個人可能出現多次（重複填寫更新）→ 用工號或姓名＋手機當 key，取「時間戳記」最新的那筆（沒有時間戳就取最後一筆）
+  const latest=new Map();
   for(let i=1;i<rows.length;i++){ const r=rows[i];
     const name=(r[map.name]||'').trim(); if(!name) continue;
-    const phone=map.phone!=null?(r[map.phone]||'').trim():'';
-    if(seen.has(name+'|'+phone)){ skipped++; continue; }
-    const m={ id:uid(), name,
+    const entry={ name,
       no:map.no!=null?(r[map.no]||'').trim():'',
       dept:map.dept!=null?(r[map.dept]||'').trim():'',
       title:map.title!=null?(r[map.title]||'').trim():'',
-      type:'full', status:'applicant', join:'', feeTo:'',
-      phone, contact:map.contact!=null?(r[map.contact]||'').trim():'', note:'' };
-    if(map.mgr!=null){ const v=r[map.mgr]||''; if(/是/.test(v)&&!/否/.test(v)){ m.note='⚠ 連署時填「代表雇主行使管理權」，可能不具入會資格，請查核'; mgr++; } }
-    members.push(m); seen.add(name+'|'+phone); added++;
+      phone:map.phone!=null?(r[map.phone]||'').trim():'',
+      contact:map.contact!=null?(r[map.contact]||'').trim():'',
+      mgr:map.mgr!=null?(r[map.mgr]||''):'',
+      pub:map.pub!=null?isPubOfficial(r[map.pub]):false,
+      ts:map.ts!=null?tsKey(r[map.ts]):'' };
+    const key=entry.no||(entry.name+'|'+entry.phone);
+    const prev=latest.get(key);
+    if(!prev || entry.ts>=prev.ts) latest.set(key,entry);
   }
-  if(added) save();
+  // ② 已經在名冊的人（工號相同、或姓名＋手機相同）→ 直接更新資料；名冊沒有的人 → 新增（待審）
+  let added=0,updated=0,mgr=0,pubHit=0;
+  latest.forEach(entry=>{
+    let exist=null;
+    if(entry.no) exist=members.find(m=>m.no&&m.no===entry.no);
+    if(!exist) exist=members.find(m=>(m.name||'')===entry.name&&(m.phone||'')===entry.phone);
+    if(exist){
+      if(entry.dept) exist.dept=entry.dept;
+      if(entry.title) exist.title=entry.title;
+      if(entry.no) exist.no=entry.no;
+      if(entry.phone) exist.phone=entry.phone;
+      if(entry.contact) exist.contact=entry.contact;
+      if(entry.pub){ exist.pubOfficial=true; exist.type='sponsor'; pubHit++; }   // 公職一律鎖贊助會員，不可覆蓋回正式
+      updated++;
+    } else {
+      const m={ id:uid(), name:entry.name, no:entry.no, dept:entry.dept, title:entry.title,
+        type:entry.pub?'sponsor':'full', status:'applicant', join:'', feeTo:'',
+        phone:entry.phone, contact:entry.contact, note:'', pubOfficial:entry.pub };
+      if(entry.pub) pubHit++;
+      if(entry.mgr&&/是/.test(entry.mgr)&&!/否/.test(entry.mgr)){ m.note='⚠ 連署時填「代表雇主行使管理權」，可能不具入會資格，請查核'; mgr++; }
+      members.push(m); added++;
+    }
+  });
+  if(added||updated) save();
   render();
-  out.innerHTML='✅ 匯入 <b>'+added+'</b> 筆（待審）'+(skipped?'，略過 '+skipped+' 筆（重複/已存在）':'')+(mgr?'，其中 <b>'+mgr+'</b> 筆已標註「可能不具入會資格」':'')+'。';
-  if(added) toast('已匯入 '+added+' 筆到名冊');
+  out.innerHTML='✅ 新增 <b>'+added+'</b> 筆（待審）、更新 <b>'+updated+'</b> 筆既有資料'+(pubHit?'，其中 <b>'+pubHit+'</b> 筆偵測為公職人員已鎖定「贊助會員」':'')+(mgr?'，其中 <b>'+mgr+'</b> 筆新增已標註「可能不具入會資格」':'')+'。';
+  if(added||updated) toast('已同步 '+(added+updated)+' 筆到名冊');
 });
 
 let toastT; function toast(m){ const e=$('toast'); e.textContent=m; e.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>e.classList.remove('show'),1900); }
