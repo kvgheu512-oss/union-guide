@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  f3a8cbb 自動更新 CLAUDE.md 最近進度（Stop hook）
   3f294ed 自動更新 CLAUDE.md 最近進度（Stop hook）
   4947196 自動更新 CLAUDE.md 最近進度（Stop hook）
   a8733d7 會員名冊：LINE/Email 從合併一欄改成分開兩欄位，避免連署試算表兩欄都有時只抓到一個、漏掉另一個資料；舊資料自動判斷(有@算Email、沒有算LINE)相容顯示；CSV匯出也拆成LINE、Email兩欄
   4b10349 自動更新 CLAUDE.md 最近進度（Stop hook）
-  298d33c 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
