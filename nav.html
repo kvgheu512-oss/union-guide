@@ -426,10 +426,31 @@ function renderTodo(c){
     box.innerHTML='';
   });
 }
-function todoToggleDone(idx){
+function todoRerender(){
+  renderTodo(CADRES.find(function(x){ var p; try{p=JSON.parse(localStorage.getItem(NAV_KEY)||'null');}catch(e){} return p&&x.key===p.person; }));
+}
+function todoToggleDone(idx,label){
   var done=wpDone(); done[idx-1]=true; wpSaveDone(done);
   _todoCache=null; // 讓 workplan.html 內容下次重新抓（其實表格本身沒變，只是保險）
-  renderTodo(CADRES.find(function(x){ var p; try{p=JSON.parse(localStorage.getItem(NAV_KEY)||'null');}catch(e){} return p&&x.key===p.person; }));
+  todoRerender();
+  showTodoUndo('已標記完成：'+(label||''), function(){
+    var d=wpDone(); d[idx-1]=false; wpSaveDone(d); todoRerender();
+  });
+}
+/* 誤觸勾選也能救回：8 秒內按「復原」就恢復到待辦清單（跟 roster.html 的復原橫幅同一套做法） */
+var _todoUndoT;
+function showTodoUndo(msg, undoFn){
+  var bar=document.getElementById('todoUndoBar');
+  if(!bar){ bar=document.createElement('div'); bar.id='todoUndoBar';
+    bar.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:12px;background:#1A2433;color:#fff;padding:10px 14px;border-radius:24px;box-shadow:0 6px 20px rgba(0,0,0,.35);font-size:13.5px;max-width:94vw';
+    document.body.appendChild(bar); }
+  bar.innerHTML='';
+  var t=document.createElement('span'); t.textContent=msg; bar.appendChild(t);
+  var b=document.createElement('button'); b.textContent='↩ 復原';
+  b.style.cssText='background:#FFC845;color:#3A2E00;border:0;border-radius:16px;padding:5px 13px;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0';
+  b.onclick=function(){ clearTimeout(_todoUndoT); bar.style.display='none'; undoFn(); };
+  bar.appendChild(b); bar.style.display='flex';
+  clearTimeout(_todoUndoT); _todoUndoT=setTimeout(function(){ if(bar) bar.style.display='none'; }, 8000);
 }
 function renderTodoList(mine){
   var box=document.getElementById('person-todo'); if(!box) return;
@@ -437,12 +458,12 @@ function renderTodoList(mine){
   box.innerHTML='<div class="todo-box"><div class="tt">📋 我的待辦（年度工作計畫，共 '+mine.length+' 項）</div>'
     +mine.map(function(m){
       var body = m.href ? '<a href="'+m.href+'" style="color:var(--ink);text-decoration:none;flex:1">'+m.item+' <span style="color:var(--navy)">→</span></a>' : '<span style="flex:1">'+m.item+'</span>';
-      return '<div class="todo-item"><input type="checkbox" class="todo-chk" data-idx="'+m.idx+'" style="width:18px;height:18px;flex-shrink:0;cursor:pointer"><span class="tc">'+m.cat+'</span><span class="tp">'+m.period+'</span>'+body+'</div>';
+      return '<div class="todo-item"><input type="checkbox" class="todo-chk" data-idx="'+m.idx+'" data-label="'+m.item.replace(/"/g,'&quot;')+'" style="width:18px;height:18px;flex-shrink:0;cursor:pointer"><span class="tc">'+m.cat+'</span><span class="tp">'+m.period+'</span>'+body+'</div>';
     }).join('')
-    +'<div style="font-size:11px;color:var(--ink-soft);margin-top:.5rem">點項目名稱可直接前往對應工具；打勾＝標記完成（跟 <a href="workplan.html" style="color:var(--navy)">workplan.html</a> 共用同一份紀錄）。</div>'
+    +'<div style="font-size:11px;color:var(--ink-soft);margin-top:.5rem">點項目名稱可直接前往對應工具；打勾＝標記完成，勾錯了 8 秒內可按下方「復原」（跟 <a href="workplan.html" style="color:var(--navy)">workplan.html</a> 共用同一份紀錄）。</div>'
     +'</div>';
   box.querySelectorAll('.todo-chk').forEach(function(cb){
-    cb.addEventListener('change', function(){ if(cb.checked) todoToggleDone(parseInt(cb.dataset.idx,10)); });
+    cb.addEventListener('change', function(){ if(cb.checked) todoToggleDone(parseInt(cb.dataset.idx,10), cb.dataset.label); });
   });
 }
 
