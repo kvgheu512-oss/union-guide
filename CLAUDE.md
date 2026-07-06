@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  f79058a 待辦事項打勾完成新增復原機制：打勾後跳出「已標記完成」橫幅，8秒內按「↩ 復原」可救回誤觸，跟roster.html刪除/核准入會同一套復原做法
+  83e4a16 自動更新 CLAUDE.md 最近進度（Stop hook）
   b690e2e 修正待辦事項顯示全空的真正原因：sw.js的網路優先判斷只認得到瀏覽器直接導覽(navigate)，沒算到頁面內用fetch()讀別頁HTML的情況(例如nav.html抓workplan.html解析表格)，導致抓到舊版Service Worker快取的舊表格(6欄，缺勾選/連結)，解析失敗、篩選結果變空清單，看起來像「都已完成」但其實是讀不到資料；現在所有.html一律網路優先，並在nav.html的抓取加上cache-busting查詢字串強制拿最新版；解析失敗時也會清楚顯示警告而不是誤導成「已完成」
   47a35df 自動更新 CLAUDE.md 最近進度（Stop hook）
   582d0f1 待辦事項升級成真的可用：workplan.html每個工作項目加對應工具連結(data-href)與完成勾選框(勾了會刪除線標示、存本機)；nav.html「我的待辦」項目可直接點擊前往對應工具頁，也能直接在待辦清單打勾標記完成(跟workplan.html共用同一份完成紀錄，兩邊同步)，完成的項目會自動從待辦清單移除
-  6a1a7b0 自動更新 CLAUDE.md 最近進度（Stop hook）
-  5a04ae9 幹部專用密碼解鎖狀態(union_panel_unlocked)全面改用localStorage記憶，同裝置重開瀏覽器免重輸(原本用sessionStorage，每次重開都要重新輸入)，影響union/roster/meeting/gongwen/plan/jianshi/activity.html共用的幹部密碼閘門
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
