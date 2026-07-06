@@ -67,7 +67,7 @@
     <input id="m-found-date" placeholder="例：115/8/15"><input id="m-found-time" placeholder="例：19:00" style="margin-top:6px"><input id="m-found-place" placeholder="地點（實體＋線上）" style="margin-top:6px">
     <input id="m-found-url" placeholder="Google Meet 連結（可留空）" style="margin-top:6px">
     <label>連署進度（顯示在首頁）</label>
-    <div style="display:flex;gap:8px"><input id="sign-now" inputmode="tel" placeholder="目前人數"><input id="sign-goal" inputmode="tel" placeholder="目標(預設30)"></div>
+    <div style="display:flex;gap:8px"><input id="sign-now" inputmode="numeric" placeholder="目前人數"><input id="sign-goal" inputmode="numeric" placeholder="目標(預設30)"></div>
   </div>
 
   <div class="card" style="border-top-color:#2E5C8A">
@@ -111,7 +111,7 @@
     box.innerHTML=EBNOrg.FIELDS.map(function(f){
       var k=f[0],label=f[1],hint=f[2]||"";
       var v=(o[k]!=null?String(o[k]):"").replace(/"/g,"&quot;");
-      var im=(k==="tel"||k==="docYear"||k==="docSeq"||k==="taxId")?' inputmode="tel"':'';
+      var im=k==="tel"?' inputmode="tel"':(k==="docYear"||k==="docSeq"||k==="taxId")?' inputmode="numeric"':'';
       var row='<label>'+label+'</label>'+
              '<input id="org-'+k+'" type="text"'+im+' value="'+v+'">'+
              (hint?'<div class="hint">'+hint+'</div>':'');
