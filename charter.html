@@ -315,6 +315,66 @@
    <summary style="cursor:pointer;padding:.7rem 1rem;font-weight:700;color:var(--ac);font-family:'Noto Serif TC',serif">③ 成立大會議事程序草案</summary>
    <div style="padding:0 1rem 1rem">
      <div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:.5rem">依據：工會法§11（30人以上成立門檻）、§12（理監事名額）、§16（大會職權：通過章程、費額、選舉）、§17（理事長互推）。成立大會完成後三十日內應向高雄市政府勞工局申請核准登記。</div>
+
+     <div style="background:#FEF9E7;border:1px solid #EAD67A;border-radius:12px;padding:.8rem .9rem;margin-bottom:.8rem">
+       <div style="font-weight:700;font-size:13px;color:#444;margin-bottom:.5rem">▌現場／會前填空（存這台裝置，範本會即時套用）</div>
+
+       <div style="font-size:12.5px;color:#7A5600;margin-bottom:.3rem">📅 日期時間・地點</div>
+       <div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:13px">
+         中華民國 <input id="ag-year" type="number" inputmode="numeric" style="width:52px;border:1.5px solid #EAD67A;border-radius:6px;padding:5px;background:#fff;font-family:inherit">年
+         <input id="ag-month" type="number" inputmode="numeric" style="width:42px;border:1.5px solid #EAD67A;border-radius:6px;padding:5px;background:#fff;font-family:inherit">月
+         <input id="ag-day" type="number" inputmode="numeric" style="width:42px;border:1.5px solid #EAD67A;border-radius:6px;padding:5px;background:#fff;font-family:inherit">日（星期
+         <input id="ag-week" style="width:32px;border:1.5px solid #EAD67A;border-radius:6px;padding:5px;background:#fff;font-family:inherit">）
+         <select id="ag-ampm" style="border:1.5px solid #EAD67A;border-radius:6px;padding:5px;background:#fff;font-family:inherit"><option>上午</option><option>下午</option></select>
+         <input id="ag-hour" type="number" inputmode="numeric" style="width:42px;border:1.5px solid #EAD67A;border-radius:6px;padding:5px;background:#fff;font-family:inherit">時
+         <input id="ag-min" type="number" inputmode="numeric" style="width:42px;border:1.5px solid #EAD67A;border-radius:6px;padding:5px;background:#fff;font-family:inherit">分
+       </div>
+       <input id="ag-place" placeholder="地點" style="width:100%;box-sizing:border-box;margin-top:6px;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;font-size:13px">
+
+       <div style="font-size:12.5px;color:#7A5600;margin:.7rem 0 .3rem">🙋 出席與人數</div>
+       <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:13px">
+         <div style="flex:1;min-width:110px">主席／召集人<input id="ag-chair" style="width:100%;box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;margin-top:3px"></div>
+         <div style="flex:1;min-width:110px">全體發起人數<input id="ag-founders" type="number" inputmode="numeric" style="width:100%;box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;margin-top:3px"></div>
+         <div style="flex:1;min-width:110px">實際出席人數<input id="ag-attend" type="number" inputmode="numeric" style="width:100%;box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;margin-top:3px"></div>
+       </div>
+       <div id="ag-quorum-hint" style="font-size:11.5px;color:#5C4000;margin-top:4px"></div>
+
+       <div style="font-size:12.5px;color:#7A5600;margin:.7rem 0 .3rem">📜 章程表決（贊成／反對／棄權）</div>
+       <div style="display:flex;gap:6px;font-size:13px">
+         <input id="ag-ch-y" type="number" inputmode="numeric" placeholder="贊成" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
+         <input id="ag-ch-n" type="number" inputmode="numeric" placeholder="反對" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
+         <input id="ag-ch-x" type="number" inputmode="numeric" placeholder="棄權" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
+       </div>
+
+       <div style="font-size:12.5px;color:#7A5600;margin:.7rem 0 .3rem">💰 入會費／月費表決（金額％已從上面①章程填空帶入，這裡只填表決結果）</div>
+       <div style="display:flex;gap:6px;font-size:13px">
+         <input id="ag-fee-y" type="number" inputmode="numeric" placeholder="贊成" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
+         <input id="ag-fee-n" type="number" inputmode="numeric" placeholder="反對" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
+         <input id="ag-fee-x" type="number" inputmode="numeric" placeholder="棄權" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
+       </div>
+
+       <div style="font-size:12.5px;color:#7A5600;margin:.7rem 0 .3rem">🗳️ 理事選舉（名額已從①理事名額帶入）</div>
+       <div style="display:flex;gap:6px;font-size:13px">
+         <div style="flex:1">候補理事名額<input id="ag-dir-alt" type="number" inputmode="numeric" style="width:100%;box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;margin-top:3px"></div>
+       </div>
+       <input id="ag-dir-list" placeholder="當選理事名單（姓名，用頓號、隔開）" style="width:100%;box-sizing:border-box;margin-top:6px;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;font-size:13px">
+       <input id="ag-dir-alt-list" placeholder="候補理事名單（姓名，用頓號、隔開）" style="width:100%;box-sizing:border-box;margin-top:6px;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;font-size:13px">
+
+       <div style="font-size:12.5px;color:#7A5600;margin:.7rem 0 .3rem">🗳️ 監事選舉（名額依理事名額自動對應：5人→監事1、7人→監事2、9人→監事3）</div>
+       <div style="display:flex;gap:6px;font-size:13px">
+         <div style="flex:1">候補監事名額<input id="ag-sup-alt" type="number" inputmode="numeric" style="width:100%;box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;margin-top:3px"></div>
+       </div>
+       <input id="ag-sup-list" placeholder="當選監事名單（姓名，用頓號、隔開）" style="width:100%;box-sizing:border-box;margin-top:6px;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;font-size:13px">
+       <input id="ag-sup-alt-list" placeholder="候補監事名單（姓名，用頓號、隔開）" style="width:100%;box-sizing:border-box;margin-top:6px;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;font-size:13px">
+
+       <div style="font-size:12.5px;color:#7A5600;margin:.7rem 0 .3rem">👑 理事互推理事長</div>
+       <div style="display:flex;gap:6px;font-size:13px">
+         <input id="ag-chairman" placeholder="理事長當選人" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
+         <input id="ag-stdsup" placeholder="常務監事（如有設置，選填）" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
+       </div>
+       <div style="font-size:11px;color:#8A6309;margin-top:.5rem">💾 每個欄位打完就自動存這台裝置；下面範本文字會即時套用，按「複製這份範本」就是填好的版本。</div>
+     </div>
+
      <pre class="apx" id="apx3" style="white-space:pre-wrap;background:#FCFAF7;border:1px solid var(--border);border-radius:9px;padding:.8rem;font-family:inherit;font-size:13px;line-height:1.85;color:var(--ink-mid)">高雄榮民總醫院企業工會　成立大會議事程序草案
 
 日期：中華民國　　年　　月　　日（星期　）　午　　時　　分
@@ -503,6 +563,118 @@ window._chAddr = null;
     });
     if(saved && (saved.zip2||saved.road||saved.rest)) window._chAddr.set(saved);
   }
+})();
+
+// ── 成立大會議事程序草案：填空即時套用＋localStorage 持久化
+(function(){
+  var AGK='founding_agenda_v1';
+  var AGIDS=['ag-year','ag-month','ag-day','ag-week','ag-ampm','ag-hour','ag-min','ag-place','ag-chair','ag-founders','ag-attend',
+    'ag-ch-y','ag-ch-n','ag-ch-x','ag-fee-y','ag-fee-n','ag-fee-x',
+    'ag-dir-alt','ag-dir-list','ag-dir-alt-list','ag-sup-alt','ag-sup-list','ag-sup-alt-list','ag-chairman','ag-stdsup'];
+  var DEFAULTS={ 'ag-year':'115','ag-month':'8','ag-day':'30','ag-week':'日','ag-ampm':'下午','ag-hour':'2','ag-min':'00',
+    'ag-place':'耀嵩豐（高雄市左營區福山里博愛四路309號）' };
+
+  function v(id){ var el=document.getElementById(id); return el?el.value.trim():''; }
+  function b(id,ph){ var val=v(id); return val || (ph!=null?ph:'　　'); }
+  function supSeats(){ var map={'5':'1','7':'2','9':'3'}; return map[v('ch-board')]||'　　'; }
+  function quorumNeed(){ var f=parseInt(v('ag-founders'),10); return f>0 ? Math.ceil(f*2/3) : null; }
+
+  function quorumHint(){
+    var el=document.getElementById('ag-quorum-hint'); if(!el) return;
+    var need=quorumNeed();
+    el.textContent = need!=null ? ('門檻（三分之二以上）：'+need+' 人以上才能開會') : '';
+  }
+
+  function renderApx3(){
+    var pre=document.getElementById('apx3'); if(!pre) return;
+    var dirSeats=v('ch-board')||'　　';
+    var supSeatsN=supSeats();
+    var need=quorumNeed();
+    var txt =
+'高雄榮民總醫院企業工會　成立大會議事程序草案\n\n'+
+'日期：中華民國'+b('ag-year')+'年'+b('ag-month')+'月'+b('ag-day')+'日（星期'+b('ag-week','　')+'）　'+b('ag-ampm','　')+b('ag-hour')+'時'+b('ag-min')+'分\n'+
+'地點：'+v('ag-place')+'\n'+
+'出席人數確認：出席'+b('ag-attend')+'人（全體成立發起人'+b('ag-founders')+'人，依工會法第十一條第一項，出席應達全體三分之二以上，即'+(need!=null?need:'　　')+'人以上）\n\n'+
+'壹、報到（開會前三十分鐘開始）\n'+
+'　一、出席者逐一簽到（含姓名、服務單位、職稱、簽名）。\n'+
+'　二、發放議程表、章程草案及選票（如採書面投票）。\n'+
+'　三、開票前清點人數，確認已達法定門檻。\n\n'+
+'貳、主席就位，宣布開會\n'+
+'　籌備召集人（主席）'+b('ag-chair','　　　　')+'報告：\n'+
+'　「本次成立大會出席人員共'+b('ag-attend')+'人，超過全體發起工人三分之二（工會法第十一條第一項），符合成立法定人數，現在宣布本工會成立大會開會。」\n\n'+
+'參、通過議事規則\n'+
+'　提案：本次大會採舉手表決；涉及選舉事項採無記名投票；主席無表決權但有裁決異議之權。\n'+
+'　請問全體：有無異議？（無異議，通過。）\n\n'+
+'肆、通過章程（工會法§11第1項、§16第1項第1款）\n'+
+'　一讀：宣讀章程各章標題及重要條文。\n'+
+'　二讀：逐章或逐條討論，說明重要法源依據。\n'+
+'　三讀：全體舉手表決。\n'+
+'　主席宣布：「贊成'+b('ag-ch-y')+'人，反對'+b('ag-ch-n')+'人，棄權'+b('ag-ch-x')+'人，超過出席人數過半數，章程通過。」\n\n'+
+'伍、議決入會費及月費額（工會法§16第1項第6款）\n'+
+'　提案：入會費新臺幣【'+b('ch-join')+'】元；經常月費為當月工資之【'+b('ch-monthly')+'】%。\n'+
+'　主席宣布：「贊成'+b('ag-fee-y')+'人，反對'+b('ag-fee-n')+'人，棄權'+b('ag-fee-x')+'人，通過。」\n'+
+'　（費額依章程§32，月費不得低於當月工資0.5%）\n\n'+
+'陸、選舉理事（工會法§16第1項第5款、§12）\n'+
+'　一、說明：依章程，理事名額【'+dirSeats+'】人，候補理事【'+b('ag-dir-alt')+'】人。\n'+
+'　二、公告候選人名單（逐一唱名確認候選人）。\n'+
+'　三、投票：每位出席人員圈選不超過應選名額之候選人；投票完畢收票。\n'+
+'　四、開票組（三人以上）公開開票、唱票、記票。\n'+
+'　五、主席宣布當選理事名單（得票多者優先；同票數以抽籤決定）：\n'+
+'　　　理事（'+dirSeats+'人）：【'+(v('ag-dir-list')||'姓名×'+dirSeats+'人')+'】\n'+
+'　　　候補理事（'+b('ag-dir-alt')+'人）：【'+(v('ag-dir-alt-list')||'姓名×　　人')+'】\n\n'+
+'柒、選舉監事（工會法§16第1項第5款、§12）\n'+
+'　一、說明：依章程，監事名額【'+supSeatsN+'】人，候補監事【'+b('ag-sup-alt')+'】人。\n'+
+'　二、（程序同「陸」之二至五）。\n'+
+'　三、主席宣布當選監事名單：\n'+
+'　　　監事（'+supSeatsN+'人）：【'+(v('ag-sup-list')||'姓名×'+supSeatsN+'人')+'】\n'+
+'　　　候補監事（'+b('ag-sup-alt')+'人）：【'+(v('ag-sup-alt-list')||'姓名×　　人')+'】\n\n'+
+'捌、理事互推理事長（工會法§17第1項）\n'+
+'　一、當選理事就地進行互推，採無記名投票。\n'+
+'　二、開票後，主席宣布：「理事長當選人：'+b('ag-chairman','　　　　')+'。」\n'+
+'　三、監事互推常務監事（如章程設置）：「常務監事：'+b('ag-stdsup','　　　　')+'。」\n\n'+
+'玖、理事長致詞暨接任宣誓\n\n'+
+'拾、閉會（工會法§11第2項）\n'+
+'　主席宣布：「本次成立大會各項議程完成，現在散會。本會應於三十日內備妥文件，向高雄市政府勞工局申請核准登記（工會法第十一條第二項、第十三條）。」\n\n'+
+'────────────────────────────────────\n'+
+'【附件：成立後三十日內送件清單（工會法§11第2項、§13）】\n'+
+'　□ 向高雄市政府勞工局提出之申請書（主管機關格式）\n'+
+'　□ 章程（成立大會通過版，有理事長及紀錄人簽名）\n'+
+'　□ 成立大會會議紀錄（含出席人數、各項決議及選舉結果）\n'+
+'　□ 理事、監事名冊（含姓名、服務單位、到職日期、聯絡方式）\n'+
+'　□ 會員名冊（含姓名、住址、服務單位、職稱、到職日期）\n'+
+'　□ 籌備會議紀錄（如有）\n'+
+'　申請機關：高雄市政府勞工局\n'+
+'　地　　址：806604高雄市前鎮區鎮中路6號\n'+
+'　電　　話：(07)812-4613\n'+
+'────────────────────────────────────';
+    pre.textContent = txt;
+    quorumHint();
+  }
+
+  function load(){
+    try{
+      var d=JSON.parse(localStorage.getItem(AGK)||'{}');
+      AGIDS.forEach(function(id){
+        var el=document.getElementById(id); if(!el) return;
+        if(d[id]!=null) el.value=d[id];
+        else if(DEFAULTS[id]!=null) el.value=DEFAULTS[id];
+      });
+    }catch(e){
+      AGIDS.forEach(function(id){ var el=document.getElementById(id); if(el&&DEFAULTS[id]!=null) el.value=DEFAULTS[id]; });
+    }
+  }
+  function save(){
+    var d={};
+    AGIDS.forEach(function(id){ var el=document.getElementById(id); if(el) d[id]=el.value; });
+    try{ localStorage.setItem(AGK, JSON.stringify(d)); }catch(e){}
+  }
+
+  load();
+  AGIDS.concat(['ch-board','ch-join','ch-monthly']).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('input', function(){ if(AGIDS.indexOf(id)>=0) save(); renderApx3(); });
+  });
+  renderApx3();
 })();
 
 // ── 複製完整章程
