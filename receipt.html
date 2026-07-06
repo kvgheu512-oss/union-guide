@@ -126,7 +126,7 @@
     </div>
     <div class="row">
       <div><label>日期</label><input id="fDate" type="date"></div>
-      <div><label>經辦人</label><input id="fHandler" placeholder="你的名字" autocomplete="off"><div class="chips" id="handlerChips" style="margin-top:6px"></div></div>
+      <div><label>經辦人</label><input id="fHandler" list="handlerList" placeholder="你的名字" autocomplete="off"><datalist id="handlerList"></datalist></div>
     </div>
     <label>付款方式</label>
     <div class="seg">
@@ -237,13 +237,10 @@ function pickChip(i){
   const sum=document.getElementById('fSum');
   if(!sum.value.trim()) sum.value=label;
   document.getElementById('fCat').value=cat;
-  if(amt!=null){
-    const amtEl=document.getElementById('fAmt');
-    if(amtEl.dataset.manual!=='1'){ amtEl.value=amt; liveCheck(); }  // 手動打過的金額不覆蓋；沒手動打過就跟著快選一直更新
-  }
+  if(amt!=null){ document.getElementById('fAmt').value=amt; liveCheck(); }  // 點快選金額一律直接帶入、覆蓋舊值
   if(label==='其他'){ sum.focus(); sum.select(); }  // 「其他」點下去直接反白選字，方便使用者直接打字覆蓋、寫清楚是什麼
 }
-['fAmt'].forEach(id=>document.addEventListener('input',e=>{if(e.target.id==='fAmt'){e.target.dataset.manual='1';liveCheck();}}));
+['fAmt'].forEach(id=>document.addEventListener('input',e=>{if(e.target.id==='fAmt')liveCheck();}));
 function liveCheck(){
   const box=document.getElementById('alerts'); box.innerHTML='';
   const amt=+document.getElementById('fAmt').value||0; const out=[];
@@ -275,7 +272,6 @@ async function saveReceipt(){
   // reset
   clearPhoto();
   ['fSum','fAmt'].forEach(id=>document.getElementById(id).value='');
-  delete document.getElementById('fAmt').dataset.manual;
   document.getElementById('fGov').checked=false;
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
   document.getElementById('alerts').innerHTML='';
@@ -368,20 +364,13 @@ function exportCSV(){
 <script>
 document.addEventListener("DOMContentLoaded",function(){
   if(!window.EBNOrg) return;
-  var box=document.getElementById('handlerChips'); if(!box) return;
-  var seen={}, btns=[];
+  var dl=document.getElementById('handlerList'); if(!dl) return;
+  var seen={}, opts='';
   EBNOrg.CADRE_ROLES.forEach(function(r){
     var name=EBNOrg.cadreName(r[0]);
-    if(name && !seen[name]){ seen[name]=1; btns.push({name:name,role:r[1]}); }
+    if(name && !seen[name]){ seen[name]=1; opts+='<option value="'+esc(name)+'">'; }
   });
-  box.innerHTML=btns.map(function(b){ return '<button type="button" class="chip" data-name="'+esc(b.name)+'">'+esc(b.name)+'</button>'; }).join('');
-  box.querySelectorAll('.chip').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      document.getElementById('fHandler').value=btn.dataset.name;   // 直接點就覆蓋，不用先刪除
-      box.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
-      btn.classList.add('on');
-    });
-  });
+  dl.innerHTML=opts;
 });
 window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
     { sel:"#shootBox", title:"拍單據記一筆", text:"有支出嗎？這裡拍張單據、填上金額和用途，馬上記好一筆，可以存檔留底。" },
