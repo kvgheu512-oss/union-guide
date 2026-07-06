@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  3c8353b 自動更新 CLAUDE.md 最近進度（Stop hook）
   5296074 自動更新 CLAUDE.md 最近進度（Stop hook）
   7f5fb9e 線上會議室成立大會卡片新增「📅 加入我的行事曆」按鈕，連到工會提供的Google行事曆活動連結
   7ac8b41 發布成立大會日期時間地點：115/8/30 14:00-16:00，耀嵩豐（高雄市左營區福山里博愛四路309號）＋線上同步
   c36347e 自動更新 CLAUDE.md 最近進度（Stop hook）
-  f3a8cbb 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
