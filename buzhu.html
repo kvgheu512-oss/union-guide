@@ -229,7 +229,7 @@
       chips:[{t:"↩︎ 回主選單",to:"start"}]}
   };
   var jlog=document.getElementById("jbot-log"), jchips=document.getElementById("jbot-chips");
-  function bub(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);jlog.scrollTop=jlog.scrollHeight;}
+  function bub(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);void jlog.offsetHeight;jlog.scrollTop=jlog.scrollHeight;}
   function go(key,skipScroll){
     var n=NODES[key]; if(!n) return;
     n.say.forEach(function(s){bub(s,"bot");});

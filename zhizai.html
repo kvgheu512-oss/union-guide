@@ -296,7 +296,7 @@
   };
   var jlog=document.getElementById("jbot-log"), jchips=document.getElementById("jbot-chips");
   if(jlog&&jchips){
-    function jbubble(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);jlog.scrollTop=jlog.scrollHeight;}
+    function jbubble(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);void jlog.offsetHeight;jlog.scrollTop=jlog.scrollHeight;}
     function jgo(key){
       var n=NODES[key]; if(!n) return;
       n.say.forEach(function(s){jbubble(s,"bot");});

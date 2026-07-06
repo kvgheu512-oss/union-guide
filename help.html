@@ -323,7 +323,7 @@
 
   var jlog=document.getElementById("jbot-log"), jchips=document.getElementById("jbot-chips");
   var jin=document.getElementById("jbot-in"), jsend=document.getElementById("jbot-send");
-  function bub(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);jlog.scrollTop=jlog.scrollHeight;}
+  function bub(html,who){var d=document.createElement("div");d.className="b "+who;d.innerHTML=html;jlog.appendChild(d);void jlog.offsetHeight;jlog.scrollTop=jlog.scrollHeight;}
   // 內頁連結自動帶 ?from=help → 對方頁面右下角的鈕會變成「← 回小幫手」
   function withFrom(h){
     if(/^(https?:|tel:|mailto:)/.test(h)) return h;
