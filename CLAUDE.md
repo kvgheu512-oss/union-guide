@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  5a04ae9 幹部專用密碼解鎖狀態(union_panel_unlocked)全面改用localStorage記憶，同裝置重開瀏覽器免重輸(原本用sessionStorage，每次重開都要重新輸入)，影響union/roster/meeting/gongwen/plan/jianshi/activity.html共用的幹部密碼閘門
+  3b5ad57 自動更新 CLAUDE.md 最近進度（Stop hook）
   3266cce 互動導覽(nav.html)新增「📋 我的待辦」：選好自己是哪位幹部後，自動抓年度工作計畫(workplan.html)裡負責人對到自己的項目顯示出來，不用重複維護一份任務清單；沒有指派項目時顯示空狀態提示
   069aedf 自動更新 CLAUDE.md 最近進度（Stop hook）
   9b39c6f 自動更新 CLAUDE.md 最近進度（Stop hook）
-  ff8542d 自動更新 CLAUDE.md 最近進度（Stop hook）
-  eb1ace4 章程頁「③ 成立大會議事程序草案」新增現場/會前填空工具：日期地點已依實際成立大會資訊(115/8/30 下午2時 耀嵩豐)預填；出席人數、發起人數(自動算2/3門檻)、主席、章程/入會費月費表決結果、理監事名額與當選名單、理事長互推結果等全部欄位皆可輸入並自動存本機，範本文字即時套用，複製按鈕會抓到填好的版本
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
