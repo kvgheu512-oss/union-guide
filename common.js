@@ -227,3 +227,73 @@
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", build); else build();
 })();
+
+/* ⑧ 開會前1小時彈窗提醒：讀 org.js 發布的會議資訊（prep/found）。只在「開會前1小時」～「會議結束」
+   這段期間進站才會跳出提醒＋「立即加入會議」按鈕；其他時間完全不彈。會議一結束（就算彈窗還開著）
+   也會自動收回。同一場會議每個瀏覽session只彈一次，不會每頁狂彈。沒載 org.js 的頁面靜靜跳過。 */
+(function(){
+  function parseROCDate(s){
+    if(!s) return null;
+    var p=String(s).split("/"); if(p.length<3) return null;
+    var y=parseInt(p[0],10)+1911, m=parseInt(p[1],10)-1, d=parseInt(p[2],10);
+    if(isNaN(y)||isNaN(m)||isNaN(d)) return null;
+    return {y:y,m:m,d:d};
+  }
+  function parseTimes(s){
+    var out=[]; if(!s) return out;
+    var re=/(\d{1,2}):(\d{2})/g, mm;
+    while((mm=re.exec(s))){ out.push({h:parseInt(mm[1],10), mi:parseInt(mm[2],10)}); }
+    return out;
+  }
+  function meetingWindow(dateStr,timeStr){
+    var dp=parseROCDate(dateStr); if(!dp) return null;
+    var times=parseTimes(timeStr); if(!times.length) return null;
+    var start=new Date(dp.y,dp.m,dp.d,times[0].h,times[0].mi,0,0);
+    var end = times[1] ? new Date(dp.y,dp.m,dp.d,times[1].h,times[1].mi,0,0) : new Date(start.getTime()+2*60*60*1000);
+    return {start:start,end:end};
+  }
+  function show(label,m,endMs){
+    if(document.getElementById("ebnMeetPop")) return;
+    var url=(m.url||"").trim();
+    var d=document.createElement("div"); d.id="ebnMeetPop"; d.className="noprint";
+    d.style.cssText="position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1.2rem;font-family:'Noto Sans TC',system-ui,sans-serif;";
+    d.innerHTML="<div style='background:#fff;border-radius:16px;max-width:340px;width:100%;padding:1.5rem 1.3rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)'>"
+      +"<div style='font-size:32px;margin-bottom:6px'>⏰</div>"
+      +"<div style='font-weight:700;font-size:17px;color:#1A3A6B;margin-bottom:6px'>"+label+"即將開始</div>"
+      +"<div style='font-size:13.5px;color:#555;line-height:1.8;margin-bottom:14px'>"+(m.date||"")+" "+(m.time||"")+"<br>"+(m.place||"")+"</div>"
+      +(url
+        ? "<a href='"+url+"' target='_blank' rel='noopener' style='display:block;background:#1A7A4A;color:#fff;text-decoration:none;font-weight:700;padding:.8rem;border-radius:10px;margin-bottom:8px'>🟢 立即加入會議</a>"
+        : "<div style='font-size:12.5px;color:#7B1818;background:#FDECEA;border-radius:10px;padding:.6rem .8rem;margin-bottom:8px'>會議連結尚未設定，請洽幹部</div>")
+      +"<button id='ebnMeetPopX' style='background:#EEF1F4;color:#444;border:0;border-radius:10px;padding:.6rem;width:100%;font-weight:700;cursor:pointer'>稍後</button>"
+      +"</div>";
+    document.body.appendChild(d);
+    var x=document.getElementById("ebnMeetPopX");
+    if(x) x.addEventListener("click",function(){ d.remove(); });
+    d.addEventListener("click",function(e){ if(e.target===d) d.remove(); });
+    // 會議一結束就算彈窗還開著也自動收回
+    var ms=endMs-Date.now(); if(ms>0) setTimeout(function(){ var el=document.getElementById("ebnMeetPop"); if(el) el.remove(); }, ms);
+  }
+  function check(){
+    if(!window.EBNOrg || !document.body) return;
+    var mt; try{ mt=EBNOrg.publicData().meet||{}; }catch(e){ return; }
+    var labels={found:"成立大會", prep:"發起人會議"};
+    var order=["found","prep"];   // 成立大會優先
+    var existing=document.getElementById("ebnMeetPop");
+    for(var i=0;i<order.length;i++){
+      var k=order[i], m=mt[k]; if(!m||!m.date) continue;
+      var w=meetingWindow(m.date,m.time); if(!w) continue;
+      var now=new Date(), before1h=new Date(w.start.getTime()-60*60*1000);
+      if(now>=before1h && now<=w.end){
+        var key="ebn_meetpopup_"+k+"_"+m.date;
+        var shown=false; try{ shown=sessionStorage.getItem(key)==="1"; }catch(e){}
+        if(!shown){ show(labels[k],m,w.end.getTime()); try{ sessionStorage.setItem(key,"1"); }catch(e){} }
+        return;
+      }
+    }
+    // 不在任何會議的「前1小時～結束」區間內：確保彈窗不會殘留
+    if(existing) existing.remove();
+  }
+  document.addEventListener("ebnorg:public", check);
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", check); else check();
+  setInterval(check, 60000);   // 每分鐘複查一次，確保時間到了會準時彈出、結束了會準時收回
+})();

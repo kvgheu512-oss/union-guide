@@ -179,7 +179,37 @@
     try{ var a = JSON.parse(localStorage.getItem(STEP_KEY)); if(Array.isArray(a)) return a; }catch(e){}
     return STEPS.map(function(){return false;});
   }
-  function saveSteps(a){ try{ localStorage.setItem(STEP_KEY, JSON.stringify(a)); }catch(e){} }
+  /* 存檔並「讀回來驗證」有沒有真的存進去；Brave／無痕模式常常允許 setItem 執行卻不會真的留住。
+     存失敗就顯示明顯警告，不要默默失敗讓使用者以為存了、其實沒存。 */
+  function saveSteps(a){
+    var ok=false;
+    try{
+      localStorage.setItem(STEP_KEY, JSON.stringify(a));
+      var back = JSON.parse(localStorage.getItem(STEP_KEY)||"null");
+      ok = Array.isArray(back) && JSON.stringify(back)===JSON.stringify(a);
+    }catch(e){ ok=false; }
+    try{ idbSetK(STEP_KEY, a); }catch(e){}   // 備援存放：localStorage之外多存一份
+    showSaveWarn(!ok);
+    return ok;
+  }
+  var _idbDb=null;
+  function idbOpen2(){ return new Promise(function(res){ try{
+    var r=indexedDB.open("union_prep_db",1);
+    r.onupgradeneeded=function(e){ var d=e.target.result; if(!d.objectStoreNames.contains("kv")) d.createObjectStore("kv"); };
+    r.onsuccess=function(e){ _idbDb=e.target.result; res(_idbDb); };
+    r.onerror=function(){ res(null); };
+  }catch(e){ res(null); } }); }
+  function idbSetK(k,v){ return idbOpen2().then(function(db){ if(!db) return; return new Promise(function(res){ var tx=db.transaction("kv","readwrite"); tx.objectStore("kv").put(v,k); tx.oncomplete=function(){res();}; tx.onerror=function(){res();}; }); }); }
+  function idbGetK(k){ return idbOpen2().then(function(db){ if(!db) return null; return new Promise(function(res){ var tx=db.transaction("kv","readonly"); var g=tx.objectStore("kv").get(k); g.onsuccess=function(){res(g.result||null);}; g.onerror=function(){res(null);}; }); }); }
+  function showSaveWarn(bad){
+    var el=document.getElementById("savewarn");
+    if(!el){ el=document.createElement("div"); el.id="savewarn";
+      el.style.cssText="display:none;background:#FDECEA;border:1px solid #F5C6C0;border-radius:12px;padding:.7rem .9rem;font-size:12.8px;color:#7B1818;line-height:1.7;margin-bottom:12px";
+      el.innerHTML="⚠️ <b>勾選存不進去！</b>這台瀏覽器擋掉了本機儲存（常見於 Brave／無痕模式／App內建瀏覽器）。請改用<b>手機內建瀏覽器</b>（不是LINE/FB內開）、或把本站加入 Brave 的「不清除」例外，不然勾選會在你離開後消失。";
+      var main=document.querySelector("main"); if(main) main.insertBefore(el, main.firstChild);
+    }
+    el.style.display = bad ? "block" : "none";
+  }
   function getStatus(){
     try{ var s = JSON.parse(localStorage.getItem(STATUS_KEY)); if(s && s.status==="official") return s; }catch(e){}
     return null;
@@ -452,6 +482,16 @@
   updateProgress();
   renderUnlock();
   updateBadge();
+
+  // localStorage 是空的（沒勾過或被清空）→ 試從 IndexedDB 備援還原，防裝置清空/無痕清資料
+  if(state.every(function(v){return !v;})){
+    idbGetK(STEP_KEY).then(function(bak){
+      if(Array.isArray(bak) && bak.length===STEPS.length && bak.some(function(v){return v;})){
+        state=bak.slice(); try{ localStorage.setItem(STEP_KEY, JSON.stringify(state)); }catch(e){}
+        renderSteps(); updateProgress(); renderUnlock();
+      }
+    });
+  }
 })();
 </script>
 <script src="photocap.js" defer></script>
