@@ -83,6 +83,13 @@
   .person-hd .av.r-all{background:var(--navy);}
   .person-hd .pn{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;}
   .person-hd .pr{font-size:12.5px;color:#5C4000;margin-top:3px;}
+  .todo-box{background:#fff;border:1.5px solid var(--navy);border-radius:14px;padding:.9rem 1rem;margin-bottom:1rem;}
+  .todo-box .tt{font-family:'Noto Serif TC',serif;font-weight:700;font-size:14.5px;color:var(--navy);margin-bottom:.5rem;}
+  .todo-item{display:flex;gap:8px;padding:.5rem 0;border-bottom:1px solid #F0EEEA;font-size:13px;}
+  .todo-item:last-child{border-bottom:none;}
+  .todo-item .tc{flex-shrink:0;background:var(--gold-light);color:#7A5800;border-radius:8px;padding:1px 7px;font-size:11px;font-weight:700;white-space:nowrap;}
+  .todo-item .tp{flex-shrink:0;color:var(--ink-soft);font-size:11px;white-space:nowrap;}
+  .todo-empty{font-size:12.5px;color:var(--ink-soft);}
   .vtag{display:inline-block;font-size:11px;color:#fff;background:#5B3B8C;border-radius:10px;padding:1px 8px;margin-left:6px;font-weight:700;vertical-align:middle;white-space:nowrap;}
   .vtag.r-chair{background:var(--red);} .vtag.r-fin{background:var(--green);} .vtag.r-sup{background:#2E5C8A;} .vtag.r-doc{background:var(--gold);} .vtag.r-wel{background:#7A4F9D;} .vtag.r-all{background:#5B3B8C;}
 </style>
@@ -173,6 +180,7 @@
   <div id="s-person" hidden>
     <button class="back-btn" onclick="goBack('s-cadre')">‹ 換人</button>
     <div class="person-hd" id="person-hd"></div>
+    <div id="person-todo"></div>
     <div class="cards" id="person-cards"></div>
     <p class="mem-note">已記住你的身份，下次直接到這裡。<button onclick="clearMem()">清除記憶</button></p>
   </div>
@@ -196,7 +204,7 @@
 var NAV_KEY = 'union_nav_pref_v1';
 
 var CADRES = [
-  { key:'chair', name:'楊淯涵', role:'理事長', av:'長', cls:'r-chair',
+  { key:'chair', name:'楊淯涵', role:'理事長', av:'長', cls:'r-chair', nick:['淯涵','理事長'],
     desc:'綜理會務 · 對外代表 · 召集會議',
     links:[
       {ci:'📋', ct:'幹部功能表', cd:'所有工具總覽', href:'union.html', cl:'nv'},
@@ -208,7 +216,7 @@ var CADRES = [
       {ci:'🏗', ct:'籌備進度 & 書表', cd:'逐步勾選、連署→成立→登記', href:'founding.html', cl:'rd'},
     ]
   },
-  { key:'fin', name:'莊瑋聆', role:'總務', av:'財', cls:'r-fin',
+  { key:'fin', name:'莊瑋聆', role:'總務', av:'財', cls:'r-fin', nick:['瑋聆'],
     desc:'年度預算 · 收支記帳 · 決算',
     links:[
       {ci:'💰', ct:'透明帳本', cd:'收支登錄、分類統計', href:'finance.html', cl:'gr'},
@@ -219,7 +227,7 @@ var CADRES = [
       {ci:'📄', ct:'公文產生器', cd:'催繳會費、函請補助範本填空即成', href:'gongwen.html', cl:'rd'},
     ]
   },
-  { key:'fin2', name:'蔣雅', role:'總務', av:'財', cls:'r-fin',
+  { key:'fin2', name:'蔣雅', role:'總務', av:'財', cls:'r-fin', nick:['蔣雅'],
     desc:'年度預算 · 收支記帳 · 決算',
     links:[
       {ci:'💰', ct:'透明帳本', cd:'收支登錄、分類統計', href:'finance.html', cl:'gr'},
@@ -230,7 +238,7 @@ var CADRES = [
       {ci:'📄', ct:'公文產生器', cd:'催繳會費、函請補助範本填空即成', href:'gongwen.html', cl:'rd'},
     ]
   },
-  { key:'doc', name:'巫佳容', role:'法規', av:'法', cls:'r-doc',
+  { key:'doc', name:'巫佳容', role:'法規', av:'法', cls:'r-doc', nick:['小巫'],
     desc:'章程 · 申報 · 法規諮詢 · 會員服務',
     links:[
       {ci:'🗂️', ct:'會員服務案件台', cd:'會員問題登記、時效到期一目了然', href:'cases.html', cl:'nv'},
@@ -243,7 +251,7 @@ var CADRES = [
       {ci:'🏗', ct:'籌備進度 & 書表', cd:'申報籌備、登記流程', href:'founding.html', cl:'rd'},
     ]
   },
-  { key:'doc2', name:'葉柏宏', role:'法規', av:'法', cls:'r-doc',
+  { key:'doc2', name:'葉柏宏', role:'法規', av:'法', cls:'r-doc', nick:['柏宏'],
     desc:'章程 · 申報 · 法規諮詢 · 會員服務',
     links:[
       {ci:'🗂️', ct:'會員服務案件台', cd:'會員問題登記、時效到期一目了然', href:'cases.html', cl:'nv'},
@@ -256,7 +264,7 @@ var CADRES = [
       {ci:'🏗', ct:'籌備進度 & 書表', cd:'申報籌備、登記流程', href:'founding.html', cl:'rd'},
     ]
   },
-  { key:'wel', name:'黃淑姸', role:'文宣', av:'宣', cls:'r-wel',
+  { key:'wel', name:'黃淑姸', role:'文宣', av:'宣', cls:'r-wel', nick:['妍妍'],
     desc:'文宣 · 社群 · 形象設計',
     links:[
       {ci:'🏠', ct:'工會首頁', cd:'對外說明、連署入口', href:'index.html', cl:'gr'},
@@ -266,7 +274,7 @@ var CADRES = [
       {ci:'🏗', ct:'籌備進度', cd:'目前走到哪一步', href:'founding.html', cl:'rd'},
     ]
   },
-  { key:'sup', name:'陳依婷', role:'監事', av:'監', cls:'r-sup',
+  { key:'sup', name:'陳依婷', role:'監事', av:'監', cls:'r-sup', nick:['陳依婷'],
     desc:'財務稽核 · 會議監察 · 申訴',
     links:[
       {ci:'💰', ct:'透明帳本（稽核）', cd:'查閱收支、核對憑證', href:'finance.html', cl:'gr'},
@@ -380,7 +388,40 @@ function choosePerson(key){
       +'</a>';
   }).join('');
 
+  renderTodo(c);
   show('s-person');
+}
+
+/* 📋 我的待辦：抓 workplan.html 的年度工作計畫表，篩出「負責人」對到這位幹部的項目。
+   單一資料源仍是 workplan.html 那張表，這裡只是抓來過濾顯示，不重複維護一份資料。 */
+var _todoCache=null;
+function renderTodo(c){
+  var box=document.getElementById('person-todo'); if(!box) return;
+  if(!c.nick || !c.nick.length || c.full){ box.innerHTML=''; return; }
+  box.innerHTML='<div class="todo-box"><div class="tt">📋 我的待辦（年度工作計畫）</div><div class="todo-empty">讀取中…</div></div>';
+  var p = _todoCache ? Promise.resolve(_todoCache) : fetch('workplan.html').then(function(r){return r.text();}).then(function(html){ _todoCache=html; return html; });
+  p.then(function(html){
+    var doc=new DOMParser().parseFromString(html,'text/html');
+    var rows=Array.prototype.slice.call(doc.querySelectorAll('table tr')).slice(1); // 略過標題列
+    var mine=rows.map(function(tr){
+      var td=tr.querySelectorAll('td');
+      if(td.length<6) return null;
+      return { item:td[1].textContent.trim(), cat:td[2].textContent.trim(), period:td[3].textContent.trim(), owner:td[4].textContent.trim() };
+    }).filter(function(r){ return r && c.nick.indexOf(r.owner)>=0; });
+    renderTodoList(mine);
+  }).catch(function(){
+    box.innerHTML='';
+  });
+}
+function renderTodoList(mine){
+  var box=document.getElementById('person-todo'); if(!box) return;
+  if(!mine.length){ box.innerHTML='<div class="todo-box"><div class="tt">📋 我的待辦（年度工作計畫）</div><div class="todo-empty">目前工作計畫表裡沒有指派給你的項目。</div></div>'; return; }
+  box.innerHTML='<div class="todo-box"><div class="tt">📋 我的待辦（年度工作計畫，共 '+mine.length+' 項）</div>'
+    +mine.map(function(m){
+      return '<div class="todo-item"><span class="tc">'+m.cat+'</span><span class="tp">'+m.period+'</span><span>'+m.item+'</span></div>';
+    }).join('')
+    +'<div style="font-size:11px;color:var(--ink-soft);margin-top:.5rem">資料來自「年度工作計畫」，要調整期程/項目請到 <a href="workplan.html" style="color:var(--navy)">workplan.html</a> 改。</div>'
+    +'</div>';
 }
 
 function goBack(to){
