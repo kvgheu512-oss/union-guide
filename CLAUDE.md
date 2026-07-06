@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  50f0add 幹部通行碼輸入框加 lang="en" 提示手機鍵盤預設英文小寫；收據場地費/臨時會議室快選標籤可直接帶入金額(1000/30，欄位空的才帶)；經辦人欄位改為可下拉快選幹部名單(同步org.js)也能手動輸入
+  15c389d 自動更新 CLAUDE.md 最近進度（Stop hook）
   216a645 自動更新 CLAUDE.md 最近進度（Stop hook）
   308ae65 自動更新 CLAUDE.md 最近進度（Stop hook）
   0169a4c 自動更新 CLAUDE.md 最近進度（Stop hook）
-  11f999f 自動更新 CLAUDE.md 最近進度（Stop hook）
-  87a9ead 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
