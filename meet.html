@@ -172,7 +172,7 @@ const MEET_URL = {
     var a=$("join-"+k), l=$("lnk-"+k);
     if(url){
       if(a){ a.href=url; a.textContent="🟢 進入 Google Meet（"+labels[k]+"）"; a.style.opacity="1"; }
-      if(l) l.textContent=url;
+      if(l) l.innerHTML='<a href="'+url+'" target="_blank" rel="noopener" style="color:var(--green-deep);font-weight:700;text-decoration:underline">🔗 一鍵進入會議</a>';
     } else {
       // 還沒設定連結：按鈕帶到 Google Meet 首頁，並清楚說明
       if(a){ a.href="https://meet.google.com/"; a.textContent="📅 當天連結看 LINE 群組（幹部點此開會議）"; a.style.background="#8A8F94"; }
