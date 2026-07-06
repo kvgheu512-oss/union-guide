@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-06
 
 最近 commits：
+  0dc4cf4 自動更新 CLAUDE.md 最近進度（Stop hook）
   14600b0 自動更新 CLAUDE.md 最近進度（Stop hook）
   83491d6 修正Service Worker在部分App內建瀏覽器（LINE等）可能造成整頁空白的嚴重問題：caches.match/caches.open在部分WebView環境的Cache Storage API不穩定甚至會拋例外，先前寫法沒接住例外會導致fetch事件的Promise直接reject，瀏覽器將該次導覽視為網路錯誤，實測會讓子頁面整片空白；現在每一步都加上try/catch防護，任何快取操作失敗一律安全退回直接fetch，不會再讓錯誤外洩導致頁面打不開 版本 2026070601
   299cd01 自動更新 CLAUDE.md 最近進度（Stop hook）
   0c4eccb 自動更新 CLAUDE.md 最近進度（Stop hook）
-  f88e203 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
