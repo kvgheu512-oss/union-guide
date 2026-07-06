@@ -434,13 +434,15 @@ function render(){
     const sub=[m.dept,m.title,m.no].filter(Boolean).map(esc).join('　');
     const feeTxt=m.status==='active'?`<span class="pill fee ${owe?'owe':''}">${owe?'欠費':'會費'+(m.feeTo?' 至 '+m.feeTo:'正常')}</span>`:'';
     const approve=m.status==='applicant'?`<button class="ok" data-act="approve" data-id="${m.id}">✓ 核准入會</button>`:'';
+    const pending=m.status==='applicant';
+    const typePill=`<span class="pill type ${(m.type==='sponsor'||pending)?'sponsor':''}">${pending?'申請中／擬：':''}${m.type==='sponsor'?'贊助會員':'正式會員'}</span>`;
+    const statusPill=`<span class="pill st s-${m.status}">${STATUS[m.status]}</span>`;
     return `<div class="m s-${m.status}">
       <div class="m-top"><span class="m-name">${esc(m.name||'(未命名)')}</span></div>
       ${sub?`<div class="m-sub">${sub}</div>`:''}
       <div class="m-pills">
-        <span class="pill type ${m.type==='sponsor'?'sponsor':''}">${m.type==='sponsor'?'贊助會員':'正式會員'}</span>
+        ${pending?statusPill+typePill:typePill+statusPill}
         ${m.pubOfficial?'<span class="pill" style="background:#FDECEA;color:#7B1818">🏛 公職</span>':''}
-        <span class="pill st s-${m.status}">${STATUS[m.status]}</span>
         ${feeTxt}
         ${m.phone?`<span class="pill" style="background:#EEF1F4;color:#444">📞 ${esc(m.phone)}</span>`:''}
       </div>
