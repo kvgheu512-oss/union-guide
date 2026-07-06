@@ -38,7 +38,11 @@ self.addEventListener("fetch", e => {
   // 網頁與「核心程式碼」：網路優先 ＋「逾時退快取」。先抓網路（快就用最新、改了立刻看得到）；
   // 但網路超過 ~1.2 秒就先秒開快取版（避免 4G 慢時整頁卡 3-5 秒），網路回來仍背景更新快取。
   // ver.txt 永不攔（上方已 return）→ 版本檢查照常偵測新版、跳更新橫幅，所以不會「更新不掉」。
+  // ⚠️ 光看 req.mode==="navigate" 只認得到「使用者直接導覽」；頁面內用 fetch() 讀別頁 HTML（例如
+  // nav.html 抓 workplan.html 來即時解析表格）不會是 navigate，之前漏了這種情況、導致抓到舊快取。
+  // 所以「.html 全部」都算網頁、一律網路優先，不再只看 navigate/document。
   const fresh = req.mode === "navigate" || req.destination === "document"
+    || /\.html$/.test(url.pathname)
     || /(^|\/)(version|common|law-tips|finance-law)\.js$/.test(url.pathname)
     || /(^|\/)common\.css$/.test(url.pathname);
   // ⚠️ 防禦：部分內建瀏覽器（LINE等App內嵌WebView）的 Cache Storage API 可能整個不可用或會拋例外；

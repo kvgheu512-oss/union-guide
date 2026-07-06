@@ -408,17 +408,19 @@ function renderTodo(c){
   var box=document.getElementById('person-todo'); if(!box) return;
   if(!c.nick || !c.nick.length || c.full){ box.innerHTML=''; return; }
   box.innerHTML='<div class="todo-box"><div class="tt">📋 我的待辦（年度工作計畫）</div><div class="todo-empty">讀取中…</div></div>';
-  var p = _todoCache ? Promise.resolve(_todoCache) : fetch('workplan.html').then(function(r){return r.text();}).then(function(html){ _todoCache=html; return html; });
+  var p = _todoCache ? Promise.resolve(_todoCache) : fetch('workplan.html?_cb='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(html){ _todoCache=html; return html; });
   p.then(function(html){
     var doc=new DOMParser().parseFromString(html,'text/html');
     var rows=Array.prototype.slice.call(doc.querySelectorAll('table tr')).slice(1); // 略過標題列
     var done=wpDone();
-    var mine=rows.map(function(tr){
+    var parsed=rows.map(function(tr){
       var td=tr.querySelectorAll('td');
       if(td.length<7) return null;
       var idx=parseInt(td[1].textContent.trim(),10);
       return { idx:idx, item:td[2].textContent.trim(), cat:td[3].textContent.trim(), period:td[4].textContent.trim(), owner:td[5].textContent.trim(), href:tr.getAttribute('data-href')||'' };
-    }).filter(function(r){ return r && c.nick.indexOf(r.owner)>=0 && !done[r.idx-1]; });
+    }).filter(Boolean);
+    if(rows.length && !parsed.length){ box.innerHTML='<div class="todo-box"><div class="tt">📋 我的待辦（年度工作計畫）</div><div class="todo-empty">⚠️ 讀不到最新的工作計畫表（可能是快取問題），重新整理這頁看看。</div></div>'; return; }
+    var mine=parsed.filter(function(r){ return c.nick.indexOf(r.owner)>=0 && !done[r.idx-1]; });
     renderTodoList(mine);
   }).catch(function(){
     box.innerHTML='';
