@@ -126,7 +126,7 @@
     </div>
     <div class="row">
       <div><label>日期</label><input id="fDate" type="date"></div>
-      <div><label>經辦人</label><input id="fHandler" placeholder="你的名字"></div>
+      <div><label>經辦人</label><input id="fHandler" list="handlerList" placeholder="你的名字或幹部名單快選" autocomplete="off"><datalist id="handlerList"></datalist></div>
     </div>
     <label>付款方式</label>
     <div class="seg">
@@ -164,7 +164,7 @@ const OUT_CATS=["人事費","辦公費","事業費","雜項購置","特別費","
 const CHIPS=[
   ["文具用品","辦公費"],["影印／印刷","辦公費"],["刻印章","辦公費"],
   ["郵資／掛號","辦公費"],["水電／網路","辦公費"],["修繕","辦公費"],
-  ["會議／活動","事業費"],["場地費（約1000元/3小時，請填總金額）","事業費"],["臨時會議室（約30元/小時，請填總金額）","事業費"],["講師／勞工教育","事業費"],["會員福利","事業費"],
+  ["會議／活動","事業費"],["場地費（約1000元/3小時，請填總金額）","事業費",1000],["臨時會議室（約30元/小時，請填總金額）","事業費",30],["講師／勞工教育","事業費"],["會員福利","事業費"],
   ["設備購置","雜項購置"],["捐贈","特別費"],["其他","其他支出"]
 ];
 let curPay='cash', photo=null; // photo={dataURL,w,h}
@@ -233,10 +233,14 @@ function renderChips(){
 function pickChip(i){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
   document.querySelector(`.chip[data-i="${i}"]`).classList.add('on');
-  const [label,cat]=CHIPS[i];
+  const [label,cat,amt]=CHIPS[i];
   const sum=document.getElementById('fSum');
   if(!sum.value.trim()) sum.value=label;
   document.getElementById('fCat').value=cat;
+  if(amt!=null){
+    const amtEl=document.getElementById('fAmt');
+    if(!amtEl.value.trim()){ amtEl.value=amt; liveCheck(); }
+  }
   if(label==='其他'){ sum.focus(); sum.select(); }  // 「其他」點下去直接反白選字，方便使用者直接打字覆蓋、寫清楚是什麼
 }
 ['fAmt'].forEach(id=>document.addEventListener('input',e=>{if(e.target.id==='fAmt')liveCheck();}));
@@ -357,9 +361,20 @@ function exportCSV(){
 })();
 
 </script>
+<script src="org.js" defer></script>
 <script src="law-tips.js" defer></script>
 <script src="tour.js" defer></script>
 <script>
+document.addEventListener("DOMContentLoaded",function(){
+  if(!window.EBNOrg) return;
+  var dl=document.getElementById('handlerList'); if(!dl) return;
+  var seen={}, opts='';
+  EBNOrg.CADRE_ROLES.forEach(function(r){
+    var name=EBNOrg.cadreName(r[0]);
+    if(name && !seen[name]){ seen[name]=1; opts+='<option value="'+esc(name)+'">'+esc(r[1])+'</option>'; }
+  });
+  dl.innerHTML=opts;
+});
 window.addEventListener("load",function(){ if(window.EBNTour) EBNTour.attach([
     { sel:"#shootBox", title:"拍單據記一筆", text:"有支出嗎？這裡拍張單據、填上金額和用途，馬上記好一筆，可以存檔留底。" },
     { sel:"#rlist", title:"匯出給帳本", text:"收會費、報帳都用得上。記好的單據在這裡，可以一次匯出給財務幹部入帳本。" }
