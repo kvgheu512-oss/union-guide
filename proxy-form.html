@@ -118,9 +118,11 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
     <h2>✅ 委託書已完成</h2>
     <p id="doneMsg"></p>
     <div>
-      <button class="btn-print" onclick="window.print()">🖨 列印 / 存 PDF</button>
+      <button class="btn-print" onclick="window.print();if(window.__proxyMarkSent)window.__proxyMarkSent();">🖨 列印 / 存 PDF</button>
+      <button class="btn-print" id="btnShareNative" style="display:none">📲 用 LINE／訊息傳送提醒</button>
       <button class="btn-again" id="btnAgain">再填一份</button>
     </div>
+    <div id="shareWarn" style="display:none;font-size:12px;color:#E65100;margin-top:.6rem;font-weight:700">⚠️ 尚未截圖／傳送委託書給幹部，離開頁面前請先處理，否則資料只留在這支手機</div>
   </div>
 
   <!-- 列印專用 -->
@@ -247,6 +249,24 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
     };
     EBNSign.saveLog(rec);
     submitted=true;
+    var sentToCadre=false;
+    function markSent(){ sentToCadre=true; document.getElementById('shareWarn').style.display='none'; }
+    window.__proxyMarkSent=markSent;
+    document.getElementById('shareWarn').style.display='block';
+
+    if(navigator.share){
+      var btnNative=document.getElementById('btnShareNative');
+      btnNative.style.display='inline-block';
+      btnNative.onclick=function(){
+        navigator.share({title:'委託書－'+name, text:'委託書：委託人 '+name+'，受委託人 '+proxy+'，會議「'+meeting+'」。請附上簽名截圖或列印本傳給幹部留存。'})
+          .then(markSent)
+          .catch(function(){ /* 使用者取消分享，不視為已傳送 */ });
+      };
+    }
+
+    window.addEventListener('beforeunload', function(e){
+      if(submitted && !sentToCadre){ e.preventDefault(); e.returnValue=''; return ''; }
+    });
 
     document.getElementById('p-orgName').textContent=orgName;
     document.getElementById('p-meeting').textContent=meeting;

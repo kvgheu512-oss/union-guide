@@ -175,9 +175,11 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
   <div id="shareBox" style="display:none">
     <div class="share-box">
       <div style="font-weight:700;font-size:14px;color:#1B5E20;margin-bottom:.3rem">📤 傳給法規組幹部</div>
-      <div style="font-size:12px;color:#2E7D32;line-height:1.6;margin-bottom:.5rem">複製下方連結，透過 LINE 傳給幹部即可自動匯入（簽名文件另外截圖或列印附上）</div>
+      <div style="font-size:12px;color:#2E7D32;line-height:1.6;margin-bottom:.5rem">按下方按鈕直接用 LINE／訊息傳出，幹部點連結即可自動匯入（簽名文件另外截圖或列印附上）</div>
       <div class="share-url" id="shareUrl"></div>
+      <button id="btnShareNative" style="display:none;width:100%;background:var(--green);color:#fff;border:0;border-radius:8px;padding:.55rem;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:.4rem">📲 用 LINE／訊息傳送</button>
       <button id="btnCopyShare" style="display:block;width:100%;background:var(--green);color:#fff;border:0;border-radius:8px;padding:.55rem;font-size:14px;font-weight:700;cursor:pointer">📋 複製連結</button>
+      <div id="shareWarn" style="display:none;font-size:12px;color:#E65100;margin-top:.6rem;font-weight:700">⚠️ 尚未傳給幹部，請先傳送連結或截圖，否則離開頁面資料只留在這支手機</div>
     </div>
   </div>
 
@@ -185,7 +187,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     <h2>🎉 申請已完成</h2>
     <p id="doneMsg"></p>
     <div>
-      <button class="btn-print" onclick="window.print()">🖨 列印 / 存 PDF</button>
+      <button class="btn-print" onclick="window.print();if(window.__joinMarkSent)window.__joinMarkSent();">🖨 列印 / 存 PDF</button>
       <button class="btn-again" id="btnAgain">再填一份</button>
     </div>
   </div>
@@ -382,6 +384,9 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     };
     EBNSign.saveLog(rec);
     submitted=true;
+    var sentToCadre=false;
+    function markSent(){ sentToCadre=true; document.getElementById('shareWarn').style.display='none'; }
+    window.__joinMarkSent=markSent;
 
     // 產生分享連結（不含簽名圖，文字資料給幹部匯入）
     var shareRec={name:name,empid:empid,memberType:memberType,
@@ -392,11 +397,26 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     var url=base+'member-manage.html#import='+enc;
     document.getElementById('shareUrl').textContent=url;
     document.getElementById('shareBox').style.display='block';
+    document.getElementById('shareWarn').style.display='block';
+
+    if(navigator.share){
+      var btnNative=document.getElementById('btnShareNative');
+      btnNative.style.display='block';
+      btnNative.onclick=function(){
+        navigator.share({title:'入會申請－'+name, text:'入會申請書資料（'+name+'），請點連結匯入，簽名文件另外截圖或列印附上：', url:url})
+          .then(markSent)
+          .catch(function(){ /* 使用者取消分享，不視為已傳送 */ });
+      };
+    }
     document.getElementById('btnCopyShare').onclick=function(){
       var el=document.getElementById('shareUrl');
-      if(navigator.clipboard){ navigator.clipboard.writeText(el.textContent).then(function(){ toast('✅ 連結已複製，貼給幹部即可','#1B5E20'); }); }
-      else{ var ta=document.createElement('textarea');ta.value=el.textContent;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); toast('✅ 連結已複製','#1B5E20'); }
+      if(navigator.clipboard){ navigator.clipboard.writeText(el.textContent).then(function(){ toast('✅ 連結已複製，貼給幹部即可','#1B5E20'); markSent(); }); }
+      else{ var ta=document.createElement('textarea');ta.value=el.textContent;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); toast('✅ 連結已複製','#1B5E20'); markSent(); }
     };
+
+    window.addEventListener('beforeunload', function(e){
+      if(submitted && !sentToCadre){ e.preventDefault(); e.returnValue=''; return ''; }
+    });
 
     document.getElementById('p-orgName').textContent=orgName;
     document.getElementById('p-orgName2').textContent=orgName;
