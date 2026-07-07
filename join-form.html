@@ -113,9 +113,16 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
         <input id="f-phone" type="tel" placeholder="09xx-xxxxxx" inputmode="tel">
       </div>
       <div>
-        <label>Email</label>
-        <input id="f-email" type="email" placeholder="xxx@gmail.com" inputmode="email">
+        <label>LINE ID</label>
+        <input id="f-line" placeholder="你的LINE ID" autocapitalize="off" autocorrect="off" spellcheck="false">
       </div>
+    </div>
+
+    <label>Email</label>
+    <input id="f-email" type="email" placeholder="xxx@gmail.com" inputmode="email">
+
+    <div class="hint" style="background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:.5rem .7rem;margin-top:.4rem;color:#7A5800">
+      ⚠️ 手機／LINE ID／Email 請務必<b>檢查一遍再送出</b>——這是幹部唯一能聯絡到你、通知入會結果的方式，填錯就聯繫不上你了。
     </div>
 
     <label>申請日期</label>
@@ -292,6 +299,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
       title:document.getElementById('f-title').value.trim(),
       dept:document.getElementById('f-dept').value.trim(),
       phone:document.getElementById('f-phone').value.trim(),
+      lineId:document.getElementById('f-line').value.trim(),
       email:document.getElementById('f-email').value.trim(),
       date:document.getElementById('f-date').value,
       sig:sigUrl, ts:ts, org:orgName
@@ -301,7 +309,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
 
     // 產生分享連結（不含簽名圖，文字資料給幹部匯入）
     var shareRec={name:name,empid:empid,memberType:memberType,
-      title:rec.title,dept:rec.dept,phone:rec.phone,email:rec.email,
+      title:rec.title,dept:rec.dept,phone:rec.phone,lineId:rec.lineId,email:rec.email,
       date:rec.date,ts:ts,org:orgName};
     var enc=btoa(unescape(encodeURIComponent(JSON.stringify(shareRec))));
     var base=location.href.replace(/join-form\.html.*/,'');

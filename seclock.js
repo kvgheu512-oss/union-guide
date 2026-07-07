@@ -27,6 +27,17 @@
   function normCode(c){return (c||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
   function $(id){return document.getElementById(id);}
 
+  /* 🛟 IndexedDB 備援：localStorage 被清空（Brave／無痕模式常見）時，加密內容還能從這裡救回來。
+     存的一樣是密文信封，不影響加解密安全性，純粹多一個「不怕裝置清空」的副本。 */
+  function idbOpen(){ return new Promise(function(res){ try{
+    var r=indexedDB.open("seclock_db",1);
+    r.onupgradeneeded=function(e){ var d=e.target.result; if(!d.objectStoreNames.contains("kv")) d.createObjectStore("kv"); };
+    r.onsuccess=function(e){ res(e.target.result); };
+    r.onerror=function(){ res(null); };
+  }catch(e){ res(null); } }); }
+  function idbBackup(envelope){ idbOpen().then(function(db){ if(!db) return; try{ var tx=db.transaction("kv","readwrite"); tx.objectStore("kv").put(envelope, ENC); }catch(e){} }); }
+  function idbRestore(){ return idbOpen().then(function(db){ if(!db) return null; return new Promise(function(res){ try{ var tx=db.transaction("kv","readonly"); var g=tx.objectStore("kv").get(ENC); g.onsuccess=function(){res(g.result||null);}; g.onerror=function(){res(null);}; }catch(e){ res(null); } }); }); }
+
   async function setupNew(pw){
     var dekRaw=rnd(32), rec=genRecovery(), saltPw=rnd(16), saltRec=rnd(16);
     var kekPw=await deriveKEK(pw,saltPw), kekRec=await deriveKEK(normCode(rec),saltRec);
@@ -152,6 +163,13 @@
       if(cfg.desc){ var sd=$('sl-setup-desc'); if(sd)sd.innerHTML=cfg.desc; var ud=$('sl-unlock-desc'); if(ud)ud.innerHTML=cfg.desc; }
       if(cfg.title){ var ut=$('sl-unlock-title'); if(ut)ut.textContent='🔒 '+cfg.title; }
       var hasEnc=!!(C && localStorage.getItem(ENC));
+      if(!hasEnc && C){
+        // localStorage 沒有加密資料 → 可能是被清空了，先看 IndexedDB 備援有沒有救得回來
+        try{
+          var bak=await idbRestore();
+          if(bak && bak.data){ localStorage.setItem(ENC,JSON.stringify(bak)); hasEnc=true; }
+        }catch(e){}
+      }
       if(!hasEnc){
         // 預設「開放」：免密碼直接用（草創期測試用）；要保護時再呼叫 enable()
         mode='open'; openLoad();
@@ -179,6 +197,7 @@
       var e=JSON.parse(localStorage.getItem(ENC));
       var blob=await aesEnc(dekKey,new TextEncoder().encode(JSON.stringify(obj)));
       e.dataIv=blob.iv; e.data=blob.ct; localStorage.setItem(ENC,JSON.stringify(e));
+      idbBackup(e);   // 同步備份一份到 IndexedDB，localStorage 被清空還能救回
     },
     changePassword:async function(){
       if(!dekKey){ alert('請先解鎖'); return false; }
