@@ -1,10 +1,7 @@
 name: e2e 自動化測試
 
-# 每次推到 main，或手動觸發時，在雲端跑端對端測試（紅綠燈標在 commit 上）
+# 只在手動觸發時才跑（改掉原本「每次 push 就自動跑」，避免每次推程式碼都寄信轟炸信箱）
 on:
-  push:
-    branches: [main]
-  pull_request:
   workflow_dispatch:
 
 jobs:
