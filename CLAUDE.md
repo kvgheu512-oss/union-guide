@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-07
 
 最近 commits：
+  a56686f 自動更新 CLAUDE.md 最近進度（Stop hook）
   402a143 自動更新 CLAUDE.md 最近進度（Stop hook）
   fb38f32 自動更新 CLAUDE.md 最近進度（Stop hook）
   733e848 自動更新 CLAUDE.md 最近進度（Stop hook）
   ffabe23 自動更新 CLAUDE.md 最近進度（Stop hook）
-  e6cc860 入會申請書／委託書送出後加入原生分享（navigator.share 一鍵跳 LINE/訊息）與離開頁面前未傳送警示（beforeunload），降低簽完名忘記交出去的機率
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
