@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-07
 
 最近 commits：
+  e379f6b 自動更新 CLAUDE.md 最近進度（Stop hook）
   35580c7 自動更新 CLAUDE.md 最近進度（Stop hook）
   175d299 簡化「用住家當會址」彈窗文字，只留最關鍵的風險提醒與兩個選項，拿掉租借地址價格、稅捐機關電話等太複雜的細節（原本的詳細說明仍保留在表單裡的收合區塊，沒有整個刪掉）
   f629278 自動更新 CLAUDE.md 最近進度（Stop hook）
   3603e41 自動更新 CLAUDE.md 最近進度（Stop hook）
-  fea94cf 填入工會電子信箱（kvgheu512@gmail.com）到 public.json，讓入會申請書／委託書的「Email 給工會」按鈕生效
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
