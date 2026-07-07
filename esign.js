@@ -13,6 +13,7 @@
     var ctx = canvas.getContext('2d');
     var drawing = false, empty = true;
     var ratio = Math.max(window.devicePixelRatio||1, 1);
+    var lastPoint = null;
 
     function resize(){
       var w = canvas.offsetWidth, h = canvas.offsetHeight;
@@ -22,23 +23,64 @@
       ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     }
     resize();
+    canvas.style.touchAction = 'none';   // 觸控時不讓瀏覽器搶去捲動/縮放，簽名才不會斷斷續續
 
     function pos(e){
       var r = canvas.getBoundingClientRect();
-      var src = e.touches ? e.touches[0] : e;
+      var src = (e.touches && e.touches[0]) || e;
       return { x: src.clientX - r.left, y: src.clientY - r.top };
     }
-    function start(e){ e.preventDefault(); drawing=true; var p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); }
-    function move(e){ e.preventDefault(); if(!drawing) return; empty=false; var p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); }
-    function end(e){ e.preventDefault(); drawing=false; }
+    function beginStroke(p){ lastPoint=p; empty=false; ctx.beginPath(); ctx.moveTo(p.x,p.y); }
+    // 用二次貝茲曲線描過中點，筆畫看起來連續平滑，不會一段段生硬的直線
+    function extendStroke(p){
+      if(!lastPoint){ beginStroke(p); return; }
+      var mid = { x:(lastPoint.x+p.x)/2, y:(lastPoint.y+p.y)/2 };
+      ctx.quadraticCurveTo(lastPoint.x, lastPoint.y, mid.x, mid.y);
+      ctx.stroke();
+      lastPoint = p;
+    }
+    // 快速滑動時，瀏覽器每個 frame 只會給最後一個座標，中間的取樣點會被「合併」掉，
+    // 造成筆畫看起來斷斷續續、有漏掉的感覺。用 getCoalescedEvents() 把中間被吃掉的
+    // 取樣點也補回來描繪，是解決這個問題最直接的辦法（Pointer Events 才有此 API）。
+    function coalesced(e){
+      if(typeof e.getCoalescedEvents==='function'){
+        var list=e.getCoalescedEvents();
+        if(list && list.length) return list;
+      }
+      return [e];
+    }
 
-    canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); canvas.addEventListener('mouseup',end); canvas.addEventListener('mouseleave',end);
-    canvas.addEventListener('touchstart',start,{passive:false}); canvas.addEventListener('touchmove',move,{passive:false}); canvas.addEventListener('touchend',end);
+    function start(e){ e.preventDefault(); drawing=true; beginStroke(pos(e)); }
+    function move(e){ e.preventDefault(); if(!drawing) return; var p=pos(e); extendStroke(p); }
+    function end(e){ e.preventDefault(); drawing=false; lastPoint=null; }
+
+    if(window.PointerEvent){
+      canvas.addEventListener('pointerdown', function(e){
+        e.preventDefault(); drawing=true;
+        try{ canvas.setPointerCapture(e.pointerId); }catch(_){}
+        beginStroke(pos(e));
+      });
+      canvas.addEventListener('pointermove', function(e){
+        e.preventDefault(); if(!drawing) return;
+        coalesced(e).forEach(function(ev){ extendStroke(pos(ev)); });
+      }, {passive:false});
+      canvas.addEventListener('pointerup', function(e){ e.preventDefault(); drawing=false; lastPoint=null; try{ canvas.releasePointerCapture(e.pointerId); }catch(_){} });
+      canvas.addEventListener('pointercancel', function(){ drawing=false; lastPoint=null; });
+    } else {
+      // 沒有 Pointer Events 支援的舊瀏覽器：退回滑鼠／觸控事件
+      canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); canvas.addEventListener('mouseup',end); canvas.addEventListener('mouseleave',end);
+      canvas.addEventListener('touchstart',start,{passive:false});
+      canvas.addEventListener('touchmove',function(e){
+        e.preventDefault(); if(!drawing) return;
+        coalesced(e).forEach(function(ev){ extendStroke(pos(ev)); });
+      },{passive:false});
+      canvas.addEventListener('touchend',end); canvas.addEventListener('touchcancel',end);
+    }
 
     return {
       isEmpty: function(){ return empty; },
       toDataURL: function(){ return canvas.toDataURL('image/png'); },
-      clear: function(){ ctx.clearRect(0,0,canvas.width,canvas.height); empty=true; resize(); }
+      clear: function(){ ctx.clearRect(0,0,canvas.width,canvas.height); empty=true; lastPoint=null; resize(); }
     };
   }
 
