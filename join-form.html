@@ -100,12 +100,36 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
       </div>
       <div>
         <label>職稱</label>
-        <input id="f-title" placeholder="例：護理師">
+        <input id="f-title" placeholder="例：護理師" value="契約護理師">
       </div>
     </div>
 
     <label>服務單位 / 部門</label>
-    <input id="f-dept" placeholder="例：內科護理站">
+    <div class="row2">
+      <select id="f-dept-grp">
+        <option value="">大類…</option>
+        <option value="護理部" selected>護理部</option>
+        <option value="急診部（ER）">急診部（ER）</option>
+        <option value="骨科部">骨科部</option>
+        <option value="泌尿外科">泌尿外科</option>
+        <option value="放射腫瘤科">放射腫瘤科</option>
+        <option value="健檢中心">健檢中心</option>
+        <option value="門診（OPD）">門診（OPD）</option>
+        <option value="總務室">總務室</option>
+      </select>
+      <select id="f-dept-sub">
+        <option value="">細分…</option>
+      </select>
+    </div>
+    <div class="row2" id="f-aicu-row" style="display:none">
+      <select id="f-dept-aicu">
+        <option value="">AICU 區別（選填）</option>
+        <option value="01區">01區</option>
+        <option value="13區">13區</option>
+        <option value="31區">31區</option>
+      </select>
+    </div>
+    <input id="f-dept" placeholder="上面沒有你的單位？直接打字" style="margin-top:6px">
 
     <div class="row2">
       <div>
@@ -207,11 +231,19 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
 
   // 會員類別切換
   var memberType='regular';
+  // 會員身分連動職稱：正式會員→契約護理師、贊助會員→公職護理師（職稱是空的或還是預設值才會帶，已手動改過的不覆蓋）
+  function suggestTitle(){
+    var t=document.getElementById('f-title'), cur=t.value.trim();
+    if(cur===''||cur==='契約護理師'||cur==='公職護理師'){
+      t.value = memberType==='support' ? '公職護理師' : '契約護理師';
+    }
+  }
   window.setMemberType=function(t){
     memberType=t;
     document.getElementById('mt-regular').classList.toggle('sel',t==='regular');
     document.getElementById('mt-support').classList.toggle('sel',t==='support');
     document.getElementById('pubWarn').style.display=(t==='support'&&pubTriggered)?'block':'none';
+    suggestTitle();
   };
 
   // 公職人員關鍵字偵測
@@ -226,6 +258,50 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
       document.getElementById('pubWarn').style.display='block';
     }
   });
+
+  // 單位／科別 級聯快選（大類→細分→AICU分區，或直接在文字框輸入；跟roster.html名冊同一套分類方便日後對應）
+  (function(){
+    var SUBS=[
+      ['病房',['護理部／W31','護理部／W32','護理部／W51','護理部／W55','護理部／W62',
+               '護理部／W75','護理部／W91','護理部／W92','護理部／W101','護理部／W102']],
+      ['加護病房',['護理部／AICU','護理部／BICU','護理部／EMCU']],
+      ['特殊單位',['護理部／血液透析室（HDU）','護理部／RCC','護理部／EW01',
+                  '護理部／GW07','護理部／尊榮病房','護理部／癌症中心']],
+    ];
+    var grp=document.getElementById('f-dept-grp'), sub=document.getElementById('f-dept-sub'), dep=document.getElementById('f-dept');
+    var aicuRow=document.getElementById('f-aicu-row'), aicuSel=document.getElementById('f-dept-aicu');
+    if(!grp||!sub||!dep) return;
+    function buildSubs(){
+      sub.innerHTML='<option value="">細分…</option>';
+      SUBS.forEach(function(g){
+        var og=document.createElement('optgroup'); og.label=g[0];
+        g[1].forEach(function(v){
+          var op=document.createElement('option'); op.value=v;
+          op.textContent=v.replace('護理部／',''); og.appendChild(op);
+        });
+        sub.appendChild(og);
+      });
+    }
+    grp.addEventListener('change',function(){
+      var v=grp.value; aicuRow.style.display='none';
+      if(v==='護理部'){ buildSubs(); sub.style.display=''; sub.value=''; }
+      else{ sub.style.display='none'; if(v) dep.value=v; }
+    });
+    sub.addEventListener('change',function(){
+      var v=sub.value; if(!v) return;
+      dep.value=v;
+      if(v==='護理部／AICU'){ aicuRow.style.display=''; aicuSel.value=''; }
+      else{ aicuRow.style.display='none'; }
+    });
+    aicuSel.addEventListener('change',function(){
+      dep.value='護理部／AICU'+(aicuSel.value||'');
+    });
+    dep.addEventListener('input',function(){
+      grp.value=''; sub.style.display='none'; aicuRow.style.display='none';
+    });
+    // 預設帶「護理部」，直接展開細分選單；沒進一步選細分就先用「護理部」當底
+    buildSubs(); sub.style.display=''; dep.value='護理部';
+  })();
 
   // 簽名板
   var canvas=document.getElementById('signCanvas');
