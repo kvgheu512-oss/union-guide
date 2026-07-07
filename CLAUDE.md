@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-07
 
 最近 commits：
+  25e1cbe 電子入會申請書：職稱依會員身分連動預設(正式會員→契約護理師、贊助會員→公職護理師)；服務單位/部門改成跟名冊同一套大類→細分(→AICU分區)下拉選單，預設護理部，選不到的單位仍可直接打字
+  6967b2e 自動更新 CLAUDE.md 最近進度（Stop hook）
   a365cce CLAUDE.md新增溝通鐵律：回覆優先客觀中立分析，不迎合、不提供情緒價值，直接指出使用者表達裡的邏輯漏洞或認知偏差
   b1f2e10 自動更新 CLAUDE.md 最近進度（Stop hook）
   d4fc4c3 自動更新 CLAUDE.md 最近進度（Stop hook）
-  b5eb788 電子入會申請書補上LINE ID欄位(原本沒有，只有手機/Email)，並加上「聯絡方式務必檢查再送出」提醒；member-manage.html審核清單/CSV匯出同步顯示LINE ID
-  2f0abb4 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
