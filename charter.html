@@ -372,6 +372,11 @@
          <input id="ag-chairman" placeholder="理事長當選人" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
          <input id="ag-stdsup" placeholder="常務監事（如有設置，選填）" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit">
        </div>
+
+       <div style="font-size:12.5px;color:#7A5600;margin:.7rem 0 .3rem">📝 入會申請書確認（章程§6、§16；理事會成立後才能審查）</div>
+       <div style="display:flex;gap:6px;font-size:13px">
+         <div style="flex:1">收到申請書份數（含大會前線上簽署＋現場收件）<input id="ag-join-count" type="number" inputmode="numeric" style="width:100%;box-sizing:border-box;border:1.5px solid #EAD67A;border-radius:6px;padding:6px 8px;background:#fff;font-family:inherit;margin-top:3px"></div>
+       </div>
        <div style="font-size:11px;color:#8A6309;margin-top:.5rem">💾 每個欄位打完就自動存這台裝置；下面範本文字會即時套用，按「複製這份範本」就是填好的版本。</div>
      </div>
 
@@ -428,7 +433,12 @@
 
 玖、理事長致詞暨接任宣誓
 
-拾、閉會（工會法§11第2項）
+拾、新任理事會確認入會申請書（章程§6、§16第1項第2款）
+　一、報告：本次共收到入會申請書　　份（含大會前線上簽署及現場報到收件）。
+　二、依章程第六條，入會須經理事會審查通過後始為會員；理事會已於本次大會選舉成立，即席審查前開申請書。
+　三、主席（理事長）宣布：「經理事會審查，前開　　名申請人自即日起正式成為本會會員，納入會員名冊。」
+
+拾壹、閉會（工會法§11第2項）
 　主席宣布：「本次成立大會各項議程完成，現在散會。本會應於三十日內備妥文件，向高雄市政府勞工局申請核准登記（工會法第十一條第二項、第十三條）。」
 
 ────────────────────────────────────
@@ -575,7 +585,7 @@ window._chAddr = null;
   var AGK='founding_agenda_v1';
   var AGIDS=['ag-year','ag-month','ag-day','ag-week','ag-ampm','ag-hour','ag-min','ag-place','ag-chair','ag-founders','ag-attend',
     'ag-ch-y','ag-ch-n','ag-ch-x','ag-fee-y','ag-fee-n','ag-fee-x',
-    'ag-dir-alt','ag-dir-list','ag-dir-alt-list','ag-sup-alt','ag-sup-list','ag-sup-alt-list','ag-chairman','ag-stdsup'];
+    'ag-dir-alt','ag-dir-list','ag-dir-alt-list','ag-sup-alt','ag-sup-list','ag-sup-alt-list','ag-chairman','ag-stdsup','ag-join-count'];
   var DEFAULTS={ 'ag-year':'115','ag-month':'8','ag-day':'30','ag-week':'日','ag-ampm':'下午','ag-hour':'2','ag-min':'00',
     'ag-place':'耀嵩豐（高雄市左營區福山里博愛四路309號）' };
 
@@ -638,7 +648,11 @@ window._chAddr = null;
 '　二、開票後，主席宣布：「理事長當選人：'+b('ag-chairman','　　　　')+'。」\n'+
 '　三、監事互推常務監事（如章程設置）：「常務監事：'+b('ag-stdsup','　　　　')+'。」\n\n'+
 '玖、理事長致詞暨接任宣誓\n\n'+
-'拾、閉會（工會法§11第2項）\n'+
+'拾、新任理事會確認入會申請書（章程§6、§16第1項第2款）\n'+
+'　一、報告：本次共收到入會申請書'+b('ag-join-count')+'份（含大會前線上簽署及現場報到收件）。\n'+
+'　二、依章程第六條，入會須經理事會審查通過後始為會員；理事會已於本次大會選舉成立，即席審查前開申請書。\n'+
+'　三、主席（理事長）宣布：「經理事會審查，前開'+b('ag-join-count')+'名申請人自即日起正式成為本會會員，納入會員名冊。」\n\n'+
+'拾壹、閉會（工會法§11第2項）\n'+
 '　主席宣布：「本次成立大會各項議程完成，現在散會。本會應於三十日內備妥文件，向高雄市政府勞工局申請核准登記（工會法第十一條第二項、第十三條）。」\n\n'+
 '────────────────────────────────────\n'+
 '【附件：成立後三十日內送件清單（工會法§11第2項、§13）】\n'+
