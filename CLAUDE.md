@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-07
 
 最近 commits：
+  2a70a82 入會申請書／委託書新增「一鍵傳送簽署文件」（含簽名圖檔的完整文件，用 Web Share API 直接開系統分享面板，不支援的瀏覽器改為直接下載圖片）與「Email 給工會」（若 org.js 已設定電子信箱，自動填好收件人/主旨；未設定則顯示提醒），減少簽完名到送出之間的手動步驟
+  cb4f50d 自動更新 CLAUDE.md 最近進度（Stop hook）
   a56686f 自動更新 CLAUDE.md 最近進度（Stop hook）
   402a143 自動更新 CLAUDE.md 最近進度（Stop hook）
   fb38f32 自動更新 CLAUDE.md 最近進度（Stop hook）
-  733e848 自動更新 CLAUDE.md 最近進度（Stop hook）
-  ffabe23 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
