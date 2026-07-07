@@ -51,11 +51,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-07
 
 最近 commits：
+  7ef6e3d 章程「④入會申請書範本」加上電子版入口說明與按鈕，連到join-form.html(線上電子簽名入會申請)，紙本/電子雙軌互相看得到
+  9027f9d 自動更新 CLAUDE.md 最近進度（Stop hook）
   39ab20a 自動更新 CLAUDE.md 最近進度（Stop hook）
   377382e 自動更新 CLAUDE.md 最近進度（Stop hook）
   f79058a 待辦事項打勾完成新增復原機制：打勾後跳出「已標記完成」橫幅，8秒內按「↩ 復原」可救回誤觸，跟roster.html刪除/核准入會同一套復原做法
-  83e4a16 自動更新 CLAUDE.md 最近進度（Stop hook）
-  b690e2e 修正待辦事項顯示全空的真正原因：sw.js的網路優先判斷只認得到瀏覽器直接導覽(navigate)，沒算到頁面內用fetch()讀別頁HTML的情況(例如nav.html抓workplan.html解析表格)，導致抓到舊版Service Worker快取的舊表格(6欄，缺勾選/連結)，解析失敗、篩選結果變空清單，看起來像「都已完成」但其實是讀不到資料；現在所有.html一律網路優先，並在nav.html的抓取加上cache-busting查詢字串強制拿最新版；解析失敗時也會清楚顯示警告而不是誤導成「已完成」
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
