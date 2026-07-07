@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-07
 
 最近 commits：
+  a365cce CLAUDE.md新增溝通鐵律：回覆優先客觀中立分析，不迎合、不提供情緒價值，直接指出使用者表達裡的邏輯漏洞或認知偏差
+  b1f2e10 自動更新 CLAUDE.md 最近進度（Stop hook）
   d4fc4c3 自動更新 CLAUDE.md 最近進度（Stop hook）
   b5eb788 電子入會申請書補上LINE ID欄位(原本沒有，只有手機/Email)，並加上「聯絡方式務必檢查再送出」提醒；member-manage.html審核清單/CSV匯出同步顯示LINE ID
   2f0abb4 自動更新 CLAUDE.md 最近進度（Stop hook）
-  0e7dbc4 自動更新 CLAUDE.md 最近進度（Stop hook）
-  15be528 全面清掉首頁「還在連署籌備」的過時用語(之前只改了第一層，第二三層彈窗、成立進度時間軸、FAQ、分享訊息、導覽都還是舊的)：連署達標時間軸改成第1-2步已完成、第3步(成立大會)進行中；加入前彈窗/選單文字從「連署」改「加入」；移除已經沒用的填連署表單選項；分享邀請文字、FAQ進度答案、導覽提示同步更新
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
