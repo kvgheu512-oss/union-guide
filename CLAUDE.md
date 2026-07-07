@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-07
 
 最近 commits：
+  e6cc860 入會申請書／委託書送出後加入原生分享（navigator.share 一鍵跳 LINE/訊息）與離開頁面前未傳送警示（beforeunload），降低簽完名忘記交出去的機率
+  6b9fc8d 自動更新 CLAUDE.md 最近進度（Stop hook）
   4d0834c 自動更新 CLAUDE.md 最近進度（Stop hook）
   f30ea49 電子簽名板改用 Pointer Events + getCoalescedEvents 補齊快速滑動遺漏的取樣點，並用二次貝茲曲線平滑筆畫，減少斷斷續續的情況（join-form.html／proxy-form.html 共用 esign.js）
   d1f3b83 自動更新 CLAUDE.md 最近進度（Stop hook）
-  25e1cbe 電子入會申請書：職稱依會員身分連動預設(正式會員→契約護理師、贊助會員→公職護理師)；服務單位/部門改成跟名冊同一套大類→細分(→AICU分區)下拉選單，預設護理部，選不到的單位仍可直接打字
-  6967b2e 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
