@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-07
 
 最近 commits：
+  175d299 簡化「用住家當會址」彈窗文字，只留最關鍵的風險提醒與兩個選項，拿掉租借地址價格、稅捐機關電話等太複雜的細節（原本的詳細說明仍保留在表單裡的收合區塊，沒有整個刪掉）
+  f629278 自動更新 CLAUDE.md 最近進度（Stop hook）
   3603e41 自動更新 CLAUDE.md 最近進度（Stop hook）
   fea94cf 填入工會電子信箱（kvgheu512@gmail.com）到 public.json，讓入會申請書／委託書的「Email 給工會」按鈕生效
   0c4965b 自動更新 CLAUDE.md 最近進度（Stop hook）
-  2a70a82 入會申請書／委託書新增「一鍵傳送簽署文件」（含簽名圖檔的完整文件，用 Web Share API 直接開系統分享面板，不支援的瀏覽器改為直接下載圖片）與「Email 給工會」（若 org.js 已設定電子信箱，自動填好收件人/主旨；未設定則顯示提醒），減少簽完名到送出之間的手動步驟
-  cb4f50d 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
