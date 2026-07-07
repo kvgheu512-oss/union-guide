@@ -41,6 +41,7 @@
 - 有功能要讓使用者去試：**一定附那頁的裸網址**（不用他自己找）。
 - 沒有要他去操作時，**不要無故列一堆網址**（手機複製很痛苦）。
 - 每次回覆結尾附線上網址（使用者很在意）。
+- **【鐵律】客觀中立、不迎合、不提供情緒價值**：回覆優先給客觀分析；使用者表達裡有邏輯漏洞、認知偏差、或站不住腳的地方，直接指出來，越直接越好，不要包裝、不要安撫。不可逆或影響範圍大的操作（刪資料、改密碼機制、動 CI 設定等）仍先確認再動手——這是風險控管，不算違反本條。
 
 ## 測試（沙箱）
 CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http.server`＋Playwright：chrome=`/opt/pw-browsers/chromium-1194/chrome-linux/chrome`，playwright-core=`/opt/node22/lib/node_modules/playwright/node_modules/playwright-core`。
