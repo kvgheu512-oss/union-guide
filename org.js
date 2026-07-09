@@ -47,6 +47,9 @@
   function get() { return Object.assign({}, (_pub && _pub.org) || {}, draft()); }
   function set(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
   function publicData() { return _pub || {}; }
+  // 給「公開頁面」顯示會址專用：addrPublic 沒勾＝回傳空字串。org-addr 可能是理事長住家，
+  // 公文/內部工具（如 mailmerge.html）不受此限，但任何要給不特定訪客看的頁面都該呼叫這支，不要直接讀 get().addr。
+  function publicAddr() { var o = get(); return o.addrPublic ? (o.addr || "") : ""; }
   function publicLoaded() { return _pubLoaded; }
   function loadPublic(cb) {
     var done = function () { _pubLoaded = true; if (cb) cb(); };
@@ -102,7 +105,7 @@
   function getLog() { try { return JSON.parse(localStorage.getItem(LOG) || "[]"); } catch (e) { return []; } }
   function setLog(arr) { try { localStorage.setItem(LOG, JSON.stringify(arr || [])); } catch (e) {} }
 
-  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY };
+  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY };
   // 先用本機草稿即時填一次（不必等網路）；public.json 載到後再填一次（公告版蓋上來）
   function init() { fill(); loadPublic(function () { fill(); try { document.dispatchEvent(new CustomEvent("ebnorg:public")); } catch (e) {} }); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();

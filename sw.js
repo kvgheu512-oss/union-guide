@@ -33,7 +33,7 @@ self.addEventListener("fetch", e => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   // 版本檔／法規檔：完全不攔，永遠走網路拿最新
-  if (/(^|\/)(ver\.txt|laws\.json|laws-extra\.json|public\.json)$/.test(url.pathname)) return;
+  if (/(^|\/)(ver\.txt|laws\.json|laws-extra\.json|public\.json|lottery-freq\.json)$/.test(url.pathname)) return;
 
   // 網頁與「核心程式碼」：網路優先 ＋「逾時退快取」。先抓網路（快就用最新、改了立刻看得到）；
   // 但網路超過 ~1.2 秒就先秒開快取版（避免 4G 慢時整頁卡 3-5 秒），網路回來仍背景更新快取。

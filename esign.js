@@ -84,6 +84,15 @@
     };
   }
 
+  // 統一處理 navigator.share 的錯誤：使用者主動取消(AbortError)靜默略過；
+  // 真正失敗（檔案太大、沒有可分享的App等）才通知呼叫端顯示提示／退回下載，避免兩邊分開寫、又各自漏掉這個分辨。
+  function smartShare(shareData, onSent, onFail){
+    navigator.share(shareData).then(onSent).catch(function(err){
+      if(err && err.name==='AbortError') return; // 使用者取消分享，不視為失敗
+      if(onFail) onFail(err);
+    });
+  }
+
   function timestamp(){
     var d = new Date();
     var y = d.getFullYear()-1911;
@@ -117,5 +126,5 @@
     });
   }
 
-  window.EBNSign = { create:create, timestamp:timestamp, saveLog:saveLog, getLog:getLog };
+  window.EBNSign = { create:create, timestamp:timestamp, saveLog:saveLog, getLog:getLog, smartShare:smartShare };
 })();

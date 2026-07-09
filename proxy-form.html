@@ -218,12 +218,12 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
     var proxy=document.getElementById('f-proxy').value.trim();
 
     // 必填驗證
-    var ok=true;
+    var ok=true, firstBad=null;
     ['f-name','f-empid','f-meeting','f-proxy'].forEach(function(id){
       var el=document.getElementById(id);
-      if(!el.value.trim()){ el.style.borderColor='#E53935'; ok=false; }
+      if(!el.value.trim()){ el.style.borderColor='#E53935'; ok=false; if(!firstBad) firstBad=el; }
     });
-    if(!ok){ toast('❌ 請填寫所有必填欄位','#E53935'); document.querySelector('input[style*="E53935"]').focus(); return; }
+    if(!ok){ toast('❌ 請填寫所有必填欄位','#E53935'); if(firstBad) firstBad.focus(); return; }
 
     // 簽名驗證
     if(pad.isEmpty()){ toast('❌ 請先在下方簽名','#E53935'); signWrap.style.borderColor='#E53935'; signWrap.scrollIntoView({behavior:'smooth',block:'center'}); return; }
@@ -261,9 +261,9 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
       var btnNative=document.getElementById('btnShareNative');
       btnNative.style.display='inline-block';
       btnNative.onclick=function(){
-        navigator.share({title:'委託書－'+name, text:'委託書：委託人 '+name+'，受委託人 '+proxy+'，會議「'+meeting+'」。請附上簽名截圖或列印本傳給幹部留存。'})
-          .then(markSent)
-          .catch(function(){ /* 使用者取消分享，不視為已傳送 */ });
+        EBNSign.smartShare({title:'委託書－'+name, text:'委託書：委託人 '+name+'，受委託人 '+proxy+'，會議「'+meeting+'」。請附上簽名截圖或列印本傳給幹部留存。'}, markSent, function(){
+          toast('⚠️ 分享失敗，請改用列印/存PDF後自行傳送','#E65100');
+        });
       };
     }
 
@@ -272,11 +272,12 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
     });
 
     // 一鍵傳送：把整份委託書（含簽名）畫成一張圖，直接開系統分享面板送出
-    function buildDocImage(cb){
+    function buildDocImage(cb, onError){
       var W=1000, S=2;
       var c=document.createElement('canvas');
       c.width=W*S;
       var sigImg=new Image();
+      sigImg.onerror=function(){ if(onError) onError(); };
       sigImg.onload=function(){
         var H=820;
         c.height=H*S;
@@ -326,24 +327,31 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
 
     document.getElementById('btnShareDoc').addEventListener('click', function(){
       var docBtn=this; docBtn.disabled=true;
+      var revert=setTimeout(function(){ docBtn.disabled=false; toast('⚠️ 產生文件圖片逾時，請再試一次','#E65100'); }, 8000);
       buildDocImage(function(canvas){
+        clearTimeout(revert);
         canvas.toBlob(function(blob){
           docBtn.disabled=false;
           var fname='委託書_'+name+'.png';
-          var file;
-          try{ file=new File([blob], fname, {type:'image/png'}); }catch(_){ file=null; }
-          if(file && navigator.canShare && navigator.canShare({files:[file]})){
-            navigator.share({files:[file], title:'委託書－'+name, text:'委託書（含簽名），請留存'})
-              .then(markSent)
-              .catch(function(){ /* 使用者取消，不視為已傳送 */ });
-          } else {
+          function downloadFallback(){
             var url=URL.createObjectURL(blob);
             var a=document.createElement('a'); a.href=url; a.download=fname; a.click();
             setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
             toast('✅ 文件圖片已下載，請自行附加傳送給幹部','#1B5E20');
             markSent();
           }
+          var file;
+          try{ file=new File([blob], fname, {type:'image/png'}); }catch(_){ file=null; }
+          if(file && navigator.canShare && navigator.canShare({files:[file]})){
+            EBNSign.smartShare({files:[file], title:'委託書－'+name, text:'委託書（含簽名），請留存'}, markSent, downloadFallback);
+          } else {
+            downloadFallback();
+          }
         }, 'image/png');
+      }, function(){
+        clearTimeout(revert);
+        docBtn.disabled=false;
+        toast('⚠️ 簽名圖檔讀取失敗，請重新整理頁面再試','#E53935');
       });
     });
 
