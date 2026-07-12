@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-12
 
 最近 commits：
+  3639fe2 自動更新 CLAUDE.md 最近進度（Stop hook）
   c554245 自動更新 CLAUDE.md 最近進度（Stop hook）
   23b43c2 自動更新 CLAUDE.md 最近進度（Stop hook）
   0deb947 自動更新 CLAUDE.md 最近進度（Stop hook）
   e30f3c8 自動更新 CLAUDE.md 最近進度（Stop hook）
-  2753e2e 收款方式分兩階段：繳費方式頁改為①現金（115年9～12月，交總務當場開收據，總務姓名由幹部名單自動帶入）②貝殼集器線上繳費（org.js 新增 beikeUrl 欄位，開通後貼連結發布即自動顯示繳費按鈕）③銀行轉帳/ATM降為備用；prep2.html 入會申請書繳納方式選項同步改為現金/貝殼集器
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
