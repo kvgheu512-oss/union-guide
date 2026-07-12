@@ -50,12 +50,16 @@
 
   <div class="card">
     <h2>下一個可用文號</h2>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;font-weight:700;color:var(--navy-deep);margin:.2rem 0 .4rem">
+      <label style="display:flex;align-items:center;gap:5px;margin:0;cursor:pointer"><input type="radio" name="series" value="prep" style="width:auto"> 籌備期（選舉公告、公報）</label>
+      <label style="display:flex;align-items:center;gap:5px;margin:0;cursor:pointer"><input type="radio" name="series" value="main" style="width:auto"> 正式（成立後公文）</label>
+    </div>
     <div class="next"><div class="lbl">取號後會用這個號，並自動 +1</div><div class="no" id="nextNo">—</div></div>
     <label>發文主旨（留底用）</label>
     <input id="subject" type="text" placeholder="例：函報成立大會選舉結果">
     <button class="btn" id="issue" type="button">📌 取號發文（流水號 +1 並留底）</button>
     <div class="toast" id="toast"></div>
-    <div class="hint">沒設定字別／年？先去基本資料中心填「公文文號字別、民國年、目前流水號」。</div>
+    <div class="hint">籌備期與成立後的文號<b>分開編</b>（避免混在一起）；兩個序列的字別、年、流水號都在 <a class="lnk" href="org.html">基本資料中心</a> 設定。</div>
   </div>
 
   <div class="card">
@@ -79,8 +83,13 @@
   function ready(fn){ if(window.EBNOrg) fn(); else setTimeout(function(){ready(fn);},30); }
 
   ready(function(){
+    // 預設序列跟著網站階段走：籌備中→籌備期序列
+    var phase=(EBNOrg.publicData().phase)||"prep";
+    var defSeries=phase==="prep"?"prep":"main";
+    document.querySelector('input[name="series"][value="'+defSeries+'"]').checked=true;
+    function curSeries(){ var r=document.querySelector('input[name="series"]:checked'); return r?r.value:defSeries; }
     function refresh(){
-      $("nextNo").textContent=EBNOrg.peekDocNo();
+      $("nextNo").textContent=EBNOrg.peekDocNo(curSeries());
       var log=EBNOrg.getLog().slice().reverse();
       $("cnt").textContent="共 "+log.length+" 筆";
       if(!log.length){ $("logWrap").innerHTML='<div class="hint">還沒有發文紀錄。上面取號後會自動列在這裡。</div>'; return; }
@@ -88,10 +97,12 @@
         log.map(function(e){ return '<tr><td>'+esc(e.no)+'</td><td>'+esc(e.date)+'</td><td>'+esc(e.subject||'')+'</td>'+
           '<td><button class="del" data-no="'+esc(e.no)+'">刪</button></td></tr>'; }).join("")+'</table>';
     }
+    document.querySelectorAll('input[name="series"]').forEach(function(r){ r.addEventListener("change",refresh); });
     $("issue").addEventListener("click",function(){
-      var o=EBNOrg.get();
-      if(!o.docWord||!o.docYear){ $("toast").textContent="⚠ 請先到基本資料中心填「字別」與「年」"; setTimeout(function(){$("toast").textContent="";},3000); return; }
-      var no=EBNOrg.nextDocNo($("subject").value.trim());
+      var o=EBNOrg.get(), s=curSeries();
+      var wordKey=s==="prep"?"docWordPrep":"docWord";
+      if(!o[wordKey]||!o.docYear){ $("toast").textContent="⚠ 請先到基本資料中心填「"+(s==="prep"?"籌備期":"正式")+"字別」與「年」"; setTimeout(function(){$("toast").textContent="";},3000); return; }
+      var no=EBNOrg.nextDocNo($("subject").value.trim(), s);
       $("subject").value="";
       $("toast").textContent="✅ 已取號："+no+"（已 +1 並留底）";
       setTimeout(function(){$("toast").textContent="";},3500);

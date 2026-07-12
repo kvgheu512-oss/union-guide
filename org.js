@@ -22,9 +22,11 @@
     ["bankAcct", "帳號", "可留空"],
     ["ctbcHolder", "中國信託ATM存款戶名", "與上方轉帳帳戶不同才需填，可留空"],
     ["ctbcAcct", "中國信託ATM存款帳號", "與上方轉帳帳戶不同才需填，可留空"],
-    ["docWord", "公文文號「字別」", "例：高榮工"],
+    ["docWord", "公文文號「字別」（正式）", "成立後對外發文用，例：高總工"],
     ["docYear", "公文文號民國年", "例：115"],
-    ["docSeq", "目前文號流水號", "下一件會用這個號，發文後自動+1"]
+    ["docSeq", "正式文號目前流水號", "下一件會用這個號，發文後自動+1"],
+    ["docWordPrep", "籌備期文號「字別」", "籌備會的選舉公告、公報專用，與成立後公文分開編號，例：高總籌工"],
+    ["docSeqPrep", "籌備期文號目前流水號", "下一件會用這個號，發文後自動+1"]
   ];
 
   // 已發布的公開資料（全站每個人都讀同一份 public.json）；本機草稿(KEY)會疊在上面
@@ -82,22 +84,32 @@
     });
   }
 
-  // 取下一個公文文號（民國年＋3碼流水），並把流水號+1、寫入發文簿
-  function fmtDocNo(o, seq) {
-    var word = o.docWord || "（字別）";
+  // 取下一個公文文號（民國年＋3碼流水），並把流水號+1、寫入發文簿。
+  // 雙序列：series="prep"＝籌備期（選舉公告、公報，字別如「高總籌工」）；series="main"＝成立後正式公文。
+  // 不指定 series 時依已發布的 phase 自動判斷（籌備中→prep），舊呼叫端（mailmerge 等）不用改。
+  function seriesKeys(series) {
+    if (!series) series = ((_pub && _pub.phase) || "prep") === "prep" ? "prep" : "main";
+    return series === "prep" ? { word: "docWordPrep", seq: "docSeqPrep" } : { word: "docWord", seq: "docSeq" };
+  }
+  function fmtDocNo(o, seq, wordKey) {
+    var word = o[wordKey || "docWord"] || "（字別）";
     var year = o.docYear || "";
     var n = String(seq);
     while (n.length < 3) n = "0" + n;
     return word + "字第" + year + n + "號";
   }
-  function peekDocNo() { var o = get(); return fmtDocNo(o, parseInt(o.docSeq, 10) || 1); }
-  function nextDocNo(subject) {
-    var o = get(); var seq = parseInt(o.docSeq, 10) || 1;
-    var no = fmtDocNo(o, seq);
-    var d = draft(); d.docSeq = seq + 1; set(d);
+  function peekDocNo(series) {
+    var k = seriesKeys(series); var o = get();
+    return fmtDocNo(o, parseInt(o[k.seq], 10) || 1, k.word);
+  }
+  function nextDocNo(subject, series) {
+    var k = seriesKeys(series);
+    var o = get(); var seq = parseInt(o[k.seq], 10) || 1;
+    var no = fmtDocNo(o, seq, k.word);
+    var d = draft(); d[k.seq] = seq + 1; set(d);
     try {
       var log = JSON.parse(localStorage.getItem(LOG) || "[]");
-      log.push({ no: no, date: new Date().toISOString().slice(0, 10), subject: subject || "" });
+      log.push({ no: no, date: new Date().toISOString().slice(0, 10), subject: subject || "", series: k.seq === "docSeqPrep" ? "prep" : "main" });
       localStorage.setItem(LOG, JSON.stringify(log));
     } catch (e) {}
     return no;
