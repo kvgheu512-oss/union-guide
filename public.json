@@ -11,9 +11,11 @@
     "email": "kvgheu512@gmail.com",
     "bank": "",
     "bankAcct": "",
-    "docWord": "",
-    "docYear": "",
-    "docSeq": "1"
+    "docWord": "高總工",
+    "docYear": "115",
+    "docSeq": "1",
+    "docWordPrep": "高總籌工",
+    "docSeqPrep": "1"
   },
   "meet": {
     "prep": {
