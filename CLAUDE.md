@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-12
 
 最近 commits：
+  aa6ab75 新增 beike-prep.html：貝殼集器/PAYUNi統一金流申請準備表，依官方文件逐節做成填空表單（Backme專案資料、金流綁定會員、商店基本資訊、商品資訊、實質受益人），工會名稱/地址/電話/Email/銀行帳戶/理事長自動從基本資料中心帶入，其餘欄位autosave本機、一鍵複製整份文字供貼上；統一編號/身分證字號等待成立登記後才有的欄位明確標示待補、不瞎填；理事長身分證字號等敏感個資刻意不經此表存放。union.html 總務區塊加入連結
+  64c756b 自動更新 CLAUDE.md 最近進度（Stop hook）
   d551ae0 自動更新 CLAUDE.md 最近進度（Stop hook）
   3639fe2 自動更新 CLAUDE.md 最近進度（Stop hook）
   c554245 自動更新 CLAUDE.md 最近進度（Stop hook）
-  23b43c2 自動更新 CLAUDE.md 最近進度（Stop hook）
-  0deb947 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
