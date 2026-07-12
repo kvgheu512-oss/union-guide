@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-12
 
 最近 commits：
+  806a1a8 自動更新 CLAUDE.md 最近進度（Stop hook）
   e121650 公文系統升級（採納北榮工會理事長建議）：文號改雙序列——籌備期（選舉公告、公報，字別如「高總籌工」）與成立後正式公文（如「高總工」）分開編號各自遞增；wenhao.html 加序列切換、gongwen.html 發文字號接上自動取號（取號即+1並寫入發文簿）；公文列印稿補「檔號/保存年限」欄、機關地址電話Email改由基本資料自動帶入
   a13eff6 自動更新 CLAUDE.md 最近進度（Stop hook）
   31817f9 自動更新 CLAUDE.md 最近進度（Stop hook）
   e5180ff 更正：莊瑋聆、葉柏宏未退出籌備會——prep2.html 改列入請假人員；shouce.html 籌備委員名單恢復七人完整名單（名單與當日出席是兩回事）
-  4335441 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
