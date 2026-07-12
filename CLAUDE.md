@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-12
 
 最近 commits：
+  31817f9 自動更新 CLAUDE.md 最近進度（Stop hook）
   e5180ff 更正：莊瑋聆、葉柏宏未退出籌備會——prep2.html 改列入請假人員；shouce.html 籌備委員名單恢復七人完整名單（名單與當日出席是兩回事）
   4335441 自動更新 CLAUDE.md 最近進度（Stop hook）
   836bb2f 新增 shouce.html 成立大會手冊：依第二次籌備會案由五之八項內容編排——議程（含新任理事會確認入會申請書）、籌備委員名單與分工表、章程/工作計畫/預算改用 QR code 連結節省紙張、收支報告與提案留空待填、會員名冊註明依個資法不上網公開；prep2.html 出席名單拿掉葉柏宏、莊瑋聆（籌備委員改為五人）
   f3d2d5c 自動更新 CLAUDE.md 最近進度（Stop hook）
-  c7667c9 prep2.html 案由四友好工會邀請名單改為本會版本：高醫企業工會、台灣護理產業工會
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
