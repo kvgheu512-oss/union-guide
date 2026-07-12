@@ -49,14 +49,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-07-09
+最後更新：2026-07-12
 
 最近 commits：
+  02421dc 新增 prep2.html：依友會提供之「第二次籌備委員會會議紀錄」原稿改編為高榮版——日期改為115年7月12日、出席名單換為本會七位籌備委員、抬頭全部改為高雄榮民總醫院企業工會；北榮專屬資料（地點、費額、代墊紀錄、報紙、英文會名、會址）挖空待填，成立大會日期地點依本會已公布資料（115/8/30 耀嵩豐）連動更新
+  c307377 自動更新 CLAUDE.md 最近進度（Stop hook）
   e38cdb0 修復程式碼健檢發現的問題：
   f3d86dc 自動更新 CLAUDE.md 最近進度（Stop hook）
   da1dac7 自動更新 CLAUDE.md 最近進度（Stop hook）
-  eb01000 自動更新 CLAUDE.md 最近進度（Stop hook）
-  5894111 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
