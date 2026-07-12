@@ -27,7 +27,7 @@
     ["docSeq", "正式文號目前流水號", "下一件會用這個號，發文後自動+1"],
     ["docWordPrep", "籌備期文號「字別」", "籌備會的選舉公告、公報專用，與成立後公文分開編號，例：高總籌工"],
     ["docSeqPrep", "籌備期文號目前流水號", "下一件會用這個號，發文後自動+1"],
-    ["quhaoUrl", "雲端取號服務網址", "進階（解決撞號）：部署 Google Apps Script 取號服務後，把網址加 ?key=通行碼 貼進來；填了全站改用雲端共用流水號。留空＝各裝置本機計數"]
+    ["quhaoUrl", "雲端取號服務網址", "進階（解決撞號）：部署 Apps Script 取號服務後，把網址加 ?key=通行碼 貼進來。⚠️ 此欄只存這台裝置、發布時自動剔除不會公開——網址請由幹部間私下傳（LINE），每台要用的裝置各貼一次"]
   ];
 
   // 已發布的公開資料（全站每個人都讀同一份 public.json）；本機草稿(KEY)會疊在上面
@@ -65,7 +65,8 @@
   // 把目前的 org 草稿合進完整的 public.json（供「發布」匯出；保留 meet/sign 等其他區塊）
   function buildPublic(orgObj) {
     var base = _pub ? JSON.parse(JSON.stringify(_pub)) : {};
-    base.org = orgObj || get();
+    base.org = JSON.parse(JSON.stringify(orgObj || get()));
+    delete base.org.quhaoUrl;               // 雲端取號網址（含通行碼）絕不發布——公開等於把鑰匙貼在門上
     base.cadres = cadres();                 // 連同幹部名單一起發布（全站讀同一份）
     base.updated = new Date().toISOString().slice(0, 10);
     return base;
