@@ -28,20 +28,31 @@
 
 <div class="header"><h1>💳 繳費方式</h1><p>常年會費／入會費 繳納方式與對帳說明</p></div>
 <main>
-  <div class="topnote">📌 轉帳或 ATM 存款時，<b>備註／附言請填寫您的「繳費代碼」</b>（4 碼數字，總務發給您的）；不知道代碼的話填<b>姓名</b>也可以，總務會人工核對入帳，並更新您的會費紀錄。</div>
+  <div class="topnote">📌 本會收款方式分兩階段：<b>115 年 9～12 月收現金</b>；<b>之後改用「貝殼集器」線上代收</b>（開通後本頁會出現繳費按鈕）。</div>
 
   <div class="card">
-    <h2>① 銀行／郵局轉帳</h2>
-    <div class="info-row"><span class="info-key">戶名</span><span class="info-val" data-org-text="bankHolder">（尚未公布，請洽總務）</span></div>
-    <div class="info-row"><span class="info-key">金融機構／分行</span><span class="info-val" data-org-text="bank">（尚未公布，請洽總務）</span></div>
-    <div class="info-row"><span class="info-key">帳號</span><span class="info-val" data-org-text="bankAcct">（尚未公布，請洽總務）</span></div>
+    <h2>① 現金繳納（115 年 9 月～12 月）</h2>
+    <div style="font-size:14.5px;line-height:1.9">請將入會費與當月會費，<b>當面交給總務</b>（<span id="fin-names">總務幹部</span>），總務會<b>當場開立收據</b>並登錄您的會費紀錄。</div>
+    <div class="note">請保留收據作為繳費憑證；如不方便當面繳交，請先與總務約時間。</div>
   </div>
 
   <div class="card">
-    <h2>② 中國信託 ATM 存款</h2>
-    <div class="info-row"><span class="info-key">戶名</span><span class="info-val" data-org-text="ctbcHolder">（尚未公布，請洽總務）</span></div>
-    <div class="info-row"><span class="info-key">帳號</span><span class="info-val" data-org-text="ctbcAcct">（尚未公布，請洽總務）</span></div>
-    <div class="note">用 ATM「跨行／同行存款」功能，存入上面帳號即可；存款單據請保留，若總務對帳有疑問會用得上。</div>
+    <h2>② 貝殼集器線上繳費（現金期結束後啟用）</h2>
+    <div id="beike-off" style="font-size:14.5px;line-height:1.9;color:var(--ink-mid)">申請開通中——開通後這裡會出現<b>線上繳費按鈕</b>，手機點一下就能繳，不用再跑現場。</div>
+    <div id="beike-on" style="display:none">
+      <a id="beike-link" href="#" target="_blank" rel="noopener" style="display:block;text-align:center;background:var(--ac);color:#fff;font-weight:700;text-decoration:none;padding:.75rem;border-radius:10px;font-size:15px">💳 前往貝殼集器繳費 →</a>
+      <div class="note">繳費完成後系統會有紀錄，總務對帳後更新您的會費紀錄。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>③ 銀行轉帳／ATM 存款（備用）</h2>
+    <div class="note" style="margin-top:0;margin-bottom:.6rem">轉帳或 ATM 存款時，<b>備註／附言請填「繳費代碼」</b>（4 碼數字，總務發給您的）；不知道代碼填<b>姓名</b>也可以，總務會人工核對入帳。</div>
+    <div class="info-row"><span class="info-key">轉帳戶名</span><span class="info-val" data-org-text="bankHolder">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">金融機構／分行</span><span class="info-val" data-org-text="bank">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">帳號</span><span class="info-val" data-org-text="bankAcct">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">中信ATM存款戶名</span><span class="info-val" data-org-text="ctbcHolder">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">中信ATM存款帳號</span><span class="info-val" data-org-text="ctbcAcct">（尚未公布，請洽總務）</span></div>
   </div>
 
   <div class="note">🔐 本頁帳戶資訊為工會公開收款資料，非個人資料。會員個人的繳費紀錄與繳費代碼，只登記在幹部後台名冊、不會公開顯示。</div>
@@ -50,5 +61,21 @@
 
 <div id="verBadge"></div>
 <script src="org.js" defer></script>
+<script>
+// 貝殼集器連結（org.beikeUrl）發布後自動顯示繳費按鈕；總務姓名由幹部名單自動帶入
+(function(){
+  function apply(){
+    if(!window.EBNOrg) return;
+    var url=(EBNOrg.get().beikeUrl||"").trim();
+    var on=document.getElementById("beike-on"), off=document.getElementById("beike-off");
+    if(url){ document.getElementById("beike-link").href=url; on.style.display=""; off.style.display="none"; }
+    var fin=EBNOrg.cadreName("fin"), fin2=EBNOrg.cadreName("fin2");
+    var names=[fin,fin2].filter(Boolean).join("、");
+    if(names) document.getElementById("fin-names").textContent="總務："+names;
+  }
+  document.addEventListener("ebnorg:public",apply);
+  window.addEventListener("load",apply);
+})();
+</script>
 <script src="common.js" defer></script>
 </body></html>
