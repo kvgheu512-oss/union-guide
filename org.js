@@ -26,7 +26,8 @@
     ["docYear", "公文文號民國年", "例：115"],
     ["docSeq", "正式文號目前流水號", "下一件會用這個號，發文後自動+1"],
     ["docWordPrep", "籌備期文號「字別」", "籌備會的選舉公告、公報專用，與成立後公文分開編號，例：高總籌工"],
-    ["docSeqPrep", "籌備期文號目前流水號", "下一件會用這個號，發文後自動+1"]
+    ["docSeqPrep", "籌備期文號目前流水號", "下一件會用這個號，發文後自動+1"],
+    ["quhaoUrl", "雲端取號服務網址", "進階（解決撞號）：部署 Google Apps Script 取號服務後，把網址加 ?key=通行碼 貼進來；填了全站改用雲端共用流水號。留空＝各裝置本機計數"]
   ];
 
   // 已發布的公開資料（全站每個人都讀同一份 public.json）；本機草稿(KEY)會疊在上面
@@ -117,7 +118,34 @@
   function getLog() { try { return JSON.parse(localStorage.getItem(LOG) || "[]"); } catch (e) { return []; } }
   function setLog(arr) { try { localStorage.setItem(LOG, JSON.stringify(arr || [])); } catch (e) {} }
 
-  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY };
+  // ── 雲端取號（Google Apps Script 共用計數器）：org.quhaoUrl 有填就啟用 ──
+  function fmtNo(word, year, seq) {
+    var n = String(seq); while (n.length < 3) n = "0" + n;
+    return (word || "（字別）") + "字第" + (year || "") + n + "號";
+  }
+  function quhaoBase() { return String(get().quhaoUrl || "").trim(); }
+  function quhaoEnabled() { return !!quhaoBase(); }
+  function quhaoCall(params) {
+    var base = quhaoBase();
+    if (!base) return Promise.reject(new Error("未設定雲端取號服務網址"));
+    var sep = base.indexOf("?") >= 0 ? "&" : "?";
+    var ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+    var t = ctrl ? setTimeout(function () { ctrl.abort(); }, 10000) : null;
+    return fetch(base + sep + params, { method: "GET", signal: ctrl ? ctrl.signal : undefined })
+      .then(function (r) { if (t) clearTimeout(t); if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (j) { if (!j || j.ok !== true) throw new Error((j && j.err) || "服務回應異常"); return j; });
+  }
+  function quhaoPeek() { return quhaoCall("action=peek"); }
+  function quhaoNext(series, subject) {
+    var o = get();
+    var word = series === "prep" ? (o.docWordPrep || "") : (o.docWord || "");
+    return quhaoCall("action=next&series=" + encodeURIComponent(series) +
+      "&word=" + encodeURIComponent(word) + "&year=" + encodeURIComponent(o.docYear || "") +
+      "&subject=" + encodeURIComponent(subject || ""));
+  }
+  function quhaoGetLog(limit) { return quhaoCall("action=log&limit=" + (limit || 50)); }
+
+  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY, fmtNo: fmtNo, quhao: { enabled: quhaoEnabled, peek: quhaoPeek, next: quhaoNext, log: quhaoGetLog } };
   // 先用本機草稿即時填一次（不必等網路）；public.json 載到後再填一次（公告版蓋上來）
   function init() { fill(); loadPublic(function () { fill(); try { document.dispatchEvent(new CustomEvent("ebnorg:public")); } catch (e) {} }); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();

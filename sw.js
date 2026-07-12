@@ -32,6 +32,9 @@ self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
+  // ⚠️ 跨網域請求（雲端取號 Apps Script、外部 API 等）一律不攔——否則「取號」的回應被快取後，
+  //    每次都會拿到同一個舊號碼、計數器不動。只有下方 SHELL 裡的兩個 CDN 字型/函式庫例外。
+  if (url.origin !== self.location.origin && !/(^|\.)cdn\.jsdelivr\.net$/.test(url.hostname)) return;
   // 版本檔／法規檔：完全不攔，永遠走網路拿最新
   if (/(^|\/)(ver\.txt|laws\.json|laws-extra\.json|public\.json|lottery-freq\.json)$/.test(url.pathname)) return;
 

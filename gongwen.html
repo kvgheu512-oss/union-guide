@@ -134,7 +134,7 @@
         <button class="btn sm" id="no-auto" type="button" style="width:auto">🔢 自動取號</button>
       </div>
       <div class="hint">取號會自動把流水號 +1 並寫入<a href="wenhao.html" style="color:var(--red-deep);font-weight:700">文號流水簿</a>留底；籌備期與成立後的公文<b>分開編號</b>，不會混在一起。</div>
-      <div style="background:var(--gold-light,#FEF9E7);border:1px solid #EAD67A;border-radius:9px;padding:.55rem .8rem;font-size:12.5px;color:#5C4000;line-height:1.7;margin-top:.45rem">⚠️ <b>撞號防呆：</b>流水號存在<b>各裝置本機</b>、不會互相同步——請<b>固定由一個人（一台裝置）負責取號</b>；如果多位幹部在各自手機取號，會拿到<b>同一個號碼</b>。發文前可先開文號流水簿核對最後一號。</div>
+      <div id="collideWarn" style="background:var(--gold-light,#FEF9E7);border:1px solid #EAD67A;border-radius:9px;padding:.55rem .8rem;font-size:12.5px;color:#5C4000;line-height:1.7;margin-top:.45rem">⚠️ <b>撞號防呆：</b>流水號存在<b>各裝置本機</b>、不會互相同步——請<b>固定由一個人（一台裝置）負責取號</b>；如果多位幹部在各自手機取號，會拿到<b>同一個號碼</b>。發文前可先開文號流水簿核對最後一號。</div>
       <div class="grid2">
         <div><label>密等</label>
           <select id="f-secret"><option>普通</option><option>密</option><option>機密</option></select></div>
@@ -364,19 +364,33 @@ $('save-btn').addEventListener('click',()=>{
 });
 $('clear-btn').addEventListener('click',()=>{ if(confirm('清空目前表單？')){ fill({}); toast('已清空'); } });
 
-/* 自動取號：接文號流水簿（org.js 雙序列），取號即 +1 並留底 */
+/* 自動取號：雲端取號服務有設定就走雲端（全會共用計數器，不撞號）；否則本機計數 */
 $('no-auto').addEventListener('click',()=>{
   if(!window.EBNOrg){ toast('資料還在載入，稍等再按一次'); return; }
   const s=$('no-series').value;
   const o=EBNOrg.get(), wordKey=s==='prep'?'docWordPrep':'docWord';
   if(!o[wordKey]||!o.docYear){ toast('請先到基本資料中心填「'+(s==='prep'?'籌備期':'正式')+'字別」與「年」'); return; }
   if($('f-no').value.trim() && !confirm('發文字號欄已有內容，取新號會覆蓋並使流水號 +1，確定？')) return;
+  if(EBNOrg.quhao && EBNOrg.quhao.enabled()){
+    const btn=$('no-auto'); btn.disabled=true; btn.textContent='☁️ 取號中…';
+    EBNOrg.quhao.next(s, $('f-subject').value.trim())
+      .then(j=>{ $('f-no').value=j.no; toast('☁️ 雲端已取號並留底（全會共用，不會撞號）'); })
+      .catch(e=>{ toast('⚠ 雲端取號失敗：'+e.message+'（未取號）'); })
+      .finally(()=>{ btn.disabled=false; btn.textContent='🔢 自動取號'; });
+    return;
+  }
   $('f-no').value=EBNOrg.nextDocNo($('f-subject').value.trim(), s);
   toast('✅ 已取號並寫入文號流水簿');
 });
-/* 預設序列跟著網站階段：籌備中→籌備期 */
+/* 預設序列跟著網站階段：籌備中→籌備期；雲端取號啟用時切換提示文字 */
 document.addEventListener('ebnorg:public',function(){
-  try{ const ph=EBNOrg.publicData().phase||'prep'; $('no-series').value=ph==='prep'?'prep':'main'; }catch(_){}
+  try{
+    const ph=EBNOrg.publicData().phase||'prep'; $('no-series').value=ph==='prep'?'prep':'main';
+    if(EBNOrg.quhao && EBNOrg.quhao.enabled()){
+      const w=$('collideWarn');
+      if(w) w.innerHTML='☁️ <b>雲端共用取號已啟用</b>：流水號由全會共用的雲端計數器統一發放，多人同時取號也<b>不會撞號</b>；完整發文簿在雲端試算表隨時可查。';
+    }
+  }catch(_){}
 });
 
 let toastT; function toast(m){ const e=$('toast'); e.textContent=m; e.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>e.classList.remove('show'),1900); }

@@ -46,7 +46,7 @@
 </div>
 
 <main>
-  <div class="topnote">📌 文號的<b>字別、年、目前流水號</b>在 <a class="lnk" href="org.html">🏛️ 工會基本資料中心</a> 設定。在這裡<b>取號（發文）</b>會自動把流水號 +1 並寫進下方發文簿。資料只存本機、不上傳。<br>⚠️ <b>撞號防呆：</b>流水號存在<b>各裝置本機</b>、不會互相同步——請<b>固定由一個人（一台裝置）負責取號</b>，多人各自取號會拿到<b>同一個號碼</b>。</div>
+  <div class="topnote">📌 文號的<b>字別、年、目前流水號</b>在 <a class="lnk" href="org.html">🏛️ 工會基本資料中心</a> 設定。在這裡<b>取號（發文）</b>會自動把流水號 +1 並寫進下方發文簿。<span id="collideWarn"><br>⚠️ <b>撞號防呆：</b>流水號存在<b>各裝置本機</b>、不會互相同步——請<b>固定由一個人（一台裝置）負責取號</b>，多人各自取號會拿到<b>同一個號碼</b>。</span><span id="cloudOn" style="display:none"><br>☁️ <b>雲端共用取號已啟用</b>：全會共用同一個計數器，多人同時取號也<b>不會撞號</b>；發文簿完整紀錄在雲端試算表。</span></div>
 
   <div class="card">
     <h2>下一個可用文號</h2>
@@ -88,14 +88,39 @@
     var defSeries=phase==="prep"?"prep":"main";
     document.querySelector('input[name="series"][value="'+defSeries+'"]').checked=true;
     function curSeries(){ var r=document.querySelector('input[name="series"]:checked'); return r?r.value:defSeries; }
-    function refresh(){
-      $("nextNo").textContent=EBNOrg.peekDocNo(curSeries());
+    var cloudRows=null;   // 雲端模式最近抓到的發文簿（CSV 匯出用）
+    function renderLocalLog(){
       var log=EBNOrg.getLog().slice().reverse();
       $("cnt").textContent="共 "+log.length+" 筆";
       if(!log.length){ $("logWrap").innerHTML='<div class="hint">還沒有發文紀錄。上面取號後會自動列在這裡。</div>'; return; }
       $("logWrap").innerHTML='<table><tr><th>文號</th><th>日期</th><th>主旨</th><th></th></tr>'+
         log.map(function(e){ return '<tr><td>'+esc(e.no)+'</td><td>'+esc(e.date)+'</td><td>'+esc(e.subject||'')+'</td>'+
           '<td><button class="del" data-no="'+esc(e.no)+'">刪</button></td></tr>'; }).join("")+'</table>';
+    }
+    function refresh(){
+      var cloud=EBNOrg.quhao && EBNOrg.quhao.enabled();
+      $("collideWarn").style.display=cloud?"none":"";
+      $("cloudOn").style.display=cloud?"":"none";
+      if(!cloud){
+        $("nextNo").textContent=EBNOrg.peekDocNo(curSeries());
+        renderLocalLog();
+        return;
+      }
+      $("nextNo").textContent="☁️ 讀取中…";
+      EBNOrg.quhao.peek().then(function(j){
+        var o=EBNOrg.get(), s=curSeries();
+        var seq=s==="prep"?j.seqPrep:j.seqMain;
+        var word=s==="prep"?o.docWordPrep:o.docWord;
+        $("nextNo").textContent=EBNOrg.fmtNo(word,o.docYear,seq);
+      }).catch(function(e){ $("nextNo").textContent="⚠ 雲端連線失敗"; });
+      EBNOrg.quhao.log(50).then(function(j){
+        cloudRows=j.rows||[];
+        $("cnt").textContent="雲端最近 "+cloudRows.length+" 筆";
+        if(!cloudRows.length){ $("logWrap").innerHTML='<div class="hint">雲端發文簿還沒有紀錄。</div>'; return; }
+        $("logWrap").innerHTML='<table><tr><th>文號</th><th>日期</th><th>主旨</th><th>序列</th></tr>'+
+          cloudRows.map(function(r){ return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td></tr>'; }).join("")+'</table>'+
+          '<div class="hint">☁️ 雲端模式：要刪除或改紀錄，請直接開 Google 試算表。</div>';
+      }).catch(function(e){ $("logWrap").innerHTML='<div class="hint">⚠ 雲端發文簿讀取失敗：'+esc(e.message)+'</div>'; });
     }
     document.querySelectorAll('input[name="series"]').forEach(function(r){ r.addEventListener("change",refresh); });
     // public.json 是非同步載入：資料到了要重畫，否則全新裝置第一眼會停在「（字別）」
@@ -104,6 +129,19 @@
       var o=EBNOrg.get(), s=curSeries();
       var wordKey=s==="prep"?"docWordPrep":"docWord";
       if(!o[wordKey]||!o.docYear){ $("toast").textContent="⚠ 請先到基本資料中心填「"+(s==="prep"?"籌備期":"正式")+"字別」與「年」"; setTimeout(function(){$("toast").textContent="";},3000); return; }
+      if(EBNOrg.quhao && EBNOrg.quhao.enabled()){
+        var btn=$("issue"); btn.disabled=true;
+        EBNOrg.quhao.next(s, $("subject").value.trim()).then(function(j){
+          $("subject").value="";
+          $("toast").textContent="☁️ 已取號："+j.no+"（雲端已 +1 並留底）";
+          setTimeout(function(){$("toast").textContent="";},3500);
+          refresh();
+        }).catch(function(e){
+          $("toast").textContent="⚠ 雲端取號失敗："+e.message+"（未取號，請檢查網路後再試）";
+          setTimeout(function(){$("toast").textContent="";},5000);
+        }).finally(function(){ btn.disabled=false; });
+        return;
+      }
       var no=EBNOrg.nextDocNo($("subject").value.trim(), s);
       $("subject").value="";
       $("toast").textContent="✅ 已取號："+no+"（已 +1 並留底）";
@@ -117,8 +155,13 @@
       EBNOrg.setLog(log); refresh();
     });
     $("csv").addEventListener("click",function(){
-      var log=EBNOrg.getLog();
-      var csv="﻿文號,日期,主旨\n"+log.map(function(e){ return '"'+(e.no||'')+'","'+(e.date||'')+'","'+String(e.subject||'').replace(/"/g,'""')+'"'; }).join("\n");
+      var csv;
+      if(EBNOrg.quhao && EBNOrg.quhao.enabled() && cloudRows){
+        csv="﻿文號,日期,主旨,序列\n"+cloudRows.map(function(r){ return '"'+r[0]+'","'+r[1]+'","'+String(r[2]||'').replace(/"/g,'""')+'","'+r[3]+'"'; }).join("\n");
+      } else {
+        var log=EBNOrg.getLog();
+        csv="﻿文號,日期,主旨\n"+log.map(function(e){ return '"'+(e.no||'')+'","'+(e.date||'')+'","'+String(e.subject||'').replace(/"/g,'""')+'"'; }).join("\n");
+      }
       var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download="發文簿.csv"; a.click();
     });
     $("print").addEventListener("click",function(){ window.print(); });
