@@ -49,14 +49,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-07-14
+最後更新：2026-07-15
 
 最近 commits：
+  8c07431 自動更新 CLAUDE.md 最近進度（Stop hook）
   05c1448 自動更新 CLAUDE.md 最近進度（Stop hook）
   0e68646 自動更新 CLAUDE.md 最近進度（Stop hook）
   ea1e550 自動更新 CLAUDE.md 最近進度（Stop hook）
   8936513 beike-prep.html 說明文字改清楚：實質受益人是洗錢防制法用語（誰對組織有最終控制權），不是誰拿到金錢好處，非營利組織一樣要填、跟理事長自己也繳會費無關——避免以後看這頁的人誤解
-  f558a85 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
