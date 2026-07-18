@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-18
 
 最近 commits：
+  a68945c 自動更新 CLAUDE.md 最近進度（Stop hook）
   e1eae0d 修正簽到與領票重疊：報到（14:00）改成只簽到、不領票；領票併到15:00選舉開始前一次辦完，跟選舉人領票名冊簽名同時進行。分工表報到組/選務組職掌同步拆開，不再兩組都寫「發放選票」。
   db724b2 自動更新 CLAUDE.md 最近進度（Stop hook）
   c09b74f 自動更新 CLAUDE.md 最近進度（Stop hook）
   ab5caef 自動更新 CLAUDE.md 最近進度（Stop hook）
-  db29d92 新增理監事候選人名單自助編輯功能，總務/法規自己新增修改刪除候選人，不用每次找我改
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
