@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-18
 
 最近 commits：
+  c09b74f 自動更新 CLAUDE.md 最近進度（Stop hook）
   ab5caef 自動更新 CLAUDE.md 最近進度（Stop hook）
   db29d92 新增理監事候選人名單自助編輯功能，總務/法規自己新增修改刪除候選人，不用每次找我改
   87139cd 自動更新 CLAUDE.md 最近進度（Stop hook）
   dae078f 大會流程議程補上「互選理事長」：15:30-16:00理監事會議原本只寫入會申請書審查，漏了章程第18條要求的理事互選理事長程序，一併排入
-  fa8b6ef 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
