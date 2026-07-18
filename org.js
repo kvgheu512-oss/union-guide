@@ -46,6 +46,18 @@
   function setCadres(o) { try { localStorage.setItem(CKEY, JSON.stringify(o || {})); } catch (e) {} }
   function cadreName(key) { return cadres()[key] || CADRE_DEFAULTS[key] || ""; }
 
+  // 理監事候選人名單（登記期，公開組／法規組維護；每屆選舉可重新增刪，不綁死本屆）
+  var CANDKEY = "ebn_candidates_v1";
+  function candidatesDraft() { try { return JSON.parse(localStorage.getItem(CANDKEY)); } catch (e) { return null; } }
+  // 跟 get() 同邏輯：本機草稿優先（讓正在編輯的裝置永遠看得到自己剛存的東西）；
+  // 沒有草稿（例如其他裝置、還沒編輯過）才回退到已發布版本。
+  function candidates() {
+    var d = candidatesDraft();
+    var src = d || (_pub && _pub.candidates) || { directors: [], supervisors: [] };
+    return { directors: (src.directors || []).slice(), supervisors: (src.supervisors || []).slice() };
+  }
+  function setCandidates(o) { try { localStorage.setItem(CANDKEY, JSON.stringify({ directors: (o && o.directors) || [], supervisors: (o && o.supervisors) || [] })); } catch (e) {} }
+
   function draft() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   // get()＝已發布的 org ＋ 本機草稿（草稿優先，讓正在編輯的人看到自己最新的）
   function get() { return Object.assign({}, (_pub && _pub.org) || {}, draft()); }
@@ -69,6 +81,7 @@
     base.org = JSON.parse(JSON.stringify(orgObj || get()));
     delete base.org.quhaoUrl;               // 雲端取號網址（含通行碼）絕不發布——公開等於把鑰匙貼在門上
     base.cadres = cadres();                 // 連同幹部名單一起發布（全站讀同一份）
+    base.candidates = candidates();         // 連同理監事候選人名單一起發布（成立大會手冊選舉公報讀這份）
     base.updated = new Date().toISOString().slice(0, 10);
     return base;
   }
@@ -147,7 +160,7 @@
   }
   function quhaoGetLog(limit) { return quhaoCall("action=log&limit=" + (limit || 50)); }
 
-  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY, fmtNo: fmtNo, quhao: { enabled: quhaoEnabled, peek: quhaoPeek, next: quhaoNext, log: quhaoGetLog } };
+  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY, candidates: candidates, setCandidates: setCandidates, CANDKEY: CANDKEY, fmtNo: fmtNo, quhao: { enabled: quhaoEnabled, peek: quhaoPeek, next: quhaoNext, log: quhaoGetLog } };
   // 先用本機草稿即時填一次（不必等網路）；public.json 載到後再填一次（公告版蓋上來）
   function init() { fill(); loadPublic(function () { fill(); try { document.dispatchEvent(new CustomEvent("ebnorg:public")); } catch (e) {} }); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();

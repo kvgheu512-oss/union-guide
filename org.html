@@ -76,6 +76,17 @@
     <div id="cadre-fields"></div>
   </div>
 
+  <div class="card" style="border-top-color:#7A1FA2">
+    <h2 style="font-family:'Noto Serif TC',serif;color:#5C1478;font-size:16px;margin-bottom:.4rem">🗳 理監事候選人名單（選舉公報）</h2>
+    <div class="hint" style="font-size:12.5px;line-height:1.8;margin-bottom:.5rem">候選人登記期間，在這裡<b>自己新增／修改／刪除</b>候選人的姓名、經歷、政見，不用每次都找 Claude 改。存好、發布後，成立大會手冊（<code>shouce.html</code>）柒節的選舉公報會自動帶入。<br><span style="color:#999">每屆選舉都可以重新清空、重新登記，不綁死這一屆的名單。</span></div>
+    <div style="font-weight:700;color:#5C1478;margin-top:.6rem">理事候選人</div>
+    <div id="cand-directors"></div>
+    <button class="save" id="addDirector" type="button" style="background:#5C1478;margin-top:.5rem">＋ 新增理事候選人</button>
+    <div style="font-weight:700;color:#5C1478;margin-top:1rem">監事候選人</div>
+    <div id="cand-supervisors"></div>
+    <button class="save" id="addSupervisor" type="button" style="background:#5C1478;margin-top:.5rem">＋ 新增監事候選人</button>
+  </div>
+
   <div class="card" style="border-top-color:#B7860B">
     <h2 style="font-family:'Noto Serif TC',serif;color:#8A6D0B;font-size:16px;margin-bottom:.4rem">📢 發布上線（讓所有人看得到）</h2>
     <div class="hint" style="font-size:12.8px;line-height:1.85;color:#5C4000;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.6rem .8rem">先按上面「儲存」，再按下面「產生公告檔」。把產生的內容<b>貼給 Claude（或交給網站維護者）上線</b>，網站更新後<b>所有人</b>都看得到。<br>（純靜態網站沒有後端，所以要靠這一步「上線」；之後要改，改完再發布一次即可。）</div>
@@ -169,6 +180,39 @@
     EBNOrg.CADRE_ROLES.forEach(function(r){ var el=$("cadre-"+r[0]); if(el) o[r[0]]=el.value.trim(); });
     EBNOrg.setCadres(o);
   }
+
+  // 理監事候選人名單：渲染、新增、刪除、讀取
+  var candData=null, candEdited=false;
+  function candRowHtml(type,i,row){
+    row=row||{};
+    var esc=function(s){ return String(s==null?"":s).replace(/"/g,"&quot;"); };
+    return '<div class="cand-row" data-type="'+type+'" data-i="'+i+'" style="border:1px solid var(--border);border-radius:10px;padding:.6rem .7rem;margin-top:.5rem;position:relative">'+
+      '<label style="margin-top:0">姓名</label><input class="cand-name" type="text" value="'+esc(row.name)+'" placeholder="候選人姓名">'+
+      '<label>經歷</label><input class="cand-exp" type="text" value="'+esc(row.exp)+'" placeholder="經歷（可留空）">'+
+      '<label>政見</label><input class="cand-platform" type="text" value="'+esc(row.platform)+'" placeholder="政見（可留空）">'+
+      '<button type="button" class="cand-del" style="margin-top:.5rem;background:#B33A3A;color:#fff;border:0;border-radius:8px;padding:.4rem .8rem;font-size:13px;cursor:pointer">🗑 刪除這位候選人</button>'+
+      '</div>';
+  }
+  function renderCandidates(){
+    if(!window.EBNOrg) return;
+    candData=EBNOrg.candidates();
+    var dBox=$("cand-directors"), sBox=$("cand-supervisors");
+    if(dBox) dBox.innerHTML=(candData.directors||[]).map(function(r,i){ return candRowHtml("directors",i,r); }).join("")||'<div class="hint">目前沒有候選人，按下面「＋ 新增」加入。</div>';
+    if(sBox) sBox.innerHTML=(candData.supervisors||[]).map(function(r,i){ return candRowHtml("supervisors",i,r); }).join("")||'<div class="hint">目前沒有候選人，按下面「＋ 新增」加入。</div>';
+  }
+  function readCandidates(){
+    var out={directors:[],supervisors:[]};
+    document.querySelectorAll(".cand-row").forEach(function(el){
+      var type=el.getAttribute("data-type");
+      out[type].push({
+        name:(el.querySelector(".cand-name")||{}).value?.trim()||"",
+        exp:(el.querySelector(".cand-exp")||{}).value?.trim()||"",
+        platform:(el.querySelector(".cand-platform")||{}).value?.trim()||""
+      });
+    });
+    return out;
+  }
+  function saveCandidates(){ if(window.EBNOrg) EBNOrg.setCandidates(readCandidates()); }
   // 填住家會址時主動跳出說明，確保「知情同意」
   function consented(){ var c=$("org-addrConsent"); return (c&&c.checked) || sessionStorage.getItem("ebn_addr_notice")==="1"; }
   function showAddrNotice(){
@@ -212,16 +256,25 @@
   }
   function start(){
     if(!window.EBNOrg){ setTimeout(start,30); return; }
-    render(); fillExtras(); renderCadres();
+    render(); fillExtras(); renderCadres(); renderCandidates();
+    document.body.addEventListener("input",function(e){ if(e.target.closest&&e.target.closest(".cand-row")) candEdited=true; });
+    document.body.addEventListener("click",function(e){
+      if(e.target&&e.target.id==="addDirector"){ var d=readCandidates(); d.directors.push({name:"",exp:"",platform:""}); EBNOrg.setCandidates(d); candEdited=true; renderCandidates(); }
+      if(e.target&&e.target.id==="addSupervisor"){ var s=readCandidates(); s.supervisors.push({name:"",exp:"",platform:""}); EBNOrg.setCandidates(s); candEdited=true; renderCandidates(); }
+      if(e.target&&e.target.classList&&e.target.classList.contains("cand-del")){
+        var row=e.target.closest(".cand-row"); var type=row.getAttribute("data-type"); var i=parseInt(row.getAttribute("data-i"),10);
+        var cur=readCandidates(); cur[type].splice(i,1); EBNOrg.setCandidates(cur); candEdited=true; renderCandidates();
+      }
+    });
     ["m-prep-date","m-prep-time","m-prep-place","m-prep-url","m-found-date","m-found-time","m-found-place","m-found-url","sign-now","sign-goal"].forEach(function(id){ var e=$(id); if(e) e.addEventListener("input",function(){ extrasEdited=true; }); });
     ["phase-prep","phase-official"].forEach(function(id){ var e=$(id); if(e) e.addEventListener("change",function(){ extrasEdited=true; }); });
     $("saveBtn").addEventListener("click",function(){
-      EBNOrg.set(readForm()); saveCadres();
+      EBNOrg.set(readForm()); saveCadres(); saveCandidates();
       var t=$("toast"); t.textContent="✅ 已存這支手機。要讓大家看到，請按下面『發布上線』";
       setTimeout(function(){ t.textContent=""; },3500);
     });
     $("pubBtn").addEventListener("click",function(){
-      EBNOrg.set(readForm()); saveCadres();       // 順手存一下
+      EBNOrg.set(readForm()); saveCadres(); saveCandidates();       // 順手存一下
       var full=EBNOrg.buildPublic(readForm());
       var ex=readExtras(); full.phase=ex.phase; full.meet=ex.meet; full.sign=ex.sign;   // 首頁模式/會議/連署一起發布
       var txt=JSON.stringify(full,null,2);
@@ -238,7 +291,7 @@
     // 一點到「會址」就跳說明，確保知情同意（用事件委派，重繪後仍有效）
     document.addEventListener("focusin",function(e){ if(e.target&&e.target.id==="org-addr"&&!consented()) showAddrNotice(); });
     // public.json 載到後，若使用者還沒動手編輯，就把公告版填上來
-    document.addEventListener("ebnorg:public",function(){ if(!edited) render(); fillExtras(); if(!cadreEdited) renderCadres(); });
+    document.addEventListener("ebnorg:public",function(){ if(!edited) render(); fillExtras(); if(!cadreEdited) renderCadres(); if(!candEdited) renderCandidates(); });
   }
   start();
 })();
