@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-18
 
 最近 commits：
+  dae078f 大會流程議程補上「互選理事長」：15:30-16:00理監事會議原本只寫入會申請書審查，漏了章程第18條要求的理事互選理事長程序，一併排入
+  fa8b6ef 自動更新 CLAUDE.md 最近進度（Stop hook）
   ea5feae 自動更新 CLAUDE.md 最近進度（Stop hook）
   27ca176 新增 prep3.html：第三次籌備委員會會議通知暨議程（7/26中午，楊淯涵／莊瑋聆／陳依婷出席）
   e7fe7bb 自動更新 CLAUDE.md 最近進度（Stop hook）
-  5d4a54d 填上入會費1,250元、每月經常會費250元，取代章程草案與入會申請書上的空白欄位
-  460a306 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
