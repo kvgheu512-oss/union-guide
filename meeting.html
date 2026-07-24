@@ -728,18 +728,32 @@ function electHTML(){
   return '<div class="h2">選舉結果</div>'+body+inter;
 }
 function docProxy(){
-  return header()+`<div class="sub">${esc(cur.type||'會員大會')}　委託出席同意書</div>
+  return header()+`<div class="sub">${esc(cur.type||'會員大會')}　委託書</div>
     <div class="meta" style="margin-top:1rem;line-height:2.4">
-      茲因故無法親自出席本會「${esc(cur.type||'○○大會')}」（開會日期：${rocDate(cur.date)}），
-      特委託下列會員代理出席並行使表決權，特立此書。
+      本人＿＿＿＿＿＿＿＿因故無法親自出席（工會名稱）「${esc(cur.type||'○○大會')}」
+      （開會日期：${rocDate(cur.date)}），故委託＿＿＿＿＿＿＿＿出席本次會議。此致<br>
+      高雄榮民總醫院企業工會
+    </div>
+    <div class="meta" style="margin-top:1.2rem;line-height:2.2">
+      委託事項：<br>
+      □ 全權委託<br>
+      □ 部分委託（請勾選：□發言　□提案　□表決　□選舉　□罷免）
     </div>
     <div class="meta" style="margin-top:1.5rem;line-height:3">
-      委　託　人（簽章）：＿＿＿＿＿＿＿＿　　會員編號：＿＿＿＿＿<br>
-      受託人姓名（簽章）：＿＿＿＿＿＿＿＿　　會員編號：＿＿＿＿＿<br>
+      委　託　人簽章：＿＿＿＿＿＿＿＿<br>
+      受　託　人簽章：＿＿＿＿＿＿＿＿<br>
       中　華　民　國　＿＿＿　年　＿＿　月　＿＿　日
     </div>
-    <div class="meta" style="margin-top:1.6rem;font-size:12px;color:#555;line-height:1.9">
-      ※ 依《工會會員大會委託出席辦法》：一、每一會員以受託一人為限。二、受託代理之人數，不得超過親自出席人數之三分之一。三、本委託書應於開會前繳交大會工作人員查驗。
+    <div class="meta" style="margin-top:1rem;border-top:1px dashed #999;padding-top:.6rem">
+      編號：＿＿＿＿號（本編號由報到處人員依受託人報到先後順序編列）
+    </div>
+    <div class="meta" style="margin-top:.8rem;font-size:12px;color:#555;line-height:1.9">
+      注意事項：<br>
+      ① 每 1 位會員僅得接受 1 人之委託；如有重複委託，所有委託均無效。<br>
+      ② 受託人須先辦理親自出席之報到、領取出席證後，再辦理委託報到。<br>
+      ③ 會議開始後，親自出席人數三分之一以內之委託為有效；主席將宣布有效委託之編號並發給委託證，逾額之委託為無效，應繳回委託證，亦不得領取選舉／罷免票。<br>
+      ④ 委託人若中途親自出席，視同終止委託關係。<br>
+      ⑤ 依《工會會員大會或會員代表大會委託出席辦法》第6條第2項：主席宣布開始進行選舉或罷免程序後，即不得再行委託或受委託——請務必在會議開始、選舉程序啟動「之前」完成委託報到。
     </div>`;
 }
 function docElectRoster(){
