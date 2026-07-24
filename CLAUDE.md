@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-24
 
 最近 commits：
+  8cc659f 自動更新 CLAUDE.md 最近進度（Stop hook）
   d704a6f 自動更新 CLAUDE.md 最近進度（Stop hook）
   5a8c685 修正委託出席規則：更正先前誤判「章程沒寫就不能委託」，其實有《工會會員大會或會員代表大會委託出席辦法》這部法規當預設依據，工會章程沒特別規定時本來就適用
   ed17a5b 自動更新 CLAUDE.md 最近進度（Stop hook）
   7f62976 自動更新 CLAUDE.md 最近進度（Stop hook）
-  d991724 重編8/30時程，擠出10分鐘機動緩衝給最容易拖時間的開票計票
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
