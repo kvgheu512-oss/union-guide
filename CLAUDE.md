@@ -47,14 +47,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-07-28
+最後更新：2026-07-29
 
 最近 commits：
+  74acc02 自動更新 CLAUDE.md 最近進度（Stop hook）
   561d6d4 jb-menu 新增洗腎室加班情境（4 項）
   f29bdcd 新增加班情境回報頁（jb-menu.html）＋ Google Apps Script 整合
   995782f 自動更新 CLAUDE.md 最近進度（Stop hook）
   d890e81 自動更新 CLAUDE.md 最近進度（Stop hook）
-  9bc5554 幹部功能表頂端加入首頁模式切換卡片 版本 2026062706
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
