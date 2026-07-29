@@ -86,6 +86,12 @@
          <input id="ch-monthly" type="number" inputmode="decimal" value="0.5" min="0.5" step="0.1" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 10px;font-size:15px;background:#FEF9E7;font-family:inherit">
          <span style="white-space:nowrap">%（下限 0.5%）</span>
        </div>
+       <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;color:#7A5600">
+         <span style="white-space:nowrap">試算：月薪</span>
+         <input id="ch-wage-sample" type="number" inputmode="numeric" placeholder="40000" min="0" style="width:90px;border:1.5px solid #EAD67A;border-radius:8px;padding:5px 8px;font-size:14px;background:#fff;font-family:inherit">
+         <span style="white-space:nowrap">元 → 常月會費約</span>
+         <b id="ch-wage-result" style="white-space:nowrap;color:#8A5600">＿＿元／月</b>
+       </div>
      </div>
 
      <div style="margin:.7rem 0">
@@ -578,6 +584,22 @@ window._chAddr = null;
     });
     if(saved && (saved.zip2||saved.road||saved.rest)) window._chAddr.set(saved);
   }
+})();
+
+// ── §26 常月會費試算：輸入月薪，即時算出百分比對應的實際金額
+(function(){
+  var pct=document.getElementById('ch-monthly'), wage=document.getElementById('ch-wage-sample'), out=document.getElementById('ch-wage-result');
+  if(!pct||!wage||!out) return;
+  var WK='charter_wage_sample_v1';
+  try{ var saved=localStorage.getItem(WK); if(saved) wage.value=saved; }catch(e){}
+  function calc(){
+    var p=parseFloat(pct.value), w=parseFloat(wage.value);
+    if(!isFinite(p)||p<=0||!isFinite(w)||w<=0){ out.textContent='＿＿元／月'; return; }
+    out.textContent=Math.round(w*p/100)+'元／月';
+    try{ localStorage.setItem(WK, wage.value); }catch(e){}
+  }
+  pct.addEventListener('input',calc); wage.addEventListener('input',calc);
+  calc();
 })();
 
 // ── 成立大會議事程序草案：填空即時套用＋localStorage 持久化
