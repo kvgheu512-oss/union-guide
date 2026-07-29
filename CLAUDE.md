@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-29
 
 最近 commits：
+  f06376f 經常會費改回符合工會法第28條第2項的浮動制：當月工資之0.5%（不得低於法定最低標準），按月繳納，取代先前寫死的固定金額（無論250算月費或年費都低於法定下限，對大多數薪資都不合法）。入會費1,250元暫不動。「當月份經常會費」用語同步改回。
+  6bd27cd 自動更新 CLAUDE.md 最近進度（Stop hook）
   44920ac 自動更新 CLAUDE.md 最近進度（Stop hook）
   dcb40ba 經常會費改為「每人每年250元」（原為每月250元），章程/入會申請書/會籍辦法「當月份」用語同步改「當年度」
   7e105dd 自動更新 CLAUDE.md 最近進度（Stop hook）
-  ecc58c7 自動更新 CLAUDE.md 最近進度（Stop hook）
-  b7874c2 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
