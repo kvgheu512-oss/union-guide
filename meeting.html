@@ -686,23 +686,27 @@ function docNotice(){
 function docSign(){
   const mem=activeMembers();
   const total=mem.length, present=mem.filter(m=>cur.present[m.id]).length, need=Math.floor(total/2)+1;
-  let rows=mem.map((m,i)=>`<tr><td class="c">${i+1}</td><td>${esc(m.name)}</td><td>${esc(m.dept||'')}</td><td></td></tr>`).join('');
-  for(let i=0;i<4;i++) rows+=`<tr><td class="c">${mem.length+i+1}</td><td></td><td></td><td></td></tr>`;
-  return header()+`<div class="sub">${esc(cur.type)}　${esc(cur.no)}　會議簽到表</div>
+  let rows=mem.map((m,i)=>`<tr><td class="c">${i+1}</td><td>${esc(m.name)}</td><td>${esc(m.dept||'')}</td><td></td><td></td><td></td></tr>`).join('');
+  for(let i=0;i<4;i++) rows+=`<tr><td class="c">${mem.length+i+1}</td><td></td><td></td><td></td><td></td><td></td></tr>`;
+  return header()+`<div class="sub">${esc(cur.type)}　${esc(cur.no)}　會員（代表）大會簽到名冊</div>
     <div class="meta"><b>開會時間</b>：${rocDate(cur.date)} ${cur.time||''}</div>
     <div class="meta"><b>開會地點</b>：${esc(cur.place||'＿＿＿＿')}</div>
-    <div class="meta"><b>法定人數</b>：應到 ${total} 人，過半需 ${total?need:'＿'} 人（章程第32條：會員過半數出席始得開會）</div>
-    <table><thead><tr><th style="width:3em">編號</th><th>姓名</th><th>單位</th><th style="width:30%">簽　名</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="meta"><b>法定人數</b>：應到 ${total} 人，過半需 ${total?need:'＿'} 人（親自出席＋有效委託合計，章程第32條）</div>
+    <table><thead><tr><th style="width:3em">編號</th><th>會員</th><th>單位</th><th style="width:16%">親自出席簽到</th><th style="width:20%">委託出席（受託人）簽到</th><th style="width:8%">委託序</th></tr></thead><tbody>${rows}</tbody></table>
     ${cur.guest?`<div class="h2">列席／來賓</div><p>${esc(cur.guest).replace(/\n/g,'、')}</p>`:''}
-    <div class="meta" style="margin-top:1rem">實到：＿＿＿ 人　　主席：＿＿＿＿　　記錄：＿＿＿＿</div>
-    <div class="meta" style="margin-top:.6rem;font-size:12px;color:#555">※ 請與會者<b>親筆簽名</b>，本表存查；正式大會之簽到簿併同會議紀錄報主管機關。</div>`;
+    <div class="meta" style="margin-top:1rem">親自出席：＿＿＿人　　委託出席：＿＿＿人　　主席：＿＿＿＿　　記錄：＿＿＿＿</div>
+    <div class="meta" style="margin-top:.6rem;font-size:12px;color:#555">※ 委託出席須先辦理親自出席之受託人報到，再依委託報到先後次序編列委託序；委託出席人數不得超過親自出席人數三分之一，超過部分無效。請與會者<b>親筆簽名</b>，本表存查；正式大會之簽到簿併同會議紀錄報主管機關。</div>`;
 }
 function docMinutes(){
   const mem=activeMembers(), present=mem.filter(m=>cur.present[m.id]);
   let html=header()+`<div class="sub">${esc(cur.type)}　${esc(cur.no)}　會議紀錄</div>
     <div class="meta"><b>時　　間</b>：${rocDate(cur.date)} ${cur.time||''}</div>
     <div class="meta"><b>地　　點</b>：${esc(cur.place||'＿＿＿＿')}</div>
-    <div class="meta"><b>出席會員</b>：${present.length} 人（應到 ${mem.length} 人）${present.length?'　'+present.map(m=>esc(m.name)).join('、'):''}</div>
+    <div class="meta"><b>與會人員</b>：應出席 ${mem.length} 人<br>
+      親自出席：計 ${present.length} 人${present.length?'（'+present.map(m=>esc(m.name)).join('、')+'）':''}<br>
+      委託出席：計＿＿人（受託人：＿＿＿＿）<br>
+      請假人員：計＿＿人（＿＿＿＿）<br>
+      缺席人員：計＿＿人（＿＿＿＿）</div>
     ${cur.guest?`<div class="meta"><b>列　　席</b>：${esc(cur.guest).replace(/\n/g,'、')}</div>`:''}
     <div class="meta"><b>主　　席</b>：${esc(cur.chair||'＿＿＿')}　　<b style="min-width:auto">記錄</b>：${esc(cur.rec||'＿＿＿')}</div>`;
   AG_KINDS.forEach(k=>{
@@ -710,6 +714,7 @@ function docMinutes(){
     if(items.length){ html+=`<div class="h2">${k}</div><ol>`+items.map(a=>`<li>${esc(a.title)}${a.decision?`<br><b>決議：</b>${esc(a.decision)}`:'<br>決議：＿＿＿＿＿＿＿＿'}</li>`).join('')+`</ol>`; }
   });
   html+=electHTML();
+  html+=`<div class="meta" style="margin-top:1rem">散會時間：＿＿＿時＿＿＿分</div>`;
   html+=`<div class="sign-line">主席：＿＿＿＿＿＿　　　記錄：＿＿＿＿＿＿</div>`;
   return html;
 }
@@ -725,7 +730,8 @@ function electHTML(){
   var inter='';
   if(e.chair) inter+='<p>第一屆第一次理事會：經理事互選，<b>'+esc(e.chair)+'</b> 當選理事長。</p>';
   if(e.supchair) inter+='<p>第一屆第一次監事會：經監事互選，<b>'+esc(e.supchair)+'</b> 當選常務監事。</p>';
-  return '<div class="h2">選舉結果</div>'+body+inter;
+  inter+='<p>主席徵詢在場有無異議：□無異議　□有異議（異議者姓名及內容：＿＿＿＿＿＿）</p>';
+  return '<div class="h2">選舉事項</div>'+body+inter;
 }
 function docProxy(){
   return header()+`<div class="sub">${esc(cur.type||'會員大會')}　委託書</div>
