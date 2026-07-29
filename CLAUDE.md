@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-29
 
 最近 commits：
+  44920ac 自動更新 CLAUDE.md 最近進度（Stop hook）
   dcb40ba 經常會費改為「每人每年250元」（原為每月250元），章程/入會申請書/會籍辦法「當月份」用語同步改「當年度」
   7e105dd 自動更新 CLAUDE.md 最近進度（Stop hook）
   ecc58c7 自動更新 CLAUDE.md 最近進度（Stop hook）
   b7874c2 自動更新 CLAUDE.md 最近進度（Stop hook）
-  54ff07b 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### 本 session 工作紀要（2026-06-27）
