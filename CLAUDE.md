@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-30
 
 最近 commits：
+  168da3f 修正第二次籌備委員會會議紀錄附件二預算表筆誤：入會費備註「40人*125元」漏打一個0，應為「40人*1250元」（金額欄50000已是照1250元/人算，與大會手冊附件四對照後改正）
+  8b51730 自動更新 CLAUDE.md 最近進度（Stop hook）
   6a61071 自動更新 CLAUDE.md 最近進度（Stop hook）
   4a8e27d 自動更新 CLAUDE.md 最近進度（Stop hook）
   46798df 自動更新 CLAUDE.md 最近進度（Stop hook）
-  6459a5b 自動更新 CLAUDE.md 最近進度（Stop hook）
-  807568b 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
