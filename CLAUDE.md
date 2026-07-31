@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-31
 
 最近 commits：
+  b025a2b 補充CLAUDE.md「本session工作紀要」完整記錄本次(7/30-31)所有變動：籌備委員名單改6人版與蔣雅正確拼字、第三次籌備會改期8/9及案由一~七全清單、幹部職務出缺尚未決議的現況、Word檔產製方式改用npm docx、引註來源更正、sandbox的LibreOffice轉檔壞掉等，讓新對話能直接接手不用重問
+  83f039d 修正姓名錯誤：蔣雅誤打成「蔣雅竹」，多打一個「竹」字，本人全名就是蔣雅兩個字。修正 shouce.html、prep3.html、qiejieshu.html 共4處
+  403928e 自動更新 CLAUDE.md 最近進度（Stop hook）
   3319615 自動更新 CLAUDE.md 最近進度（Stop hook）
   7db576b 自動更新 CLAUDE.md 最近進度（Stop hook）
-  cd697c0 第三次籌備會（8/9）議程新增「案由七：籌備委員異動後幹部職務遞補案」，把莊瑋聆/葉柏宏退出後總務(一)/法規(二)職缺怎麼處理、黃敏遞補哪個職務，列為當天現場討論決議事項，不用先問過再開會
-  4221a62 自動更新 CLAUDE.md 最近進度（Stop hook）
-  de72589 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
