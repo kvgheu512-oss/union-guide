@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-07-31
 
 最近 commits：
+  36b61d0 自動更新 CLAUDE.md 最近進度（Stop hook）
   5c6731c Merge branch 'claude/union-3-1-u9j828'
   7db576b 自動更新 CLAUDE.md 最近進度（Stop hook）
   cd697c0 第三次籌備會（8/9）議程新增「案由七：籌備委員異動後幹部職務遞補案」，把莊瑋聆/葉柏宏退出後總務(一)/法規(二)職缺怎麼處理、黃敏遞補哪個職務，列為當天現場討論決議事項，不用先問過再開會
   4221a62 自動更新 CLAUDE.md 最近進度（Stop hook）
-  de72589 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
