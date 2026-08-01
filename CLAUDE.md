@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-01
 
 最近 commits：
+  30efbc6 填入會址：高雄市仁武區德新家93巷7號（理事長住家）
+  3b2b651 自動更新 CLAUDE.md 最近進度（Stop hook）
   19a9119 自動更新 CLAUDE.md 最近進度（Stop hook）
   b28c4ec 自動更新 CLAUDE.md 最近進度（Stop hook）
   36b61d0 自動更新 CLAUDE.md 最近進度（Stop hook）
-  5c6731c Merge branch 'claude/union-3-1-u9j828'
-  7db576b 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
