@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-01
 
 最近 commits：
+  76611b2 自動更新 CLAUDE.md 最近進度（Stop hook）
   bb6359c 經常會費改為「250元或當月工資0.5%較高者」，兼顧會員大會決議與法定下限
   ebf2cb7 自動更新 CLAUDE.md 最近進度（Stop hook）
   677499c 自動更新 CLAUDE.md 最近進度（Stop hook）
   21cf14d 自動更新 CLAUDE.md 最近進度（Stop hook）
-  1c9d64c 修正3個真bug：複製章程會址失真、理事長姓名兩套資料不同步、附件六優惠條款牴觸法定下限
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
