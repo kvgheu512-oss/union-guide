@@ -391,7 +391,7 @@ function toast(msg){
 document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('annDate').value = today();
   // 嘗試帶入發布人（理事長）
-  function tryFill(){ if(window.EBNOrg){ var o=EBNOrg.get(); if(o.chair && !document.getElementById('annIssuer').value) document.getElementById('annIssuer').value='理事長 '+o.chair; } }
+  function tryFill(){ if(window.EBNOrg){ var o=EBNOrg.get(); var chair=o.chair||EBNOrg.cadreName('chair'); if(chair && !document.getElementById('annIssuer').value) document.getElementById('annIssuer').value='理事長 '+chair; } }
   if(window.EBNOrg) tryFill();
   else{ var t=setInterval(function(){ if(window.EBNOrg){ clearInterval(t); tryFill(); }},60); }
 });

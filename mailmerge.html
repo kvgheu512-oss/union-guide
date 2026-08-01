@@ -135,7 +135,7 @@
     var ids=checkedIds(), ms=members().filter(function(m){return ids.indexOf(m.id)>=0;});
     if(!ms.length){ $("genhint").textContent="請至少勾選一位會員"; return; }
     var org=o.fullName||"（請先到基本資料中心填工會全名）";
-    var chair=o.chair||"____", addr=o.addr||"", tel=o.tel||"";
+    var chair=o.chair||(window.EBNOrg&&EBNOrg.cadreName('chair'))||"____", addr=o.addr||"", tel=o.tel||"";
     var docNo="";
     if(t==="notice" && xval("mUseNo") && window.EBNOrg){ docNo=EBNOrg.nextDocNo(xval("mName")||"開會通知"); }
     else if(t==="notice" && window.EBNOrg){ docNo=EBNOrg.peekDocNo(); }

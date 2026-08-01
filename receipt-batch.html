@@ -110,7 +110,7 @@
   });
   $("gen").addEventListener("click",function(){
     var o=(window.EBNOrg?EBNOrg.get():{});
-    var org=o.fullName||"（請先到基本資料中心填工會全名）", chair=o.chair||"____";
+    var org=o.fullName||"（請先到基本資料中心填工會全名）", chair=o.chair||(window.EBNOrg&&EBNOrg.cadreName('chair'))||"____";
     var rows=parseLines(); if(!rows.length){ $("genhint").textContent="請先貼上繳費名單"; return; }
     var year=$("year").value.trim()||new Date().getFullYear()-1911, type=$("type").value.trim()||"會費";
     var start=parseInt($("startNo").value,10)||1, tot=0;
