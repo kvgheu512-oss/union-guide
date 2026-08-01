@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-01
 
 最近 commits：
+  1c9d64c 修正3個真bug：複製章程會址失真、理事長姓名兩套資料不同步、附件六優惠條款牴觸法定下限
+  eb6939c 自動更新 CLAUDE.md 最近進度（Stop hook）
   df6a3be 自動更新 CLAUDE.md 最近進度（Stop hook）
   a36081c 訂正全站姓名：本名為兩個字「蔣雅」，非「蔣雅竹」
   43bc0c4 自動更新 CLAUDE.md 最近進度（Stop hook）
-  1623d25 修正會址路名錯字：德新家→德新街（高雄市仁武區德新街93巷7號）
-  211c0ad 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
