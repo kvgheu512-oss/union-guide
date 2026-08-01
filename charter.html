@@ -572,17 +572,21 @@ window._chAddr = null;
   load();
   IDS.forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',save);});
 
-  // 地址選擇器（會址）
+  // 地址選擇器（會址）：預設值＝實際會址（高雄市仁武區德新街93巷7號），
+  // 沒有這行的話，元件本身路名門牌欄位會是空的，跟畫面上第三條印出的地址對不上
+  var REAL_ADDR={city:'高雄市',dist:'仁武區',road:'德新街',lane:'93',no:'7'};
   var mount=document.getElementById('ch-addr-pick');
   if(mount && typeof buildAddressPicker==='function'){
     var saved={}; try{ saved=JSON.parse(localStorage.getItem(AK)||'{}'); }catch(e){}
+    var hasSaved = saved && (saved.zip2||saved.road||saved.rest);
     window._chAddr = buildAddressPicker({
       mount: mount,
-      defaultCity: saved.city || '高雄市',
-      defaultDist: saved.dist || '仁武區',
+      defaultCity: saved.city || REAL_ADDR.city,
+      defaultDist: saved.dist || REAL_ADDR.dist,
       onChange: saveAddr
     });
-    if(saved && (saved.zip2||saved.road||saved.rest)) window._chAddr.set(saved);
+    window._chAddr.set(hasSaved ? saved : REAL_ADDR);
+    if(!hasSaved) saveAddr();
   }
 })();
 
