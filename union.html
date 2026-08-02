@@ -469,7 +469,7 @@
     </a>
 
     <!-- ④ 法規 -->
-    <div class="role"><div class="rb r-doc">法</div><div><div class="rt">法規 · <span style="color:var(--gold)">小巫（另1名出缺）</span></div><div class="rd">會議文件 · 行政紀錄 · 法規事務 · 會員服務</div></div></div>
+    <div class="role"><div class="rb r-doc">法</div><div><div class="rt">法規 · <span style="color:var(--gold)" id="name-docs">巫佳容（另1名出缺）</span></div><div class="rd">會議文件 · 行政紀錄 · 法規事務 · 會員服務</div></div></div>
     <div style="font-size:12.5px;margin:0 2px .7rem;line-height:1.9">📎 官方參考：<a href="https://www.mol.gov.tw/1607/28162/28652/28922/28952/nodelist" target="_blank" rel="noopener" style="color:#8A6D0B;font-weight:700">如何組織或加入工會 ↗</a>　<a href="https://uflb.mol.gov.tw/UFLBWeb/wfDownload.aspx" target="_blank" rel="noopener" style="color:#8A6D0B;font-weight:700">裁決委員會·表格下載 ↗</a></div>
     <a class="tile" href="cases.html?tour=open" style="border-left-color:#2E5C8A;background:linear-gradient(180deg,#fff,#F4F7FB)">
       <div class="row">
@@ -705,14 +705,18 @@ window.addEventListener("load", function(){
 // 幹部名字動態填入（org.js 載好後更新，讓 cadres.html 改名後全站同步）
 document.addEventListener('DOMContentLoaded', function(){
   function fillName(id, key){ var el=document.getElementById(id); if(el && window.EBNOrg) el.textContent=EBNOrg.cadreName(key)||el.textContent; }
-  function syncNames(){
-    var el=document.getElementById('name-fins');
+  function syncPair(id, key1, key2){
+    var el=document.getElementById(id);
     if(el && window.EBNOrg){
-      var n1=EBNOrg.cadreName('fin'), n2=EBNOrg.cadreName('fin2');
+      var n1=EBNOrg.cadreName(key1), n2=EBNOrg.cadreName(key2);
       var names=[n1,n2].filter(function(n){return n && n!=='（出缺）';});
       var vac=[n1,n2].filter(function(n){return n==='（出缺）';}).length;
       el.textContent = names.join('、') + (vac?'（另'+vac+'名出缺）':'');
     }
+  }
+  function syncNames(){
+    syncPair('name-fins','fin','fin2');
+    syncPair('name-docs','doc','doc2');
   }
   syncNames();
   document.addEventListener('ebnorg:public', syncNames);
