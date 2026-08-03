@@ -49,14 +49,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-08-02
+最後更新：2026-08-03
 
 最近 commits：
+  6272456 訂正全站姓名：確認本名為「黃淑姸」（非「黃淑妍」），4處改回
+  d0c6b80 自動更新 CLAUDE.md 最近進度（Stop hook）
   d5b45c6 修正第二輪稽核發現的3個真bug：會費試算機沒套250元下限、條號引註錯誤、總務工作項目誤標出缺
   1d73702 自動更新 CLAUDE.md 最近進度（Stop hook）
   25ef6f4 自動更新 CLAUDE.md 最近進度（Stop hook）
-  2784423 訂正全站姓名：確認本名為「蔣雅竹」（非「蔣雅」），全站11處改回
-  2374f21 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
