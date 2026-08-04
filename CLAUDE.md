@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-04
 
 最近 commits：
+  e49dd08 補齊章程稽核發現的法定缺漏（基金條款、年度/人事變更備查），治理性衝突列入8/9議程
+  7b84f34 自動更新 CLAUDE.md 最近進度（Stop hook）
   b4a1b2b 自動更新 CLAUDE.md 最近進度（Stop hook）
   dbf7bb9 自動更新 CLAUDE.md 最近進度（Stop hook）
   036f430 自動更新 CLAUDE.md 最近進度（Stop hook）
-  ff5291a 自動更新 CLAUDE.md 最近進度（Stop hook）
-  46e1cef 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
