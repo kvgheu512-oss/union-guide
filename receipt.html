@@ -368,7 +368,7 @@ document.addEventListener("DOMContentLoaded",function(){
   var seen={}, opts='';
   EBNOrg.CADRE_ROLES.forEach(function(r){
     var name=EBNOrg.cadreName(r[0]);
-    if(name && !seen[name]){ seen[name]=1; opts+='<option value="'+esc(name)+'">'; }
+    if(name && name!=="（出缺）" && !seen[name]){ seen[name]=1; opts+='<option value="'+esc(name)+'">'; }
   });
   dl.innerHTML=opts;
 });

@@ -70,7 +70,7 @@
     var on=document.getElementById("beike-on"), off=document.getElementById("beike-off");
     if(url){ document.getElementById("beike-link").href=url; on.style.display=""; off.style.display="none"; }
     var fin=EBNOrg.cadreName("fin"), fin2=EBNOrg.cadreName("fin2");
-    var names=[fin,fin2].filter(Boolean).join("、");
+    var names=[fin,fin2].filter(function(n){return n && n!=="（出缺）";}).join("、");
     if(names) document.getElementById("fin-names").textContent="總務："+names;
   }
   document.addEventListener("ebnorg:public",apply);
