@@ -54,11 +54,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-09
 
 最近 commits：
+  2ce8b08 幹部職務取消「一/二」順位編號制：總務、法規不再各設兩個順位，直接掛名字。fin2/doc2 兩個key從org.js CADRE_ROLES/CADRE_DEFAULTS整個刪除，nav.html/voiceguide.html移除重複卡片與語音腳本，union.html/pay.html/petition.html/founders.html/cadres.html同步簡化
+  d5c9773 自動更新 CLAUDE.md 最近進度（Stop hook）
   debceca 莊瑋聆從總務（一）完全退出，此後總務只剩蔣雅竹，總務（一）改列出缺。同步org.js/union.html/nav.html/voiceguide.html/workplan.html
   a2f14a6 自動更新 CLAUDE.md 最近進度（Stop hook）
   2034dc5 法規（二）決議取消不再設此職務（非待補）；陳依婷改編入組訓組（與楊淯涵一起，不再任監事）。同步修正nav.html/voiceguide.html裡總務(一)還沒更新回莊瑋聆的遺漏（合併main時漏改的兩處）
-  217fe48 Merge branch 'claude/union-3-1-u9j828'
-  a6e3da7 姓名最終確認：蔣雅竹（不是蔣雅）。使用者先前一度要求改成「蔣雅」兩字，這次親自確認「蔣雅從頭到尾都是錯的，是蔣雅竹才對」，全站姓名拼字統一改回蔣雅竹，含幹部系統（org.js/nav.html/voiceguide.html/union.html）、shouce.html、prep2.html、prep3.html、qiejieshu.html 共10處。CLAUDE.md 加註來回改名紀錄，避免之後又被錯誤回退
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
