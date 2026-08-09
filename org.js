@@ -37,9 +37,9 @@
   // 幹部名單（大會選出後／會員輪動時，可在「基本資料中心」改名，改一次→發布→全站同步）
   var CKEY = "ebn_cadres_v1";
   var CADRE_ROLES = [
-    ["chair", "理事長"], ["fin", "總務"], ["doc", "法規"], ["wel", "文宣"], ["sup", "監事"]
+    ["chair", "理事長"], ["fin", "總務"], ["doc", "法規"], ["wel", "文宣"], ["org", "組訓"], ["sup", "監事"]
   ];
-  var CADRE_DEFAULTS = { chair: "楊淯涵", fin: "蔣雅竹", doc: "巫佳容", wel: "黃淑姸", sup: "黃敏" };
+  var CADRE_DEFAULTS = { chair: "楊淯涵", fin: "蔣雅竹", doc: "巫佳容", wel: "黃淑姸", org: "陳依婷", sup: "黃敏" };
   function cadreDraft() { try { return JSON.parse(localStorage.getItem(CKEY)) || {}; } catch (e) { return {}; } }
   function cadres() { return Object.assign({}, CADRE_DEFAULTS, cadreDraft(), (_pub && _pub.cadres) || {}); }
   function setCadres(o) { try { localStorage.setItem(CKEY, JSON.stringify(o || {})); } catch (e) {} }

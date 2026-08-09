@@ -80,6 +80,7 @@
   .person-hd .av.r-sup{background:#2E5C8A;}
   .person-hd .av.r-doc{background:var(--gold);}
   .person-hd .av.r-wel{background:#7A4F9D;}
+  .person-hd .av.r-org{background:var(--navy);}
   .person-hd .av.r-all{background:var(--navy);}
   .person-hd .pn{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;}
   .person-hd .pr{font-size:12.5px;color:#5C4000;margin-top:3px;}
@@ -91,7 +92,7 @@
   .todo-item .tp{flex-shrink:0;color:var(--ink-soft);font-size:11px;white-space:nowrap;}
   .todo-empty{font-size:12.5px;color:var(--ink-soft);}
   .vtag{display:inline-block;font-size:11px;color:#fff;background:#5B3B8C;border-radius:10px;padding:1px 8px;margin-left:6px;font-weight:700;vertical-align:middle;white-space:nowrap;}
-  .vtag.r-chair{background:var(--red);} .vtag.r-fin{background:var(--green);} .vtag.r-sup{background:#2E5C8A;} .vtag.r-doc{background:var(--gold);} .vtag.r-wel{background:#7A4F9D;} .vtag.r-all{background:#5B3B8C;}
+  .vtag.r-chair{background:var(--red);} .vtag.r-fin{background:var(--green);} .vtag.r-sup{background:#2E5C8A;} .vtag.r-doc{background:var(--gold);} .vtag.r-wel{background:#7A4F9D;} .vtag.r-org{background:var(--navy);} .vtag.r-all{background:#5B3B8C;}
 </style>
 </head>
 <body data-nonav>
@@ -246,6 +247,15 @@ var CADRES = [
       {ci:'🏠', ct:'工會首頁', cd:'對外說明、連署入口', href:'index.html', cl:'gr'},
       {ci:'📋', ct:'幹部功能表', cd:'所有幹部工具總覽', href:'union.html', cl:'nv'},
       {ci:'👥', ct:'會員名冊', cd:'招募現況、名單', href:'roster.html', cl:'gr'},
+      {ci:'📄', ct:'公文產生器', cd:'邀請函、會員週知範本填空即成', href:'gongwen.html', cl:'rd'},
+      {ci:'🏗', ct:'籌備進度', cd:'目前走到哪一步', href:'founding.html', cl:'rd'},
+    ]
+  },
+  { key:'org', name:'陳依婷', role:'組訓', av:'組', cls:'r-org', nick:['依婷','陳依婷'],
+    desc:'會員招募 · 會員名冊 · 組織訓練',
+    links:[
+      {ci:'👥', ct:'會員名冊', cd:'新增、搜尋、招募現況', href:'roster.html', cl:'gr'},
+      {ci:'🏠', ct:'工會首頁', cd:'對外說明、連署入口', href:'index.html', cl:'gr'},
       {ci:'📄', ct:'公文產生器', cd:'邀請函、會員週知範本填空即成', href:'gongwen.html', cl:'rd'},
       {ci:'🏗', ct:'籌備進度', cd:'目前走到哪一步', href:'founding.html', cl:'rd'},
     ]

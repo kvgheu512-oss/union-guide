@@ -24,9 +24,10 @@
 - 返回鈕：公開區子頁→「🏠工會首頁」index.html；幹部區子頁→「‹功能表」union.html。
 
 ## 幹部名冊（cadres 系統）
-- **幹部鍵值（8/9 起 5 個，不再有一/二順位）**：`chair` 理事長・`fin` 總務・`doc` 法規・`wel` 文宣・`sup` 監事。
+- **幹部鍵值（8/9 起 6 個）**：`chair` 理事長・`fin` 總務・`doc` 法規・`wel` 文宣・`org` 組訓・`sup` 監事。
   - ⚠️ **`fin2`／`doc2` 這兩個 key 已經整個廢除、不是留白**：原本「總務（一）／總務（二）」「法規（一）／法規（二）」的雙人編號制，使用者 8/9 要求「一二取消了，直接打名字，不用順位了」，所以把 fin2 併回 fin（蔣雅竹）、doc2 併回 doc（巫佳容），兩個 key 從 `org.js` CADRE_ROLES/CADRE_DEFAULTS 整個刪掉，`nav.html`／`voiceguide.html` 對應的重複卡片／語音腳本也一併刪除合併。**不要看到舊 commit 或截圖裡還有 fin2/doc2 就以為要補回來**——那是改制前的舊結構。
-  - 受影響、已同步的檔案：`org.js`（CADRE_ROLES 少兩筆、CADRE_DEFAULTS 少兩個 key）、`union.html`（syncPair 改回單純 fillName）、`petition.html`、`founders.html`、`pay.html`、`cadres.html`（ROLES_META 少兩筆）、`nav.html`（少兩張卡片）、`voiceguide.html`（少兩段語音腳本＋roleKeys 陣列）。
+  - **`org` 組訓是後來才升格成正式幹部 key 的**：原本只是 `union.html` 裡一段純文字說明（沒有連到 org.js），使用者事後強調「組訓是正式幹部編制，主要以陳依婷為主，理事長已經很忙了」，所以把它比照其他角色升格成完整的 CADRE_ROLES 項目（`org.js`/`union.html`/`nav.html`/`voiceguide.html`/`cadres.html` 都補齊），值為陳依婷單獨一人，**不再掛楊淯涵**（她本來是理事長兼著組訓，這次明確拆開）。
+  - 受影響、已同步的檔案：`org.js`（CADRE_ROLES/CADRE_DEFAULTS）、`union.html`（syncPair 改回單純 fillName，組訓卡改用 `id="name-org"` 動態帶入）、`petition.html`、`founders.html`、`pay.html`、`cadres.html`（ROLES_META＋badge CSS）、`nav.html`（卡片＋CSS 顏色）、`voiceguide.html`（語音腳本＋roleKeys 陣列）。
 - **改名流程**：在 `org.html`「幹部名單」區修改 → 按「儲存與發布」→ 發布的 `public.json` 含 `cadres` 欄位 → 全站（nav.html / voiceguide.html / gongwen.html 等）自動讀取 `EBNOrg.cadreName(key)`。
 - `org.js` 是幹部/組織資料單一真相源：`CADRE_DEFAULTS`（內建值）＋`localStorage ebn_cadres_v1`（草稿）＋`public.json cadres`（已發布）三層合併，已發布優先。使用者瀏覽器 localStorage 草稿裡如果還殘留舊的 fin2/doc2 key，不會出錯，就只是沒有任何程式碼再讀取它，屬於無害孤兒資料。
 - `voiceguide.html` 語音腳本裡的名字**不改**（腳本已個人化如「楊淯涵，你是理事長」）；只有 ROLES[key].name（標題顯示）會由 syncNames() 自動更新。
