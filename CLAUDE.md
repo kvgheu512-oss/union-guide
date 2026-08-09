@@ -55,11 +55,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-09
 
 最近 commits：
+  c6d6c4c 組訓升格為正式幹部編制（org key），主要由陳依婷負責，不再跟理事長楊淯涵並列（理事長已經很忙）。org.js新增CADRE_ROLES/CADRE_DEFAULTS，union.html組訓卡改動態帶入，nav.html新增組訓卡片與配色，voiceguide.html新增組訓語音腳本，cadres.html補ROLES_META與badge樣式
+  86d8b0f 自動更新 CLAUDE.md 最近進度（Stop hook）
   18902ee 自動更新 CLAUDE.md 最近進度（Stop hook）
   2ce8b08 幹部職務取消「一/二」順位編號制：總務、法規不再各設兩個順位，直接掛名字。fin2/doc2 兩個key從org.js CADRE_ROLES/CADRE_DEFAULTS整個刪除，nav.html/voiceguide.html移除重複卡片與語音腳本，union.html/pay.html/petition.html/founders.html/cadres.html同步簡化
   d5c9773 自動更新 CLAUDE.md 最近進度（Stop hook）
-  debceca 莊瑋聆從總務（一）完全退出，此後總務只剩蔣雅竹，總務（一）改列出缺。同步org.js/union.html/nav.html/voiceguide.html/workplan.html
-  a2f14a6 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
