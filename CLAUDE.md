@@ -52,11 +52,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-09
 
 最近 commits：
+  65f61a4 自動更新 CLAUDE.md 最近進度（Stop hook）
   9f737bf 自動更新 CLAUDE.md 最近進度（Stop hook）
   3f21949 自動更新 CLAUDE.md 最近進度（Stop hook）
   6c8aca4 自動更新 CLAUDE.md 最近進度（Stop hook）
   47a6a03 自動更新 CLAUDE.md 最近進度（Stop hook）
-  b025a2b 補充CLAUDE.md「本session工作紀要」完整記錄本次(7/30-31)所有變動：籌備委員名單改6人版與蔣雅正確拼字、第三次籌備會改期8/9及案由一~七全清單、幹部職務出缺尚未決議的現況、Word檔產製方式改用npm docx、引註來源更正、sandbox的LibreOffice轉檔壞掉等，讓新對話能直接接手不用重問
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
