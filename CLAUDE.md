@@ -55,11 +55,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-13
 
 最近 commits：
+  494dd21 自動更新 CLAUDE.md 最近進度（Stop hook）
   188235d 自動更新 CLAUDE.md 最近進度（Stop hook）
   3ed6094 自動更新 CLAUDE.md 最近進度（Stop hook）
   3a13450 自動更新 CLAUDE.md 最近進度（Stop hook）
   f2278fb 自動更新 CLAUDE.md 最近進度（Stop hook）
-  c6d6c4c 組訓升格為正式幹部編制（org key），主要由陳依婷負責，不再跟理事長楊淯涵並列（理事長已經很忙）。org.js新增CADRE_ROLES/CADRE_DEFAULTS，union.html組訓卡改動態帶入，nav.html新增組訓卡片與配色，voiceguide.html新增組訓語音腳本，cadres.html補ROLES_META與badge樣式
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
