@@ -52,14 +52,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-08-09
+最後更新：2026-08-13
 
 最近 commits：
+  61b6908 自動更新 CLAUDE.md 最近進度（Stop hook）
   26cac4e 更新CLAUDE.md版本號紀錄（原本停留在2026073103已過時）、修正組訓一節與最新的org key單獨掛陳依婷現況對齊，準備接續包供下一個對話開場
   f2278fb 自動更新 CLAUDE.md 最近進度（Stop hook）
   c6d6c4c 組訓升格為正式幹部編制（org key），主要由陳依婷負責，不再跟理事長楊淯涵並列（理事長已經很忙）。org.js新增CADRE_ROLES/CADRE_DEFAULTS，union.html組訓卡改動態帶入，nav.html新增組訓卡片與配色，voiceguide.html新增組訓語音腳本，cadres.html補ROLES_META與badge樣式
   86d8b0f 自動更新 CLAUDE.md 最近進度（Stop hook）
-  18902ee 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
