@@ -55,11 +55,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-17
 
 最近 commits：
+  1424f16 補齊成立大會手冊空白處：工作人員分工表姓名、籌備期間收支表、籌備期間工作報告完整版；public.json 補上理監事候選人名單、修正幹部名單（移除已廢除的fin2/doc2、監事改回黃敏）
+  bf3e1c1 自動更新 CLAUDE.md 最近進度（Stop hook）
   d27e689 自動更新 CLAUDE.md 最近進度（Stop hook）
   0cf346f 自動更新 CLAUDE.md 最近進度（Stop hook）
   e9b54e6 自動更新 CLAUDE.md 最近進度（Stop hook）
-  4e14d37 自動更新 CLAUDE.md 最近進度（Stop hook）
-  535d253 同步會長核定版成立大會手冊：更新章程、工作計畫、預算、會籍辦法內容，移除附件七八選舉辦法與投開票用品清單
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
