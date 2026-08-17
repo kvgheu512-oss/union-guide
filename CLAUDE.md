@@ -52,14 +52,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-08-13
+最後更新：2026-08-17
 
 最近 commits：
+  1424f16 補齊成立大會手冊空白處：工作人員分工表姓名、籌備期間收支表、籌備期間工作報告完整版；public.json 補上理監事候選人名單、修正幹部名單（移除已廢除的fin2/doc2、監事改回黃敏）
+  535d253 同步會長核定版成立大會手冊：更新章程、工作計畫、預算、會籍辦法內容，移除附件七八選舉辦法與投開票用品清單
   61b6908 自動更新 CLAUDE.md 最近進度（Stop hook）
   26cac4e 更新CLAUDE.md版本號紀錄（原本停留在2026073103已過時）、修正組訓一節與最新的org key單獨掛陳依婷現況對齊，準備接續包供下一個對話開場
   f2278fb 自動更新 CLAUDE.md 最近進度（Stop hook）
-  c6d6c4c 組訓升格為正式幹部編制（org key），主要由陳依婷負責，不再跟理事長楊淯涵並列（理事長已經很忙）。org.js新增CADRE_ROLES/CADRE_DEFAULTS，union.html組訓卡改動態帶入，nav.html新增組訓卡片與配色，voiceguide.html新增組訓語音腳本，cadres.html補ROLES_META與badge樣式
-  86d8b0f 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
