@@ -297,3 +297,18 @@
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", check); else check();
   setInterval(check, 60000);   // 每分鐘複查一次，確保時間到了會準時彈出、結束了會準時收回
 })();
+
+/* 瀏覽人次統計（外部免費計數服務 hits.seeyoufarm.com，不記個資、只累加次數；
+   接不到就默默不顯示，不影響頁面其他功能） */
+(function(){
+  try{
+    var img=document.createElement("img");
+    img.id="viewBadge";
+    img.alt="";
+    img.style.cssText="position:fixed;top:68px;right:13px;z-index:90;height:16px;opacity:.55;pointer-events:none;";
+    img.onerror=function(){ img.remove(); };
+    img.src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fkvgheu512-oss.github.io%2Funion-guide%2F&count_bg=%23555555&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=%E7%B4%AF%E8%A8%88%E7%80%8F%E8%A6%BD&edge_flat=false";
+    document.addEventListener("DOMContentLoaded", function(){ document.body.appendChild(img); });
+    if(document.readyState!=="loading") document.body.appendChild(img);
+  }catch(e){}
+})();

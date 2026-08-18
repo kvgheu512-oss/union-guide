@@ -271,6 +271,12 @@
       <span style="margin-left:auto;color:#fff;font-size:20px;flex-shrink:0">→</span>
     </a>
 
+    <!-- 關鍵字搜尋：打字導引到下面相關段落 -->
+    <div style="position:relative;margin-bottom:12px;">
+      <input id="pageSearch" type="text" placeholder="🔍 打關鍵字找內容（例如：加班費、入會、會費）" style="width:100%;box-sizing:border-box;padding:.7rem .95rem;border:1px solid var(--border);border-radius:12px;font-size:14.5px;background:#fff;">
+      <div id="pageSearchHint" style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;display:none;"></div>
+    </div>
+
     <!-- 1 我們是誰 -->
     <section class="section" id="about">
       <div class="section-header"><div class="section-num">1</div><div class="section-title">我們是誰</div></div>
@@ -572,6 +578,39 @@ else if(sessionStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
 document.getElementById('gate-go').addEventListener('click',tryUnlock);
 document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
+
+/* 關鍵字搜尋：打字導引到下面相關段落（只搜這頁自己的內容，不跟幹部功能表互通） */
+(function(){
+  var box=document.getElementById('pageSearch'); if(!box) return;
+  var hint=document.getElementById('pageSearchHint');
+  var sections=Array.prototype.slice.call(document.querySelectorAll('main .section, main > a'));
+  var timer=null;
+  function flash(el){
+    var old=el.style.boxShadow;
+    el.style.transition='box-shadow .3s';
+    el.style.boxShadow='0 0 0 3px #1A7A4A';
+    setTimeout(function(){ el.style.boxShadow=old; },1600);
+  }
+  box.addEventListener('input',function(){
+    clearTimeout(timer);
+    var q=box.value.trim().toLowerCase();
+    if(!q){ hint.style.display='none'; return; }
+    timer=setTimeout(function(){
+      var match=null;
+      for(var i=0;i<sections.length;i++){
+        if((sections[i].textContent||'').toLowerCase().indexOf(q)>=0){ match=sections[i]; break; }
+      }
+      hint.style.display='block';
+      if(match){
+        hint.textContent='找到了，已為你導引到下面';
+        match.scrollIntoView({behavior:'smooth',block:'start'});
+        flash(match);
+      } else {
+        hint.textContent='沒有符合的內容，換個關鍵字試試';
+      }
+    },350);
+  });
+})();
 
 /* ---------- 連署／加入按鈕 ---------- */
 function goJoin(){

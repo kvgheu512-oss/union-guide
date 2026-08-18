@@ -146,6 +146,11 @@
       依章程第16條，本會置<b>理事五人（含理事長）、監事一人</b>。分工：理事長、法規（小巫）、文宣（妍妍）、總務（蔣雅竹）、組訓（依婷）、監事（黃敏）。找自己的區塊辦事；標「建置中」的工具陸續加入。
     </p>
 
+    <div style="position:relative;margin-bottom:.7rem;">
+      <input id="tileSearch" type="text" placeholder="🔍 打關鍵字找工具（例如：收據、簽到、公文）" style="width:100%;box-sizing:border-box;padding:.65rem .9rem;border:1px solid var(--border);border-radius:12px;font-size:14px;background:#fff;">
+      <div id="tileSearchCount" style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;display:none;"></div>
+    </div>
+
     <a class="tile" href="cadres.html" style="border-left-color:#B7860B;background:linear-gradient(180deg,#fff,#FEFBF0)">
       <div class="row">
         <span class="ico">👥</span>
@@ -591,7 +596,7 @@
         <span class="ico">🛡️</span>
         <div>
           <div class="t">AI 監事秘書</div>
-          <div class="d">依章程第24條職權打理<b>監察進度表</b>、年度監察行事曆，並一鍵產生<b>監察意見書／財務稽核表</b>等公文範本。</div>
+          <div class="d">依章程第26條職權打理<b>監察進度表</b>、年度監察行事曆，並一鍵產生<b>監察意見書／財務稽核表</b>等公文範本。</div>
         </div>
         <span class="go">→</span>
       </div>
@@ -645,6 +650,34 @@ else if(localStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
 else { showGate(); }
 document.getElementById('gate-go').addEventListener('click',tryUnlock);
 document.getElementById('gate-pw').addEventListener('keydown',function(e){ if(e.key==='Enter') tryUnlock(); });
+
+/* 關鍵字搜尋：打字篩選工具卡片，只搜這頁自己的卡片標題／說明，不跟其他頁互通 */
+(function(){
+  var box=document.getElementById('tileSearch'); if(!box) return;
+  var countEl=document.getElementById('tileSearchCount');
+  var tiles=Array.prototype.slice.call(document.querySelectorAll('a.tile'));
+  var scrolled=false;
+  box.addEventListener('input',function(){
+    var q=box.value.trim().toLowerCase();
+    scrolled=false;
+    if(!q){
+      tiles.forEach(function(t){ t.style.display=''; t.style.outline=''; });
+      countEl.style.display='none';
+      return;
+    }
+    var hit=0, first=null;
+    tiles.forEach(function(t){
+      var text=(t.textContent||'').toLowerCase();
+      var match=text.indexOf(q)>=0;
+      t.style.display=match?'':'none';
+      t.style.outline=match?'2px solid #1A7A4A':'';
+      if(match){ hit++; if(!first) first=t; }
+    });
+    countEl.style.display='block';
+    countEl.textContent=hit?('符合 '+hit+' 項，已為你導引到下面'):'沒有符合的工具，換個關鍵字試試';
+    if(first && !scrolled){ first.scrollIntoView({behavior:'smooth',block:'center'}); scrolled=true; }
+  });
+})();
 // 工會狀態：籌備中 ↔ 正式運營（讀 founding.html 設定的本機狀態）
 (function(){ try{ var s=JSON.parse(localStorage.getItem("union_status_v1")); var b=document.getElementById("prepBadge");
   if(b && s && s.status==="official"){ b.textContent="🎖 正式運營"; b.style.background="#FFF6D6"; b.style.color="#7A5800"; b.style.borderColor="#E8C84A"; } }catch(_){}})();

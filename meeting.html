@@ -174,7 +174,7 @@
         <h3>議程</h3>
         <div id="ag-list"></div>
         <div class="btn-row"><button class="btn ghost sm" id="ag-add">＋ 議程項目</button><button class="btn ghost sm" id="ag-seed">📋 範本議程</button></div>
-        <div class="note">提示：<b>修改章程、財產處分、合併分立解散、罷免、會員除名</b>等屬重大事項，須較高出席與同意門檻（章程第32條/第24條）。</div>
+        <div class="note">提示：<b>修改章程、財產處分、合併分立解散、罷免、會員除名</b>等屬重大事項，須較高出席與同意門檻（章程第31條/第23條）。</div>
       </div>
 
       <div class="card" id="elect-card" style="display:none">
@@ -691,7 +691,7 @@ function docSign(){
   return header()+`<div class="sub">${esc(cur.type)}　${esc(cur.no)}　會員（代表）大會簽到名冊</div>
     <div class="meta"><b>開會時間</b>：${rocDate(cur.date)} ${cur.time||''}</div>
     <div class="meta"><b>開會地點</b>：${esc(cur.place||'＿＿＿＿')}</div>
-    <div class="meta"><b>法定人數</b>：應到 ${total} 人，過半需 ${total?need:'＿'} 人（親自出席＋有效委託合計，章程第32條）</div>
+    <div class="meta"><b>法定人數</b>：應到 ${total} 人，過半需 ${total?need:'＿'} 人（親自出席＋有效委託合計，章程第31條）</div>
     <table><thead><tr><th style="width:3em">編號</th><th>會員</th><th>單位</th><th style="width:16%">親自出席簽到</th><th style="width:20%">委託出席（受託人）簽到</th><th style="width:8%">委託序</th></tr></thead><tbody>${rows}</tbody></table>
     ${cur.guest?`<div class="h2">列席／來賓</div><p>${esc(cur.guest).replace(/\n/g,'、')}</p>`:''}
     <div class="meta" style="margin-top:1rem">親自出席：＿＿＿人　　委託出席：＿＿＿人　　主席：＿＿＿＿　　記錄：＿＿＿＿</div>
