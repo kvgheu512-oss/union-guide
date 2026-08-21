@@ -55,11 +55,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-08-21
 
 最近 commits：
+  c5edae6 自動更新 CLAUDE.md 最近進度（Stop hook）
   8043d06 自動更新 CLAUDE.md 最近進度（Stop hook）
   71d848f 補齊CLAUDE.md本session工作紀要：手冊同步會長版、章程刪第十七條重編條號、案由七八十已定案二六九仍懸案、新功能、兩隻bug-hunt分支未合併等待辦事項
   4cb3688 自動更新 CLAUDE.md 最近進度（Stop hook）
   4b2fd61 自動更新 CLAUDE.md 最近進度（Stop hook）
-  42cd9fb 首頁關鍵字搜尋框移到CTA按鈕下方、導覽列上方，一開頁面就看得到，不用捲動
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
