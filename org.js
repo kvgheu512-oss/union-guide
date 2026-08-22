@@ -41,7 +41,9 @@
   ];
   var CADRE_DEFAULTS = { chair: "楊淯涵", fin: "蔣雅竹", doc: "巫佳容", wel: "黃淑姸", org: "陳依婷", sup: "黃敏" };
   function cadreDraft() { try { return JSON.parse(localStorage.getItem(CKEY)) || {}; } catch (e) { return {}; } }
-  function cadres() { return Object.assign({}, CADRE_DEFAULTS, cadreDraft(), (_pub && _pub.cadres) || {}); }
+  // 跟 get()／candidates() 同邏輯：草稿優先於已發布，否則 org.html 改名存檔的當下，
+  // 舊的已發布資料（buildPublic 用的 _pub）會蓋掉剛存的新草稿，改名等於白改。
+  function cadres() { return Object.assign({}, CADRE_DEFAULTS, (_pub && _pub.cadres) || {}, cadreDraft()); }
   function setCadres(o) { try { localStorage.setItem(CKEY, JSON.stringify(o || {})); } catch (e) {} }
   function cadreName(key) { return cadres()[key] || CADRE_DEFAULTS[key] || ""; }
 

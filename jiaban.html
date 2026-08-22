@@ -32,6 +32,7 @@
   .cd-label { font-size: 10px; opacity: 0.7; display: block; margin-top: 2px; }
   .cd-sep { font-size: 26px; font-weight: 300; opacity: 0.5; margin-bottom: 14px; }
   .deadline-note { font-size: 12px; opacity: 0.75; margin-top: 8px; }
+  .countdown-closed { font-family: 'Noto Serif TC', serif; font-size: 22px; font-weight: 700; }
   .warn-banner { background: var(--red-deep); color: #FFCDD2; padding: 0.6rem 1.25rem; text-align: center; font-size: 13px; font-weight: 500; }
   .warn-banner span { opacity: 0.8; font-weight: 300; margin-left: 6px; }
 
@@ -165,22 +166,14 @@
   <div class="header-label">高雄榮總護理部 · 工會公告</div>
   <h1>約用人員加班費<br>補發申請說明</h1>
   <div class="header-sub">2020年1月 ～ 2024年7月 加班費追溯補發</div>
-  <div class="countdown-box">
-    <div class="countdown-label">⏰ 距離申請截止</div>
-    <div class="countdown-digits">
-      <div class="cd-unit"><span class="cd-num" id="cd-days">--</span><span class="cd-label">天</span></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><span class="cd-num" id="cd-hours">--</span><span class="cd-label">時</span></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><span class="cd-num" id="cd-mins">--</span><span class="cd-label">分</span></div>
-      <div class="cd-sep">:</div>
-      <div class="cd-unit"><span class="cd-num" id="cd-secs">--</span><span class="cd-label">秒</span></div>
-    </div>
-    <div class="deadline-note">截止日：2026年6月30日</div>
+  <div class="countdown-box" id="cd-box">
+    <div class="countdown-label">⏰ 申請狀態</div>
+    <div class="countdown-closed">申請已截止</div>
+    <div class="deadline-note">截止日：2026年6月30日（已過期）</div>
   </div>
 </div>
 
-<div class="warn-banner">⚠ 每晚申請一個月，少追溯一個月<span>請盡快完成申請</span></div>
+<div class="warn-banner">⚠ 官方申請已於 2026/06/30 截止<span>尚未申請者請洽工會了解後續補救管道</span></div>
 
 <div class="sticky-progress">
   <a href="#sec-todo">📋 待辦 <span id="sp-todo">0/5</span></a>
@@ -195,20 +188,20 @@
     <div class="card">
       <div class="info-row"><span class="info-key">補發對象</span><span class="info-val">護理部約用人員</span></div>
       <div class="info-row"><span class="info-key">補發期間</span><span class="info-val">2020/01/01 ～ 2024/07/31</span></div>
-      <div class="info-row"><span class="info-key">申請截止</span><span class="info-val red">2026/06/30</span></div>
+      <div class="info-row"><span class="info-key">申請截止</span><span class="info-val red">2026/06/30（已截止）</span></div>
       <div class="info-row"><span class="info-key">依據</span><span class="info-val">輔導會公告開放補發</span></div>
     </div>
     <div class="highlight-card" style="margin-top:10px">
       <p>醫院開放補發 <strong>2020年1月1日至2024年7月31日</strong>期間，約用人員以「分計」計算之加班費。<br>
-      <strong>每晚申請一個月，就少追溯一個月的金額</strong>，請盡快完成申請手續。</p>
+      官方申請已於 <strong>2026年6月30日截止</strong>，逾期未申請者請洽工會了解是否還有個別協商或其他補救管道。</p>
     </div>
   </div>
 
   <div class="section">
     <div class="section-header"><div class="section-num">2</div><div class="section-title">目前申請進度</div></div>
     <div class="progress-note">
-      <div class="progress-date">最後更新:2026/05/24</div>
-      工會目前正在協助成員彙整申請資料。請各成員依下方待辦清單自行備妥資料，並向人事室調取薪資紀錄後，儘快完成申報。
+      <div class="progress-date">最後更新:2026/08/22</div>
+      ⚠ 官方申請已於 2026/06/30 截止。若你尚未提出申請，請直接洽工會幹部了解後續是否還有補救管道；下方待辦與證據清單仍可作為自行準備資料的參考。
     </div>
   </div>
 
@@ -494,27 +487,6 @@
 </footer>
 
 <script>
-// 倒數計時
-function updateCountdown() {
-  const deadline = new Date('2026-06-30T23:59:59');
-  const now = new Date();
-  const diff = deadline - now;
-  const $d = document.getElementById('cd-days');
-  const $h = document.getElementById('cd-hours');
-  const $m = document.getElementById('cd-mins');
-  const $s = document.getElementById('cd-secs');
-  if (diff <= 0) {
-    $d.textContent='0'; $h.textContent='00'; $m.textContent='00'; $s.textContent='00';
-    return;
-  }
-  $d.textContent = Math.floor(diff/86400000);
-  $h.textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
-  $m.textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
-  $s.textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
-}
-updateCountdown();
-setInterval(updateCountdown, 1000);
-
 // 待辦清單（單組）
 function bindChecklist(listId, storageKey, countElId, fillElId, stickyElId, total) {
   const list = document.getElementById(listId);
@@ -628,7 +600,7 @@ window.addEventListener("load", function(){
   if(!window.EBNTour) return;
   EBNTour.attach([
     { title:"這頁教你追回加班費", text:"約用人員以前沒領到的加班費，<b>5 年內可以追</b>。我帶你看怎麼做。" },
-    { sel:"#cd-days", title:"先看倒數", text:"這是<b>追溯期倒數</b>——過了就追不回，越早辦越好。" },
+    { sel:"#cd-box", title:"先看申請狀態", text:"官方申請<b>已截止</b>——如果你還沒申請，先去問工會有沒有補救管道。" },
     { sel:"#checklist", title:"照清單一步步做", text:"把<b>出勤紀錄、薪資單</b>準備好，照清單打勾完成。" },
     { title:"好了！", text:"要算金額？回首頁用『加班費試算機』。有問題找工會。" }
   ], {});

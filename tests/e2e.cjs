@@ -102,6 +102,11 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.fill('#org-fullName', '測試工會'); await p.fill('#org-chair', '測試長'); await p.click('#saveBtn'); await p.waitForTimeout(150);
     await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
     (await p.inputValue('#org-chair')) === '測試長' ? ok('基本資料重開保留') : bad('org', 'not persisted'); });
+  await T('org.js cadres() 草稿優先於已發布(改名不被蓋回)', async p => { await p.goto(BASE + 'org.html', { waitUntil: 'domcontentloaded' }); await p.evaluate(() => localStorage.clear()); await p.reload({ waitUntil: 'domcontentloaded' });
+    await p.waitForFunction(() => window.EBNOrg && window.EBNOrg.publicLoaded()); await p.waitForTimeout(150);
+    await p.fill('#cadre-fin', '測試總務新名字'); await p.click('#pubBtn'); await p.waitForTimeout(150);
+    const txt = await p.inputValue('#pubOut'); const j = JSON.parse(txt);
+    j.cadres && j.cadres.fin === '測試總務新名字' ? ok('改名存檔沒被舊 public.json 蓋回') : bad('cadres-order', 'fin=' + (j.cadres && j.cadres.fin)); });
   await T('合併列印 批次產生N份+帶入抬頭', async p => { await p.goto(BASE + 'mailmerge.html', { waitUntil: 'domcontentloaded' });
     await p.evaluate(() => { localStorage.setItem('ebn_org_v1', JSON.stringify({ fullName: '測試工會', chair: '測試長', docWord: '測', docYear: '115', docSeq: '1' })); localStorage.setItem('roster_members_v1', JSON.stringify([{ id: 'a', name: '甲' }, { id: 'b', name: '乙' }])); });
     await p.reload({ waitUntil: 'domcontentloaded' }); await p.evaluate(() => { window.print = () => {}; }); await p.waitForTimeout(200);

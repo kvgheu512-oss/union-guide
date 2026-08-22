@@ -29,7 +29,7 @@
   - **`org` 組訓是後來才升格成正式幹部 key 的**：原本只是 `union.html` 裡一段純文字說明（沒有連到 org.js），使用者事後強調「組訓是正式幹部編制，主要以陳依婷為主，理事長已經很忙了」，所以把它比照其他角色升格成完整的 CADRE_ROLES 項目（`org.js`/`union.html`/`nav.html`/`voiceguide.html`/`cadres.html` 都補齊），值為陳依婷單獨一人，**不再掛楊淯涵**（她本來是理事長兼著組訓，這次明確拆開）。
   - 受影響、已同步的檔案：`org.js`（CADRE_ROLES/CADRE_DEFAULTS）、`union.html`（syncPair 改回單純 fillName，組訓卡改用 `id="name-org"` 動態帶入）、`petition.html`、`founders.html`、`pay.html`、`cadres.html`（ROLES_META＋badge CSS）、`nav.html`（卡片＋CSS 顏色）、`voiceguide.html`（語音腳本＋roleKeys 陣列）。
 - **改名流程**：在 `org.html`「幹部名單」區修改 → 按「儲存與發布」→ 發布的 `public.json` 含 `cadres` 欄位 → 全站（nav.html / voiceguide.html / gongwen.html 等）自動讀取 `EBNOrg.cadreName(key)`。
-- `org.js` 是幹部/組織資料單一真相源：`CADRE_DEFAULTS`（內建值）＋`localStorage ebn_cadres_v1`（草稿）＋`public.json cadres`（已發布）三層合併，已發布優先。使用者瀏覽器 localStorage 草稿裡如果還殘留舊的 fin2/doc2 key，不會出錯，就只是沒有任何程式碼再讀取它，屬於無害孤兒資料。
+- `org.js` 是幹部/組織資料單一真相源：`CADRE_DEFAULTS`（內建值）＋`localStorage ebn_cadres_v1`（草稿）＋`public.json cadres`（已發布）三層合併，**草稿優先**（跟 `get()`／`candidates()` 同邏輯）——8/21 修正：原本寫成「已發布優先」，導致 org.html 改名存檔當下會被 buildPublic() 用的舊 `_pub` 蓋掉、改名等於白改，已改成草稿覆蓋已發布。使用者瀏覽器 localStorage 草稿裡如果還殘留舊的 fin2/doc2 key，不會出錯，就只是沒有任何程式碼再讀取它，屬於無害孤兒資料。
 - `voiceguide.html` 語音腳本裡的名字**不改**（腳本已個人化如「楊淯涵，你是理事長」）；只有 ROLES[key].name（標題顯示）會由 syncNames() 自動更新。
 
 ## 深層實測（凡大功能必做）
@@ -70,6 +70,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ### 已知既有測試失敗（不是你弄壞的）
 `bash tests/run.sh` 目前固定 41 過 1 失：`wenhao — next=高總籌工字第115002號`（文號流水簿）。改動前後都一樣失敗，與新功能無關；push 前確認「只有這一項」失敗即可。
+
+### 本 session 工作紀要（2026-08-22）
+**重修遺失的 bug-hunt 修正（原本在前一 session 的 worktree 分支，容器回收後從未 push、確認已遺失）：**
+- `org.js` `cadres()` 合併順序修正：原本 `Object.assign({}, DEFAULTS, 草稿, 已發布)`（已發布蓋草稿），改成跟 `get()`／`candidates()` 一致的 `Object.assign({}, DEFAULTS, 已發布, 草稿)`（草稿蓋已發布）。修正前的實際壞法：org.html 按「發布上線」時，`buildPublic()` 呼叫 `cadres()`，若瀏覽器已經 fetch 過舊版 `public.json`（`_pub` 有值），剛存的新草稿會被這份舊 `_pub.cadres` 蓋掉，匯出的 `public.json` 內容其實還是改名前的舊名字——改名操作本身沒壞，是「發布」這一步把新資料蓋回舊的。已加回歸測試 `tests/e2e.cjs`「org.js cadres() 草稿優先於已發布」。
+- `jiaban.html` 加班費申請截止倒數：原本寫死 `2026-06-30`，過期後仍持續跑動態倒數（卡在 0:00:00:00）、旁邊文案仍寫「請盡快完成申請」。使用者確認「確實已截止」，已改成靜態「申請已截止」狀態：移除倒數 JS（`updateCountdown`/`setInterval`）、warn-banner 與 info-row 改標「已截止」、進度說明改為提醒尚未申請者洽工會了解補救管道、tour 導覽第2步文案同步。
 
 ### 本 session 工作紀要（2026-07-12～07-29）
 **成立大會文件（8/30）——`shouce.html` 為主：**
