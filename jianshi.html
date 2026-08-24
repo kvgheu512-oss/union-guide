@@ -342,8 +342,11 @@ function load(){ try{tasks=JSON.parse(localStorage.getItem(KEY))||[];}catch(_){t
 function save(){ try{localStorage.setItem(KEY,JSON.stringify(tasks));}catch(_){} }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function today(){ const d=new Date(); return d.toISOString().slice(0,10); }
-function addDays(n){ const d=new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function p2(n){ return n<10?'0'+n:String(n); }
+// 用台灣本地日期（不是 toISOString 的 UTC 日期）——UTC 版在台灣每天 00:00~08:00
+// 會少算一天，導致案件到期日／逾期判斷偏差一天。
+function today(){ const d=new Date(); return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); }
+function addDays(n){ const d=new Date(); d.setDate(d.getDate()+n); return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); }
 function fmtDate(s){ if(!s) return ''; const p=s.split('-'); return `${+p[1]}/${+p[2]}`; }
 function dueState(t){ if(!t.due||t.status==='done') return ''; const diff=Math.ceil((new Date(t.due)-new Date(today()))/86400000); if(diff<0) return 'over'; if(diff<=3) return 'soon'; return ''; }
 

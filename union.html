@@ -177,7 +177,7 @@
         <span class="ico">🎧</span>
         <div>
           <div class="t" style="color:#3F2A63">幹部專屬語音導覽（選你的職務）</div>
-          <div class="d">選你的職務——<b>理事長／總務／法規／文宣／監事</b>，用聽的快速搞懂<b>你負責什麼、網站給你哪些工具、怎麼用</b>，約 1 分鐘。可選男／女聲與語速。</div>
+          <div class="d">選你的職務——<b>理事長／總務／法規／文宣／組訓／監事</b>，用聽的快速搞懂<b>你負責什麼、網站給你哪些工具、怎麼用</b>，約 1 分鐘。可選男／女聲與語速。</div>
         </div>
         <span class="go" style="color:#5B3B8C">→</span>
       </div>
@@ -300,7 +300,7 @@
     </div>
 
     <!-- ① 理事長 -->
-    <div class="role"><div class="rb r-chair">長</div><div><div class="rt">理事長 · <span style="color:#C0392B">楊淯涵</span></div><div class="rd">綜理會務 · 對外代表 · 召集會議 · 團體協商</div></div></div>
+    <div class="role"><div class="rb r-chair">長</div><div><div class="rt">理事長 · <span style="color:#C0392B" id="name-chair">楊淯涵</span></div><div class="rd">綜理會務 · 對外代表 · 召集會議 · 團體協商</div></div></div>
     <a class="tile" href="charter.html?tour=open" style="border-left-color:#7B1818">
       <div class="row">
         <span class="ico">📜</span>
@@ -576,7 +576,7 @@
     </a>
 
     <!-- ⑤ 文宣 -->
-    <div class="role"><div class="rb r-wel">宣</div><div><div class="rt">文宣 · <span style="color:#7A4F9D">妍妍</span></div><div class="rd">活動規劃 · 福利宣傳 · 教育訓練</div></div></div>
+    <div class="role"><div class="rb r-wel">宣</div><div><div class="rt">文宣 · <span style="color:#7A4F9D" id="name-wel">黃淑姸</span></div><div class="rd">活動規劃 · 福利宣傳 · 教育訓練</div></div></div>
     <a class="tile" href="activity.html?tour=open" style="border-left-color:#7A4F9D">
       <div class="row">
         <span class="ico">🎟</span>
@@ -589,7 +589,7 @@
     </a>
 
     <!-- 監事 -->
-    <div class="role"><div class="rb r-sup">監</div><div><div class="rt">監事 · <span style="color:#122A4F">黃敏</span></div><div class="rd">監察會務 · 財務稽核 · 監察意見書</div></div></div>
+    <div class="role"><div class="rb r-sup">監</div><div><div class="rt">監事 · <span style="color:#122A4F" id="name-sup">黃敏</span></div><div class="rd">監察會務 · 財務稽核 · 監察意見書</div></div></div>
     <div style="font-size:12.5px;margin:0 2px .7rem;line-height:1.9">📎 官方參考：<a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020014" target="_blank" rel="noopener" style="color:#122A4F;font-weight:700">工會財務處理準則（稽核依據）↗</a></div>
     <a class="tile id" href="jianshi.html">
       <div class="row">
@@ -748,9 +748,12 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
   function syncNames(){
+    fillName('name-chair','chair');
     fillName('name-fins','fin');
     fillName('name-docs','doc');
+    fillName('name-wel','wel');
     fillName('name-org','org');
+    fillName('name-sup','sup');
   }
   syncNames();
   document.addEventListener('ebnorg:public', syncNames);

@@ -422,7 +422,9 @@ function updateBkStatus(){
 }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function curMonth(){ return new Date().toISOString().slice(0,7); }
+// 用台灣本地年月（不是 toISOString 的 UTC 年月）——每月 1 號台灣時間 00:00~08:00
+// 用 UTC 算還停在上個月，會讓當月已欠費的人晚一天才被標成欠費。
+function curMonth(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1); }
 function isOwe(m){ if(m.status!=='active') return false; if(!m.feeTo) return true; return m.feeTo < curMonth(); }
 /* 舊資料相容：早期 Line/Email 合併存在 m.contact，新資料分開存 m.email / m.lineId。
    還沒被改過的舊會員，用有沒有「@」自動判斷該歸到哪一欄顯示。 */

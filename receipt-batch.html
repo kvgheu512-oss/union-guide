@@ -86,7 +86,9 @@
   function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
   function money(n){ return "NT$ "+Math.round(n).toLocaleString("en-US"); }
   function parseLines(){
-    var def=parseFloat($("defAmt").value)||0;
+    // 負數防呆：欄位是純文字輸入，沒有 type=number 擋負號；預設金額若被打成負數，
+    // 沒填金額的人就會生出「NT$ -200」的收據，一律當成 0（等同沒填預設）。
+    var def=parseFloat($("defAmt").value)||0; if(def<0) def=0;
     return ($("lines").value||"").split(/\n/).map(function(l){return l.trim();}).filter(Boolean).map(function(l){
       var m=l.split(/[\s,，\t]+/);
       var name=m[0]; var amt=m.length>1?parseFloat(m[m.length-1].replace(/[^\d.]/g,"")):NaN;
@@ -113,7 +115,7 @@
     var org=o.fullName||"（請先到基本資料中心填工會全名）", chair=o.chair||(window.EBNOrg&&EBNOrg.cadreName('chair'))||"____";
     var rows=parseLines(); if(!rows.length){ $("genhint").textContent="請先貼上繳費名單"; return; }
     var year=$("year").value.trim()||new Date().getFullYear()-1911, type=$("type").value.trim()||"會費";
-    var start=parseInt($("startNo").value,10)||1, tot=0;
+    var start=parseInt($("startNo").value,10)||1; if(start<1) start=1; var tot=0;
     var rcpts=rows.map(function(r,i){
       tot+=r.amt||0;
       var no=year+"-"+pad(start+i);

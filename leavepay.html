@@ -223,14 +223,17 @@
 (function(){
   "use strict";
   var $=function(id){return document.getElementById(id);};
-  function num(id){ var v=parseFloat($(id).value); return isNaN(v)?0:v; }
+  // 負數防呆：月薪/天數/時數輸入負值在邏輯上沒有意義（會算出負的工資、或讓除數變負把整組數字變號），
+  // 一律當成 0（等同沒填），避免算出離譜結果。這些欄位是 type="text"，瀏覽器不會擋負號。
+  function num(id){ var v=parseFloat($(id).value); if(isNaN(v)||v<0) return 0; return v; }
+  function posOrEmpty(str){ if(str==="") return ""; var v=parseFloat(str); if(isNaN(v)||v<0) return ""; return String(v); }
   function money(n){ return "NT$ "+Math.round(n).toLocaleString("en-US"); }
 
   // —— ① 平日加班費：小白「逐日」輸入（每天填總時數，系統自動分段 ×1⅓／×1⅔）——
   var wkBox=$("wkDays");
   function getWkDays(){
     var out=[];
-    if(wkBox){ wkBox.querySelectorAll(".wk-h").forEach(function(i){ var v=parseFloat(i.value); out.push(isNaN(v)?0:v); }); }
+    if(wkBox){ wkBox.querySelectorAll(".wk-h").forEach(function(i){ var v=parseFloat(i.value); out.push((isNaN(v)||v<0)?0:v); }); }
     return out;
   }
   function wkRowHTML(v){
@@ -287,7 +290,7 @@
       '<div class="row"><span>平日加班費 應領</span><span class="big">'+money(wkPay)+'</span></div>'+
       (dv>30?'<div style="font-size:12px;color:#7B1818;margin-top:5px;font-weight:700">⚠ 高榮用 ÷'+dv+' 算時薪（月薪÷'+(dv*8)+'＝'+money(hr)+'），比法定 ÷240（'+money(legalHr)+'）每小時少給；逐時累積差額可主張（見 ④）。</div>':'')+
       (!anyHr?'<div style="font-size:11.5px;color:#777">填入每天加班時數即自動試算。</div>':'');
-    var aW=$("actWk").value, dW=$("diffWk");
+    var aW=posOrEmpty($("actWk").value), dW=$("diffWk");
     if(aW!==""&&!isNaN(parseFloat(aW))){
       var d0=wkPay-parseFloat(aW);
       if(d0>1){ dW.className="diff short"; dW.textContent="⚠ 醫院可能少給約 "+money(d0)+"（常見原因：時薪用 ÷31 稀釋、或加成不足）。"; }
@@ -303,7 +306,7 @@
       (dv!=30?'<div class="row"><span>高榮算法（÷'+dv+'）</span><b>'+money(dvLeave)+'</b></div>':'');
     var leavePay=legalLeave;             // 對照基準用法定金額
     if(dv>30){ $("outLeave").innerHTML+='<div style="font-size:12px;color:#7B1818;margin-top:5px;font-weight:700">⚠ 高榮用 ÷'+dv+' 比法定 ÷30 每天少 '+money(legalDay-day)+'，共少 '+money(legalLeave-dvLeave)+'——依細則 §24-1，特休折算應 ÷30，差額可主張。</div>'; }
-    var aL=$("actLeave").value, dL=$("diffLeave");
+    var aL=posOrEmpty($("actLeave").value), dL=$("diffLeave");
     if(aL!==""&&!isNaN(parseFloat(aL))){
       var diff=leavePay-parseFloat(aL);
       if(diff>1){ dL.className="diff short"; dL.textContent="⚠ 醫院可能少給約 "+money(diff)+"（多半是基數只算本薪、沒含經常性給與）。建議核對。"; }
@@ -321,7 +324,7 @@
       (ot>0?'<div class="row"><span>超時 '+ot+' 小時加給（估）</span><b>'+money(otPay)+'</b></div>':'')+
       '<div class="row"><span>應加給合計</span><span class="big">'+money(holiTotal)+'</span></div>'+
       '<div style="font-size:11.5px;color:#777;margin-top:4px">＝ 這是月薪以外「<b>額外</b>」該領的（放假當天工資已含在月薪）。</div>';
-    var aH=$("actHoli").value, dH=$("diffHoli");
+    var aH=posOrEmpty($("actHoli").value), dH=$("diffHoli");
     if(aH!==""&&!isNaN(parseFloat(aH))){
       var d2=holiTotal-parseFloat(aH);
       if(d2>1){ dH.className="diff short"; dH.textContent="⚠ 醫院可能少給約 "+money(d2)+"。國定假日出勤 8 小時內，應額外加給整整 1 日工資。"; }

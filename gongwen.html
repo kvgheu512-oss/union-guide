@@ -185,7 +185,9 @@ document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='E
 const KEY="gongwen_drafts_v1";
 const $=id=>document.getElementById(id);
 function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function today(){ return new Date().toISOString().slice(0,10); }
+// 用台灣本地日期（不是 toISOString 的 UTC 日期）——公文日期在台灣每天 00:00~08:00
+// 用 UTC 算會少一天，寫錯發文日期。
+function today(){ const d=new Date(); const p2=n=>n<10?'0'+n:String(n); return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); }
 function rocDate(ds){ if(!ds) return '中華民國　年　月　日'; const p=ds.split('-'); return `中華民國${p[0]-1911}年${+p[1]}月${+p[2]}日`; }
 
 /* 範本（【】內為待填，套用後直接取代即可；hint＝怎麼填的白話提示） */

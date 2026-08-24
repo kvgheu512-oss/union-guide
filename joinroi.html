@@ -82,10 +82,13 @@
 </main>
 <script>
   function nt(n){ return "NT$ "+Math.round(n).toLocaleString("en-US"); }
+  // 負數防呆：type=number 的 min="0" 擋不住手動輸入負號，月薪/時數/天數輸入負值
+  // 會算出負的會費、負的加班費可追回等沒有意義的結果，一律當成 0。
+  function nn(id){ var v=+document.getElementById(id).value; if(!isFinite(v)||v<0) return 0; return v; }
   function calc(){
-    var sal=+document.getElementById("salary").value||0;
-    var ot=+document.getElementById("otHr").value||0;
-    var ann=+document.getElementById("annual").value||0;
+    var sal=nn("salary");
+    var ot=nn("otHr");
+    var ann=nn("annual");
     var hourly=sal/240, daily=sal/30;
     var feeYear=sal*0.005*12;
     var otYear=ot*52*hourly*(4/3);

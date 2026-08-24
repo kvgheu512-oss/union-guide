@@ -203,10 +203,14 @@ if(localStorage.getItem(DKEY)){dd.value=localStorage.getItem(DKEY);}
 function calcDDL(){
   if(!dd.value){ddOut.style.display="none";return;}
   localStorage.setItem(DKEY,dd.value);
-  const d=new Date(dd.value);const dl=new Date(d);dl.setDate(dl.getDate()+30);
+  // new Date("YYYY-MM-DD") 會被當成 UTC 午夜解析（=台灣本地時間早上8點），
+  // 跟下面 today 用本地午夜相減會多算 8 小時，導致期限當天／隔天算錯一天。
+  // 改用年月日拆解建構「本地午夜」，兩邊基準一致。
+  const [dy,dm,ddD]=dd.value.split('-').map(Number);
+  const d=new Date(dy,dm-1,ddD);const dl=new Date(d);dl.setDate(dl.getDate()+30);
   const y=dl.getFullYear(),m=dl.getMonth()+1,day=dl.getDate();
   const today=new Date();today.setHours(0,0,0,0);
-  const left=Math.ceil((dl-today)/86400000);
+  const left=Math.round((dl-today)/86400000);
   let tail = left>=0 ? `<span class="left">還有 ${left} 天</span>` : `<span class="over">已逾期 ${-left} 天（需重新召開大會）</span>`;
   ddOut.style.display="block";
   ddOut.innerHTML=`⏰ 登記送件最後期限：<b>${y}/${m}/${day}</b>　${tail}<br>

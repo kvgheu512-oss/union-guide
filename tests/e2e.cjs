@@ -19,7 +19,11 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
 
 (async () => {
   const b = await chromium.launch(CHROME ? { executablePath: CHROME } : {});
-  const ctx = await b.newContext();
+  // 全站服務對象是台灣用戶，測試固定用台灣時區，才驗證得出 UTC-vs-本地時間 的日期 bug。
+  const ctx = await b.newContext({ timezoneId: 'Asia/Taipei' });
+  // 把頁面的系統時間鎖在指定的 UTC 瞬間（用來測「台灣時間 00:00~08:00 換算本地日期」的邊界）。
+  const fixClock = async (p, isoUTC) => { const FIXED = new Date(isoUTC).getTime();
+    await p.addInitScript(FIXED => { var OD = Date; function FD(...a){ return a.length ? new OD(...a) : new OD(FIXED); } FD.prototype = OD.prototype; FD.now = () => FIXED; window.Date = FD; }, FIXED); };
   const page = async () => { const p = await ctx.newPage(); p.__err = []; p.on('pageerror', e => p.__err.push(e.message)); return p; };
   const go = async (p, u) => { await p.goto(BASE + u, { waitUntil: 'domcontentloaded' }); await p.evaluate(() => { try { localStorage.clear(); } catch (e) {} }); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200); };
   const T = async (name, fn) => { const p = await page(); try { await fn(p); if (p.__err.length) bad(name, 'JS error: ' + p.__err.join('|')); } catch (e) { bad(name, e.message.split('\n')[0]); } await p.close(); };
@@ -210,6 +214,72 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const sel = await items[0].evaluate(el => el.classList.contains('sel'));
     const summary = await p.textContent('#summary-tags');
     (sel && !/還沒勾選/.test(summary)) ? ok('勾選情境摘要即時更新') : bad('jb-summary', summary.slice(0, 40)); });
+
+  console.log('\n========== G. 時區正確性（UTC vs 台灣本地日期） ==========');
+  // 固定時鐘在 UTC 2026-06-20T20:00:00Z＝台灣本地 2026-06-21 04:00。
+  // 用 toISOString().slice(0,10) 算「今天」的舊寫法會誤判成 06-20（UTC 那天），
+  // 應該要是台灣當地的 06-21。
+  await T('org.js localDateStr() 用台灣本地日期，不是 UTC', async p => {
+    await fixClock(p, '2026-06-20T20:00:00Z');
+    await p.goto(BASE + 'org.html', { waitUntil: 'domcontentloaded' });
+    await p.waitForFunction(() => window.EBNOrg);
+    const d = await p.evaluate(() => EBNOrg.localDateStr());
+    d === '2026-06-21' ? ok('UTC 20:00 → 台灣日期 06-21（正確，非 06-20）') : bad('localDateStr', 'got ' + d); });
+  await T('jianshi.html today()/addDays() 用台灣本地日期', async p => {
+    await fixClock(p, '2026-06-20T20:00:00Z');
+    await p.goto(BASE + 'jianshi.html', { waitUntil: 'domcontentloaded' });
+    const d = await p.evaluate(() => window.today());
+    const d7 = await p.evaluate(() => window.addDays(0));
+    (d === '2026-06-21' && d7 === '2026-06-21') ? ok('today()/addDays(0)=06-21（正確，非 06-20）') : bad('jianshi-today', 'today=' + d + ' addDays=' + d7); });
+  await T('gongwen.html today() 用台灣本地日期', async p => {
+    await fixClock(p, '2026-06-20T20:00:00Z');
+    await p.goto(BASE + 'gongwen.html', { waitUntil: 'domcontentloaded' });
+    const d = await p.evaluate(() => window.today());
+    d === '2026-06-21' ? ok('公文日期=06-21（正確，非 06-20）') : bad('gongwen-today', 'got ' + d); });
+  await T('roster.html curMonth() 跨月邊界用台灣本地時間', async p => {
+    // UTC 2026-06-30T20:00:00Z＝台灣本地 2026-07-01 04:00：已經跨進 7 月，
+    // 舊寫法(toISOString)還停在 UTC 的 6/30，會讓 7 月才欠費的人晚一天才被標欠費。
+    await fixClock(p, '2026-06-30T20:00:00Z');
+    await p.goto(BASE + 'roster.html', { waitUntil: 'domcontentloaded' });
+    const m = await p.evaluate(() => window.curMonth());
+    m === '2026-07' ? ok('curMonth()=2026-07（正確，非 2026-06）') : bad('roster-curmonth', 'got ' + m); });
+  await T('checklist.html 30日登記死線不因時區多算一天', async p => {
+    // 固定「現在」= 台灣本地 2026-07-01 00:00 整；大會日填 2026-06-01（剛好 30 天前）。
+    // 應顯示「還有 0 天」；舊寫法會把大會日解析成 UTC 午夜(=台灣早上8點)，
+    // 跟本地午夜的 today 相減多出 8 小時，Math.ceil 後誤報「還有 1 天」。
+    await fixClock(p, '2026-06-30T16:00:00Z');
+    await p.goto(BASE + 'checklist.html', { waitUntil: 'domcontentloaded' });
+    await p.fill('#dday', '2026-06-01'); await p.waitForTimeout(150);
+    const t = await p.textContent('#ddOut');
+    /還有\s*0\s*天/.test(t) ? ok('30日死線剛好到期顯示「還有0天」（不多算一天）') : bad('checklist-ddl', t.replace(/\s+/g, ' ')); });
+
+  console.log('\n========== H. 幹部卡片自動同步 ==========');
+  await T('union.html 理事長/文宣/監事卡片會隨改名同步（原本只有總務/法規/組訓會動）', async p => {
+    await p.goto(BASE + 'union.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { localStorage.clear(); localStorage.setItem('union_panel_unlocked', '1');
+      localStorage.setItem('ebn_cadres_v1', JSON.stringify({ chair: '測試理事長', wel: '測試文宣', sup: '測試監事' })); });
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    const chair = await p.textContent('#name-chair').catch(() => null);
+    const wel = await p.textContent('#name-wel').catch(() => null);
+    const sup = await p.textContent('#name-sup').catch(() => null);
+    (chair === '測試理事長' && wel === '測試文宣' && sup === '測試監事') ? ok('三張卡片改名後同步(chair/wel/sup)') : bad('union-sync', 'chair=' + chair + ' wel=' + wel + ' sup=' + sup); });
+
+  await T('petition.html 招募分工含組訓角色（不是只有5個舊角色）', async p => { await go(p, 'petition.html'); await p.waitForTimeout(200);
+    const t = await p.textContent('#recruiterList').catch(() => ''); t.includes('組訓') ? ok('組訓角色有出現在招募分工列表') : bad('petition-org', t.slice(0, 80)); });
+
+  console.log('\n========== I. 計算機負數防呆 ==========');
+  await T('leavepay 月薪填負數不算出負的工資', async p => { await go(p, 'leavepay.html'); await p.fill('#salary', '-40000'); await p.waitForTimeout(150);
+    const t = await p.textContent('#base'); !/-/.test(t) ? ok('負數月薪被擋下，不出現負號') : bad('leavepay-neg', t.replace(/\s+/g, ' ')); });
+  await T('leavepay 除數填負數不把金額變號', async p => { await go(p, 'leavepay.html'); await p.fill('#salary', '30000'); await p.fill('#dv', '-30'); await p.waitForTimeout(150);
+    const t = await p.textContent('#base'); !/-/.test(t) ? ok('負除數被擋下，退回正常算法') : bad('leavepay-negdv', t.replace(/\s+/g, ' ')); });
+  await T('joinroi 月薪填負數不算出負的會費/回收', async p => { await go(p, 'joinroi.html'); await p.fill('#salary', '-40000'); await p.fill('#otHr', '3'); await p.waitForTimeout(150);
+    const t = await p.textContent('#out'); !/-/.test(t) ? ok('負數月薪被擋下') : bad('joinroi-neg', t.replace(/\s+/g, ' ')); });
+  await T('receipt-batch 預設金額填負數不產生負數收據', async p => { await p.goto(BASE + 'receipt-batch.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(150);
+    await p.evaluate(() => { window.print = () => {}; });
+    await p.fill('#year', '115'); await p.fill('#defAmt', '-200'); await p.fill('#startNo', '1');
+    await p.fill('#lines', '甲\n乙 500'); await p.waitForTimeout(120);
+    await p.click('#gen'); await p.waitForTimeout(300);
+    const t = await p.textContent('#sheets'); !/NT\$ -/.test(t) ? ok('負數預設金額被擋下，未出現負數收據') : bad('receipt-neg', t.slice(0, 80)); });
 
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);
