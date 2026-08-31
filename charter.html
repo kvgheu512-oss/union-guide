@@ -75,7 +75,7 @@
        💰 <b>§26 入會費</b>
        <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
          <span style="white-space:nowrap">NT$</span>
-         <input id="ch-join" type="number" inputmode="numeric" placeholder="1250" min="0" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 10px;font-size:15px;background:#FEF9E7;font-family:inherit">
+         <input id="ch-join" type="number" inputmode="numeric" value="1250" placeholder="1250" min="0" style="flex:1;min-width:0;border:1.5px solid #EAD67A;border-radius:8px;padding:7px 10px;font-size:15px;background:#FEF9E7;font-family:inherit">
          <span>元</span>
        </div>
      </div>
@@ -161,7 +161,7 @@
 <p class="art"><b>第二十四條</b>　理事會每三個月召開一次，必要時得召開臨時會議；由理事長召集，並於七日前通知各理事及監事出席。監事會每六個月召開一次，由常務監事（或監事召集人）召集。理事、監事應親自出席，不得委託他人代理；無故連續缺席兩次者，視為辭職，由候補理事（候補監事）依序遞補。</p>
 <h2>第五章　經費及會計</h2>
 <p class="art"><b>第二十五條</b>　本會經費來源如下：一、入會費。二、經常會費。三、政府補助。四、捐款。五、依法令舉辦事業或活動之收入。六、基金及其孳息。七、贊助會員費。八、其他收入。</p>
-<p class="art"><b>第二十六條</b>　入會費每人新臺幣【○○○】元，於入會時繳納一次。經常會費每人每月新臺幣250元；當月工資百分之【○.五】所計得金額如高於250元者，從其較高之數額計收（不得低於法定最低標準百分之零點五），按月繳納。費額之調整由會員（代表）大會議決。</p>
+<p class="art"><b>第二十六條</b>　入會費每人新臺幣1250元，於入會時繳納一次。經常會費每人每月新臺幣250元；當月工資百分之零點五所計得金額如高於250元者，從其較高之數額計收（不得低於法定最低標準百分之零點五），按月繳納。費額之調整由會員（代表）大會議決。</p>
 <p class="art"><b>第二十七條</b>　本會財務管理依下列規定辦理：
 <br>　一、會計年度以曆年制為準，自一月一日起至十二月三十一日止。
 <br>　二、每年應編造預算、決算，經監事會審核後提會員（代表）大會通過，並公開徵信。
@@ -738,7 +738,7 @@ function copyCharter(){
   var board=document.getElementById('ch-board').value||'【五至九】';
   var supMap={'5':'一','7':'二','9':'三'};
   var sup=supMap[document.getElementById('ch-board').value]||'【一至三】';
-  var join=document.getElementById('ch-join').value.trim()||'【○○○】';
+  var join=document.getElementById('ch-join').value.trim()||'1250';
   var monthly=document.getElementById('ch-monthly').value.trim()||'【○.五】';
   var yr=document.getElementById('ch-year').value.trim()||'【○】';
   var mo=document.getElementById('ch-month').value.trim()||'【○】';
