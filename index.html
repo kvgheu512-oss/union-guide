@@ -343,9 +343,9 @@
 
     <!-- 4.5 兩場關鍵會議（籌備模式）-->
     <section class="section prep-only" id="meetings">
-      <div class="section-header"><div class="section-num gold">📣</div><div class="section-title">兩場關鍵會議，需要你一起</div></div>
+      <div class="section-header"><div class="section-num gold">📣</div><div class="section-title">兩場關鍵會議（已完成）</div></div>
       <div class="card">
-        <p class="lead" style="font-size:14.5px">工會成立的路上，<strong>最需要大家幫忙的就是這兩場會</strong>。能到現場最好；真的到不了，也可以<strong>線上一起參與</strong>。</p>
+        <p class="lead" style="font-size:14.5px">工會成立路上最重要的<strong>兩場會都已經開完了</strong>，這裡留作紀錄；後續會議公告會另外在群組發布。</p>
         <a href="founders.html" style="display:block;text-decoration:none;color:inherit">
         <div class="hl hl-gold" style="margin-top:12px;cursor:pointer">
           <strong>① 發起人會議</strong> <span style="font-size:12px;color:#B7860B;font-weight:400">→ 議程 &amp; 官方表格</span><br>
@@ -354,7 +354,7 @@
         </a>
         <div class="hl hl-green" style="margin-top:10px">
           <strong>② 成立大會</strong><br>
-          <strong>通過章程、選舉理事監事</strong>，工會正式誕生。章程和幹部直接影響你的權益，<strong>每一票都算數</strong>。
+          115/8/30 已<strong>通過章程、選舉理事監事</strong>，工會正式誕生。
         </div>
       </div>
 
@@ -392,7 +392,7 @@
           var pct=Math.min(100,Math.round(now/goal*1000)/10),left=Math.max(0,goal-now);
           document.getElementById('sign-now').textContent=now; document.getElementById('sign-goal').textContent=goal;
           setTimeout(function(){var f=document.getElementById('sign-fill'); if(f) f.style.width=pct+'%';},150);
-          document.getElementById('sign-left').textContent=left>0?('再 '+left+' 人，就能成立工會、坐上談判桌！'):'已達門檻！成立大會籌備中 🎉'; }
+          document.getElementById('sign-left').textContent=left>0?('再 '+left+' 人，就能成立工會、坐上談判桌！'):'已達門檻！成立大會已於 115/8/30 召開 🎉'; }
         render(c.dataset.now,c.dataset.goal);
         // 公告版(public.json)的連署人數載到後就更新（全站一致、大家看到同一個數字）
         document.addEventListener('ebnorg:public',function(){ try{ var s=window.EBNOrg&&EBNOrg.publicData().sign; if(s&&(s.now!=null||s.goal!=null)) render(s.now!=null?s.now:c.dataset.now, s.goal!=null?s.goal:c.dataset.goal); }catch(e){} });
@@ -400,7 +400,7 @@
       <div class="card">
         <div class="step"><div class="step-no">1</div><div><strong>確認身分</strong><br><span style="font-size:13px;color:var(--ink-soft)">你是約用／契約／派遣等勞工身分（非正式公職、非代表雇主的主管）。</span></div></div>
         <div class="step"><div class="step-no">2</div><div><strong>填申請書</strong><br><span style="font-size:13px;color:var(--ink-soft)">點下方按鈕，線上填電子入會申請書（電子簽名），或加 Line 群組請幹部協助。</span></div></div>
-        <div class="step"><div class="step-no">3</div><div><strong>出席成立大會</strong><br><span style="font-size:13px;color:var(--ink-soft)">115/8/30 成立大會將通過章程、選出理監事，正式成為會員。</span></div></div>
+        <div class="step"><div class="step-no">3</div><div><strong>理事會審查</strong><br><span style="font-size:13px;color:var(--ink-soft)">依章程第6條，送出申請書及費用後，經理事會審查通過即完成入會（成立大會已於 115/8/30 召開，無需另外出席會議）。</span></div></div>
       </div>
       <a href="joinroi.html" style="display:block;text-decoration:none;color:inherit;margin-top:12px;background:#FFF7F4;border:1px solid #F0D9D2;border-left:5px solid #C0392B;border-radius:12px;padding:.95rem 1.1rem;">
         <strong style="color:#7B1818;font-size:15px">💰 入會划算嗎？1 分鐘算給你看 →</strong>
@@ -845,7 +845,7 @@ window.addEventListener("load", function(){
   if(!window.EBNTour) return;
   EBNTour.attach([
     { title:"歡迎！我帶你看一遍", text:"這是工會的入口頁。30 秒帶你看：連署進度、加入方式、會議、有問題怎麼問。" },
-    { sel:"#signbar", title:"連署進度", text:"連署已達 30 人法定門檻，現在籌備召開成立大會。" },
+    { sel:"#signbar", title:"連署進度", text:"連署已達 30 人法定門檻，成立大會已於 115/8/30 召開。" },
     { sel:"#cta-join", title:"想加入就按這裡", text:"按下去會先說明<b>三件事</b>，再帶你到加入方式，可以線上電子簽名申請。" },
     { sel:"#meetings", title:"兩場關鍵會議", text:"發起人會議、成立大會——<b>到不了現場也能線上參加</b>。" },
     { sel:"#bot-in", title:"有問題問小幫手", text:"打字問我，例如「約用可以加入嗎」，會給你答案。" },
