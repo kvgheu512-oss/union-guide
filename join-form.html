@@ -402,6 +402,23 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     document.getElementById('shareBox').style.display='block';
     document.getElementById('shareWarn').style.display='block';
 
+    // 有設定「入會申請書自動回傳網址」就自動送一份到工會的 Google Sheet；
+    // 沒設定、或送失敗都不影響上面的手動分享流程（純加分，不是取代）。
+    try{
+      var sheetUrl=(window.EBNOrg&&EBNOrg.get().joinSheetUrl||"").trim();
+      if(sheetUrl){
+        fetch(sheetUrl,{method:'POST',body:JSON.stringify(shareRec)})
+          .then(function(r){return r.json();})
+          .then(function(j){
+            if(j&&j.ok){
+              markSent();
+              document.getElementById('shareWarn').innerHTML='✅ 資料已自動送到工會，也可以再傳一份給幹部備份';
+              document.getElementById('shareWarn').style.color='#1B5E20';
+            }
+          }).catch(function(){});
+      }
+    }catch(e){}
+
     if(navigator.share){
       var btnNative=document.getElementById('btnShareNative');
       btnNative.style.display='block';
