@@ -53,7 +53,7 @@ function getSheet() {
   var sh = ss.getSheetByName(SHEET_NAME);
   if (!sh) {
     sh = ss.insertSheet(SHEET_NAME);
-    sh.appendRow(["收到時間", "姓名", "員工編號", "身分別", "職稱", "單位/科別", "手機", "LINE ID", "Email", "申請日期", "簽名檔連結", "處理狀態"]);
+    sh.appendRow(["收到時間", "姓名", "員工編號", "身分別", "職稱", "單位/科別", "手機", "LINE ID", "Email", "申請日期", "電子簽名", "處理狀態"]);
   }
   return sh;
 }
