@@ -407,10 +407,13 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     try{
       var sheetUrl=(window.EBNOrg&&EBNOrg.get().joinSheetUrl||"").trim();
       if(sheetUrl){
+        // 跟 shareRec 分開：這份多帶簽名圖（base64），只用來送去 Google Sheet 自動存檔，
+        // 不會拿去產生上面那個給幹部手動匯入用的連結（那個連結要短，不能塞圖片進去）。
+        var sheetRec=Object.assign({},shareRec,{sig:sigUrl});
         // ⚠️ Apps Script 的 /exec 網址會先轉址一次，一般 fetch POST 遇到轉址會被瀏覽器自動降級成 GET，
         // 資料就送不到 doPost、寫不進表格（且不會報錯，很難查）。改用 mode:'no-cors' 避開這個問題；
         // 代價是讀不到回應內容（無法確認成功與否），所以請求送出就先樂觀顯示已送出。
-        fetch(sheetUrl,{method:'POST',mode:'no-cors',body:JSON.stringify(shareRec)})
+        fetch(sheetUrl,{method:'POST',mode:'no-cors',body:JSON.stringify(sheetRec)})
           .then(function(){
             markSent();
             document.getElementById('shareWarn').innerHTML='✅ 資料已自動送到工會，也可以再傳一份給幹部備份';
