@@ -35,6 +35,16 @@
   .hint{font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.6;}
   .warn{background:#FDECEA;border:1px solid #F3C9C4;color:#7B1818;border-radius:10px;padding:.7rem .9rem;font-size:13px;}
   .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.2rem;}
+  #gate{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 100%);display:none;align-items:center;justify-content:center;padding:1.5rem;}
+  #gate.show{display:flex;}
+  .gate-box{background:#fff;border-radius:16px;max-width:380px;width:100%;padding:2rem 1.5rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+  .gate-box h2{font-family:'Noto Serif TC',serif;color:var(--navy-deep);font-size:20px;margin-bottom:6px;}
+  .gate-box p{font-size:13px;color:var(--ink-soft);margin-bottom:1.25rem;}
+  .gate-box input{width:100%;padding:.8rem 1rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:10px;text-align:center;}
+  .gate-box input:focus{outline:none;border-color:var(--navy);}
+  .gate-box button{width:100%;padding:.8rem;font-size:15px;color:#fff;background:var(--navy);border:none;border-radius:10px;cursor:pointer;}
+  .gate-err{color:#C0392B;font-size:13px;min-height:18px;margin-top:8px;}
+  html.u #app{display:block!important}html.u #gate{display:none!important}
   /* 列印區：螢幕隱藏，列印時每人一頁 */
   #sheets{display:none;}
   @media print{
@@ -52,7 +62,19 @@
 <link rel="stylesheet" href="common.css">
 </head>
 <body data-home="union.html">
+<script>try{if(localStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
 
+<div id="gate">
+  <div class="gate-box">
+    <h2>合併列印</h2>
+    <p>本頁會帶入會員名冊個資，限幹部使用。</p>
+    <input id="gate-pw" type="password" inputmode="text" lang="en" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="幹部通行碼" enterkeyhint="go">
+    <button id="gate-go">進入</button>
+    <div class="gate-err" id="gate-err"></div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
 <div class="header">
   <h1>🖨️ 合併列印（名冊 × 範本）</h1>
   <p>勾選會員 ＋ 選範本 → 一次產生每人一份，批次列印／存 PDF</p>
@@ -207,5 +229,23 @@ window.addEventListener("load", function(){
 });
 </script>
 <script src="common.js" defer></script>
+</div>
+<script>
+const LOCK=true, PW_HASH="1621267407177439", UNLOCK_KEY="union_panel_unlocked";
+function cyrb53(s,seed=0){ s=s||""; let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed; for(let i=0,c;i<s.length;i++){c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909); return ""+(4294967296*(2097151&h2)+(h1>>>0)); }
+const gate=document.getElementById('gate'), app=document.getElementById('app');
+function showApp(){ gate.classList.remove('show'); app.style.display='block'; }
+function showGate(){ gate.classList.add('show'); app.style.display='none'; setTimeout(function(){document.getElementById('gate-pw').focus();},100); }
+function tryUnlock(){
+  const v=document.getElementById('gate-pw').value.trim();
+  if(cyrb53(v)===PW_HASH){ try{localStorage.setItem(UNLOCK_KEY,'1');}catch(_){} showApp(); }
+  else { document.getElementById('gate-err').textContent='通行碼不對，請再試一次或詢問負責幹部'; }
+}
+if(!LOCK){ showApp(); }
+else if(localStorage.getItem(UNLOCK_KEY)==='1'){ showApp(); }
+else { showGate(); }
+document.getElementById('gate-go').addEventListener('click',tryUnlock);
+document.getElementById('gate-pw').addEventListener('keydown',function(e){ if(e.key==='Enter') tryUnlock(); });
+</script>
 </body>
 </html>

@@ -22,10 +22,15 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   // 全站服務對象是台灣用戶，測試固定用台灣時區，才驗證得出 UTC-vs-本地時間 的日期 bug。
   const ctx = await b.newContext({ timezoneId: 'Asia/Taipei' });
   // 把頁面的系統時間鎖在指定的 UTC 瞬間（用來測「台灣時間 00:00~08:00 換算本地日期」的邊界）。
+  // 順便在頁面自己的程式碼跑之前先解鎖幹部密碼鎖（addInitScript 早於頁面內嵌script執行）——
+  // 這裡用到的頁面全是已上鎖的幹部工具頁，不解鎖的話 #gate 蓋住內容，摸不到元素。
   const fixClock = async (p, isoUTC) => { const FIXED = new Date(isoUTC).getTime();
-    await p.addInitScript(FIXED => { var OD = Date; function FD(...a){ return a.length ? new OD(...a) : new OD(FIXED); } FD.prototype = OD.prototype; FD.now = () => FIXED; window.Date = FD; }, FIXED); };
+    await p.addInitScript(FIXED => { var OD = Date; function FD(...a){ return a.length ? new OD(...a) : new OD(FIXED); } FD.prototype = OD.prototype; FD.now = () => FIXED; window.Date = FD; }, FIXED);
+    await p.addInitScript(() => { try { localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} }); };
   const page = async () => { const p = await ctx.newPage(); p.__err = []; p.on('pageerror', e => p.__err.push(e.message)); return p; };
-  const go = async (p, u) => { await p.goto(BASE + u, { waitUntil: 'domcontentloaded' }); await p.evaluate(() => { try { localStorage.clear(); } catch (e) {} }); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200); };
+  // 清完 localStorage 順手補上幹部密碼鎖的解鎖旗標——測試不是在測密碼鎖本身，
+  // 不解鎖的話這幾頁的內容會被 #gate 蓋住，摸不到裡面的元素。
+  const go = async (p, u) => { await p.goto(BASE + u, { waitUntil: 'domcontentloaded' }); await p.evaluate(() => { try { localStorage.clear(); localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} }); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200); };
   const T = async (name, fn) => { const p = await page(); try { await fn(p); if (p.__err.length) bad(name, 'JS error: ' + p.__err.join('|')); } catch (e) { bad(name, e.message.split('\n')[0]); } await p.close(); };
 
   console.log('\n========== A. 功能測試（計算機） ==========');
@@ -102,23 +107,23 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     p.__err.length === 0 ? ok('空白安全') : bad('joinroi-empty', 'err'); });
 
   console.log('\n========== F. 幹部文書工具（帶入／批次） ==========');
-  await T('基本資料中心 儲存持久化', async p => { await p.goto(BASE + 'org.html', { waitUntil: 'domcontentloaded' }); await p.evaluate(() => localStorage.clear()); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
+  await T('基本資料中心 儲存持久化', async p => { await p.goto(BASE + 'org.html', { waitUntil: 'domcontentloaded' }); await p.evaluate(() => { localStorage.clear(); localStorage.setItem('union_panel_unlocked', '1'); }); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
     await p.fill('#org-fullName', '測試工會'); await p.fill('#org-chair', '測試長'); await p.click('#saveBtn'); await p.waitForTimeout(150);
     await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
     (await p.inputValue('#org-chair')) === '測試長' ? ok('基本資料重開保留') : bad('org', 'not persisted'); });
-  await T('org.js cadres() 草稿優先於已發布(改名不被蓋回)', async p => { await p.goto(BASE + 'org.html', { waitUntil: 'domcontentloaded' }); await p.evaluate(() => localStorage.clear()); await p.reload({ waitUntil: 'domcontentloaded' });
+  await T('org.js cadres() 草稿優先於已發布(改名不被蓋回)', async p => { await p.goto(BASE + 'org.html', { waitUntil: 'domcontentloaded' }); await p.evaluate(() => { localStorage.clear(); localStorage.setItem('union_panel_unlocked', '1'); }); await p.reload({ waitUntil: 'domcontentloaded' });
     await p.waitForFunction(() => window.EBNOrg && window.EBNOrg.publicLoaded()); await p.waitForTimeout(150);
     await p.fill('#cadre-fin', '測試總務新名字'); await p.click('#pubBtn'); await p.waitForTimeout(150);
     const txt = await p.inputValue('#pubOut'); const j = JSON.parse(txt);
     j.cadres && j.cadres.fin === '測試總務新名字' ? ok('改名存檔沒被舊 public.json 蓋回') : bad('cadres-order', 'fin=' + (j.cadres && j.cadres.fin)); });
   await T('合併列印 批次產生N份+帶入抬頭', async p => { await p.goto(BASE + 'mailmerge.html', { waitUntil: 'domcontentloaded' });
-    await p.evaluate(() => { localStorage.setItem('ebn_org_v1', JSON.stringify({ fullName: '測試工會', chair: '測試長', docWord: '測', docYear: '115', docSeq: '1' })); localStorage.setItem('roster_members_v1', JSON.stringify([{ id: 'a', name: '甲' }, { id: 'b', name: '乙' }])); });
+    await p.evaluate(() => { localStorage.setItem('union_panel_unlocked', '1'); localStorage.setItem('ebn_org_v1', JSON.stringify({ fullName: '測試工會', chair: '測試長', docWord: '測', docYear: '115', docSeq: '1' })); localStorage.setItem('roster_members_v1', JSON.stringify([{ id: 'a', name: '甲' }, { id: 'b', name: '乙' }])); });
     await p.reload({ waitUntil: 'domcontentloaded' }); await p.evaluate(() => { window.print = () => {}; }); await p.waitForTimeout(200);
     await p.click('#gen'); await p.waitForTimeout(300);
     const n = await p.$$eval('#sheets .sheet', e => e.length); const t = await p.textContent('#sheets');
     (n === 2 && t.includes('測試工會') && t.includes('甲') && t.includes('乙')) ? ok('2份+抬頭+姓名') : bad('mailmerge', 'n=' + n); });
   await T('文號流水簿 取號+1並留底', async p => { await p.goto(BASE + 'wenhao.html', { waitUntil: 'domcontentloaded' });
-    await p.evaluate(() => localStorage.setItem('ebn_org_v1', JSON.stringify({ docWord: '測', docYear: '115', docSeq: '7' })));
+    await p.evaluate(() => { localStorage.setItem('union_panel_unlocked', '1'); localStorage.setItem('ebn_org_v1', JSON.stringify({ docWord: '測', docYear: '115', docSeq: '7' })); });
     await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
     await p.click('#issue'); await p.waitForTimeout(150);
     const next = (await p.textContent('#nextNo')).trim();
@@ -222,18 +227,21 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('org.js localDateStr() 用台灣本地日期，不是 UTC', async p => {
     await fixClock(p, '2026-06-20T20:00:00Z');
     await p.goto(BASE + 'org.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { try { localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} });
     await p.waitForFunction(() => window.EBNOrg);
     const d = await p.evaluate(() => EBNOrg.localDateStr());
     d === '2026-06-21' ? ok('UTC 20:00 → 台灣日期 06-21（正確，非 06-20）') : bad('localDateStr', 'got ' + d); });
   await T('jianshi.html today()/addDays() 用台灣本地日期', async p => {
     await fixClock(p, '2026-06-20T20:00:00Z');
     await p.goto(BASE + 'jianshi.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { try { localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} });
     const d = await p.evaluate(() => window.today());
     const d7 = await p.evaluate(() => window.addDays(0));
     (d === '2026-06-21' && d7 === '2026-06-21') ? ok('today()/addDays(0)=06-21（正確，非 06-20）') : bad('jianshi-today', 'today=' + d + ' addDays=' + d7); });
   await T('gongwen.html today() 用台灣本地日期', async p => {
     await fixClock(p, '2026-06-20T20:00:00Z');
     await p.goto(BASE + 'gongwen.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { try { localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} });
     const d = await p.evaluate(() => window.today());
     d === '2026-06-21' ? ok('公文日期=06-21（正確，非 06-20）') : bad('gongwen-today', 'got ' + d); });
   await T('roster.html curMonth() 跨月邊界用台灣本地時間', async p => {
@@ -241,6 +249,7 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     // 舊寫法(toISOString)還停在 UTC 的 6/30，會讓 7 月才欠費的人晚一天才被標欠費。
     await fixClock(p, '2026-06-30T20:00:00Z');
     await p.goto(BASE + 'roster.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { try { localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} });
     const m = await p.evaluate(() => window.curMonth());
     m === '2026-07' ? ok('curMonth()=2026-07（正確，非 2026-06）') : bad('roster-curmonth', 'got ' + m); });
   await T('checklist.html 30日登記死線不因時區多算一天', async p => {
@@ -249,6 +258,7 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     // 跟本地午夜的 today 相減多出 8 小時，Math.ceil 後誤報「還有 1 天」。
     await fixClock(p, '2026-06-30T16:00:00Z');
     await p.goto(BASE + 'checklist.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { try { localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} });
     await p.fill('#dday', '2026-06-01'); await p.waitForTimeout(150);
     const t = await p.textContent('#ddOut');
     /還有\s*0\s*天/.test(t) ? ok('30日死線剛好到期顯示「還有0天」（不多算一天）') : bad('checklist-ddl', t.replace(/\s+/g, ' ')); });
