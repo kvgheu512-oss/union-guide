@@ -50,11 +50,8 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const t = await p.textContent('#out'); (t && t.length > 5) ? ok('有輸出結果') : bad('joinroi', 'out empty'); });
 
   console.log('\n========== B. 功能測試（互動流程） ==========');
-  await T('index 連署前彈窗→連署選項', async p => { await go(p, 'index.html'); await p.click('#cta-join'); await p.waitForTimeout(150);
-    if (!await p.$('#pledge-intro')) return bad('pledge', 'popup not shown');
-    if (await p.$('#join-sheet')) return bad('pledge', 'join sheet opened too early');
-    await p.click('#pledge-go'); await p.waitForTimeout(200);
-    (await p.$('#join-sheet') && !await p.$('#pledge-intro')) ? ok('彈窗→確認→連署選項') : bad('pledge', 'flow broke'); });
+  await T('index 正式入會按鈕→入會選單', async p => { await go(p, 'index.html'); await p.click('#cta-join-off'); await p.waitForTimeout(150);
+    (await p.$('#join-sheet-off') && (await p.textContent('#join-sheet-off')).includes('電子入會申請書')) ? ok('正式入會按鈕→入會選單') : bad('pledge', 'join-sheet-off not shown correctly'); });
   await T('index FAQ 小幫手回答', async p => { await go(p, 'index.html'); await p.fill('#bot-in', '約用可以加入嗎'); await p.click('#bot-send'); await p.waitForTimeout(400);
     const n = await p.$$eval('#bot-log .bubble.bot', e => e.length); n >= 2 ? ok('機器人有回覆(' + n + '泡泡)') : bad('faqbot', 'no answer bubble'); });
   await T('index 連署進度條渲染', async p => { await go(p, 'index.html'); await p.waitForTimeout(300);

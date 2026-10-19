@@ -190,7 +190,7 @@
 <!-- ── 列印連署書（print only）── -->
 <div id="printSheet">
   <div class="print-title" id="printTitle">工會籌組連署書</div>
-  <div class="print-sub" id="printSub">高雄榮民總醫院企業工會（籌備中）</div>
+  <div class="print-sub" id="printSub">高雄榮民總醫院企業工會</div>
   <table class="sign-table">
     <thead>
       <tr>
@@ -361,7 +361,7 @@ function printSheet(){
   }
   document.getElementById('signRows').innerHTML = rows;
   var orgName = (window.EBNOrg ? EBNOrg.get().fullName : '') || '高雄榮民總醫院企業工會';
-  document.getElementById('printSub').textContent = orgName+'（籌備中）';
+  document.getElementById('printSub').textContent = orgName;
   window.print();
 }
 
