@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>連署／招募進度 · 高榮企業工會</title>
+<title>會員招募進度 · 高榮企業工會</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1A3A6B">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -87,7 +87,7 @@
     border-radius:24px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;z-index:999;}
   .toast.show{opacity:1;}
 
-  /* ── 列印：連署書 ── */
+  /* ── 列印：招募意願登記表 ── */
   @media print{
     .noprint{display:none!important;}
     body{background:#fff;font-size:13pt;}
@@ -112,8 +112,8 @@
    text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.2)">‹ 功能表</a>
 
 <div class="header noprint">
-  <h1>✊ 連署 / 招募進度</h1>
-  <p>追蹤 30 人連署目標 · 幹部分工招募 · 進度一目了然</p>
+  <h1>📈 會員招募進度</h1>
+  <p>追蹤會員招募進度 · 幹部分工招募 · 進度一目了然</p>
 </div>
 
 <main class="noprint">
@@ -138,7 +138,7 @@
   <div class="stat-grid">
     <div class="stat"><div class="n green" id="stActive">—</div><div class="l">已入會</div></div>
     <div class="stat"><div class="n gold" id="stApply">—</div><div class="l">申請中</div></div>
-    <div class="stat"><div class="n" id="stPetition">—</div><div class="l">手動連署</div></div>
+    <div class="stat"><div class="n" id="stPetition">—</div><div class="l">意向中</div></div>
   </div>
 
   <div id="alertBox"></div>
@@ -148,16 +148,16 @@
     <h3>⚙️ 目標設定</h3>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div>
-        <label>連署目標人數</label>
+        <label>招募目標人數</label>
         <input type="number" id="targetInp" min="1" max="999" value="30" oninput="saveAndRender()">
       </div>
       <div>
-        <label>手動連署人數 <span style="font-size:11px;font-weight:400;color:var(--ink-soft)">（名冊以外）</span></label>
+        <label>意向中人數 <span style="font-size:11px;font-weight:400;color:var(--ink-soft)">（名冊以外）</span></label>
         <input type="number" id="petitionInp" min="0" max="999" value="0" oninput="saveAndRender()">
       </div>
     </div>
     <div style="font-size:12px;color:var(--ink-soft);margin-top:8px;line-height:1.7;">
-      💡 「已入會＋申請中」從會員名冊自動讀取；「手動連署」填連署書已簽名但尚未正式入會的人數。
+      💡 「已入會＋申請中」從會員名冊自動讀取；「意向中」填已表達加入意願、但還沒送出入會申請書的人數。
     </div>
   </div>
 
@@ -182,14 +182,14 @@
   <!-- 操作 -->
   <div style="display:flex;gap:8px;margin-top:.4rem;">
     <button class="btn ghost" onclick="syncFromRoster()" style="flex:1">🔄 從名冊重新讀取</button>
-    <button class="btn navy" onclick="printSheet()" style="flex:1">🖨️ 列印連署書</button>
+    <button class="btn navy" onclick="printSheet()" style="flex:1">🖨️ 列印招募意願登記表</button>
   </div>
 
 </main>
 
-<!-- ── 列印連署書（print only）── -->
+<!-- ── 列印招募意願登記表（print only）── -->
 <div id="printSheet">
-  <div class="print-title" id="printTitle">工會籌組連署書</div>
+  <div class="print-title" id="printTitle">會員招募意願登記表</div>
   <div class="print-sub" id="printSub">高雄榮民總醫院企業工會</div>
   <table class="sign-table">
     <thead>
@@ -204,10 +204,10 @@
     </thead>
     <tbody id="signRows"><!-- 由 JS 填入 --></tbody>
   </table>
-  <div class="print-foot">本連署書僅作籌組工會意願確認，個人資料依個資法保護，不對外公開。</div>
+  <div class="print-foot">本表僅作加入工會意願確認，正式入會仍需填寫入會申請書；個人資料依個資法保護，不對外公開。</div>
 </div>
 
-<div id="verBadge">v2026.06.25.00</div>
+<div id="verBadge"></div>
 <div class="toast" id="toast"></div>
 
 <script src="org.js" defer></script>
@@ -321,11 +321,11 @@ function render(){
   var ab = document.getElementById('alertBox');
   var still = target - total;
   if(pct >= 100){
-    ab.innerHTML = '<div class="alert ok"><span>🎉</span><div><b>恭喜！連署目標已達成。</b><br>可依章程召開籌備大會，進行下一步登記流程。</div></div>';
+    ab.innerHTML = '<div class="alert ok"><span>🎉</span><div><b>恭喜！已達成招募目標。</b><br>人越多，團結力量越大，可以把目標再往上調。</div></div>';
   } else if(pct >= 70){
     ab.innerHTML = '<div class="alert warn"><span>💪</span><div>還差 <b>'+still+' 人</b>就達標，加油！目前進度 '+pct+'%。</div></div>';
   } else {
-    ab.innerHTML = '<div class="alert info"><span>📋</span><div>工會法第6條：企業工會籌組需<b>同一廠場 30 人以上</b>連署。目前 '+total+' 人，還需 <b>'+Math.max(0,still)+' 人</b>。</div></div>';
+    ab.innerHTML = '<div class="alert info"><span>📋</span><div>目前 '+total+' 人，距離招募目標還需 <b>'+Math.max(0,still)+' 人</b>。人越多，跟院方談判越有份量。</div></div>';
   }
 
   var note = document.getElementById('progressNote');
@@ -333,8 +333,8 @@ function render(){
     var parts = [];
     if(active) parts.push('已入會 '+active+' 人');
     if(apply)  parts.push('申請中 '+apply+' 人');
-    if(petition) parts.push('連署書 '+petition+' 人');
-    note.textContent = parts.length ? '統計來源：'+parts.join(' ＋ ') : '尚無資料，請在會員名冊新增會員或填寫上方手動連署人數。';
+    if(petition) parts.push('意向中 '+petition+' 人');
+    note.textContent = parts.length ? '統計來源：'+parts.join(' ＋ ') : '尚無資料，請在會員名冊新增會員或填寫上方意向中人數。';
     note.style.color = 'var(--ink-soft)';
   }
 }
