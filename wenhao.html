@@ -75,8 +75,8 @@
 
 <main>
   <div class="tabs">
-    <button class="tab-btn active" id="tabBtnOut" type="button">📤 發文</button>
-    <button class="tab-btn" id="tabBtnIn" type="button">📥 收文</button>
+    <button class="tab-btn active" id="tabBtnOut" type="button">📤 發文（自動編號）</button>
+    <button class="tab-btn" id="tabBtnIn" type="button">📋 文件登記（收文／外部發文）</button>
   </div>
 
   <div id="tabOut">
@@ -107,20 +107,24 @@
   </div>
 
   <div id="tabIn" style="display:none">
-  <div class="topnote">📥 登記工會<b>收到的外部來文</b>（例如勞工局、醫院、上級組織的函文），跟上面的發文分開留底，方便會長與理事事後調取。<br>⚠️ 資料目前只存<b>這台裝置本機</b>，不會跟其他幹部的手機同步——要讓大家都查得到，記得定期按「⬇ 匯出 CSV」或「🖨 列印」傳給會長／理事存檔。</div>
+  <div class="topnote">📋 這裡登記<b>外部來文（收文）</b>，也可以登記<b>文號由外部系統或理事長核發的發文</b>（例如改用別的公文平台發出去的文，這裡只負責整理、回溯、查詢，不負責產生正式文件）。<br>⚠️ 資料目前只存<b>這台裝置本機</b>，不會跟其他幹部的手機同步——要讓大家都查得到，記得定期按「⬇ 匯出 CSV」或「🖨 列印」傳給會長／理事存檔。</div>
 
   <div class="card">
-    <h2>登記新收文</h2>
-    <label>收文日期</label>
+    <h2>新增登記</h2>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;font-weight:700;color:var(--navy-deep);margin:.2rem 0 .6rem">
+      <label style="display:flex;align-items:center;gap:5px;margin:0;cursor:pointer"><input type="radio" name="in-dir" value="in" checked style="width:auto"> 📥 收文（外部來文）</label>
+      <label style="display:flex;align-items:center;gap:5px;margin:0;cursor:pointer"><input type="radio" name="in-dir" value="out" style="width:auto"> 📤 發文（外部核發文號）</label>
+    </div>
+    <label>日期</label>
     <input id="in-date" type="date">
-    <label>來文機關／單位</label>
+    <label id="in-from-label">來文機關／單位</label>
     <input id="in-from" type="text" placeholder="例：高雄市政府勞工局">
-    <label>來文字號</label>
+    <label>字號</label>
     <input id="in-refno" type="text" placeholder="例：高市勞條字第1150012345號">
     <label>主旨</label>
     <input id="in-subject" type="text" placeholder="例：函請提供113年度財務報表">
     <label>承辦人</label>
-    <input id="in-handler" type="text" placeholder="負責處理這份來文的幹部">
+    <input id="in-handler" type="text" placeholder="負責處理這份文件的幹部">
     <label>處理狀態</label>
     <select id="in-status">
       <option value="待處理">待處理</option>
@@ -129,12 +133,12 @@
     </select>
     <label>備註</label>
     <input id="in-note" type="text" placeholder="選填">
-    <button class="btn" id="in-add" type="button">📥 新增收文登記</button>
+    <button class="btn" id="in-add" type="button">📋 新增登記</button>
     <div class="toast" id="in-toast"></div>
   </div>
 
   <div class="card">
-    <h2>收文簿 <span id="in-cnt" style="font-weight:400;font-size:12px;color:var(--ink-soft)"></span></h2>
+    <h2>文件登記簿 <span id="in-cnt" style="font-weight:400;font-size:12px;color:var(--ink-soft)"></span></h2>
     <div id="in-logWrap"></div>
     <div class="bar">
       <button class="btn ghost" id="in-csv" type="button">⬇ 匯出 CSV</button>
@@ -258,14 +262,18 @@
   });
 
   var STATUS_CLASS={"待處理":"st-pending","已回覆":"st-replied","已歸檔":"st-archived"};
+  var DIR_LABEL={"in":"📥 收文","out":"📤 發文"};
+
+  function curDir(){ var r=document.querySelector('input[name="in-dir"]:checked'); return r?r.value:"in"; }
+  function syncDirLabel(){ $("in-from-label").textContent = curDir()==="out" ? "受文者／對方機關" : "來文機關／單位"; }
 
   function renderIn(){
     if(!window.EBNOrg) return;
     var log=EBNOrg.getInLog().slice().reverse();
     $("in-cnt").textContent="共 "+log.length+" 筆";
-    if(!log.length){ $("in-logWrap").innerHTML='<div class="hint">還沒有收文紀錄。上面登記後會自動列在這裡。</div>'; return; }
-    $("in-logWrap").innerHTML='<table><tr><th>收文日期</th><th>來文機關</th><th>來文字號</th><th>主旨</th><th>承辦人</th><th>狀態</th><th></th></tr>'+
-      log.map(function(e){ return '<tr><td>'+esc(e.date)+'</td><td>'+esc(e.fromOrg)+'</td><td>'+esc(e.refNo)+'</td><td>'+esc(e.subject)+'</td><td>'+esc(e.handler)+'</td>'+
+    if(!log.length){ $("in-logWrap").innerHTML='<div class="hint">還沒有登記紀錄。上面登記後會自動列在這裡。</div>'; return; }
+    $("in-logWrap").innerHTML='<table><tr><th>方向</th><th>日期</th><th>機關／受文者</th><th>字號</th><th>主旨</th><th>承辦人</th><th>狀態</th><th></th></tr>'+
+      log.map(function(e){ return '<tr><td>'+(DIR_LABEL[e.dir]||DIR_LABEL.in)+'</td><td>'+esc(e.date)+'</td><td>'+esc(e.fromOrg)+'</td><td>'+esc(e.refNo)+'</td><td>'+esc(e.subject)+'</td><td>'+esc(e.handler)+'</td>'+
         '<td><span class="st-pill '+(STATUS_CLASS[e.status]||"st-pending")+'">'+esc(e.status)+'</span></td>'+
         '<td><button class="del" data-id="'+esc(e.id)+'">刪</button></td></tr>'; }).join("")+'</table>';
   }
@@ -273,19 +281,22 @@
   function ready(fn){ if(window.EBNOrg) fn(); else setTimeout(function(){ready(fn);},30); }
   ready(function(){
     $("in-date").value=EBNOrg.localDateStr();
+    syncDirLabel();
     renderIn();
+
+    document.querySelectorAll('input[name="in-dir"]').forEach(function(r){ r.addEventListener("change",syncDirLabel); });
 
     $("in-add").addEventListener("click",function(){
       var fromOrg=$("in-from").value.trim(), subject=$("in-subject").value.trim();
-      if(!fromOrg||!subject){ $("in-toast").textContent="⚠ 請至少填「來文機關」與「主旨」"; setTimeout(function(){$("in-toast").textContent="";},3000); return; }
+      if(!fromOrg||!subject){ $("in-toast").textContent="⚠ 請至少填「機關／受文者」與「主旨」"; setTimeout(function(){$("in-toast").textContent="";},3000); return; }
       EBNOrg.addIncoming({
-        date:$("in-date").value||EBNOrg.localDateStr(),
+        dir:curDir(), date:$("in-date").value||EBNOrg.localDateStr(),
         fromOrg:fromOrg, refNo:$("in-refno").value.trim(), subject:subject,
         handler:$("in-handler").value.trim(), status:$("in-status").value, note:$("in-note").value.trim()
       });
       $("in-from").value=""; $("in-refno").value=""; $("in-subject").value=""; $("in-handler").value=""; $("in-note").value="";
       $("in-status").value="待處理"; $("in-date").value=EBNOrg.localDateStr();
-      $("in-toast").textContent="✅ 已登記收文";
+      $("in-toast").textContent="✅ 已登記";
       setTimeout(function(){$("in-toast").textContent="";},2500);
       renderIn();
     });
@@ -299,12 +310,12 @@
 
     $("in-csv").addEventListener("click",function(){
       var log=EBNOrg.getInLog();
-      var csv="﻿收文日期,來文機關,來文字號,主旨,承辦人,處理狀態,備註\n"+log.map(function(e){
-        return ['"'+(e.date||'')+'"','"'+String(e.fromOrg||'').replace(/"/g,'""')+'"','"'+String(e.refNo||'').replace(/"/g,'""')+'"',
+      var csv="﻿方向,日期,機關／受文者,字號,主旨,承辦人,處理狀態,備註\n"+log.map(function(e){
+        return ['"'+(e.dir==="out"?"發文":"收文")+'"','"'+(e.date||'')+'"','"'+String(e.fromOrg||'').replace(/"/g,'""')+'"','"'+String(e.refNo||'').replace(/"/g,'""')+'"',
           '"'+String(e.subject||'').replace(/"/g,'""')+'"','"'+String(e.handler||'').replace(/"/g,'""')+'"','"'+(e.status||'')+'"',
           '"'+String(e.note||'').replace(/"/g,'""')+'"'].join(",");
       }).join("\n");
-      var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download="收文簿.csv"; a.click();
+      var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download="文件登記簿.csv"; a.click();
     });
     $("in-print").addEventListener("click",function(){ window.print(); });
   });
@@ -320,7 +331,7 @@ window.addEventListener("load", function(){
     { sel:"#subject", title:"寫一下這份在講什麼", text:"簡單寫這份公文的<b>主題</b>，方便以後找。", demo:function(){ var e=document.getElementById("subject"); if(e) e.value="報告成立大會結果"; } },
     { sel:"#issue", title:"按一下拿號碼", text:"按下去就<b>拿到號碼</b>，下一個號碼會自己往後加一個。" },
     { sel:"#logWrap", title:"都會記在這裡", text:"每次拿的號碼都會<b>列在這裡</b>，可以存檔或印出來。" },
-    { sel:"#tabBtnIn", title:"收到的文也能登記", text:"按這裡切到<b>「收文」分頁</b>，登記工會收到的外部來文（勞工局、醫院等），跟發文分開留底。" },
+    { sel:"#tabBtnIn", title:"收文、外部發文都能登記", text:"按這裡切到<b>「文件登記」分頁</b>，登記收到的外部來文，或改用別的平台發出去、文號不是本站給的公文，方便事後整理查詢。" },
     { title:"好了！", text:"看不到號碼？先去『工會基本資料』填一下公文的字和年份。" }
   ], {});
 });

@@ -144,13 +144,15 @@
   function getLog() { try { return JSON.parse(localStorage.getItem(LOG) || "[]"); } catch (e) { return []; } }
   function setLog(arr) { try { localStorage.setItem(LOG, JSON.stringify(arr || [])); } catch (e) {} }
 
-  // ── 收文登記（外部來文，跟發文分開存）──
+  // ── 文件登記（收文／外部核發的發文，跟本站自動編號的發文簿分開存）──
+  // dir: "in"＝收文（外部來文）、"out"＝發文（文號由外部系統/理事長核發，非本站自動編號）
   function getInLog() { try { return JSON.parse(localStorage.getItem(INLOG) || "[]"); } catch (e) { return []; } }
   function setInLog(arr) { try { localStorage.setItem(INLOG, JSON.stringify(arr || [])); } catch (e) {} }
   function addIncoming(rec) {
     var log = getInLog();
     var item = {
       id: Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+      dir: (rec && rec.dir === "out") ? "out" : "in",
       date: (rec && rec.date) || localDateStr(),
       fromOrg: (rec && rec.fromOrg) || "",
       refNo: (rec && rec.refNo) || "",
