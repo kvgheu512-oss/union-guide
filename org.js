@@ -7,6 +7,7 @@
 (function () {
   var KEY = "ebn_org_v1";
   var LOG = "ebn_org_doclog_v1";
+  var INLOG = "ebn_org_inlog_v1";
   // 台灣本地日期（YYYY-MM-DD）。注意：不要用 new Date().toISOString().slice(0,10)——
   // 那是 UTC 日期，台灣時間每天 00:00~08:00（UTC 前一天）會少算一天，
   // 公文日期、發文簿等以「今天」為準的地方都要用這支。
@@ -143,6 +144,27 @@
   function getLog() { try { return JSON.parse(localStorage.getItem(LOG) || "[]"); } catch (e) { return []; } }
   function setLog(arr) { try { localStorage.setItem(LOG, JSON.stringify(arr || [])); } catch (e) {} }
 
+  // ── 收文登記（外部來文，跟發文分開存）──
+  function getInLog() { try { return JSON.parse(localStorage.getItem(INLOG) || "[]"); } catch (e) { return []; } }
+  function setInLog(arr) { try { localStorage.setItem(INLOG, JSON.stringify(arr || [])); } catch (e) {} }
+  function addIncoming(rec) {
+    var log = getInLog();
+    var item = {
+      id: Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+      date: (rec && rec.date) || localDateStr(),
+      fromOrg: (rec && rec.fromOrg) || "",
+      refNo: (rec && rec.refNo) || "",
+      subject: (rec && rec.subject) || "",
+      handler: (rec && rec.handler) || "",
+      status: (rec && rec.status) || "待處理",
+      note: (rec && rec.note) || "",
+      createdAt: localDateStr()
+    };
+    log.push(item);
+    setInLog(log);
+    return item;
+  }
+
   // ── 雲端取號（Google Apps Script 共用計數器）：org.quhaoUrl 有填就啟用 ──
   function fmtNo(word, year, seq) {
     var n = String(seq); while (n.length < 3) n = "0" + n;
@@ -170,7 +192,7 @@
   }
   function quhaoGetLog(limit) { return quhaoCall("action=log&limit=" + (limit || 50)); }
 
-  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY, candidates: candidates, setCandidates: setCandidates, CANDKEY: CANDKEY, fmtNo: fmtNo, localDateStr: localDateStr, quhao: { enabled: quhaoEnabled, peek: quhaoPeek, next: quhaoNext, log: quhaoGetLog } };
+  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, getInLog: getInLog, setInLog: setInLog, addIncoming: addIncoming, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY, candidates: candidates, setCandidates: setCandidates, CANDKEY: CANDKEY, fmtNo: fmtNo, localDateStr: localDateStr, quhao: { enabled: quhaoEnabled, peek: quhaoPeek, next: quhaoNext, log: quhaoGetLog } };
   // 先用本機草稿即時填一次（不必等網路）；public.json 載到後再填一次（公告版蓋上來）
   function init() { fill(); loadPublic(function () { fill(); try { document.dispatchEvent(new CustomEvent("ebnorg:public")); } catch (e) {} }); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();

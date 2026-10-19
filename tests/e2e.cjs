@@ -125,6 +125,16 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.click('#issue'); await p.waitForTimeout(150);
     const next = (await p.textContent('#nextNo')).trim();
     (next.includes('008')) ? ok('取號後+1=008並留底') : bad('wenhao', 'next=' + next); });
+  await T('收文登記簿 新增+列表+獨立存於專屬key', async p => { await p.goto(BASE + 'wenhao.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { localStorage.setItem('union_panel_unlocked', '1'); localStorage.removeItem('ebn_org_inlog_v1'); });
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
+    await p.click('#tabBtnIn'); await p.waitForTimeout(100);
+    await p.fill('#in-from', '高雄市政府勞工局'); await p.fill('#in-subject', '函請提供財務報表');
+    await p.click('#in-add'); await p.waitForTimeout(150);
+    const cnt = (await p.textContent('#in-cnt')).trim();
+    const rowTxt = await p.textContent('#in-logWrap');
+    const inKeyHasIt = await p.evaluate(() => { var a = JSON.parse(localStorage.getItem('ebn_org_inlog_v1') || '[]'); return a.length === 1 && a[0].fromOrg === '高雄市政府勞工局'; });
+    (cnt.includes('1') && rowTxt.includes('高雄市政府勞工局') && inKeyHasIt) ? ok('收文1筆+內容正確+存進專屬key') : bad('wenhao-in', 'cnt=' + cnt); });
   await T('批次收據 多筆+彙總+合計', async p => { await p.goto(BASE + 'receipt-batch.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(150);
     await p.evaluate(() => { window.print = () => {}; });
     await p.fill('#year', '115'); await p.fill('#defAmt', '200'); await p.fill('#startNo', '1');

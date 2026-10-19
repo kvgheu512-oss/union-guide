@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1A3A6B">
-<meta name="apple-mobile-web-app-title" content="文號流水簿">
-<title>公文文號流水簿（自動遞增＋留底）｜高榮企業工會</title>
+<meta name="apple-mobile-web-app-title" content="收發文登記簿">
+<title>公文收發文登記簿（自動遞增＋留底）｜高榮企業工會</title>
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <style>
   :root{--navy:#1A3A6B;--navy-deep:#122A4F;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F4F6FA;--card:#fff;--border:#D8E0EC;--gold-light:#FEF9E7;--gold-line:#EAD67A;--green:#1A7A4A;--green-deep:#0F5C36;--red-deep:#7B1818;}
@@ -45,6 +45,12 @@
   .gate-box button{width:100%;padding:.8rem;font-size:15px;color:#fff;background:var(--navy);border:none;border-radius:10px;cursor:pointer;}
   .gate-err{color:#C0392B;font-size:13px;min-height:18px;margin-top:8px;}
   html.u #app{display:block!important}html.u #gate{display:none!important}
+  .tabs{display:flex;gap:8px;margin-bottom:1rem;}
+  .tab-btn{flex:1;text-align:center;padding:.6rem;border-radius:10px;border:1.5px solid var(--navy);background:#fff;color:var(--navy-deep);font-weight:700;font-size:14px;cursor:pointer;}
+  .tab-btn.active{background:var(--navy);color:#fff;}
+  select{width:100%;padding:.6rem .75rem;font-size:16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;background:#fff;}
+  .st-pill{display:inline-block;padding:1px 8px;border-radius:20px;font-size:11.5px;font-weight:700;}
+  .st-pending{background:#FFF3E0;color:#E65100;} .st-replied{background:#E3F2FD;color:#1565C0;} .st-archived{background:#E8F5E9;color:#1B5E20;}
 </style>
 <link rel="stylesheet" href="common.css">
 </head>
@@ -53,8 +59,8 @@
 
 <div id="gate">
   <div class="gate-box">
-    <h2>公文文號流水簿</h2>
-    <p>本頁含公文發文紀錄，限幹部使用。</p>
+    <h2>公文收發文登記簿</h2>
+    <p>本頁含公文收發紀錄，限幹部使用。</p>
     <input id="gate-pw" type="password" inputmode="text" lang="en" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="幹部通行碼" enterkeyhint="go">
     <button id="gate-go">進入</button>
     <div class="gate-err" id="gate-err"></div>
@@ -63,11 +69,17 @@
 
 <div id="app" style="display:none">
 <div class="header">
-  <h1>📑 公文文號流水簿</h1>
-  <p>文號自動「字別＋年＋流水」遞增、發文自動留底</p>
+  <h1>📑 公文收發文登記簿</h1>
+  <p>發文：文號自動「字別＋年＋流水」遞增、自動留底｜收文：登記外部來文，一起留存</p>
 </div>
 
 <main>
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtnOut" type="button">📤 發文</button>
+    <button class="tab-btn" id="tabBtnIn" type="button">📥 收文</button>
+  </div>
+
+  <div id="tabOut">
   <div class="topnote">📌 文號的<b>字別、年、目前流水號</b>在 <a class="lnk" href="org.html">🏛️ 工會基本資料中心</a> 設定。在這裡<b>取號（發文）</b>會自動把流水號 +1 並寫進下方發文簿。<span id="collideWarn"><br>⚠️ <b>撞號防呆：</b>流水號存在<b>各裝置本機</b>、不會互相同步——請<b>固定由一個人（一台裝置）負責取號</b>，多人各自取號會拿到<b>同一個號碼</b>。</span><span id="cloudOn" style="display:none"><br>☁️ <b>雲端共用取號已啟用</b>：全會共用同一個計數器，多人同時取號也<b>不會撞號</b>；發文簿完整紀錄在雲端試算表。</span></div>
 
   <div class="card">
@@ -91,6 +103,44 @@
       <button class="btn ghost" id="csv" type="button">⬇ 匯出 CSV</button>
       <button class="btn ghost" id="print" type="button">🖨 列印 / PDF</button>
     </div>
+  </div>
+  </div>
+
+  <div id="tabIn" style="display:none">
+  <div class="topnote">📥 登記工會<b>收到的外部來文</b>（例如勞工局、醫院、上級組織的函文），跟上面的發文分開留底，方便會長與理事事後調取。<br>⚠️ 資料目前只存<b>這台裝置本機</b>，不會跟其他幹部的手機同步——要讓大家都查得到，記得定期按「⬇ 匯出 CSV」或「🖨 列印」傳給會長／理事存檔。</div>
+
+  <div class="card">
+    <h2>登記新收文</h2>
+    <label>收文日期</label>
+    <input id="in-date" type="date">
+    <label>來文機關／單位</label>
+    <input id="in-from" type="text" placeholder="例：高雄市政府勞工局">
+    <label>來文字號</label>
+    <input id="in-refno" type="text" placeholder="例：高市勞條字第1150012345號">
+    <label>主旨</label>
+    <input id="in-subject" type="text" placeholder="例：函請提供113年度財務報表">
+    <label>承辦人</label>
+    <input id="in-handler" type="text" placeholder="負責處理這份來文的幹部">
+    <label>處理狀態</label>
+    <select id="in-status">
+      <option value="待處理">待處理</option>
+      <option value="已回覆">已回覆</option>
+      <option value="已歸檔">已歸檔</option>
+    </select>
+    <label>備註</label>
+    <input id="in-note" type="text" placeholder="選填">
+    <button class="btn" id="in-add" type="button">📥 新增收文登記</button>
+    <div class="toast" id="in-toast"></div>
+  </div>
+
+  <div class="card">
+    <h2>收文簿 <span id="in-cnt" style="font-weight:400;font-size:12px;color:var(--ink-soft)"></span></h2>
+    <div id="in-logWrap"></div>
+    <div class="bar">
+      <button class="btn ghost" id="in-csv" type="button">⬇ 匯出 CSV</button>
+      <button class="btn ghost" id="in-print" type="button">🖨 列印 / PDF</button>
+    </div>
+  </div>
   </div>
 
   <div class="foot">高雄榮民總醫院企業工會· 幹部後台 · 資料僅存本機</div>
@@ -191,6 +241,75 @@
   });
 })();
 </script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+
+  // 分頁切換（發文／收文）
+  $("tabBtnOut").addEventListener("click",function(){
+    $("tabBtnOut").classList.add("active"); $("tabBtnIn").classList.remove("active");
+    $("tabOut").style.display=""; $("tabIn").style.display="none";
+  });
+  $("tabBtnIn").addEventListener("click",function(){
+    $("tabBtnIn").classList.add("active"); $("tabBtnOut").classList.remove("active");
+    $("tabIn").style.display=""; $("tabOut").style.display="none";
+    renderIn();
+  });
+
+  var STATUS_CLASS={"待處理":"st-pending","已回覆":"st-replied","已歸檔":"st-archived"};
+
+  function renderIn(){
+    if(!window.EBNOrg) return;
+    var log=EBNOrg.getInLog().slice().reverse();
+    $("in-cnt").textContent="共 "+log.length+" 筆";
+    if(!log.length){ $("in-logWrap").innerHTML='<div class="hint">還沒有收文紀錄。上面登記後會自動列在這裡。</div>'; return; }
+    $("in-logWrap").innerHTML='<table><tr><th>收文日期</th><th>來文機關</th><th>來文字號</th><th>主旨</th><th>承辦人</th><th>狀態</th><th></th></tr>'+
+      log.map(function(e){ return '<tr><td>'+esc(e.date)+'</td><td>'+esc(e.fromOrg)+'</td><td>'+esc(e.refNo)+'</td><td>'+esc(e.subject)+'</td><td>'+esc(e.handler)+'</td>'+
+        '<td><span class="st-pill '+(STATUS_CLASS[e.status]||"st-pending")+'">'+esc(e.status)+'</span></td>'+
+        '<td><button class="del" data-id="'+esc(e.id)+'">刪</button></td></tr>'; }).join("")+'</table>';
+  }
+
+  function ready(fn){ if(window.EBNOrg) fn(); else setTimeout(function(){ready(fn);},30); }
+  ready(function(){
+    $("in-date").value=EBNOrg.localDateStr();
+    renderIn();
+
+    $("in-add").addEventListener("click",function(){
+      var fromOrg=$("in-from").value.trim(), subject=$("in-subject").value.trim();
+      if(!fromOrg||!subject){ $("in-toast").textContent="⚠ 請至少填「來文機關」與「主旨」"; setTimeout(function(){$("in-toast").textContent="";},3000); return; }
+      EBNOrg.addIncoming({
+        date:$("in-date").value||EBNOrg.localDateStr(),
+        fromOrg:fromOrg, refNo:$("in-refno").value.trim(), subject:subject,
+        handler:$("in-handler").value.trim(), status:$("in-status").value, note:$("in-note").value.trim()
+      });
+      $("in-from").value=""; $("in-refno").value=""; $("in-subject").value=""; $("in-handler").value=""; $("in-note").value="";
+      $("in-status").value="待處理"; $("in-date").value=EBNOrg.localDateStr();
+      $("in-toast").textContent="✅ 已登記收文";
+      setTimeout(function(){$("in-toast").textContent="";},2500);
+      renderIn();
+    });
+
+    $("in-logWrap").addEventListener("click",function(e){
+      var btn=e.target.closest&&e.target.closest(".del"); if(!btn) return;
+      var id=btn.getAttribute("data-id");
+      var log=EBNOrg.getInLog().filter(function(x){ return x.id!==id; });
+      EBNOrg.setInLog(log); renderIn();
+    });
+
+    $("in-csv").addEventListener("click",function(){
+      var log=EBNOrg.getInLog();
+      var csv="﻿收文日期,來文機關,來文字號,主旨,承辦人,處理狀態,備註\n"+log.map(function(e){
+        return ['"'+(e.date||'')+'"','"'+String(e.fromOrg||'').replace(/"/g,'""')+'"','"'+String(e.refNo||'').replace(/"/g,'""')+'"',
+          '"'+String(e.subject||'').replace(/"/g,'""')+'"','"'+String(e.handler||'').replace(/"/g,'""')+'"','"'+(e.status||'')+'"',
+          '"'+String(e.note||'').replace(/"/g,'""')+'"'].join(",");
+      }).join("\n");
+      var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download="收文簿.csv"; a.click();
+    });
+    $("in-print").addEventListener("click",function(){ window.print(); });
+  });
+})();
+</script>
 <script src="tour.js" defer></script>
 <script>
 window.addEventListener("load", function(){
@@ -201,6 +320,7 @@ window.addEventListener("load", function(){
     { sel:"#subject", title:"寫一下這份在講什麼", text:"簡單寫這份公文的<b>主題</b>，方便以後找。", demo:function(){ var e=document.getElementById("subject"); if(e) e.value="報告成立大會結果"; } },
     { sel:"#issue", title:"按一下拿號碼", text:"按下去就<b>拿到號碼</b>，下一個號碼會自己往後加一個。" },
     { sel:"#logWrap", title:"都會記在這裡", text:"每次拿的號碼都會<b>列在這裡</b>，可以存檔或印出來。" },
+    { sel:"#tabBtnIn", title:"收到的文也能登記", text:"按這裡切到<b>「收文」分頁</b>，登記工會收到的外部來文（勞工局、醫院等），跟發文分開留底。" },
     { title:"好了！", text:"看不到號碼？先去『工會基本資料』填一下公文的字和年份。" }
   ], {});
 });
