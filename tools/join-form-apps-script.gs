@@ -8,7 +8,8 @@
    本來就要讓不特定訪客能送資料進來），不是漏洞。
    ⚠️ 正因為網址公開，這份試算表跟簽名圖檔資料夾要設成「只有你（部署者）自己看得到」，
    不要開分享連結給不相干的人；要給其他幹部看，用「共用」加對方帳號，不要用「知道連結的人」。
-   ⚠️ 這裡存的是會員PII（姓名、員編、電話、LINE、Email、簽名圖），
+   ⚠️ 這裡存的是會員PII（姓名、身分證字號、出生年月日、通訊地址、員編、電話、LINE、Email、簽名圖），
+   身分證字號尤其敏感，請務必確認這張試算表沒有開放分享給不相干的人。
    建議定期把已經匯入roster.html名冊的舊申請刪掉，不要一直囤積。
 
    ── 部署步驟（一次性，約10分鐘，需要一個 Google 帳號，建議用工會的 Gmail）──
@@ -53,7 +54,7 @@ function getSheet() {
   var sh = ss.getSheetByName(SHEET_NAME);
   if (!sh) {
     sh = ss.insertSheet(SHEET_NAME);
-    sh.appendRow(["收到時間", "姓名", "員工編號", "身分別", "職稱", "單位/科別", "手機", "LINE ID", "Email", "申請日期", "電子簽名", "處理狀態"]);
+    sh.appendRow(["收到時間", "姓名", "身分證字號", "出生年月日", "通訊地址", "員工編號", "身分別", "職稱", "單位/科別", "手機", "LINE ID", "Email", "申請日期", "電子簽名", "處理狀態"]);
   }
   return sh;
 }
@@ -89,7 +90,7 @@ function addRecord(rec) {
     var sigUrl = saveSignature(rec.sig, rec.name, rec.empid);
     var sh = getSheet();
     var now = Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy-MM-dd HH:mm:ss");
-    sh.appendRow([now, rec.name || "", rec.empid || "", rec.memberType || "", rec.title || "",
+    sh.appendRow([now, rec.name || "", rec.idno || "", rec.birth || "", rec.addr || "", rec.empid || "", rec.memberType || "", rec.title || "",
       rec.dept || "", rec.phone || "", rec.lineId || "", rec.email || "", rec.date || "", sigUrl, "新申請"]);
     if (NOTIFY_EMAILS.length) {
       try {

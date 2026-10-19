@@ -247,7 +247,7 @@ window.toggleEdit=function(id){
   if(!open){
     var rec=ALL.find(function(r){ return r.id===id; });
     if(rec){
-      ['name','empid','title','dept','phone','email','date'].forEach(function(f){ var el=document.getElementById('ef-'+id+'-'+f); if(el) el.value=rec[f]||''; });
+      ['name','empid','idno','birth','addr','title','dept','phone','email','date'].forEach(function(f){ var el=document.getElementById('ef-'+id+'-'+f); if(el) el.value=rec[f]||''; });
       editMT[id]=rec.memberType||'regular';
       refreshMTPick(id);
     }
@@ -264,7 +264,7 @@ function refreshMTPick(id){
 }
 window.saveEdit=function(id){
   var vals={}, ok=true;
-  ['name','empid','title','dept','phone','email','date'].forEach(function(f){
+  ['name','empid','idno','birth','addr','title','dept','phone','email','date'].forEach(function(f){
     var el=document.getElementById('ef-'+id+'-'+f);
     if(el){ vals[f]=el.value.trim(); }
   });
@@ -329,6 +329,9 @@ function render(){
       '<div class="edit-grid">'+
         '<div><div class="edit-label">姓名 *</div><input id="ef-'+rec.id+'-name" placeholder="姓名"></div>'+
         '<div><div class="edit-label">員工編號 *</div><input id="ef-'+rec.id+'-empid" placeholder="工號"></div>'+
+        '<div><div class="edit-label">身分證字號</div><input id="ef-'+rec.id+'-idno" placeholder="A123456789"></div>'+
+        '<div><div class="edit-label">出生年月日</div><input id="ef-'+rec.id+'-birth" type="date"></div>'+
+        '<div><div class="edit-label">通訊地址</div><input id="ef-'+rec.id+'-addr" placeholder="收信地址"></div>'+
         '<div><div class="edit-label">職稱</div><input id="ef-'+rec.id+'-title" placeholder="職稱"></div>'+
         '<div><div class="edit-label">服務單位</div><input id="ef-'+rec.id+'-dept" placeholder="單位"></div>'+
         '<div><div class="edit-label">手機</div><input id="ef-'+rec.id+'-phone" placeholder="09xxxxxxxx"></div>'+
@@ -356,6 +359,8 @@ function render(){
         '<button class="edit-toggle noprint" onclick="toggleEdit('+rec.id+')" title="行內編輯">✏️</button>'+
       '</div>'+
       '<div class="rec-detail" id="view-'+rec.id+'">工號：'+esc(rec.empid||'—')+'　職稱：'+esc(rec.title||'—')+'　單位：'+esc(rec.dept||'—')+'<br>'+
+        '身分證字號：'+esc(rec.idno||'—')+'　出生年月日：'+esc(rec.birth||'—')+'<br>'+
+        '通訊地址：'+esc(rec.addr||'—')+'<br>'+
         '手機：'+esc(rec.phone||'—')+'　LINE：'+esc(rec.lineId||'—')+'　Email：'+esc(rec.email||'—')+'<br>'+
         '申請日：'+esc(rec.date||'—')+'　收件：'+esc(rec.ts||'—')+
         (rec.note?'<br><span style="color:#5C4000">📝 '+esc(rec.note)+'</span>':'')+
@@ -382,9 +387,9 @@ function render(){
 
 /* ── 匯出 CSV ── */
 function exportCsv(){
-  var rows=[['姓名','工號','職稱','服務單位','手機','LINE','Email','申請日期','申請類別','申請時間','狀態','備注','品質問題']];
+  var rows=[['姓名','工號','身分證字號','出生年月日','通訊地址','職稱','服務單位','手機','LINE','Email','申請日期','申請類別','申請時間','狀態','備注','品質問題']];
   ALL.forEach(function(r){
-    rows.push([r.name,r.empid,r.title,r.dept,r.phone,r.lineId,r.email,r.date,
+    rows.push([r.name,r.empid,r.idno,r.birth,r.addr,r.title,r.dept,r.phone,r.lineId,r.email,r.date,
       r.memberType==='support'?'贊助會員':'正式會員',r.ts,
       ({new:'待處理',done:'已完成',pending:'待補件'})[r.status||'new'],
       r.note||'', checkQuality(r).join('；')]);

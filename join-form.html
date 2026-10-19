@@ -94,6 +94,20 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
 
     <div class="row2">
       <div>
+        <label>身分證字號</label>
+        <input id="f-idno" placeholder="A123456789" inputmode="text" autocapitalize="characters" autocomplete="off" maxlength="10">
+      </div>
+      <div>
+        <label>出生年月日</label>
+        <input id="f-birth" type="date">
+      </div>
+    </div>
+
+    <label>通訊地址</label>
+    <input id="f-addr" placeholder="收信地址" autocomplete="street-address">
+
+    <div class="row2">
+      <div>
         <label>員工編號 / 工號 <span style="color:red">*</span></label>
         <input id="f-empid" placeholder="例：A12345" inputmode="text">
         <div class="hint">約聘升正式員工後，填新工號即可</div>
@@ -203,8 +217,10 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
       <div style="font-size:12px;color:#666;margin-top:4px">（電子簽名版 · 依電子簽章法第4條具同等效力）</div>
     </div>
     <table style="width:100%;border-collapse:collapse;font-size:14px">
-      <tr><td style="border:1px solid #ccc;padding:6px 10px;width:30%;background:#F8F8F8;font-weight:700">姓名</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-name"></td><td style="border:1px solid #ccc;padding:6px 10px;width:30%;background:#F8F8F8;font-weight:700">員工編號</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-empid"></td></tr>
-      <tr><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">職稱</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-title"></td><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">服務單位</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-dept"></td></tr>
+      <tr><td style="border:1px solid #ccc;padding:6px 10px;width:30%;background:#F8F8F8;font-weight:700">姓名</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-name"></td><td style="border:1px solid #ccc;padding:6px 10px;width:30%;background:#F8F8F8;font-weight:700">身分證字號</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-idno"></td></tr>
+      <tr><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">出生年月日</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-birth"></td><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">通訊地址</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-addr"></td></tr>
+      <tr><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">員工編號</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-empid"></td><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">服務單位</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-dept"></td></tr>
+      <tr><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">職稱</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-title"></td><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700"></td><td style="border:1px solid #ccc;padding:6px 10px"></td></tr>
       <tr><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">手機</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-phone"></td><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">Email</td><td style="border:1px solid #ccc;padding:6px 10px" id="p-email"></td></tr>
       <tr><td style="border:1px solid #ccc;padding:6px 10px;background:#F8F8F8;font-weight:700">申請日期</td><td colspan="3" style="border:1px solid #ccc;padding:6px 10px" id="p-date"></td></tr>
     </table>
@@ -377,6 +393,9 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     var orgName=document.getElementById('orgName').textContent;
     var rec={
       type:'join', memberType:memberType, name:name, empid:empid,
+      idno:document.getElementById('f-idno').value.trim(),
+      birth:document.getElementById('f-birth').value,
+      addr:document.getElementById('f-addr').value.trim(),
       title:document.getElementById('f-title').value.trim(),
       dept:document.getElementById('f-dept').value.trim(),
       phone:document.getElementById('f-phone').value.trim(),
@@ -393,6 +412,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
 
     // 產生分享連結（不含簽名圖，文字資料給幹部匯入）
     var shareRec={name:name,empid:empid,memberType:memberType,
+      idno:rec.idno,birth:rec.birth,addr:rec.addr,
       title:rec.title,dept:rec.dept,phone:rec.phone,lineId:rec.lineId,email:rec.email,
       date:rec.date,ts:ts,org:orgName};
     var enc=btoa(unescape(encodeURIComponent(JSON.stringify(shareRec))));
@@ -449,7 +469,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
       var sigImg=new Image();
       sigImg.onerror=function(){ if(onError) onError(); };
       sigImg.onload=function(){
-        var H=900;
+        var H=1020;
         c.height=H*S;
         var ctx=c.getContext('2d');
         ctx.scale(S,S);
@@ -472,6 +492,9 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
           y+=lh;
         }
         row('姓名', rec.name);
+        row('身分證字號', rec.idno);
+        row('出生年月日', rec.birth);
+        row('通訊地址', rec.addr);
         row('員工編號', rec.empid);
         row('會員類別', memberType==='support'?'贊助會員':'正式會員');
         row('職稱', rec.title);
@@ -544,6 +567,9 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     document.getElementById('p-orgName').textContent=orgName;
     document.getElementById('p-orgName2').textContent=orgName;
     document.getElementById('p-name').textContent=name;
+    document.getElementById('p-idno').textContent=rec.idno;
+    document.getElementById('p-birth').textContent=rec.birth;
+    document.getElementById('p-addr').textContent=rec.addr;
     document.getElementById('p-empid').textContent=empid;
     document.getElementById('p-title').textContent=rec.title;
     document.getElementById('p-dept').textContent=rec.dept;
