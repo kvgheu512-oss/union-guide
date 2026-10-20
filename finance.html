@@ -616,9 +616,15 @@ function assembly(){ return DB.settings.prep?'發起人會議（成立大會）'
 function setPrep(p){ DB.settings.prep=p; save(); applyPrep(); renderHome(); }
 // 工會已於 public.json 正式成立、但這台裝置的帳本設定還停在「籌備中」(預設值)時，自動切換，
 // 避免決算書被誤產成「籌備期收支結算表」、待辦清單一直停在連署發起等已完成事項。
+// ⚠️ 一定要等 SecLock 真的把這台裝置的帳本資料解鎖載入後才能跑，不然 public.json 的
+// ebnorg:public 事件如果搶在 SecLock.mount() 的 onUnlock 之前觸發，會在那份「還沒載入
+// 真實資料的空白 DB」上呼叫 save()，直接把使用者本機真實帳目覆寫成空白——真的發生過
+// 這種競態風險（帳本資料遺失），所以用 dbUnlocked 旗標擋住，只有 onUnlock 真正執行過
+// 以後，這支函式才會動手。
+var dbUnlocked=false;
 function migratePrepIfOfficial(){
   try{
-    if(window.EBNOrg && EBNOrg.publicData().phase==='official' && window.DB && DB.settings && DB.settings.prep){
+    if(dbUnlocked && window.EBNOrg && EBNOrg.publicData().phase==='official' && window.DB && DB.settings && DB.settings.prep){
       DB.settings.prep=false; save(); applyPrep(); fillSettings(); renderHome();
       alert('偵測到工會已正式成立，已自動把帳本設定從「籌備中」切換為「已成立」（決算書、理事長職稱等會跟著改）。如果這個判斷有誤，可以到下面「設定」手動改回「籌備中」。');
     }
@@ -1288,6 +1294,7 @@ function wipe(){ if(prompt('將清空本機所有帳目（明細、財產、預�
     desc:'帳本含真實財務數字，將以 <b>AES-GCM 加密</b>後存在本機（無通行碼讀不出）。',
     onUnlock:function(d){
       DB = normalize(d||{});
+      dbUnlocked=true;
       setType('out'); fillSettings(); renderEntries(); refreshKPI(); renderReceipts(); renderHome();
       migratePrepIfOfficial();
     }

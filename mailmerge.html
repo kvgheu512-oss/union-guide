@@ -158,6 +158,9 @@
     if(!ms.length){ $("genhint").textContent="請至少勾選一位會員"; return; }
     var org=o.fullName||"（請先到基本資料中心填工會全名）";
     var chair=o.chair||(window.EBNOrg&&EBNOrg.cadreName('chair'))||"____", addr=o.addr||"", tel=o.tel||"";
+    // 文號要分「籌備期／正式」序列，判斷依據是 public.json 的 phase——這是非同步載入的資料，
+    // 剛開頁就馬上按產生的話可能還沒載到，會被 org.js 誤判成籌備期序列、字別跟流水號都用錯。
+    if(t==="notice" && window.EBNOrg && !EBNOrg.publicLoaded()){ $("genhint").textContent="資料還在讀取中，請稍等一下再按一次產生（避免文號序列判斷錯誤）"; return; }
     var docNo="";
     if(t==="notice" && xval("mUseNo") && window.EBNOrg){ docNo=EBNOrg.nextDocNo(xval("mName")||"開會通知"); }
     else if(t==="notice" && window.EBNOrg){ docNo=EBNOrg.peekDocNo(); }

@@ -159,11 +159,19 @@
   function ready(fn){ if(window.EBNOrg) fn(); else setTimeout(function(){ready(fn);},30); }
 
   ready(function(){
-    // 預設序列跟著網站階段走：籌備中→籌備期序列
-    var phase=(EBNOrg.publicData().phase)||"prep";
-    var defSeries=phase==="prep"?"prep":"main";
-    document.querySelector('input[name="series"][value="'+defSeries+'"]').checked=true;
-    function curSeries(){ var r=document.querySelector('input[name="series"]:checked'); return r?r.value:defSeries; }
+    // 預設序列跟著網站階段走：籌備中→籌備期序列、正式成立→正式序列。
+    // ⚠️ public.json 是非同步載入，第一次跑這段時 phase 多半還沒到、會先預設成 prep；
+    // 一定要在 ebnorg:public 真正載到時「重設」這個單選鈕，不然官方成立後會永遠卡在
+    // 籌備期序列、公文字別全部發錯（這是先前 wenhao 測試一直失敗的真正原因）。
+    var userTouchedSeries=false;
+    function applyDefaultSeries(){
+      if(userTouchedSeries) return;   // 使用者自己選過，不要蓋掉他的選擇
+      var phase=(EBNOrg.publicData().phase)||"prep";
+      var defSeries=phase==="prep"?"prep":"main";
+      var el=document.querySelector('input[name="series"][value="'+defSeries+'"]'); if(el) el.checked=true;
+    }
+    applyDefaultSeries();
+    function curSeries(){ var r=document.querySelector('input[name="series"]:checked'); return r?r.value:"main"; }
     var cloudRows=null;   // 雲端模式最近抓到的發文簿（CSV 匯出用）
     function renderLocalLog(){
       var log=EBNOrg.getLog().slice().reverse();
@@ -198,9 +206,10 @@
           '<div class="hint">☁️ 雲端模式：要刪除或改紀錄，請直接開 Google 試算表。</div>';
       }).catch(function(e){ $("logWrap").innerHTML='<div class="hint">⚠ 雲端發文簿讀取失敗：'+esc(e.message)+'</div>'; });
     }
-    document.querySelectorAll('input[name="series"]').forEach(function(r){ r.addEventListener("change",refresh); });
-    // public.json 是非同步載入：資料到了要重畫，否則全新裝置第一眼會停在「（字別）」
-    document.addEventListener("ebnorg:public",refresh);
+    document.querySelectorAll('input[name="series"]').forEach(function(r){ r.addEventListener("change",function(){ userTouchedSeries=true; refresh(); }); });
+    // public.json 是非同步載入：資料到了要重畫，否則全新裝置第一眼會停在「（字別）」；
+    // 同時要重新套用預設序列（除非使用者自己選過），不然官方成立後會一直卡在籌備期序列。
+    document.addEventListener("ebnorg:public",function(){ applyDefaultSeries(); refresh(); });
     $("issue").addEventListener("click",function(){
       var o=EBNOrg.get(), s=curSeries();
       var wordKey=s==="prep"?"docWordPrep":"docWord";

@@ -299,6 +299,15 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const t = await p.textContent('#prepBadge').catch(() => null);
     (t && t.includes('正式運營')) ? ok('徽章正確顯示正式運營（不靠本機開關）') : bad('union-badge', 'prepBadge=' + t); });
 
+  await T('finance.html 解鎖前phase事件誤觸發不會清空本機帳本（race防護）', async p => {
+    await p.goto(BASE + 'finance.html', { waitUntil: 'domcontentloaded' });
+    // 塞一筆有辨識度的「假帳本資料」進明文鍵，模擬使用者真實資料已經存在
+    await p.evaluate(() => { localStorage.setItem('union_fin_db', JSON.stringify({ entries: [{ note: '哨兵資料不應被清空', amt: 123, type: 'in' }], settings: { prep: true } })); });
+    // 模擬 ebnorg:public 搶在 SecLock 解鎖前觸發的最壞情況：dbUnlocked 還是 false 時直接呼叫
+    await p.evaluate(() => { try { window.dbUnlocked = false; if (window.migratePrepIfOfficial) migratePrepIfOfficial(); } catch (e) {} });
+    const raw = await p.evaluate(() => localStorage.getItem('union_fin_db'));
+    (raw && raw.includes('哨兵資料不應被清空')) ? ok('解鎖前呼叫不會清空本機帳本') : bad('finance-race', 'raw=' + raw); });
+
   await T('petition.html 招募分工含組訓角色（不是只有5個舊角色）', async p => { await go(p, 'petition.html'); await p.waitForTimeout(200);
     const t = await p.textContent('#recruiterList').catch(() => ''); t.includes('組訓') ? ok('組訓角色有出現在招募分工列表') : bad('petition-org', t.slice(0, 80)); });
 
