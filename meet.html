@@ -57,28 +57,28 @@
 </div>
 
 <main>
-  <div class="topnote">📌 工會是<b>大家一起經營</b>的，繳了費問題不會自動消失。<b>最需要你出席的就是這兩場會</b>；到不了現場，就用下面的線上會議室一起參加。</div>
+  <div class="topnote" id="topnote">📌 工會是<b>大家一起經營</b>的，繳了費問題不會自動消失。<b>最需要你出席的就是這兩場會</b>；到不了現場，就用下面的線上會議室一起參加。</div>
 
   <!-- 近期會議 -->
   <div class="card">
-    <h2>📅 近期重要會議</h2>
-    <div class="sub">時間、地點由幹部更新；先把日期記下來</div>
+    <h2 id="meetsTitle">📅 近期重要會議</h2>
+    <div class="sub" id="meetsSub">時間、地點由幹部更新；先把日期記下來</div>
 
     <div class="meet prep">
-      <h3>① 發起人會議</h3>
+      <h3 id="h-prep">① 發起人會議</h3>
       <div class="when">🗓 日期：<b id="d-prep">（待幹部填入）</b>　🕒 時間：<b id="t-prep">—</b></div>
       <div class="when">📍 地點：<span id="p-prep">實體會場＋線上同步</span></div>
-      <div class="why">為什麼要來：這場主要是讓大家<b>搞懂「工會是什麼、怎麼運作」</b>、了解籌備進度、把你的疑問當場問清楚。先弄懂了，之後才不會覺得「跟想像差很多」。</div>
+      <div class="why" id="why-prep">為什麼要來：這場主要是讓大家<b>搞懂「工會是什麼、怎麼運作」</b>、了解籌備進度、把你的疑問當場問清楚。先弄懂了，之後才不會覺得「跟想像差很多」。</div>
       <a class="join" id="join-prep" href="#" target="_blank" rel="noopener">🟢 進入 Google Meet（發起人會議）</a>
       <button class="copy" data-target="prep">📋 複製這場的會議連結</button>
       <div class="lnk" id="lnk-prep"></div>
     </div>
 
     <div class="meet found">
-      <h3>② 成立大會</h3>
+      <h3 id="h-found">② 成立大會</h3>
       <div class="when">🗓 日期：<b id="d-found">（待幹部填入）</b>　🕒 時間：<b id="t-found">—</b></div>
       <div class="when">📍 地點：<span id="p-found">實體會場＋線上同步</span></div>
-      <div class="why">為什麼要來：這場要<b>通過章程、選出理事監事</b>，工會正式誕生。章程和幹部會直接影響你的權益，<b>每一票都算數</b>，能到盡量到。</div>
+      <div class="why" id="why-found">為什麼要來：這場要<b>通過章程、選出理事監事</b>，工會正式誕生。章程和幹部會直接影響你的權益，<b>每一票都算數</b>，能到盡量到。</div>
       <a class="join" id="join-found" href="#" target="_blank" rel="noopener">🟢 進入 Google Meet（成立大會）</a>
       <a class="cal-btn" id="cal-found" href="https://calendar.app.google/Qjs9igcdWm8bcTA26" target="_blank" rel="noopener">📅 加入我的行事曆</a>
       <button class="copy" data-target="found">📋 複製這場的會議連結</button>
@@ -130,7 +130,7 @@
     <div class="why-box">
       <div style="background:#fff;border:1px dashed #BFE3CF;border-radius:10px;padding:.6rem .75rem;margin-bottom:.7rem;color:#1A4E7A">🩺 <b>用看病比喻最好懂：</b>病要治好，靠「醫生＋病人＋家屬」三方一起；醫生再強、設備再好，<b>病人自己不配合也治不好</b>。工會也一樣——<b>你就是病人本人</b>，不參與、不開口，問題一樣好不了。</div>
       <div class="q">1. 工會是「工具」，不是許願池</div>
-      連署、繳會費只是<b>開始</b>。職場上的問題<b>不會自己變不見</b>——要靠大家<b>一起把工會用起來</b>：把問題講出來、提供資料、一起想辦法。
+      入會、繳會費只是<b>開始</b>。職場上的問題<b>不會自己變不見</b>——要靠大家<b>一起把工會用起來</b>：把問題講出來、提供資料、一起想辦法。
       <div class="q">2. 一定要看群組／網站的資訊</div>
       很多人因為<b>沒參與過程、沒看群組</b>，工會成立後才發現「跟我想的不一樣」就退會了。其實只要<b>來開會、看公告</b>，就會清楚工會在做什麼、能做到什麼。
       <div class="q">3. 有勞動問題，主動找工會「一起」處理</div>
@@ -179,8 +179,21 @@ const MEET_URL = {
       if(l) l.textContent="開會前，幹部會把當天的 Google Meet 連結貼到 LINE 群組";
     }
   }
-  fill("prep"); fill("found");
-  document.addEventListener("ebnorg:public", function(){ fill("prep"); fill("found"); });   // 公告版載到後更新
+  // 工會已正式成立後，這兩場籌備期會議都已結束，不再框成「近期重要會議」，
+  // 改成歷史紀錄呈現（連結保留但不主打，日後若有新的線上會議再另外更新本頁）。
+  function applyOfficial(){
+    var official=false; try{ official=window.EBNOrg && EBNOrg.publicData().phase==="official"; }catch(e){}
+    if(!official) return;
+    if($("topnote")) $("topnote").innerHTML="📌 下面兩場是工會<b>籌備期已開完的會議</b>，留作歷史紀錄；日後若有新的線上會議，會另外更新本頁。";
+    if($("meetsTitle")) $("meetsTitle").textContent="📅 籌備期重要會議（已結束）";
+    if($("meetsSub")) $("meetsSub").textContent="工會已正式成立，以下為成立過程的會議紀錄";
+    if($("h-prep")) $("h-prep").textContent="① 發起人會議（已結束）";
+    if($("h-found")) $("h-found").textContent="② 成立大會（已結束）";
+    if($("why-prep")) $("why-prep").innerHTML="這場讓發起人<b>搞懂「工會是什麼、怎麼運作」</b>、了解籌備進度；是成立過程的第一步。";
+    if($("why-found")) $("why-found").innerHTML="這場<b>通過章程、選出理事監事</b>，工會正式誕生於此。";
+  }
+  fill("prep"); fill("found"); applyOfficial();
+  document.addEventListener("ebnorg:public", function(){ fill("prep"); fill("found"); applyOfficial(); });   // 公告版載到後更新
 
   var toast=$("toast");
   function showToast(t){ if(toast){ toast.textContent=t; setTimeout(function(){ toast.textContent=""; },2800); } }

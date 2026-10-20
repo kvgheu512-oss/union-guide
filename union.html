@@ -222,8 +222,8 @@
       <div class="row">
         <span class="ico">🏗</span>
         <div>
-          <div class="t" style="color:var(--red-deep)">籌備進度與成立大會書表流程 <span class="vtag">🔊 語音</span></div>
-          <div class="d">照官方流程<b>逐步勾選</b>（連署→成立大會→登記）、每步附官方書表。走完並收到核可文件後，可<b>一鍵解鎖「籌備中→正式運營」</b>。</div>
+          <div class="t" style="color:var(--red-deep)">成立過程紀錄與書表 <span class="vtag">🔊 語音</span></div>
+          <div class="d">工會已正式成立，這裡留存官方流程全程記錄（連署→成立大會→登記）與每步的官方書表，供日後查閱。</div>
         </div>
         <span class="go" style="color:var(--red)">→</span>
       </div>
@@ -423,8 +423,8 @@
       <div class="row">
         <span class="ico">📋</span>
         <div>
-          <div class="t" style="color:#7B1818">發起人會議 議程 &amp; 書面文件 <span class="vtag" style="background:#C0392B">今晚</span></div>
-          <div class="d">精準議程時間表・<b>簽到表</b>（35行）・<b>會議紀錄模板</b>・<b>籌委名單</b>・章程連結，每份可單獨列印 PDF。</div>
+          <div class="t" style="color:#7B1818">發起人會議 歷史紀錄 <span class="vtag" style="background:#C0392B">已結束</span></div>
+          <div class="d">發起人會議當天的議程時間表・<b>簽到表</b>（35行）・<b>會議紀錄模板</b>・<b>籌委名單</b>，留存歷史紀錄，每份可單獨列印 PDF。</div>
         </div>
         <span class="go" style="color:#7B1818">→</span>
       </div>
@@ -520,8 +520,8 @@
       <div class="row">
         <span class="ico">☑️</span>
         <div>
-          <div class="t" style="color:#1B5E20">成立排雷檢核表 <span class="vtag">🔊 語音</span></div>
-          <div class="d">從<b>30人連署→籌備會→成立大會→主管機關登記</b>每步打勾確認；附官方書表連結，避免程序瑕疵被退件。</div>
+          <div class="t" style="color:#1B5E20">成立排雷檢核表（已完成） <span class="vtag">🔊 語音</span></div>
+          <div class="d">成立全程<b>30人連署→籌備會→成立大會→主管機關登記</b>每步確認紀錄；附官方書表連結，留存查閱。</div>
         </div>
         <span class="go" style="color:#2E7D32">→</span>
       </div>
@@ -529,11 +529,11 @@
     <div class="tile" style="border-left-color:#2E7D32;cursor:default;padding:.85rem 1rem;margin-bottom:12px">
       <details>
         <summary style="cursor:pointer;font-size:14px;font-weight:700;color:#1B5E20;list-style:none;display:flex;align-items:center;gap:8px">
-          <span>📑 向高雄市勞工局登記送件清單</span>
+          <span>📑 向高雄市勞工局登記送件清單（已完成，留作紀錄）</span>
           <span id="regChkPct" style="margin-left:auto;font-size:12px;color:#388E3C;font-weight:600;white-space:nowrap"></span>
         </summary>
         <div style="margin-top:10px;font-size:13px;color:#444">
-          <p style="margin-bottom:8px;font-size:12px;color:#888">依<b>工會法施行細則§11</b> · 打勾表示已備妥 · 進度存本機</p>
+          <p style="margin-bottom:8px;font-size:12px;color:#888">依<b>工會法施行細則§11</b>，登記已完成；這份是當時備妥項目的紀錄 · 進度存本機</p>
           <ul id="regChkList" style="list-style:none;display:flex;flex-direction:column;gap:4px"></ul>
           <div style="margin-top:8px;text-align:right">
             <button id="regChkClear" style="font-size:11px;color:#aaa;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px">↺ 重設清單</button>
@@ -658,9 +658,16 @@ document.getElementById('gate-pw').addEventListener('keydown',function(e){ if(e.
     if(first && !scrolled){ first.scrollIntoView({behavior:'smooth',block:'center'}); scrolled=true; }
   });
 })();
-// 工會狀態：籌備中 ↔ 正式運營（讀 founding.html 設定的本機狀態）
-(function(){ try{ var s=JSON.parse(localStorage.getItem("union_status_v1")); var b=document.getElementById("prepBadge");
-  if(b && s && s.status==="official"){ b.textContent="🎖 正式運營"; b.style.background="#FFF6D6"; b.style.color="#7A5800"; b.style.borderColor="#E8C84A"; } }catch(_){}})();
+// 工會狀態：籌備中 ↔ 正式運營（跟首頁同一套：讀 public.json 的 phase，不是本機開關）
+(function(){
+  function applyStatus(){
+    var b=document.getElementById("prepBadge"); if(!b) return;
+    var phase=(window.EBNOrg && EBNOrg.publicData().phase)||"prep";
+    if(phase==="official"){ b.textContent="🎖 正式運營"; b.style.background="#FFF6D6"; b.style.color="#7A5800"; b.style.borderColor="#E8C84A"; }
+  }
+  applyStatus();
+  document.addEventListener("ebnorg:public",applyStatus);
+})();
 /* 法規：向高雄市勞工局登記送件清單（依工會法施行細則§11，打勾存本機） */
 (function(){
   var ITEMS=[

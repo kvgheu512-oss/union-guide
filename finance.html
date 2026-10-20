@@ -420,6 +420,7 @@
 
 <script src="finance-law.js"></script>
 <script src="seclock.js"></script>
+<script src="org.js" defer></script>
 <script>
 /* ===================== 會計科目（附表 §7，5大類）===================== */
 const ACCOUNTS = {
@@ -613,6 +614,17 @@ function applyOrg(){
 function chair(){ return DB.settings.prep?'籌備會召集人':'理事長'; }
 function assembly(){ return DB.settings.prep?'發起人會議（成立大會）':'會員（代表）大會'; }
 function setPrep(p){ DB.settings.prep=p; save(); applyPrep(); renderHome(); }
+// 工會已於 public.json 正式成立、但這台裝置的帳本設定還停在「籌備中」(預設值)時，自動切換，
+// 避免決算書被誤產成「籌備期收支結算表」、待辦清單一直停在連署發起等已完成事項。
+function migratePrepIfOfficial(){
+  try{
+    if(window.EBNOrg && EBNOrg.publicData().phase==='official' && window.DB && DB.settings && DB.settings.prep){
+      DB.settings.prep=false; save(); applyPrep(); fillSettings(); renderHome();
+      alert('偵測到工會已正式成立，已自動把帳本設定從「籌備中」切換為「已成立」（決算書、理事長職稱等會跟著改）。如果這個判斷有誤，可以到下面「設定」手動改回「籌備中」。');
+    }
+  }catch(e){}
+}
+document.addEventListener('ebnorg:public',migratePrepIfOfficial);
 function applyPrep(){
   const prep=!!DB.settings.prep;
   const bn=document.getElementById('prepBanner'); if(bn) bn.style.display=prep?'block':'none';
@@ -1277,6 +1289,7 @@ function wipe(){ if(prompt('將清空本機所有帳目（明細、財產、預�
     onUnlock:function(d){
       DB = normalize(d||{});
       setType('out'); fillSettings(); renderEntries(); refreshKPI(); renderReceipts(); renderHome();
+      migratePrepIfOfficial();
     }
   });
 })();

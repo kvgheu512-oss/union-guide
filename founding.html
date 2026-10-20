@@ -104,18 +104,18 @@
 <link rel="stylesheet" href="common.css">
 </head>
 <body data-home="union.html">
+<script src="org.js" defer></script>
 <a class="back" href="union.html" onclick="return ebnBack(this.getAttribute('href'),event)">‹ 功能表</a>
 
 <div class="header">
-  <h1>🏗 工會籌備進度</h1>
-  <div class="sub">成立大會書表流程 · 走完才能解鎖正式運營</div>
+  <h1>🏗 工會成立過程紀錄</h1>
+  <div class="sub">成立大會書表流程全程記錄（已完成）</div>
   <div id="hbadge" class="statusbadge prep">🏗 籌備中</div>
 </div>
 
 <main>
   <div class="lead">
-    本頁照<b>勞動部／高雄市勞工局</b>官方籌組流程逐步勾選。每完成一步就打勾、進度自動記在<b>本機</b>（不上傳）。
-    <b>全部走完、且收到主管機關核發的「工會登記證書／立案核可文件」後</b>，最下方的解鎖按鈕才會啟用——把工會從「籌備中」改為「正式運營」。
+    工會已依<b>勞動部／高雄市勞工局</b>官方籌組流程完成全部步驟、並取得登記證字號，正式成立。本頁留存當時逐步勾選的過程記錄（進度存在<b>本機</b>、不上傳），供日後查閱。
   </div>
 
   <div class="prog">
@@ -211,7 +211,13 @@
     el.style.display = bad ? "block" : "none";
   }
   function getStatus(){
-    try{ var s = JSON.parse(localStorage.getItem(STATUS_KEY)); if(s && s.status==="official") return s; }catch(e){}
+    try{
+      if(window.EBNOrg && EBNOrg.publicData().phase==="official"){
+        var o = EBNOrg.get(); var m = EBNOrg.publicData().meet || {};
+        return { status:"official", source:"public", docNo:o.regNo||"（登記證字號未填，請至工會基本資料中心補）", date:(m.found&&m.found.date)||"" };
+      }
+    }catch(e){}
+    try{ var s = JSON.parse(localStorage.getItem(STATUS_KEY)); if(s && s.status==="official"){ s.source="local"; return s; } }catch(e){}
     return null;
   }
 
@@ -447,18 +453,19 @@
 
   function renderDone(st){
     var d = st.date ? st.date.replace(/-/g,"/") : "—";
+    var metaLines = st.source==="public"
+      ? ('登記證字號：<b>'+escapeHtml(st.docNo)+'</b><br>成立大會日期：<b>'+d+'</b>')
+      : ('登記證書／核可文號：<b>'+escapeHtml(st.docNo||"—")+'</b><br>核可／登記日期：<b>'+d+'</b><br>解鎖時間：'+(st.unlockedAt?new Date(st.unlockedAt).toLocaleString("zh-TW"):"—"));
     ubody.innerHTML =
       '<div class="doneblock">'+
         '<div class="seal">🎉</div>'+
         '<div class="dt">已正式運營</div>'+
         '<div class="dmeta">'+
           '工會狀態：<b>正式運營</b><br>'+
-          '登記證書／核可文號：<b>'+escapeHtml(st.docNo)+'</b><br>'+
-          '核可／登記日期：<b>'+d+'</b><br>'+
-          '解鎖時間：'+(st.unlockedAt?new Date(st.unlockedAt).toLocaleString("zh-TW"):"—")+
+          metaLines+
         '</div>'+
-        '<div style="font-size:12px;color:#777;line-height:1.8">全站「籌備中」標記將更新為「正式運營」。<br>恭喜——這條路是大家一步一步走出來的。</div>'+
-        '<button class="revert" id="revertBtn">（如為誤設，點此還原為籌備中）</button>'+
+        '<div style="font-size:12px;color:#777;line-height:1.8">恭喜——這條路是大家一步一步走出來的。</div>'+
+        (st.source==="public" ? '' : '<button class="revert" id="revertBtn">（如為誤設，點此還原為籌備中）</button>')+
       '</div>';
     var rb = document.getElementById("revertBtn");
     if(rb) rb.addEventListener("click", function(){
@@ -482,6 +489,7 @@
   updateProgress();
   renderUnlock();
   updateBadge();
+  document.addEventListener("ebnorg:public", function(){ updateBadge(); renderUnlock(); });
 
   // localStorage 是空的（沒勾過或被清空）→ 試從 IndexedDB 備援還原，防裝置清空/無痕清資料
   if(state.every(function(v){return !v;})){

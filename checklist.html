@@ -85,11 +85,12 @@
 </head>
 <body data-home="union.html">
 <script>try{if(localStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
+<script src="org.js" defer></script>
 
 <div id="gate">
   <div class="gate-box">
     <h2>成立排雷檢核表</h2>
-    <p>本頁為幹部籌組進度追蹤，限幹部使用。</p>
+    <p>本頁為工會成立過程排雷檢核紀錄，限幹部使用。</p>
     <input id="gate-pw" type="password" inputmode="text" lang="en" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="幹部通行碼" enterkeyhint="go">
     <button id="gate-go">進入</button>
     <div class="gate-err" id="gate-err"></div>
@@ -98,8 +99,8 @@
 
 <div id="app" style="display:none">
 <div class="top">
-  <h1>高榮企業工會 ・ 成立排雷檢核表</h1>
-  <p>依《工會法》一步步排雷｜勾選會自動存進度（這台裝置）</p>
+  <h1>高榮企業工會 ・ 成立排雷檢核表（已完成）</h1>
+  <p>工會已依《工會法》完成成立登記；本頁留存當時逐步排雷的勾選紀錄（這台裝置）</p>
 </div>
 
 <main>
@@ -109,7 +110,7 @@
   </div>
 
   <div class="deadline">
-    <label for="dday">📅 成立大會日期（＝30 日登記倒數起點）：</label><br>
+    <label for="dday">📅 成立大會日期（＝30 日登記倒數起點，登記已完成，僅供查閱）：</label><br>
     <input type="date" id="dday">
     <div class="out" id="ddOut" style="display:none"></div>
   </div>
@@ -222,7 +223,14 @@ refresh();
 const dd=document.getElementById("dday"),ddOut=document.getElementById("ddOut");
 const DKEY="gaorong_dday";
 if(localStorage.getItem(DKEY)){dd.value=localStorage.getItem(DKEY);}
+function isOfficial(){ try{ return window.EBNOrg && EBNOrg.publicData().phase==="official"; }catch(e){ return false; } }
 function calcDDL(){
+  if(isOfficial()){
+    var o=window.EBNOrg?EBNOrg.get():{};
+    ddOut.style.display="block";
+    ddOut.innerHTML=`✅ 工會已完成設立登記${o.regNo?('（登記證字號：<b>'+o.regNo+'</b>）'):''}，此倒數僅留作歷史紀錄，不影響現況。`;
+    return;
+  }
   if(!dd.value){ddOut.style.display="none";return;}
   localStorage.setItem(DKEY,dd.value);
   // new Date("YYYY-MM-DD") 會被當成 UTC 午夜解析（=台灣本地時間早上8點），
@@ -239,10 +247,11 @@ function calcDDL(){
     <span style="font-size:13px;color:var(--mid)">（大會後 30 日內，務必送進高雄市勞工局並確認收件）</span>`;
 }
 dd.addEventListener("change",calcDDL);calcDDL();
+document.addEventListener("ebnorg:public",calcDDL);
 
 // 年
 </script>
-<div id="verBadge">v2026.06.21.66</div>
+<div id="verBadge"></div>
 <script src="law-tips.js" defer></script>
 <script src="tour.js" defer></script>
 <script>

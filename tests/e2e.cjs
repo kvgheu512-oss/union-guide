@@ -264,11 +264,21 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     // 應顯示「還有 0 天」；舊寫法會把大會日解析成 UTC 午夜(=台灣早上8點)，
     // 跟本地午夜的 today 相減多出 8 小時，Math.ceil 後誤報「還有 1 天」。
     await fixClock(p, '2026-06-30T16:00:00Z');
+    // 工會已正式成立(public.json phase:official)後，倒數會自動換成「已完成設立登記」訊息（見下方
+    // 'checklist.html 已成立時自動停用倒數' 測試）；這裡要單獨驗證的是舊有的時區算法本身沒有壞掉，
+    // 所以攔截 public.json 讓這次請求回傳 prep，逼出舊的倒數分支來測。
+    await p.route('**/public.json*', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ phase: 'prep' }) }));
     await p.goto(BASE + 'checklist.html', { waitUntil: 'domcontentloaded' });
     await p.evaluate(() => { try { localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} });
     await p.fill('#dday', '2026-06-01'); await p.waitForTimeout(150);
     const t = await p.textContent('#ddOut');
     /還有\s*0\s*天/.test(t) ? ok('30日死線剛好到期顯示「還有0天」（不多算一天）') : bad('checklist-ddl', t.replace(/\s+/g, ' ')); });
+  await T('checklist.html 已成立時自動停用倒數、改顯示登記完成', async p => {
+    await p.goto(BASE + 'checklist.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { try { localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} });
+    await p.fill('#dday', '2026-06-01'); await p.waitForTimeout(150);
+    const t = await p.textContent('#ddOut');
+    (t.includes('已完成設立登記') && !/還有|逾期/.test(t)) ? ok('已成立後倒數停用、顯示登記完成') : bad('checklist-ddl-official', t.replace(/\s+/g, ' ')); });
 
   console.log('\n========== H. 幹部卡片自動同步 ==========');
   await T('union.html 理事長/文宣/監事卡片會隨改名同步（原本只有總務/法規/組訓會動）', async p => {
@@ -280,6 +290,14 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const wel = await p.textContent('#name-wel').catch(() => null);
     const sup = await p.textContent('#name-sup').catch(() => null);
     (chair === '測試理事長' && wel === '測試文宣' && sup === '測試監事') ? ok('三張卡片改名後同步(chair/wel/sup)') : bad('union-sync', 'chair=' + chair + ' wel=' + wel + ' sup=' + sup); });
+
+  await T('union.html 籌備中徽章讀public.json phase，不是本機舊開關', async p => {
+    await p.goto(BASE + 'union.html', { waitUntil: 'domcontentloaded' });
+    // 本機舊開關刻意留空／不設定 union_status_v1，確認徽章改讀 EBNOrg 的 public.json phase（目前是 official）
+    await p.evaluate(() => { localStorage.clear(); localStorage.setItem('union_panel_unlocked', '1'); localStorage.removeItem('union_status_v1'); });
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    const t = await p.textContent('#prepBadge').catch(() => null);
+    (t && t.includes('正式運營')) ? ok('徽章正確顯示正式運營（不靠本機開關）') : bad('union-badge', 'prepBadge=' + t); });
 
   await T('petition.html 招募分工含組訓角色（不是只有5個舊角色）', async p => { await go(p, 'petition.html'); await p.waitForTimeout(200);
     const t = await p.textContent('#recruiterList').catch(() => ''); t.includes('組訓') ? ok('組訓角色有出現在招募分工列表') : bad('petition-org', t.slice(0, 80)); });

@@ -55,7 +55,7 @@
   <div class="card">
     <h2>登記狀態</h2>
     <div class="radio-row">
-      <label><input type="radio" name="regStatus" value="no" checked> 尚未取得統一編號（籌備中）</label>
+      <label><input type="radio" name="regStatus" value="no" checked> 尚未取得統一編號</label>
       <label><input type="radio" name="regStatus" value="yes"> 已取得統一編號</label>
     </div>
     <div id="regWarn" class="pending">目前狀態下，「企業型團隊」路徑無法送出（缺統一編號）。若急著先開通，可考慮改走「個人提案者」（用個人身分證字號），但錢會先進個人帳戶——這件事的取捨，上次已經跟你分析過風險，這裡不重複，你們自己決定。</div>
@@ -201,7 +201,7 @@
     var v=(document.querySelector('input[name="regStatus"]:checked')||{}).value||'no';
     var lines=[];
     lines.push('【貝殼集器／統一金流 申請資料】');
-    lines.push('登記狀態：'+(v==='yes'?'已取得統一編號':'尚未取得統一編號（籌備中）'));
+    lines.push('登記狀態：'+(v==='yes'?'已取得統一編號':'尚未取得統一編號'));
     lines.push('');
     lines.push('一、Backme 專案資料');
     lines.push('專案標題：'+$('f-title').value);

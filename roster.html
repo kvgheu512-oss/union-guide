@@ -165,11 +165,11 @@
 
     <div class="btn-row" style="margin-bottom:.8rem">
       <button class="btn" id="add-btn">＋ 新增會員／申請</button>
-      <button class="btn ghost" id="paste-btn">📥 從連署名單貼上匯入</button>
+      <button class="btn ghost" id="paste-btn">📥 從入會名單貼上匯入</button>
     </div>
 
     <div class="form" id="paste-panel" style="display:none">
-      <label>把 Google 連署試算表的資料貼進來（要含<b>第一列標題</b>）</label>
+      <label>把 Google 試算表的入會申請資料貼進來（要含<b>第一列標題</b>）</label>
       <div style="font-size:12px;color:var(--ink-soft,#777);line-height:1.8;margin:4px 0 8px">
         ① 開「高榮工會_發起人資料」試算表 → ② 框選含<b>標題列</b>的資料 → ③ 複製 → ④ 貼到下框 → ⑤ 按「分析並匯入」。<br>
         會自動對應<b>姓名／單位／職稱／工號／手機／LINE／Email／時間戳記</b>（LINE、Email 分開對應，兩個都填也不會漏掉）。新的人會新增（狀態<b>入會申請中／待審</b>）；已經在名冊的人（用工號或姓名＋手機比對）會直接<b>更新</b>資料，以<b>最新時間戳記</b>那筆為準，方便大家隨時補填、重貼就能同步最新版。<br>
@@ -773,7 +773,7 @@ $('bk-enc-in').addEventListener('click',()=>{
 });
 $('print-btn').addEventListener('click',()=>window.print());
 
-/* 從連署試算表「貼上」匯入：自動偵測分隔（試算表複製＝Tab）、對應標題欄、略過重複 */
+/* 從入會申請試算表「貼上」匯入：自動偵測分隔（試算表複製＝Tab）、對應標題欄、略過重複 */
 $('paste-btn').addEventListener('click',()=>{ const p=$('paste-panel'); p.style.display=p.style.display==='none'?'block':'none'; if(p.style.display==='block'){ $('paste-data').focus(); p.scrollIntoView({behavior:'smooth',block:'center'}); } });
 $('paste-cancel').addEventListener('click',()=>{ $('paste-panel').style.display='none'; $('paste-data').value=''; $('paste-result').innerHTML=''; });
 function splitLine(line,d){

@@ -207,7 +207,7 @@
 <div id="gate">
   <div class="gate-box">
     <h2>高榮企業工會</h2>
-    <p>本頁籌備期間僅供受邀同仁瀏覽。<br>請輸入幹部提供的通行碼。</p>
+    <p>本頁僅供受邀同仁瀏覽。<br>請輸入幹部提供的通行碼。</p>
     <input id="gate-pw" type="password" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="通行碼" enterkeyhint="go">
     <button id="gate-go">進入</button>
     <div class="gate-err" id="gate-err"></div>
@@ -690,7 +690,7 @@ const FAQ=[
 
   { q:"現在進度到哪了？",
     kw:["進度","到哪","現在","階段","狀況","目前"],
-    a:"成立大會已於 115/8/30 召開，通過章程、選出理監事，<strong>已向勞工局送件登記，目前在第 4 步：等候核發登記證書</strong>。詳細四步驟見上方「成立進度」時間軸。還沒加入的同仁歡迎私訊幹部詢問現在怎麼加入。" },
+    a:"成立大會已於 115/8/30 召開，通過章程、選出理監事，<strong>已完成向勞工局送件登記，正式成立</strong>。還沒加入的同仁歡迎按上方「我要正式入會」或私訊幹部詢問現在怎麼加入。" },
 
   { q:"參加工會會不會被秋後算帳／被報復？",
     kw:["報復","秋後算帳","被約談","被刁難","會不會被","懲罰","解僱","減薪","報秋"],
@@ -706,7 +706,7 @@ const FAQ=[
 
   { q:"我填的個資安全嗎？",
     kw:["個資","個人資料","安全","資料","隱私權","保護"],
-    a:"本網頁本身<strong>不儲存</strong>你的任何資料。你填的聯絡方式是送到工會的 Line／表單，僅供籌備聯繫，受《個人資料保護法》規範，不會對外公開。" },
+    a:"本網頁本身<strong>不儲存</strong>你的任何資料。你填的聯絡方式是送到工會的 Line／表單，僅供入會聯繫，受《個人資料保護法》規範，不會對外公開。" },
 
   { q:"這跟現在的護理工會／職業工會有什麼不同？",
     kw:["護理工會","職業工會","不同","差別","差異","為什麼再組","已經有","區別","跟現在"],
@@ -785,7 +785,7 @@ document.getElementById('faq-toggle-btn').addEventListener('click',function(){
   }).observe(document.body,{childList:true,subtree:true});
 })();
 </script>
-<div id="verBadge">v2026.06.21.66</div>
+<div id="verBadge"></div>
 <script src="law-tips.js" defer></script>
 <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js" async></script>
 <script>
@@ -793,7 +793,13 @@ document.getElementById('faq-toggle-btn').addEventListener('click',function(){
   var url=location.origin+location.pathname;
   function drawQR(){ if(typeof QRCode==="undefined"){ drawQR._n=(drawQR._n||0)+1; if(drawQR._n<25) setTimeout(drawQR,300); return; } var el=document.getElementById('union-qr'); if(!el||el.dataset.done) return; el.innerHTML=''; new QRCode(el,{text:url,width:180,height:180,colorDark:'#0F5C36',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); el.dataset.done='1'; }
   drawQR();
-  function msg(){ var sb=document.getElementById('signbar'); var now=sb?parseInt(sb.dataset.now||'0',10):0; var goal=sb?parseInt(sb.dataset.goal||'30',10):30; var lead=now>=goal?'連署已達標，成立大會籌備中！':(now>0?('目前 '+now+'/'+goal+'，再 '+(goal-now)+' 人就成案！'):''); return '【高榮企業工會】加班費、排班、職場霸凌…一個人喊沒用，一起成立工會、坐上談判桌。'+lead+' 1 分鐘了解＋加入 👉 '+url; }
+  function msg(){
+    var official=false; try{ official=window.EBNOrg && EBNOrg.publicData().phase==='official'; }catch(e){}
+    var lead;
+    if(official){ lead='高榮企業工會已正式成立！'; }
+    else{ var sb=document.getElementById('signbar'); var now=sb?parseInt(sb.dataset.now||'0',10):0; var goal=sb?parseInt(sb.dataset.goal||'30',10):30; lead=now>=goal?'連署已達標，成立大會籌備中！':(now>0?('目前 '+now+'/'+goal+'，再 '+(goal-now)+' 人就成案！'):''); }
+    return '【高榮企業工會】加班費、排班、職場霸凌…一個人喊沒用，一起成立工會、坐上談判桌。'+lead+' 1 分鐘了解＋加入 👉 '+url;
+  }
   function toast(t){ var e=document.getElementById('share-toast'); if(e){ e.textContent=t; setTimeout(function(){ e.textContent=''; },2600); } }
   var sBtn=document.getElementById('share-btn'); if(sBtn) sBtn.addEventListener('click',function(){ var text=msg(); if(navigator.share){ navigator.share({title:'高榮企業工會 邀請加入',text:text,url:url}).catch(function(){}); } else if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){toast('✅ 已複製，貼到 LINE 群組即可');},function(){toast('請長按訊息複製');}); } else { toast('請長按訊息複製'); } });
   var cBtn=document.getElementById('copy-btn'); if(cBtn) cBtn.addEventListener('click',function(){ if(navigator.clipboard){ navigator.clipboard.writeText(msg()).then(function(){toast('✅ 邀請訊息已複製');},function(){toast('請長按複製');}); } else { toast('請長按複製'); } });
@@ -843,14 +849,32 @@ document.addEventListener('ebnorg:public',function(){
 <script>
 window.addEventListener("load", function(){
   if(!window.EBNTour) return;
-  EBNTour.attach([
-    { title:"歡迎！我帶你看一遍", text:"這是工會的入口頁。30 秒帶你看：連署進度、加入方式、會議、有問題怎麼問。" },
-    { sel:"#signbar", title:"連署進度", text:"連署已達 30 人法定門檻，成立大會已於 115/8/30 召開。" },
-    { sel:"#cta-join", title:"想加入就按這裡", text:"按下去會先說明<b>三件事</b>，再帶你到加入方式，可以線上電子簽名申請。" },
-    { sel:"#meetings", title:"兩場關鍵會議", text:"發起人會議、成立大會——<b>到不了現場也能線上參加</b>。" },
-    { sel:"#bot-in", title:"有問題問小幫手", text:"打字問我，例如「約用可以加入嗎」，會給你答案。" },
-    { title:"好了！", text:"想算加班費、看保障，往下滑都有。隨時點上面的 🎬 導覽再看一次。" }
-  ], {});
+  function official(){ try{ return window.EBNOrg && EBNOrg.publicData().phase==='official'; }catch(e){ return false; } }
+  function buildSteps(){
+    if(official()){
+      return [
+        { title:"歡迎！我帶你看一遍", text:"這是工會的入口頁。30 秒帶你看：工會現況、加入方式、幹部、有問題怎麼問。" },
+        { sel:"#cadres-pub", title:"幹部名單", text:"工會已正式成立，這裡看得到目前的理監事與幹部。" },
+        { sel:"#cta-join-off", title:"想加入就按這裡", text:"按下去可以線上填<b>電子入會申請書</b>（含電子簽名），或加 Line 群組請幹部協助。" },
+        { sel:"#bot-in", title:"有問題問小幫手", text:"打字問我，例如「約用可以加入嗎」，會給你答案。" },
+        { title:"好了！", text:"想算加班費、看保障，往下滑都有。隨時點上面的 🎬 導覽再看一次。" }
+      ];
+    }
+    return [
+      { title:"歡迎！我帶你看一遍", text:"這是工會的入口頁。30 秒帶你看：連署進度、加入方式、會議、有問題怎麼問。" },
+      { sel:"#signbar", title:"連署進度", text:"連署已達 30 人法定門檻，成立大會已於 115/8/30 召開。" },
+      { sel:"#cta-join", title:"想加入就按這裡", text:"按下去會先說明<b>三件事</b>，再帶你到加入方式，可以線上電子簽名申請。" },
+      { sel:"#meetings", title:"兩場關鍵會議", text:"發起人會議、成立大會——<b>到不了現場也能線上參加</b>。" },
+      { sel:"#bot-in", title:"有問題問小幫手", text:"打字問我，例如「約用可以加入嗎」，會給你答案。" },
+      { title:"好了！", text:"想算加班費、看保障，往下滑都有。隨時點上面的 🎬 導覽再看一次。" }
+    ];
+  }
+  function go(){ EBNTour.attach(buildSteps(), {}); }
+  (function wait(n){
+    if(window.EBNOrg && EBNOrg.publicLoaded()) return go();
+    if(n>40) return go();
+    setTimeout(function(){ wait(n+1); },50);
+  })(0);
 });
 </script>
 <script src="common.js" defer></script>

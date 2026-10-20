@@ -183,7 +183,7 @@
 
     <div class="card noprint">
       <label>1. 註記文字（每行可單獨刪除）</label>
-      <textarea id="anno" style="display:none">僅供高榮企業工會發起連署用
+      <textarea id="anno" style="display:none">僅供高榮企業工會入會申請用
 它用無效</textarea>
       <div id="annoChips"></div>
       <div class="anno-add-row">
@@ -922,7 +922,7 @@
   function shareFiles(){
     if(notReady()) return;
     if(navigator.canShare && navigator.canShare({files:window._shareFiles})){
-      navigator.share({ files:window._shareFiles, title:'證件影本（高榮企業工會連署）' }).catch(function(){});
+      navigator.share({ files:window._shareFiles, title:'證件影本（高榮企業工會入會申請）' }).catch(function(){});
     } else { downloadFiles(); alert('此瀏覽器不支援直接分享，已改為下載到裝置，可再自行夾帶寄出或上傳雲端。'); }
   }
   function downloadFiles(){
@@ -940,7 +940,7 @@
     remember(em); try{ navigator.clipboard && navigator.clipboard.writeText(em); }catch(_){}
     // 先把 A4 檔下載到裝置（瀏覽器無法自動把檔案塞進信件），再開啟郵件、收件人帶入你填的信箱
     downloadFiles();
-    location.href='mailto:'+encodeURIComponent(em)+'?subject='+encodeURIComponent('證件影本（高榮企業工會連署）')+
+    location.href='mailto:'+encodeURIComponent(em)+'?subject='+encodeURIComponent('證件影本（高榮企業工會入會申請）')+
       '&body='+encodeURIComponent('附件為證件影本，請把剛剛下載到裝置的「證件A4_…jpg」夾帶後寄出。');
   }
 
@@ -990,7 +990,7 @@
 <script>
 window.addEventListener("DOMContentLoaded",function(){ if(window.EBNTour) EBNTour.attach([
     { sel:".bar", title:"證件加註", text:"要交身分證影本嗎？用這個工具最安全。" },
-    { sel:"#anno", title:"加上註記", text:"在這裡幫你蓋上『僅供連署、他用無效』，還能裁切。" },
+    { sel:"#anno", title:"加上註記", text:"在這裡幫你蓋上『僅供入會申請、他用無效』，還能裁切。" },
     { sel:".safe", title:"不會上傳", text:"而且，照片只在你自己手機處理，不會上傳，不用怕外流。" }
   ], {}); });
 </script>
