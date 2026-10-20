@@ -64,6 +64,52 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.evaluate(() => { localStorage.clear(); }); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(400);
     const y = await p.inputValue('#ch-year'); const m = await p.inputValue('#ch-month'); const d = await p.inputValue('#ch-day');
     (y === '115' && m === '8' && d === '30') ? ok('通過日期自動帶入115/8/30') : bad('charter-date', 'y=' + y + ' m=' + m + ' d=' + d); });
+
+  await T('草稿恢復提示條改貼頂部，不會蓋住表單底部送出鈕', async p => {
+    await p.setViewportSize({ width: 375, height: 812 });
+    await p.goto(BASE + 'join-form.html', { waitUntil: 'domcontentloaded' });
+    await p.fill('#f-name', '測試王'); await p.waitForTimeout(700);
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(500);
+    await p.evaluate(() => { var b = document.getElementById('btnSubmit'); if (b) b.scrollIntoView({ block: 'center' }); });
+    await p.waitForTimeout(150);
+    const hitId = await p.evaluate(() => {
+      var el = document.getElementById('btnSubmit'); if (!el) return 'no-btn';
+      var r = el.getBoundingClientRect();
+      var h = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return h ? h.id : 'null';
+    });
+    hitId === 'btnSubmit' ? ok('捲到送出鈕時真實可點、沒被草稿提示條蓋住') : bad('draftbar-overlap', 'hit=' + hitId); });
+
+  await T('roster.html 手機版小幫手鈕不會蓋住篩選chip', async p => {
+    await p.setViewportSize({ width: 375, height: 812 });
+    await go(p, 'roster.html');
+    const helpExists = await p.evaluate(() => !!document.getElementById('ebnHelp'));
+    const hitOk = await p.evaluate(() => {
+      var el = document.querySelector('[data-f="left"]'); if (!el) return false;
+      var r = el.getBoundingClientRect();
+      var h = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return h === el || el.contains(h);
+    });
+    (!helpExists && hitOk) ? ok('這頁關閉小幫手浮鈕、篩選chip真實可點') : bad('roster-help-overlap', 'helpExists=' + helpExists + ' hitOk=' + hitOk); });
+
+  await T('meeting.html 返回鈕不重複、保留「編輯中返回=回清單」的頁內邏輯', async p => {
+    // 這頁的返回鈕身兼兩職：平常點了離開頁面(回union.html)，但「編輯中」點了是回清單、不離開頁面
+    // (JS靠 $('back').addEventListener 判斷)——之前一度誤刪這顆鈕、讓common.js注入的泛用版補上，
+    // 結果JS在這顆鈕不存在時噴錯(Cannot read properties of null)。現在改成這頁自己的鈕留著、
+    // 用 data-nonav 擋掉common.js的重複注入，兩全其美。
+    await p.goto(BASE + 'meeting.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    const count = await p.evaluate(() => document.querySelectorAll('.back, #ebnBack, #ebnHome').length);
+    (count === 1 && p.__err.length === 0) ? ok('只有一顆返回鈕、沒有common.js重複注入、頁面無JS錯誤') : bad('meeting-back-dup', 'count=' + count); });
+
+  await T('activity.html 同款「編輯中返回=回清單」邏輯沒被破壞', async p => {
+    await p.goto(BASE + 'activity.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    const count = await p.evaluate(() => document.querySelectorAll('.back, #ebnBack, #ebnHome').length);
+    (count === 1 && p.__err.length === 0) ? ok('只有一顆返回鈕、頁面無JS錯誤') : bad('activity-back-dup', 'count=' + count); });
+
+  await T('proxy-form.html 會議日期時間自動帶入可被<input type=date/time>接受的格式', async p => {
+    await p.goto(BASE + 'proxy-form.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(500);
+    const d = await p.inputValue('#f-mdate'); const t = await p.inputValue('#f-mtime');
+    (d === '2026-08-30' && t === '14:00') ? ok('日期時間正確帶入(2026-08-30 14:00)') : bad('proxy-form-date', 'd=' + d + ' t=' + t); });
   await T('zhizai 職災就醫小幫手互動', async p => { await go(p, 'zhizai.html'); await p.waitForTimeout(300);
     const init = await p.$$eval('#jbot-log .b.bot', e => e.length); if (init < 1) return bad('jbot', 'no greeting');
     await p.click('#jbot-chips button'); await p.waitForTimeout(200);

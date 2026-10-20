@@ -90,7 +90,10 @@
   function notice(){
     if(document.getElementById("__draftbar") || !document.body) return;
     var bar=document.createElement("div"); bar.id="__draftbar";
-    bar.style.cssText="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:99999;background:#0F5C36;color:#fff;font:600 13px/1.5 'Noto Sans TC',system-ui,sans-serif;padding:9px 13px;border-radius:24px;box-shadow:0 4px 16px rgba(0,0,0,.32);display:flex;gap:10px;align-items:center;max-width:94vw;";
+    // 放頂部、不放底部：很多頁面的「送出/行動」主按鈕是貼底部固定的（例如入會申請書的
+    // 「確認送出」、公文取號鈕），放 bottom 會整個蓋住，使用者剛好在這個提示最想按的
+    // 那顆按鈕按不到。貼頂部、往下讓開 #ebnBack/#ebnHome 那排固定返回鈕的高度。
+    bar.style.cssText="position:fixed;left:50%;top:calc(max(10px,env(safe-area-inset-top)) + 54px);transform:translateX(-50%);z-index:99999;background:#0F5C36;color:#fff;font:600 13px/1.5 'Noto Sans TC',system-ui,sans-serif;padding:9px 13px;border-radius:24px;box-shadow:0 4px 16px rgba(0,0,0,.32);display:flex;gap:10px;align-items:center;max-width:94vw;";
     bar.innerHTML="<span>🛟 已保留上次中斷前未儲存的內容</span>";
     var clr=document.createElement("button"); clr.textContent="清除"; clr.style.cssText="background:rgba(255,255,255,.22);color:#fff;border:0;border-radius:16px;padding:4px 12px;font:inherit;cursor:pointer;";
     clr.onclick=function(){ clearPage(); var ns=document.querySelectorAll("input,textarea,select"); for(var i=0;i<ns.length;i++){ if(eligible(ns[i])) ns[i].value=""; } bar.remove(); };

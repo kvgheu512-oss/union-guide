@@ -42,8 +42,7 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
 .print-sig{border:1px solid #ccc;border-radius:8px;width:100%;max-height:100px;object-fit:contain;}
 </style>
 </head>
-<body>
-<a class="noprint" href="javascript:history.back()" style="position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;z-index:999;background:#fff;color:#1A3A6B;border:1px solid rgba(0,0,0,.12);font-size:13px;font-weight:600;text-decoration:none;padding:6px 12px;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,.2);">← 上一頁</a>
+<body data-home="index.html">
 
 <div class="header">
   <h1>📋 出席委託書</h1>
@@ -167,8 +166,21 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
     var chair=window.EBNOrg?EBNOrg.cadreName('chair'):'';
     var proxyEl=document.getElementById('f-proxy'); if(proxyEl&&!proxyEl.value&&chair) proxyEl.value=chair;
     var mt=(pd.meet&&pd.meet.found)||{};
-    if(mt.date&&!document.getElementById('f-mdate').value) document.getElementById('f-mdate').value=mt.date.replace(/\//g,'-');
-    if(mt.time&&!document.getElementById('f-mtime').value) document.getElementById('f-mtime').value=mt.time;
+    // ⚠️ mt.date 是「民國115/8/30」這種格式，mt.time 是「14:00–16:00」這種時間區間，
+    // 兩個都不是 <input type=date>／<input type=time> 接受的格式（要yyyy-MM-dd／單一HH:mm），
+    // 直接塞會被瀏覽器靜默拒絕、欄位看起來像沒填，使用者送出一份日期時間空白的委託書也不會有警告。
+    if(mt.date && !document.getElementById('f-mdate').value){
+      var dp=String(mt.date).split('/');
+      if(dp.length>=3){
+        var p2=function(n){return n<10?'0'+n:''+n;};
+        var y=parseInt(dp[0],10)+1911, m=parseInt(dp[1],10), d=parseInt(dp[2],10);
+        if(!isNaN(y)&&!isNaN(m)&&!isNaN(d)) document.getElementById('f-mdate').value=y+'-'+p2(m)+'-'+p2(d);
+      }
+    }
+    if(mt.time && !document.getElementById('f-mtime').value){
+      var tm=String(mt.time).match(/(\d{1,2}):(\d{2})/);
+      if(tm) document.getElementById('f-mtime').value=(tm[1].length<2?'0'+tm[1]:tm[1])+':'+tm[2];
+    }
     var mname=document.getElementById('f-meeting'); if(mname&&!mname.value&&orgName) mname.value=orgName+'成立大會';
     document.querySelectorAll('#p-orgName').forEach(function(el){ el.textContent=orgName; });
   }
