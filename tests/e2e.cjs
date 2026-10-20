@@ -59,6 +59,11 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('meet 連結未設定狀態正確', async p => { await go(p, 'meet.html');
     const t = await p.textContent('#join-prep'); (t.includes('LINE') || t.includes('尚未') || t.includes('開會議')) ? ok('按鈕顯示待設定提示') : bad('meet', 'btn=' + t); });
   await T('charter 快查卡填寫無錯', async p => { await go(p, 'charter.html'); await p.fill('#ch-year', '115').catch(() => {}); await p.fill('#ch-month', '7').catch(() => {}); await p.fill('#ch-day', '1').catch(() => {}); await p.waitForTimeout(150); ok('填寫不報錯'); });
+  await T('charter.html 通過日期自動帶入成立大會真實日期(不再印出【○】)', async p => {
+    await p.goto(BASE + 'charter.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { localStorage.clear(); }); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(400);
+    const y = await p.inputValue('#ch-year'); const m = await p.inputValue('#ch-month'); const d = await p.inputValue('#ch-day');
+    (y === '115' && m === '8' && d === '30') ? ok('通過日期自動帶入115/8/30') : bad('charter-date', 'y=' + y + ' m=' + m + ' d=' + d); });
   await T('zhizai 職災就醫小幫手互動', async p => { await go(p, 'zhizai.html'); await p.waitForTimeout(300);
     const init = await p.$$eval('#jbot-log .b.bot', e => e.length); if (init < 1) return bad('jbot', 'no greeting');
     await p.click('#jbot-chips button'); await p.waitForTimeout(200);

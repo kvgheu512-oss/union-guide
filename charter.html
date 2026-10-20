@@ -24,6 +24,7 @@
 </style><style>@media print{.noprint{display:none!important}}</style><link rel="stylesheet" href="common.css">
 </head>
 <body data-home="union.html">
+<script src="org.js" defer></script>
 
 <div class="header"><h1>📜 章程草案</h1><p>本會章程（草案）· 對照北榮標註 · 供成立大會審議</p></div>
 <main>
@@ -573,6 +574,23 @@ window._chAddr = null;
   }
   load();
   IDS.forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',save);});
+
+  // 通過日期：成立大會其實已經開完了(115/8/30，public.json meet.found.date 有記)，
+  // 如果這台裝置從沒填過（沒有本機存檔、也還沒手動輸入），自動帶入真正的日期，
+  // 不要讓「複製完整章程」永遠印出沒填的【○】年【○】月【○】日。
+  function fillAdoptedDate(){
+    if(!window.EBNOrg) return;
+    var fd=(EBNOrg.publicData().meet||{}).found||{}; var date=(fd.date||'').trim();
+    if(!date) return;
+    var m=date.match(/(\d+)\D+(\d+)\D+(\d+)/); if(!m) return;
+    var yEl=document.getElementById('ch-year'), moEl=document.getElementById('ch-month'), dyEl=document.getElementById('ch-day');
+    if(yEl && !yEl.value.trim()) yEl.value=m[1];
+    if(moEl && !moEl.value) moEl.value=String(+m[2]);
+    if(dyEl && !dyEl.value) dyEl.value=String(+m[3]);
+    save();
+  }
+  fillAdoptedDate();
+  document.addEventListener('ebnorg:public',fillAdoptedDate);
 
   // 地址選擇器（會址）：預設值＝實際會址（高雄市仁武區德新街93巷7號），
   // 沒有這行的話，元件本身路名門牌欄位會是空的，跟畫面上第三條印出的地址對不上
