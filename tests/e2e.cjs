@@ -113,6 +113,34 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.fill('#cadre-fin', '測試總務新名字'); await p.click('#pubBtn'); await p.waitForTimeout(150);
     const txt = await p.inputValue('#pubOut'); const j = JSON.parse(txt);
     j.cadres && j.cadres.fin === '測試總務新名字' ? ok('改名存檔沒被舊 public.json 蓋回') : bad('cadres-order', 'fin=' + (j.cadres && j.cadres.fin)); });
+
+  await T('org.html 發布前public.json還沒載完，按發布會被擋下(不會發布成空值)', async p => {
+    await p.goto(BASE + 'org.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { localStorage.clear(); localStorage.setItem('union_panel_unlocked', '1'); });
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    // 直接模擬「public.json 還沒真的抓到資料」這個狀態來驗證發布鈕有沒有檢查它——
+    // 用網路延遲模擬這個狀態在共用瀏覽器context下會被 sw.js（其他測試跑過後已註冊）的
+    // 快取先回應掉、測不準，所以改成直接覆寫判斷函式，穩定驗證「有檢查就擋下」這件事本身。
+    await p.evaluate(() => { EBNOrg.hasPublicData = () => false; });
+    await p.click('#pubBtn'); await p.waitForTimeout(150);
+    const toast = await p.textContent('#pubToast');
+    const outVisible = await p.isVisible('#pubOut');
+    (toast.includes('還沒載入完成') && !outVisible) ? ok('資料未載完時發布被擋下、沒有產生內容') : bad('org-pub-guard', 'toast=' + toast + ' outVisible=' + outVisible); });
+
+  await T('cadres.html 發布前public.json還沒載完，按發布會被擋下', async p => {
+    await go(p, 'cadres.html');
+    await p.evaluate(() => { EBNOrg.hasPublicData = () => false; });
+    await p.click('#pubBtn'); await p.waitForTimeout(150);
+    const toast = await p.textContent('#toast');
+    const boxVisible = await p.isVisible('#pubBox');
+    (toast.includes('還沒載入完成') && !boxVisible) ? ok('資料未載完時發布被擋下、沒有產生內容') : bad('cadres-pub-guard', 'toast=' + toast + ' boxVisible=' + boxVisible); });
+
+  await T('index.html 關鍵字搜尋跳過被.prep-only隱藏的區塊', async p => { await go(p, 'index.html');
+    // 「徵集 30 位連署發起人」只出現在已成立後被 .prep-only 隱藏的「成立進度」時間軸裡，
+    // 搜這個字應該說「沒有符合」，不能說「找到了」卻什麼都沒捲動到（元素是 display:none）
+    await p.fill('#pageSearch', '徵集 30 位連署發起人'); await p.waitForTimeout(500);
+    const hint = await p.textContent('#pageSearchHint');
+    hint.includes('沒有符合') ? ok('正確跳過隱藏區塊、回報沒有符合') : bad('index-search-hidden', 'hint=' + hint); });
   await T('合併列印 批次產生N份+帶入抬頭', async p => { await p.goto(BASE + 'mailmerge.html', { waitUntil: 'domcontentloaded' });
     await p.evaluate(() => { localStorage.setItem('union_panel_unlocked', '1'); localStorage.setItem('ebn_org_v1', JSON.stringify({ fullName: '測試工會', chair: '測試長', docWord: '測', docYear: '115', docSeq: '1' })); localStorage.setItem('roster_members_v1', JSON.stringify([{ id: 'a', name: '甲' }, { id: 'b', name: '乙' }])); });
     await p.reload({ waitUntil: 'domcontentloaded' }); await p.evaluate(() => { window.print = () => {}; }); await p.waitForTimeout(200);
@@ -302,7 +330,7 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('finance.html 解鎖前phase事件誤觸發不會清空本機帳本（race防護）', async p => {
     await p.goto(BASE + 'finance.html', { waitUntil: 'domcontentloaded' });
     // 塞一筆有辨識度的「假帳本資料」進明文鍵，模擬使用者真實資料已經存在
-    await p.evaluate(() => { localStorage.setItem('union_fin_db', JSON.stringify({ entries: [{ note: '哨兵資料不應被清空', amt: 123, type: 'in' }], settings: { prep: true } })); });
+    await p.evaluate(() => { localStorage.setItem('union_fin_db', JSON.stringify({ entries: [{ note: '哨兵資料不應被清空', amt: 123, type: 'in', date: '2026-01-01' }], settings: { prep: true } })); });
     // 模擬 ebnorg:public 搶在 SecLock 解鎖前觸發的最壞情況：dbUnlocked 還是 false 時直接呼叫
     await p.evaluate(() => { try { window.dbUnlocked = false; if (window.migratePrepIfOfficial) migratePrepIfOfficial(); } catch (e) {} });
     const raw = await p.evaluate(() => localStorage.getItem('union_fin_db'));

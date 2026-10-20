@@ -193,6 +193,7 @@ function saveCadres(){
 
 function publish(){
   if(!window.EBNOrg){ showToast('⚠️ 資料尚未載入，請稍候'); return; }
+  if(!EBNOrg.hasPublicData()){ showToast('⚠️ 公告資料還沒載入完成，請稍等幾秒再按一次「發布」（太快按會把會議時間、連署進度、候選人名單等欄位發布成空白）'); return; }
   // 先存一次
   var data=collectData(); EBNOrg.setCadres(data);
   // 產生完整 public.json（保留原有的 meet/sign/org 欄位）

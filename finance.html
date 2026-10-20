@@ -1283,7 +1283,9 @@ function wipe(){ if(prompt('將清空本機所有帳目（明細、財產、預�
 
 /* ===================== init ===================== */
 (function init(){
-  const today=new Date().toISOString().slice(0,10);
+  // 台灣本地日期，不要用 toISOString()（UTC）——台灣時間每天 00:00~08:00 會把預設日期填成前一天
+  const _d=new Date(), _p2=n=>n<10?'0'+n:''+n;
+  const today=_d.getFullYear()+'-'+_p2(_d.getMonth()+1)+'-'+_p2(_d.getDate());
   document.getElementById('fDate').value=today;
   document.getElementById('aDate').value=today;
   fillAssetCat();

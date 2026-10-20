@@ -689,8 +689,9 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   });
 
-  // Date default = today
-  var today=new Date().toISOString().slice(0,10);
+  // Date default = today（台灣本地日期，不要用 toISOString() 的 UTC，否則台灣清晨 00:00~08:00 會少算一天）
+  var _d=new Date(), _p2=function(n){return n<10?'0'+n:''+n;};
+  var today=_d.getFullYear()+'-'+_p2(_d.getMonth()+1)+'-'+_p2(_d.getDate());
   $('f-date').value=today;
 
   // Shift guess by hour

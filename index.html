@@ -598,6 +598,9 @@ document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='E
     timer=setTimeout(function(){
       var match=null;
       for(var i=0;i<sections.length;i++){
+        // offsetParent===null 代表這段目前是 display:none（例如已成立後被 .prep-only 隱藏的連署進度／
+        // 籌備期會議／舊版加入流程）——跳過，不然會「找到了」卻什麼都沒捲動到，使用者以為搜尋壞了
+        if(sections[i].offsetParent===null) continue;
         if((sections[i].textContent||'').toLowerCase().indexOf(q)>=0){ match=sections[i]; break; }
       }
       hint.style.display='block';

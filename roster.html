@@ -425,6 +425,8 @@ function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>
 // 用台灣本地年月（不是 toISOString 的 UTC 年月）——每月 1 號台灣時間 00:00~08:00
 // 用 UTC 算還停在上個月，會讓當月已欠費的人晚一天才被標成欠費。
 function curMonth(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1); }
+// 同上，台灣本地日期（YYYY-MM-DD）；核准入會等「今天」的紀錄一律用這支，不要用 toISOString()
+function localDateStr(){ const d=new Date(); const p2=n=>n<10?'0'+n:''+n; return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); }
 function isOwe(m){ if(m.status!=='active') return false; if(!m.feeTo) return true; return m.feeTo < curMonth(); }
 /* 舊資料相容：早期 Line/Email 合併存在 m.contact，新資料分開存 m.email / m.lineId。
    還沒被改過的舊會員，用有沒有「@」自動判斷該歸到哪一欄顯示。 */
@@ -517,7 +519,7 @@ $('list').addEventListener('click',e=>{
   if(a==='approve'){
     if(!m.feeTo&&!confirm('「'+(m.name||'')+'」目前「會費已繳至」還是空的，尚未看到繳費紀錄。\n確定總務已收到會費、要核准為正式在會嗎？')) return;
     const prevStatus=m.status, hadJoin=!!m.join;
-    m.status='active'; if(!m.join) m.join=new Date().toISOString().slice(0,10);
+    m.status='active'; if(!m.join) m.join=localDateStr();
     save(); render();
     showUndo('已核准「'+(m.name||'')+'」入會', function(){
       const mm=members.find(x=>x.id===m.id); if(!mm) return;

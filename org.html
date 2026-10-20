@@ -267,7 +267,7 @@
     function set(id,v){ var e=$(id); if(e&&v!=null) e.value=v; }
     ["prep","found"].forEach(function(k){ var m=mt[k]||{}; set("m-"+k+"-date",m.date); set("m-"+k+"-time",m.time); set("m-"+k+"-place",m.place); set("m-"+k+"-url",m.url); });
     set("sign-now",sg.now); set("sign-goal",sg.goal);
-    var phase=pd.phase||localStorage.getItem('ebn_phase_v1')||'prep';
+    var phase=pd.phase||'prep';
     var phaseEl=$(phase==="official"?"phase-official":"phase-prep"); if(phaseEl) phaseEl.checked=true;
   }
   function readExtras(){
@@ -296,6 +296,7 @@
       setTimeout(function(){ t.textContent=""; },3500);
     });
     $("pubBtn").addEventListener("click",function(){
+      if(!EBNOrg.hasPublicData()){ $("pubToast").textContent="⚠️ 公告資料還沒載入完成，請稍等幾秒再按一次「發布上線」（太快按會把還沒讀到的欄位，如會議時間、連署進度、候選人名單，發布成空白）"; return; }
       EBNOrg.set(readForm()); saveCadres(); saveCandidates();       // 順手存一下
       var full=EBNOrg.buildPublic(readForm());
       var ex=readExtras(); full.phase=ex.phase; full.meet=ex.meet; full.sign=ex.sign;   // 首頁模式/會議/連署一起發布

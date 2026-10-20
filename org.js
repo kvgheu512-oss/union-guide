@@ -78,6 +78,11 @@
   // 公文/內部工具（如 mailmerge.html）不受此限，但任何要給不特定訪客看的頁面都該呼叫這支，不要直接讀 get().addr。
   function publicAddr() { var o = get(); return o.addrPublic ? (o.addr || "") : ""; }
   function publicLoaded() { return _pubLoaded; }
+  // 跟 publicLoaded() 不一樣：publicLoaded() 連 fetch 失敗／逾時都算「跑完了」＝true，
+  // 不能拿來判斷「真的抓到資料了沒」。發布流程（org.html/cadres.html 的「發布」按鈕）
+  // 一定要用這支——如果在 _pub 還沒真正抓到資料時就呼叫 buildPublic()，
+  // 會把 phase/meet/sign/candidates 等欄位用空值蓋掉全站唯一的 public.json。
+  function hasPublicData() { return !!(_pub && _pub.updated); }
   function loadPublic(cb) {
     var done = function () { _pubLoaded = true; if (cb) cb(); };
     try {
@@ -194,7 +199,7 @@
   }
   function quhaoGetLog(limit) { return quhaoCall("action=log&limit=" + (limit || 50)); }
 
-  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, getInLog: getInLog, setInLog: setInLog, addIncoming: addIncoming, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY, candidates: candidates, setCandidates: setCandidates, CANDKEY: CANDKEY, fmtNo: fmtNo, localDateStr: localDateStr, quhao: { enabled: quhaoEnabled, peek: quhaoPeek, next: quhaoNext, log: quhaoGetLog } };
+  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, getInLog: getInLog, setInLog: setInLog, addIncoming: addIncoming, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, hasPublicData: hasPublicData, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY, candidates: candidates, setCandidates: setCandidates, CANDKEY: CANDKEY, fmtNo: fmtNo, localDateStr: localDateStr, quhao: { enabled: quhaoEnabled, peek: quhaoPeek, next: quhaoNext, log: quhaoGetLog } };
   // 先用本機草稿即時填一次（不必等網路）；public.json 載到後再填一次（公告版蓋上來）
   function init() { fill(); loadPublic(function () { fill(); try { document.dispatchEvent(new CustomEvent("ebnorg:public")); } catch (e) {} }); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();

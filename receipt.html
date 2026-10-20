@@ -353,7 +353,8 @@ function exportCSV(){
   document.getElementById('rHdr').textContent=ORG;
   document.getElementById('rFt').textContent=ORG;
   document.title='單據快拍 — '+ORG;
-  document.getElementById('fDate').value=new Date().toISOString().slice(0,10);
+  // 台灣本地日期，不要用 toISOString()（UTC）——台灣時間每天 00:00~08:00 會把預設日期填成前一天
+  (function(){ var d=new Date(), p2=function(n){return n<10?'0'+n:''+n;}; document.getElementById('fDate').value=d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); })();
   renderChips(); refresh();
 })();
 
@@ -362,7 +363,7 @@ function exportCSV(){
 <script src="law-tips.js" defer></script>
 <script src="tour.js" defer></script>
 <script>
-document.addEventListener("DOMContentLoaded",function(){
+function fillHandlerList(){
   if(!window.EBNOrg) return;
   var dl=document.getElementById('handlerList'); if(!dl) return;
   var seen={}, opts='';
@@ -371,7 +372,11 @@ document.addEventListener("DOMContentLoaded",function(){
     if(name && name!=="（出缺）" && !seen[name]){ seen[name]=1; opts+='<option value="'+esc(name)+'">'; }
   });
   dl.innerHTML=opts;
-});
+}
+document.addEventListener("DOMContentLoaded",fillHandlerList);
+// org.js 的 public.json 是非同步載入，剛開頁那次多半還沒抓到最新幹部名單；
+// 等真的載到時要重新填一次，不然換屆改名字後這份自動完成選單會一直停在舊名字
+document.addEventListener("ebnorg:public",fillHandlerList);
 document.getElementById('fHandlerSwap').addEventListener('click',function(){
   var el=document.getElementById('fHandler');
   el.value=''; el.focus();   // 清空並聚焦 → 瀏覽器會自動彈出完整名單，不用自己手動刪字
