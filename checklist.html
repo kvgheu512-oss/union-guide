@@ -129,7 +129,7 @@
 
   <div class="acts">
     <button class="btn btn--p" onclick="window.print()">🖨️ 列印 / 存 PDF</button>
-    <button class="btn btn--g" onclick="resetAll()">↺ 清除勾選</button>
+    <button class="btn btn--g" onclick="resetAll()">↺ 還原為全部完成</button>
   </div>
 
   <p class="foot">
@@ -197,7 +197,7 @@ DATA.forEach((ph,pi)=>{
     total++;
     const id=`p${pi}_${ii}`;
     const li=document.createElement("li");
-    if(saved[id]) li.classList.add("done");
+    if(saved[id]!==false) li.classList.add("done"); // 證照已核發＝全程視同完成，除非這台裝置手動取消勾選
     li.innerHTML=`<span class="box"></span><span class="txt">
       <span class="t">${it[0]}</span>${it[1]?`<span class="why">${it[1]}</span>`:""}</span>`;
     li.onclick=()=>{li.classList.toggle("done");saved[id]=li.classList.contains("done");
@@ -214,7 +214,7 @@ function refresh(){
   document.getElementById("fill").style.width=(done/total*100)+"%";
 }
 function resetAll(){
-  if(!confirm("確定清除所有勾選？")) return;
+  if(!confirm("確定把這台裝置的紀錄還原成全部完成（清掉任何手動取消的勾選）？")) return;
   localStorage.removeItem(KEY);location.reload();
 }
 refresh();

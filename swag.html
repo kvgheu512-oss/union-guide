@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文宣物品準備清單 · 高榮企業工會</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#7A4F9D">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>
+  :root{--ac:#7A4F9D;--ac-deep:#5A3877;--ink:#1A1A1A;--ink-mid:#444;--ink-soft:#777;--bg:#F6F4FA;--card:#fff;--border:#E2DCEC;--green:#1A7A4A;--green-light:#EAFAF1;--gold:#B7860B;--gold-light:#FEF9E7;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%;}
+  .header{background:linear-gradient(160deg,var(--ac),var(--ac-deep));color:#fff;padding:1.7rem 1.25rem 1.3rem;text-align:center;}
+  .header h1{font-family:'Noto Serif TC',serif;font-size:19px;}
+  .header p{font-size:12.5px;opacity:.92;margin-top:6px;line-height:1.7;}
+  main{max-width:640px;margin:0 auto;padding:1.1rem 1.05rem 4rem;}
+  .topnote{background:var(--gold-light);border:1px solid #EAD67A;border-radius:12px;padding:.8rem 1rem;font-size:13px;color:#5C4000;margin-bottom:1rem;line-height:1.8;}
+  .prog{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:.7rem .9rem;margin-bottom:1rem;display:flex;align-items:center;gap:10px;}
+  .prog .ring{flex:none;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--ac) calc(var(--pct,0)*1%),#EDE7F4 0);display:flex;align-items:center;justify-content:center;}
+  .prog .ring span{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--ac-deep);}
+  .prog .t{font-size:13px;color:var(--ink-mid);}
+  .prog .t b{color:var(--ac-deep);}
+  h2.sec{font-family:'Noto Serif TC',serif;font-size:15.5px;color:var(--ac-deep);margin:1.2rem 0 .5rem;border-bottom:2px solid var(--border);padding-bottom:.25rem;}
+  .item{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:.75rem .85rem;margin-bottom:.6rem;}
+  .item .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .item .nm{font-weight:700;font-size:14.5px;flex:1;min-width:120px;}
+  .item .nm.done{color:#aaa;text-decoration:line-through;}
+  select.st{font-size:12.5px;font-weight:700;border-radius:20px;border:1.5px solid var(--border);padding:3px 8px;background:#fff;color:var(--ink-mid);}
+  select.st[data-v="已到貨"]{background:var(--green-light);border-color:#BFE3CF;color:var(--green);}
+  select.st[data-v="已訂購"]{background:var(--gold-light);border-color:#EAD67A;color:var(--gold);}
+  select.st[data-v="不需要"]{background:#F2F2F2;border-color:#ddd;color:#999;}
+  .item .sub{display:flex;gap:8px;margin-top:.5rem;}
+  .item input.qty{width:72px;padding:.4rem .5rem;font-size:13px;border:1.4px solid var(--border);border-radius:8px;text-align:center;}
+  .item input.note{flex:1;padding:.4rem .6rem;font-size:13px;border:1.4px solid var(--border);border-radius:8px;}
+  .item .del{flex:none;background:none;border:none;color:#C0392B;font-size:12px;cursor:pointer;padding:4px 6px;}
+  .addrow{display:flex;gap:8px;margin-top:.5rem;}
+  .addrow input{flex:1;padding:.6rem .7rem;font-size:14px;border:1.4px solid var(--border);border-radius:9px;}
+  .addrow button{flex:none;background:var(--ac);color:#fff;border:none;border-radius:9px;padding:.6rem 1rem;font-size:13.5px;font-weight:700;cursor:pointer;}
+  .btnbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:1.2rem;}
+  .btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:.65rem 1rem;font-weight:700;font-size:13.5px;cursor:pointer;}
+  .btn.ghost{background:#F3EEFA;color:var(--ac-deep);border:1.5px solid var(--ac);}
+  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.3rem;line-height:1.8;}
+  @media print{
+    .topnote,.btnbar,#verBadge,.prog,select.st,.del,.addrow{display:none!important;}
+    body{background:#fff;}
+    .item{break-inside:avoid;border:1px solid #999;}
+  }
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="union.html">
+
+<div class="header">
+  <h1>🎪 文宣物品準備清單</h1>
+  <p>活動／擺攤／陳情要用的周邊物品，一項項追蹤準備進度</p>
+</div>
+
+<main>
+  <div class="topnote">📌 打勾或選狀態都會自動存這台裝置；數量、備註（尺寸、供應商、聯絡方式）隨手填。清單是建議起點，用不到的項目選「不需要」就好，也可以自己新增。</div>
+
+  <div class="prog"><div class="ring"><span id="progPct">0%</span></div><div class="t">已到貨 <b id="progN">0</b> / <span id="progD">0</span> 項（不含選「不需要」）</div></div>
+
+  <div id="groups"></div>
+
+  <div class="btnbar">
+    <button class="btn ghost" id="printBtn" type="button">🖨️ 列印清單</button>
+    <button class="btn ghost" id="resetBtn" type="button">↺ 重設所有狀態</button>
+  </div>
+
+  <div class="foot">高雄榮民總醫院企業工會 · 文宣組 · 資料只存這台裝置</div>
+</main>
+
+<div id="verBadge"></div>
+<script src="tour.js" defer></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var STATUSES=["未開始","估價中","已訂購","已到貨","不需要"];
+  var DEFAULTS=[
+    ["服裝與識別","wear",[
+      ["背心","辦活動/擺攤/陳情時穿，建議印工會名稱＋LOGO"],
+      ["胸牌／識別證","幹部現場辨識用，可附職稱"],
+      ["帽子／頭巾","視活動性質，非必要"]
+    ]],
+    ["旗幟與看板","flag",[
+      ["工會旗","陳情／遊行／擺攤插旗用"],
+      ["布條／直幅","活動現場掛的大型文宣"],
+      ["易拉展／立牌","擺攤、說明會用的站立式看板"],
+      ["大聲公／擴音器","陳情、集會喊話用"]
+    ]],
+    ["印刷文宣","print",[
+      ["文宣單張／DM","招募、說明會發送用"],
+      ["海報","公佈欄、活動現場張貼"],
+      ["幹部名片","對外交流、陳情時遞送"]
+    ]],
+    ["小物贈品","gift",[
+      ["貼紙","招募攤位小贈品"],
+      ["鑰匙圈／徽章","會員福利小物"],
+      ["帆布袋／提袋","活動贈品或周邊販售"],
+      ["原子筆","招募攤位最常見小物"],
+      ["口罩","醫院場域實用小物，印LOGO也可當宣傳"]
+    ]]
+  ];
+  var KEY="ebn_swag_v1";
+  function load(){ try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};} }
+  function save(s){ try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){} }
+  var state=load();
+  // state: { items:{id:{status,qty,note}}, custom:[{id,group,name}] , deletedCustom:[] }
+  if(!state.items) state.items={};
+  if(!state.custom) state.custom=[];
+
+  function allItems(){
+    var out=[];
+    DEFAULTS.forEach(function(g){
+      g[2].forEach(function(it,i){
+        out.push({id:g[1]+"-"+i, group:g[0], groupKey:g[1], name:it[0], hint:it[1], custom:false});
+      });
+    });
+    state.custom.forEach(function(c){ out.push({id:c.id, group:c.group, groupKey:c.groupKey, name:c.name, hint:"", custom:true}); });
+    return out;
+  }
+  function getSt(id){ return (state.items[id]||{}).status || "未開始"; }
+  function getQty(id){ return (state.items[id]||{}).qty || ""; }
+  function getNote(id){ return (state.items[id]||{}).note || ""; }
+  function setField(id,field,val){
+    if(!state.items[id]) state.items[id]={};
+    state.items[id][field]=val;
+    save(state);
+  }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
+
+  function itemHtml(it){
+    var st=getSt(it.id);
+    return '<div class="item" data-id="'+it.id+'">'+
+      '<div class="row">'+
+        '<div class="nm'+(st==="已到貨"||st==="不需要"?' done':'')+'">'+esc(it.name)+(it.hint?'<div style="font-weight:400;font-size:11.5px;color:#999;margin-top:2px">'+esc(it.hint)+'</div>':'')+'</div>'+
+        '<select class="st" data-v="'+st+'" data-id="'+it.id+'">'+STATUSES.map(function(s){return '<option value="'+s+'"'+(s===st?' selected':'')+'>'+s+'</option>';}).join("")+'</select>'+
+        (it.custom?'<button class="del" data-id="'+it.id+'">🗑 刪除</button>':'')+
+      '</div>'+
+      '<div class="sub">'+
+        '<input class="qty" placeholder="數量" data-id="'+it.id+'" data-f="qty" value="'+esc(getQty(it.id))+'">'+
+        '<input class="note" placeholder="備註（尺寸／供應商／聯絡方式…）" data-id="'+it.id+'" data-f="note" value="'+esc(getNote(it.id))+'">'+
+      '</div>'+
+    '</div>';
+  }
+
+  function render(){
+    var items=allItems();
+    var box=$("groups");
+    var html="";
+    DEFAULTS.forEach(function(g){
+      var rows=items.filter(function(it){ return it.groupKey===g[1]; });
+      html+='<h2 class="sec">'+esc(g[0])+'</h2>'+rows.map(itemHtml).join("");
+      html+='<div class="addrow"><input type="text" placeholder="＋ 新增『'+esc(g[0])+'』項目" data-addgroup="'+g[1]+'" data-addgroupname="'+esc(g[0])+'"><button data-addbtn="'+g[1]+'" data-addbtnname="'+esc(g[0])+'">加入</button></div>';
+    });
+    box.innerHTML=html;
+    var done=0,total=0;
+    items.forEach(function(it){ var s=getSt(it.id); if(s==="不需要") return; total++; if(s==="已到貨") done++; });
+    var pct=total?Math.round(done/total*100):0;
+    $("progPct").textContent=pct+"%";
+    $("progN").textContent=done;
+    $("progD").textContent=total;
+    box.style.setProperty && document.querySelector(".ring").style.setProperty("--pct",pct);
+  }
+
+  document.addEventListener("change",function(e){
+    var sel=e.target.closest&&e.target.closest("select.st");
+    if(sel){ setField(sel.dataset.id,"status",sel.value); render(); }
+  });
+  document.addEventListener("input",function(e){
+    var el=e.target.closest&&e.target.closest("input.qty,input.note");
+    if(el){ setField(el.dataset.id, el.dataset.f, el.value); }
+  });
+  document.addEventListener("click",function(e){
+    var del=e.target.closest&&e.target.closest(".del");
+    if(del){
+      var id=del.dataset.id;
+      state.custom=state.custom.filter(function(c){return c.id!==id;});
+      delete state.items[id];
+      save(state); render();
+      return;
+    }
+    var add=e.target.closest&&e.target.closest("[data-addbtn]");
+    if(add){
+      var gKey=add.dataset.addbtn, gName=add.dataset.addbtnname;
+      var input=document.querySelector('input[data-addgroup="'+gKey+'"]');
+      var name=(input&&input.value||"").trim();
+      if(!name) return;
+      var id="custom-"+Date.now()+"-"+Math.floor(Math.random()*1000);
+      state.custom.push({id:id, group:gName, groupKey:gKey, name:name});
+      save(state);
+      if(input) input.value="";
+      render();
+    }
+  });
+  $("printBtn").addEventListener("click",function(){ window.print(); });
+  $("resetBtn").addEventListener("click",function(){
+    if(confirm("重設所有項目的狀態／數量／備註？（自訂新增的項目不會被刪除）")){
+      state.items={}; save(state); render();
+    }
+  });
+
+  render();
+
+  window.addEventListener("load",function(){
+    if(!window.EBNTour) return;
+    EBNTour.attach([
+      { title:"文宣物品準備清單", text:"活動、擺攤、陳情要用的周邊物品，分<b>服裝／旗幟看板／印刷文宣／小物贈品</b>四類先列好，狀態、數量、備註都能填。" },
+      { sel:"select.st", title:"選狀態", text:"未開始→估價中→已訂購→已到貨；用不到就選<b>不需要</b>，不計入進度。" },
+      { sel:".addrow", title:"自己加項目", text:"清單只是起點，想到什麼都能在對應分類下面<b>直接新增</b>。" }
+    ], {});
+  });
+})();
+</script>
+<script src="common.js" defer></script>
+</body>
+</html>

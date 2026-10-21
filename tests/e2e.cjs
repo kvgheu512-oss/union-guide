@@ -404,6 +404,24 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.click('#gen'); await p.waitForTimeout(300);
     const t = await p.textContent('#sheets'); !/NT\$ -/.test(t) ? ok('負數預設金額被擋下，未出現負數收據') : bad('receipt-neg', t.slice(0, 80)); });
 
+  console.log('\n========== J. 文宣物品準備清單 ==========');
+  await T('swag.html 預設項目分類渲染、進度0%', async p => { await go(p, 'swag.html'); await p.waitForTimeout(150);
+    const groups = await p.$$eval('h2.sec', els => els.map(e => e.textContent));
+    const pct = await p.textContent('#progPct');
+    (groups.includes('服裝與識別') && groups.includes('小物贈品') && pct === '0%') ? ok('四分類渲染＋初始進度0%') : bad('swag-init', groups.join(',') + ' ' + pct); });
+  await T('swag.html 選到貨後進度更新、重開保留', async p => { await go(p, 'swag.html'); await p.waitForTimeout(150);
+    await p.selectOption('select.st[data-id="wear-0"]', '已到貨'); await p.waitForTimeout(150);
+    const pct1 = await p.textContent('#progPct');
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(150);
+    const st = await p.inputValue('select.st[data-id="wear-0"]');
+    (pct1 !== '0%' && st === '已到貨') ? ok('狀態變更即時反映進度＋重開仍保留') : bad('swag-persist', pct1 + ' ' + st); });
+  await T('swag.html 自訂新增項目、刪除後不再出現', async p => { await go(p, 'swag.html'); await p.waitForTimeout(150);
+    await p.fill('input[data-addgroup="gift"]', '測試贈品'); await p.click('button[data-addbtn="gift"]'); await p.waitForTimeout(150);
+    const added = await p.$$eval('.item .nm', els => els.some(e => e.textContent.includes('測試贈品')));
+    await p.click('.item[data-id^="custom-"] .del'); await p.waitForTimeout(150);
+    const removed = await p.$$eval('.item .nm', els => !els.some(e => e.textContent.includes('測試贈品')));
+    (added && removed) ? ok('自訂項目新增後出現、刪除後消失') : bad('swag-custom', added + ' ' + removed); });
+
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);
   if (fails.length) { console.log('--- 失敗項目 ---'); fails.forEach(f => console.log(' • ' + f)); }
