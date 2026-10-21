@@ -69,27 +69,32 @@
   </div>
 
   <div class="card" style="border-top-color:#1A7A4A">
-    <h2 style="font-family:'Noto Serif TC',serif;color:#0F5C36;font-size:16px;margin-bottom:.4rem">📅 會議與連署進度（公告給大家看）</h2>
-    <div class="hint" style="font-size:12px;margin-bottom:.3rem">會議資訊會顯示在「線上會議室」與「對外首頁」；下面「連署進度」只在首頁模式切回「籌備中」時才會顯示，目前正式成立模式下不會露出。填好後一起按下面發布。</div>
-    <label style="font-weight:700;margin-top:.4rem">🔀 首頁模式</label>
-    <div style="display:flex;gap:12px;align-items:center;margin:.35rem 0 .6rem;background:#1A2535;border-radius:10px;padding:.5rem .7rem">
-      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;font-size:14px">
-        <input type="radio" name="phase" id="phase-prep" value="prep" checked style="accent-color:#4EA8FF;width:18px;height:18px">
-        <span>🏗 籌備中<br><small style="color:#8CA0B8;font-weight:400">招募發起人、顯示連署進度</small></span>
-      </label>
-      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;font-size:14px">
-        <input type="radio" name="phase" id="phase-official" value="official" style="accent-color:#4EA8FF;width:18px;height:18px">
-        <span>🎖 正式成立<br><small style="color:#8CA0B8;font-weight:400">顯示幹部名單、正式入會流程</small></span>
-      </label>
-    </div>
+    <h2 style="font-family:'Noto Serif TC',serif;color:#0F5C36;font-size:16px;margin-bottom:.4rem">📅 會議資訊（公告給大家看）</h2>
+    <div class="hint" style="font-size:12px;margin-bottom:.3rem">會議資訊會顯示在「線上會議室」與「對外首頁」。填好後按下面發布。</div>
     <label>發起人會議 — 日期 / 時間 / 地點</label>
     <input id="m-prep-date" placeholder="例：115/7/15"><input id="m-prep-time" placeholder="例：19:00" style="margin-top:6px"><input id="m-prep-place" placeholder="地點（實體＋線上）" style="margin-top:6px">
     <input id="m-prep-url" placeholder="Google Meet 連結（可留空）" style="margin-top:6px">
     <label>成立大會 — 日期 / 時間 / 地點</label>
     <input id="m-found-date" placeholder="例：115/8/15"><input id="m-found-time" placeholder="例：19:00" style="margin-top:6px"><input id="m-found-place" placeholder="地點（實體＋線上）" style="margin-top:6px">
     <input id="m-found-url" placeholder="Google Meet 連結（可留空）" style="margin-top:6px">
-    <label>連署進度（顯示在首頁）</label>
-    <div style="display:flex;gap:8px"><input id="sign-now" inputmode="numeric" placeholder="目前人數"><input id="sign-goal" inputmode="numeric" placeholder="目標(預設30)"></div>
+    <details style="margin-top:.7rem">
+      <summary style="cursor:pointer;color:#8CA0B8;font-size:12.5px;font-weight:700">⚙️ 進階：首頁模式（已成立，正常不需要再動）</summary>
+      <div style="margin-top:.5rem">
+        <label style="font-weight:700">🔀 首頁模式</label>
+        <div style="display:flex;gap:12px;align-items:center;margin:.35rem 0 .6rem;background:#1A2535;border-radius:10px;padding:.5rem .7rem">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;font-size:14px">
+            <input type="radio" name="phase" id="phase-prep" value="prep" style="accent-color:#4EA8FF;width:18px;height:18px">
+            <span>🏗 籌備中<br><small style="color:#8CA0B8;font-weight:400">招募發起人、顯示連署進度</small></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;font-size:14px">
+            <input type="radio" name="phase" id="phase-official" value="official" checked style="accent-color:#4EA8FF;width:18px;height:18px">
+            <span>🎖 正式成立<br><small style="color:#8CA0B8;font-weight:400">顯示幹部名單、正式入會流程</small></span>
+          </label>
+        </div>
+        <label>連署進度（只在上面切回「籌備中」時才會顯示在首頁）</label>
+        <div style="display:flex;gap:8px"><input id="sign-now" inputmode="numeric" placeholder="目前人數"><input id="sign-goal" inputmode="numeric" placeholder="目標(預設30)"></div>
+      </div>
+    </details>
   </div>
 
   <div class="card" style="border-top-color:#2E5C8A">
@@ -148,31 +153,10 @@
       var row='<label>'+label+'</label>'+
              '<input id="org-'+k+'" type="text"'+im+' value="'+v+'">'+
              (hint?'<div class="hint">'+hint+'</div>':'');
-      if(k==="addr"){ // 會址下面：先給明確建議，再放細節與同意
-        row+='<div class="hint" style="background:#FDF3F2;border:1px solid #F0C5C2;border-radius:8px;padding:.55rem .75rem;color:#7B1818;margin-top:.4rem;font-size:12.8px;line-height:1.8">🏠 <b>強烈建議：別用個人住家當會址</b>。用住家會牽動<b>房屋稅、地價稅</b>，連<b>日後賣屋</b>的優惠都可能沒了（害到屋主）。<br>👉 改用<b>工會專用或非自住地址</b>；<b>開會地點</b>另外借便宜場地或線上即可，<b>不必</b>綁會址。</div>';
+      if(k==="addr"){ // 會址已拍板定案用理事長住家，不再顯示勸退提示
         row+='<label style="display:flex;gap:8px;align-items:flex-start;font-weight:500;margin-top:.4rem;color:#444;line-height:1.6">'+
              '<input type="checkbox" id="org-addrPublic" style="width:auto;margin-top:3px"'+(o.addrPublic?' checked':'')+'> '+
-             '<span>會址要<b>公開</b>給大家看嗎？（這可能是<b>理事長家的住址</b>，公開與否<b>由理事長決定</b>；不勾＝只用在公文、不對外顯示）</span></label>';
-        row+='<details style="margin-top:.5rem"><summary style="color:#7B1818;font-weight:700;font-size:13px;cursor:pointer">⚠️ 用住家當會址前，先看這個（稅務提醒＋可以問哪裡）</summary>'+
-             '<div style="font-size:12.5px;line-height:1.9;background:#FDF3F2;border:1px solid #F0C5C2;border-radius:8px;padding:.65rem .85rem;color:#5A1A1A;margin-top:.45rem">'+
-             '申請統編是<b>「人民團體」稅籍</b>，不是營業登記；但如果住家<b>實際當成辦公的地方在用</b>，這間房子的<b>房屋稅（自住 1.2%）</b>和<b>地價稅（自用 0.2%）</b>可能就會用掉<b>部分面積</b>的優惠。只是「掛會址、人還住在裡面」多半沒事，但<b>各地稅捐處認定不一樣</b>。<br><br>'+
-             '<b>⚠️ 不只每年稅金，「日後賣房子」也會受害：</b><br>'+
-             '• <b>土地增值稅</b>：自用住宅一生一次 <b>10% 優惠</b>，若曾營業/非自住使用可能<b>用不到</b>，賣時土增稅大增。<br>'+
-             '• <b>房地合一稅</b>：自住優惠（稅率10%、免稅額400萬）要「有設籍自住、<b>無營業使用</b>」，曾營業使用可能<b>喪失優惠</b>。<br>'+
-             '＝ 可能<b>每年多繳，賣屋時再被扣一次大的</b>。<br><br>'+
-             '<b>📞 打電話求證（手機可直接點撥）：</b><br>'+
-             '• 房屋稅／地價稅（地方稅）→ <b>高雄市稅捐稽徵處</b>　市民熱線 <a href="tel:1999" style="color:#1A3A6B;font-weight:700">1999</a>（各分處電話見官網）<br>'+
-             '• 統編／稅籍（國稅）→ <b>財政部高雄國稅局</b>　免付費 <a href="tel:0800000321" style="color:#1A3A6B;font-weight:700">0800-000-321</a><br>'+
-             '<b>🔗 官網說明（可點開）：</b><br>'+
-             '• 高雄市稅捐稽徵處 <a href="https://www.kctax.gov.tw" target="_blank" rel="noopener" style="color:#1A3A6B;font-weight:700">www.kctax.gov.tw</a><br>'+
-             '• 財政部高雄國稅局 <a href="https://www.ntbk.gov.tw" target="_blank" rel="noopener" style="color:#1A3A6B;font-weight:700">www.ntbk.gov.tw</a><br>'+
-             '• <b>怎麼問</b>：「以住家作為工會（人民團體）會址並申請統編，會不會影響這間房子的<b>自用住宅房屋稅</b>和<b>自用住宅用地地價稅</b>優惠？」<br><br>'+
-             '<b>🏠 想避開風險：</b>會址可以改用<b>其他幹部/會員同意的地點、租借小空間、里或社區活動中心</b>；而且<b>會址日後可以變更</b>，不一定要綁理事長家。<br>'+
-             '<span style="color:#999">※ 這是一般整理、非正式稅務意見，正式以稅捐處／國稅局或會計師答覆為準。 ⚠待核對</span>'+
-             '</div></details>';
-        row+='<label style="display:flex;gap:8px;align-items:flex-start;font-weight:500;margin-top:.5rem;color:#7B1818;line-height:1.6">'+
-             '<input type="checkbox" id="org-addrConsent" style="width:auto;margin-top:3px"'+(o.addrConsent?' checked':'')+'> '+
-             '<span>我已了解上述稅務影響（含<b>每年稅金</b>與<b>日後賣屋</b>的土增稅／房地合一稅優惠可能喪失），並已取得<b>理事長知情同意</b>，才填住家當會址</span></label>';
+             '<span>會址要<b>公開</b>給大家看嗎？（這是<b>理事長家的住址</b>，公開與否<b>由理事長決定</b>；不勾＝只用在公文、不對外顯示）</span></label>';
       }
       return row;
     }).join("");
