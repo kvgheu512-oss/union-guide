@@ -42,7 +42,7 @@
 
 <div class="header"><h1>🐚 貝殼集器／統一金流 申請準備表</h1><p>成立登記後，總務照這份表照抄照填即可送件</p></div>
 <main>
-  <div class="topnote">📌 這頁把貝殼集器官方文件要求的欄位整理成表單，能自動帶的資料（工會全名、地址、電話、Email、理事長、銀行帳戶）已從<a href="org.html" style="color:#0F5C36;font-weight:700">🏛️ 基本資料中心</a>帶入；打字的部分會自動存這台裝置，隨時可以回來繼續填。填完按最下面「複製整份」，貼到 Backme 後台對應欄位即可。<br>⚠️ <b>統一編號、董監事身分證字號等待補欄位，成立登記完成、拿到統一編號後才會有——不要用猜的填。</b></div>
+  <div class="topnote">📌 這頁把貝殼集器官方文件要求的欄位整理成表單，能自動帶的資料（工會全名、地址、電話、Email、理事長、銀行帳戶、統一編號）已從<a href="org.html" style="color:#0F5C36;font-weight:700">🏛️ 基本資料中心</a>帶入；打字的部分會自動存這台裝置，隨時可以回來繼續填。填完按最下面「複製整份」，貼到 Backme 後台對應欄位即可。<br>✅ <b>工會已登記完成、統一編號已核發並自動帶入下面欄位</b>；董監事身分證字號仍待補，不要用猜的填。</div>
 
   <div class="card">
     <h2>零、流程步驟（官方文件摘要，僅供參照）</h2>
@@ -157,10 +157,11 @@
   var FIELD_IDS=['f-title','f-goal','f-notice','f-reward','f-taxid','f-shopname-en','f-chair-tel','f-chair-mob',
     'f-industry','f-deliver','f-guarantee','f-deliverwhen','f-avgprice','f-desc'];
 
+  var _draft={};
   function load(){
-    var d={}; try{ d=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
-    FIELD_IDS.forEach(function(id){ var el=$(id); if(el && d[id]!=null) el.value=d[id]; });
-    var r=document.querySelector('input[name="regStatus"][value="'+(d.regStatus||'no')+'"]'); if(r) r.checked=true;
+    try{ _draft=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ _draft={}; }
+    FIELD_IDS.forEach(function(id){ var el=$(id); if(el && _draft[id]!=null) el.value=_draft[id]; });
+    var r=document.querySelector('input[name="regStatus"][value="'+(_draft.regStatus||'no')+'"]'); if(r) r.checked=true;
   }
   function save(){
     var d={ regStatus: (document.querySelector('input[name="regStatus"]:checked')||{}).value||'no' };
@@ -194,6 +195,19 @@
     $('a-chair').innerHTML=esc(chair);
     $('a-benef').innerHTML=esc(chair)+'（理事長）';
     $('a-url').innerHTML=esc(location.origin+location.pathname.replace(/beike-prep\.html.*/,''));
+    if(o.taxId){
+      var taxEl=$('f-taxid');
+      if(taxEl){
+        taxEl.disabled=false;
+        taxEl.placeholder='';
+        if(!taxEl.value) taxEl.value=o.taxId;
+      }
+      if(_draft.regStatus==null){
+        var yesR=document.querySelector('input[name="regStatus"][value="yes"]');
+        if(yesR && !yesR.checked){ yesR.checked=true; }
+      }
+      save(); updateRegWarn();
+    }
   }
   function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
 
