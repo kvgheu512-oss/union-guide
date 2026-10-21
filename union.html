@@ -515,21 +515,6 @@
         <span class="go" style="color:#2E7D32">→</span>
       </div>
     </a>
-    <div class="tile" style="border-left-color:#2E7D32;cursor:default;padding:.85rem 1rem;margin-bottom:12px">
-      <details>
-        <summary style="cursor:pointer;font-size:14px;font-weight:700;color:#1B5E20;list-style:none;display:flex;align-items:center;gap:8px">
-          <span>📑 向高雄市勞工局登記送件清單（已完成，留作紀錄）</span>
-          <span id="regChkPct" style="margin-left:auto;font-size:12px;color:#388E3C;font-weight:600;white-space:nowrap"></span>
-        </summary>
-        <div style="margin-top:10px;font-size:13px;color:#444">
-          <p style="margin-bottom:8px;font-size:12px;color:#888">依<b>工會法施行細則§11</b>，登記已完成；這份是當時備妥項目的紀錄 · 進度存本機</p>
-          <ul id="regChkList" style="list-style:none;display:flex;flex-direction:column;gap:4px"></ul>
-          <div style="margin-top:8px;text-align:right">
-            <button id="regChkClear" style="font-size:11px;color:#aaa;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px">↺ 重設清單</button>
-          </div>
-        </div>
-      </details>
-    </div>
     <a class="tile" href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=N0020001" target="_blank" rel="noopener" style="border-left-color:#8A6D0B;padding:.75rem 1rem;margin-bottom:12px">
       <div class="row"><span class="ico" style="font-size:22px">📋</span><div><div class="t" style="font-size:14px;color:#122A4F">官方：工會法·施行細則（法規全文）</div><div class="d" style="font-size:11.5px">官方頁面 · 永遠最新版 ↗</div></div><span class="go" style="color:#8A6D0B">↗</span></div>
     </a>
@@ -656,43 +641,6 @@ document.getElementById('gate-pw').addEventListener('keydown',function(e){ if(e.
   }
   applyStatus();
   document.addEventListener("ebnorg:public",applyStatus);
-})();
-/* 法規：向高雄市勞工局登記送件清單（依工會法施行細則§11，打勾存本機） */
-(function(){
-  var ITEMS=[
-    '工會設立登記申請書（一式兩份，蓋工會印章）',
-    '章程（三份，成立大會通過版）',
-    '成立大會會議紀錄（議程＋紀錄正文）',
-    '成立大會簽到簿（親筆或電子簽名，載明出席人數）',
-    '發起人名冊（30 人以上，含姓名、職業、住址）',
-    '會員名冊（含姓名、出生年月日、職業、住址）',
-    '理事、監事當選名冊（含姓名、住址、當選方式）',
-    '理事長（代表人）身分證影本',
-    '工會印章（申請書、章程、名冊需用印）',
-    '主事務所使用同意書（或地址說明）',
-  ];
-  var CK='reg_checklist_v1';
-  function load(){ try{return JSON.parse(localStorage.getItem(CK))||{};}catch(_){return{};} }
-  function save(s){ try{localStorage.setItem(CK,JSON.stringify(s));}catch(_){} }
-  function render(){
-    var s=load(), n=0, ul=document.getElementById('regChkList'), pct=document.getElementById('regChkPct');
-    if(!ul) return;
-    ul.innerHTML=ITEMS.map(function(t,i){
-      var ok=!!s[i]; if(ok) n++;
-      return '<li style="display:flex;align-items:flex-start;gap:9px;padding:7px 2px;border-bottom:1px solid #f2f2f2;cursor:pointer;-webkit-tap-highlight-color:transparent" data-ri="'+i+'">'+
-        '<span style="flex:none;width:20px;height:20px;border-radius:5px;border:1.5px solid '+(ok?'#2E7D32':'#bbb')+';background:'+(ok?'#2E7D32':'#fff')+';display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:2px;color:#fff;font-weight:700">'+(ok?'✓':'')+'</span>'+
-        '<span style="line-height:1.5;'+(ok?'text-decoration:line-through;color:#aaa':'color:#333')+'">'+t+'</span></li>';
-    }).join('');
-    if(pct) pct.textContent='('+n+' / '+ITEMS.length+' 備妥)';
-  }
-  var ul=document.getElementById('regChkList');
-  if(ul) ul.addEventListener('click',function(e){
-    var li=e.target.closest('[data-ri]'); if(!li) return;
-    var s=load(); s[li.dataset.ri]=!s[li.dataset.ri]; save(s); render();
-  });
-  var clr=document.getElementById('regChkClear');
-  if(clr) clr.addEventListener('click',function(){ if(confirm('重設所有勾選？')){ save({}); render(); } });
-  render();
 })();
 </script>
 <script src="tour.js" defer></script>
