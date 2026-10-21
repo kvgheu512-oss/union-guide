@@ -105,7 +105,7 @@
 
   <div class="card" style="border-top-color:#7A1FA2">
     <h2 style="font-family:'Noto Serif TC',serif;color:#5C1478;font-size:16px;margin-bottom:.4rem">🗳 理監事候選人名單（選舉公報）</h2>
-    <div class="hint" style="font-size:12.5px;line-height:1.8;margin-bottom:.5rem">115/8/30 成立大會選舉已經結束，下面是<b>當屆候選人名單存查</b>（也就是8/30的當選名單，跟上面「幹部名單」的當選結果對應），不是還在登記中。<code>shouce.html</code>柒節的選舉公報會照這份資料帶入。<br><span style="color:#999">下一屆理監事改選前，可以在這裡清空、重新登記新一屆候選人，不綁死這一屆的名單。</span></div>
+    <div class="hint" style="font-size:12.5px;line-height:1.8;margin-bottom:.5rem">115/8/30 成立大會選舉已經結束，<code>shouce.html</code>柒節的選舉公報已把當屆當選名單寫入文件本身存查，不再讀這裡的資料。<br><span style="color:#999">這裡已清空，給<b>下一屆理監事改選</b>登記新一屆候選人用。</span></div>
     <div style="font-weight:700;color:#5C1478;margin-top:.6rem">理事候選人</div>
     <div id="cand-directors"></div>
     <button class="save" id="addDirector" type="button" style="background:#5C1478;margin-top:.5rem">＋ 新增理事候選人</button>
@@ -166,7 +166,6 @@
     var o2=Object.assign({}, EBNOrg.get());
     EBNOrg.FIELDS.forEach(function(f){ var el=$("org-"+f[0]); if(el) o2[f[0]]=el.value.trim(); });
     var ap=$("org-addrPublic"); o2.addrPublic=!!(ap&&ap.checked);
-    var ac=$("org-addrConsent"); o2.addrConsent=!!(ac&&ac.checked);
     return o2;
   }
   // 幹部名單：渲染與讀取
@@ -219,31 +218,6 @@
     return out;
   }
   function saveCandidates(){ if(window.EBNOrg) EBNOrg.setCandidates(readCandidates()); }
-  // 填住家會址時主動跳出說明，確保「知情同意」
-  function consented(){ var c=$("org-addrConsent"); return (c&&c.checked) || sessionStorage.getItem("ebn_addr_notice")==="1"; }
-  function showAddrNotice(){
-    if(document.getElementById("ebn-addr-modal")) return;
-    var w=document.createElement("div"); w.id="ebn-addr-modal";
-    w.style.cssText="position:fixed;inset:0;z-index:100002;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;";
-    w.innerHTML='<div style="background:#fff;max-width:400px;width:100%;max-height:640px;overflow-y:auto;border-radius:16px;padding:18px 18px 14px;box-shadow:0 18px 50px rgba(0,0,0,.45)">'+
-      '<div style="font-family:\'Noto Serif TC\',serif;font-weight:700;font-size:17px;color:#7B1818">🏠 強烈建議：別用個人住家當會址</div>'+
-      '<div style="font-size:14px;line-height:1.9;color:#3A1010;margin-top:8px">'+
-        '用住家會牽動<b>房屋稅、地價稅</b>，連日後賣屋的優惠都可能沒了（<b>害到屋主</b>）。<br><br>'+
-        '👉 改用<b>工會專用或非自住地址</b>；開會地點另外借便宜場地或線上即可，<b>不必綁會址</b>。'+
-      '</div>'+
-      '<button id="ebn-addr-cancel" style="display:block;width:100%;background:#1A7A4A;color:#fff;border:0;border-radius:11px;padding:.85rem;font-weight:700;font-size:15.5px;cursor:pointer;margin-top:14px">👍 好，我用別的會址（不用住家）</button>'+
-      '<details style="margin-top:10px"><summary style="color:#999;font-size:12.5px;cursor:pointer">真的沒辦法、仍要用住家…</summary>'+
-        '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:700;color:#7B1818;font-size:13px;margin:8px 0 4px;line-height:1.6"><input type="checkbox" id="ebn-addr-agree" style="width:auto;margin-top:3px"> <span>我已了解上述風險，仍決定使用住家會址</span></label>'+
-        '<button id="ebn-addr-ok" style="display:block;width:100%;background:#B7860B;color:#fff;border:0;border-radius:11px;padding:.75rem;font-weight:700;font-size:14px;cursor:pointer;margin-top:6px;opacity:.5" disabled>仍要用住家（已了解風險）</button>'+
-      '</details>'+
-      '</div>';
-    document.body.appendChild(w);
-    var agree=document.getElementById("ebn-addr-agree"), okb=document.getElementById("ebn-addr-ok");
-    agree.addEventListener("change",function(){ okb.disabled=!agree.checked; okb.style.opacity=agree.checked?"1":".5"; });
-    okb.addEventListener("click",function(){ var c=$("org-addrConsent"); if(c) c.checked=true; sessionStorage.setItem("ebn_addr_notice","1"); EBNOrg.set(readForm()); w.remove(); });
-    document.getElementById("ebn-addr-cancel").addEventListener("click",function(){ var a=$("org-addr"); if(a){ a.value=""; a.blur(); } var c=$("org-addrConsent"); if(c) c.checked=false; sessionStorage.setItem("ebn_addr_notice","1"); w.remove(); });
-    w.addEventListener("click",function(e){ if(e.target===w) w.remove(); });
-  }
   var extrasEdited=false;
   function fillExtras(){
     if(extrasEdited) return;
@@ -295,8 +269,6 @@
     $("pubDl").addEventListener("click",function(){
       var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([$("pubOut").value],{type:"application/json"})); a.download="public.json"; a.click();
     });
-    // 一點到「會址」就跳說明，確保知情同意（用事件委派，重繪後仍有效）
-    document.addEventListener("focusin",function(e){ if(e.target&&e.target.id==="org-addr"&&!consented()) showAddrNotice(); });
     // public.json 載到後，若使用者還沒動手編輯，就把公告版填上來
     document.addEventListener("ebnorg:public",function(){ if(!edited) render(); fillExtras(); if(!cadreEdited) renderCadres(); if(!candEdited) renderCandidates(); });
   }
