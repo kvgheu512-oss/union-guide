@@ -624,7 +624,7 @@ function setPrep(p){ DB.settings.prep=p; save(); applyPrep(); renderHome(); }
 var dbUnlocked=false;
 function migratePrepIfOfficial(){
   try{
-    if(dbUnlocked && window.EBNOrg && EBNOrg.publicData().phase==='official' && window.DB && DB.settings && DB.settings.prep){
+    if(dbUnlocked && window.EBNOrg && EBNOrg.publicData().phase==='official' && DB && DB.settings && DB.settings.prep){
       DB.settings.prep=false; save(); applyPrep(); fillSettings(); renderHome();
       alert('偵測到工會已正式成立，已自動把帳本設定從「籌備中」切換為「已成立」（決算書、理事長職稱等會跟著改）。如果這個判斷有誤，可以到下面「設定」手動改回「籌備中」。');
     }

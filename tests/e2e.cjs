@@ -387,6 +387,13 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const raw = await p.evaluate(() => localStorage.getItem('union_fin_db'));
     (raw && raw.includes('哨兵資料不應被清空')) ? ok('解鎖前呼叫不會清空本機帳本') : bad('finance-race', 'raw=' + raw); });
 
+  await T('finance.html 已成立時自動把籌備中帳本設定切成已成立（非window.DB誤判卡死）', async p => {
+    await go(p, 'finance.html');
+    await p.evaluate(() => { localStorage.setItem('union_fin_db', JSON.stringify({ settings: { prep: true } })); });
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(400);
+    const disp = await p.evaluate(() => { const b = document.getElementById('prepBanner'); return b && getComputedStyle(b).display; });
+    disp === 'none' ? ok('偵測到正式成立後，籌備中橫幅自動收起') : bad('finance-migrate', 'prepBanner display=' + disp); });
+
   await T('petition.html 招募分工含組訓角色（不是只有5個舊角色）', async p => { await go(p, 'petition.html'); await p.waitForTimeout(200);
     const t = await p.textContent('#recruiterList').catch(() => ''); t.includes('組訓') ? ok('組訓角色有出現在招募分工列表') : bad('petition-org', t.slice(0, 80)); });
 
