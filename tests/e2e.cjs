@@ -242,6 +242,16 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.click('#ebntour-menu button[data-m="text"]'); await p.waitForTimeout(600);
     const w = await p.$eval('#ebntour-spot', e => parseFloat(e.style.width) || 0);
     (w > 0) ? ok('spotlight 有框住元素(' + Math.round(w) + 'px)') : bad('spot', '聚焦框寬度=' + w); });
+  await T('union.html 導覽spotlight真的框到工具卡片（非href精確比對落空）', async p => {
+    await p.goto(BASE + 'union.html', { waitUntil: 'domcontentloaded' });
+    await p.evaluate(() => { try { localStorage.setItem('union_panel_unlocked', '1'); } catch (e) {} });
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    await p.click('#ebntour-launch'); await p.waitForTimeout(120);
+    await p.click('#ebntour-menu button[data-m="text"]'); await p.waitForTimeout(400);
+    await p.click('#ebntour-tip .ebnt-next', { force: true }); await p.waitForTimeout(300);
+    const w = await p.$eval('#ebntour-spot', e => parseFloat(e.style.width) || 0);
+    (w > 0) ? ok('工具卡片導覽第①步有框住真實元素(' + Math.round(w) + 'px)') : bad('union-tour-spot', '聚焦框寬度=' + w); });
+
   await T('help 自助問答即時回答', async p => { await go(p, 'help.html'); await p.waitForTimeout(300);
     const init = await p.$$eval('#jbot-log .b.bot', e => e.length); if (init < 1) return bad('help', 'no greeting');
     await p.fill('#jbot-in', '特休沒休完有錢嗎'); await p.click('#jbot-send'); await p.waitForTimeout(250);
