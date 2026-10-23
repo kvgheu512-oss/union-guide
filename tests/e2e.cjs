@@ -144,6 +144,24 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     (t.includes('籌備期甲') && !t.includes('成立後乙') && !t.includes('剛好成立日丙'))
       ? ok('八折名單只留成立大會前入會者') : bad('roster-fee80', t.replace(/\s+/g, ' ').slice(0, 200)); });
 
+  await T('roster 九折名單篩選：只留成立後～115/12/31入會者', async p => { await go(p, 'roster.html');
+    await p.evaluate(() => { localStorage.setItem('roster_members_v1', JSON.stringify([
+      { id: 'p1', name: '籌備期甲', status: 'active', join: '2026-07-15' },
+      { id: 'p2', name: '成立後乙', status: 'active', join: '2026-09-10' },
+      { id: 'p3', name: '剛好成立日丙', status: 'active', join: '2026-08-30' },
+      { id: 'p4', name: '超過期限丁', status: 'active', join: '2027-01-05' }
+    ])); });
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    await p.click('button.chip[data-f="fee90"]'); await p.waitForTimeout(200);
+    const t = await p.textContent('#list');
+    (t.includes('成立後乙') && t.includes('剛好成立日丙') && !t.includes('籌備期甲') && !t.includes('超過期限丁'))
+      ? ok('九折名單只留成立後～期限內入會者') : bad('roster-fee90', t.replace(/\s+/g, ' ').slice(0, 200)); });
+
+  await T('founding.html 工會成立過程紀錄預設全部打勾（已正式成立）', async p => { await go(p, 'founding.html'); await p.waitForTimeout(300);
+    const n = await p.textContent('#pnum').catch(() => null);
+    const tot = await p.textContent('#ptot').catch(() => null);
+    (n && tot && n === tot) ? ok('8步驟預設全部完成（' + n + '/' + tot + '）') : bad('founding-default', 'n=' + n + ' tot=' + tot); });
+
   console.log('\n========== D. 流暢/導覽測試 ==========');
   await T('返回鈕 index→leavepay→返回', async p => { await go(p, 'index.html'); await p.goto(BASE + 'leavepay.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
     await p.click('#ebnBack'); await p.waitForTimeout(400);

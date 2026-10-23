@@ -176,7 +176,9 @@
 
   function loadSteps(){
     try{ var a = JSON.parse(localStorage.getItem(STEP_KEY)); if(Array.isArray(a)) return a; }catch(e){}
-    return STEPS.map(function(){return false;});
+    // 工會已正式成立（登記證字號已取得），這份是過程紀錄不是待辦，預設全部打勾；
+    // 使用者若真的手動取消某一步，會存進 STEP_KEY，下次就讀回使用者自己的勾選狀態
+    return STEPS.map(function(){return true;});
   }
   /* 存檔並「讀回來驗證」有沒有真的存進去；Brave／無痕模式常常允許 setItem 執行卻不會真的留住。
      存失敗就顯示明顯警告，不要默默失敗讓使用者以為存了、其實沒存。 */
