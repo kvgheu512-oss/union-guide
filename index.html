@@ -820,9 +820,11 @@ function applyPhase(phase){
   // 填幹部名冊
   var grid=document.getElementById('cadre-pub-grid');
   if(grid && window.EBNOrg){
+    // 對外只標示法定職稱（理事長／理事／監事），不露出內部分工（總務／法規／文宣／組訓）
+    var PUB_TITLE={chair:'理事長', fin:'理事', doc:'理事', wel:'理事', org:'理事', sup:'監事'};
     var c=EBNOrg.cadres(), roles=EBNOrg.CADRE_ROLES;
     grid.innerHTML=roles.filter(function(r){return c[r[0]];}).map(function(r){
-      return '<div class="cadre-item"><div class="cr">'+r[1]+'</div><div class="cn">'+c[r[0]]+'</div></div>';
+      return '<div class="cadre-item"><div class="cr">'+(PUB_TITLE[r[0]]||r[1])+'</div><div class="cn">'+c[r[0]]+'</div></div>';
     }).join('');
   }
 }
