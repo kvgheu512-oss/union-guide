@@ -799,8 +799,6 @@ function goJoinOfficial(){
     +'<div style="text-align:center;font-weight:700;font-size:16px;color:#0F5C36;margin-bottom:4px">✋ 我要正式入會</div>'
     +'<div style="text-align:center;font-size:12.5px;color:#777;margin-bottom:14px">填完電子申請書後，畫面會產生連結，傳給幹部即完成</div>'
     +'<a href="join-form.html" style="display:block;text-align:center;background:#0F5C36;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">📝 線上填寫電子入會申請書</a>';
-  if(typeof LINE_URL!=='undefined'&&LINE_URL) h+='<a href="'+LINE_URL+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#06C755;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">💬 在 LINE 群找幹部申請</a>';
-  if(typeof FORM_URL!=='undefined'&&FORM_URL) h+='<a href="'+FORM_URL+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#1A3A6B;color:#fff;font-weight:700;text-decoration:none;padding:.95rem;border-radius:12px;margin-bottom:10px">📝 舊版紙本申請表</a>';
   h+='<button id="join-off-cancel" style="display:block;width:100%;background:none;border:0;color:#999;font-size:14px;padding:.5rem;cursor:pointer">取消</button></div>';
   wrap.innerHTML=h; document.body.appendChild(wrap);
   wrap.addEventListener('click',function(e){ if(e.target===wrap||e.target.id==='join-off-cancel'||e.target.tagName==='A') wrap.remove(); });
