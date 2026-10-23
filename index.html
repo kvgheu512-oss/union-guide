@@ -500,23 +500,9 @@
     <section class="section" id="contact">
       <div class="section-header"><div class="section-num">9</div><div class="section-title">聯絡我們</div></div>
       <div class="contact-card">
-        📱 <strong>加入 Line 了解更多：</strong><a href="#" id="contact-line">（請幹部填入 Line 連結）</a><br>
+        ✉️ <strong>工會信箱：</strong><a href="#" id="contact-email">（載入中…）</a><br>
         ✋ <strong>表達入會意願：</strong>點上方「我要正式入會」按鈕。<br>
         ⚖ <strong>正式法律諮詢：</strong>勞工局免費諮詢／勞工局服務專線 <strong>1955</strong>（24 小時免費）。
-      </div>
-    </section>
-
-    <section class="section" id="share">
-      <div class="section-header"><div class="section-num green">📣</div><div class="section-title">邀同事一起來</div></div>
-      <div class="card" style="text-align:center">
-        <p style="font-size:13.5px;color:var(--ink-mid);line-height:1.85;margin-bottom:12px">團結才有力量，人越多，談判越有力。歡迎更多同事加入——把這頁轉給<b>信得過的同事</b>，掃 QR 或一鍵分享。</p>
-        <div id="union-qr" style="display:inline-block;padding:10px;background:#fff;border:1px solid var(--border);border-radius:12px;min-height:60px"></div>
-        <div style="font-size:12px;color:var(--ink-soft);margin-top:8px">掃我 → 開啟認識工會／加入頁</div>
-        <div style="display:flex;gap:10px;margin-top:14px">
-          <button id="share-btn" class="cta-btn" style="flex:1">📲 一鍵分享</button>
-          <button id="copy-btn" class="cta-btn" style="flex:1;background:#1A3A6B">📋 複製邀請訊息</button>
-        </div>
-        <div id="share-toast" style="font-size:13px;color:var(--green-deep);font-weight:600;margin-top:10px;min-height:18px"></div>
       </div>
     </section>
 
@@ -654,8 +640,13 @@ function showPledgeIntro(next){
   wrap.addEventListener('click',function(e){ if(e.target===wrap) wrap.remove(); });
 }
 ['cta-join','cta-join2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',function(){ showPledgeIntro(goJoin); }); });
-// Line 聯絡連結
-(function(){ const a=document.getElementById('contact-line'); if(LINE_URL){ a.href=LINE_URL; a.target='_blank'; a.rel='noopener'; a.textContent='團結才有力量，點此加入 ↗'; } })();
+// 工會信箱聯絡連結
+(function(){
+  const a=document.getElementById('contact-email'); if(!a) return;
+  function fill(){ const email=(window.EBNOrg && EBNOrg.get().email) || 'kvgheu512@gmail.com'; a.href='mailto:'+email; a.textContent=email; }
+  fill();
+  document.addEventListener('ebnorg:public',fill);
+})();
 
 /* ---------- 平滑捲動（導覽列） ---------- */
 document.querySelectorAll('.navbar a').forEach(a=>{
@@ -780,24 +771,6 @@ document.getElementById('faq-toggle-btn').addEventListener('click',function(){
 </script>
 <div id="verBadge"></div>
 <script src="law-tips.js" defer></script>
-<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js" async></script>
-<script>
-(function(){
-  var url=location.origin+location.pathname;
-  function drawQR(){ if(typeof QRCode==="undefined"){ drawQR._n=(drawQR._n||0)+1; if(drawQR._n<25) setTimeout(drawQR,300); return; } var el=document.getElementById('union-qr'); if(!el||el.dataset.done) return; el.innerHTML=''; new QRCode(el,{text:url,width:180,height:180,colorDark:'#0F5C36',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); el.dataset.done='1'; }
-  drawQR();
-  function msg(){
-    var official=false; try{ official=window.EBNOrg && EBNOrg.publicData().phase==='official'; }catch(e){}
-    var lead;
-    if(official){ lead='高榮企業工會已正式成立！'; }
-    else{ var sb=document.getElementById('signbar'); var now=sb?parseInt(sb.dataset.now||'0',10):0; var goal=sb?parseInt(sb.dataset.goal||'30',10):30; lead=now>=goal?'連署已達標，成立大會籌備中！':(now>0?('目前 '+now+'/'+goal+'，再 '+(goal-now)+' 人就成案！'):''); }
-    return '【高榮企業工會】加班費、排班、職場霸凌…一個人喊沒用，一起成立工會、坐上談判桌。'+lead+' 1 分鐘了解＋加入 👉 '+url;
-  }
-  function toast(t){ var e=document.getElementById('share-toast'); if(e){ e.textContent=t; setTimeout(function(){ e.textContent=''; },2600); } }
-  var sBtn=document.getElementById('share-btn'); if(sBtn) sBtn.addEventListener('click',function(){ var text=msg(); if(navigator.share){ navigator.share({title:'高榮企業工會 邀請加入',text:text,url:url}).catch(function(){}); } else if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){toast('✅ 已複製，貼到 LINE 群組即可');},function(){toast('請長按訊息複製');}); } else { toast('請長按訊息複製'); } });
-  var cBtn=document.getElementById('copy-btn'); if(cBtn) cBtn.addEventListener('click',function(){ if(navigator.clipboard){ navigator.clipboard.writeText(msg()).then(function(){toast('✅ 邀請訊息已複製');},function(){toast('請長按複製');}); } else { toast('請長按複製'); } });
-})();
-</script>
 <script src="org.js" defer></script>
 <script>
 /* ===== 雙模式切換：依 public.json 的 phase 決定顯示「籌備」或「正式成立」===== */
