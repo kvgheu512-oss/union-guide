@@ -186,7 +186,6 @@
     $('a-email').innerHTML=esc(o.email||'（尚未填寫）');
     var bankParts=[];
     if(o.bankHolder||o.bank||o.bankAcct) bankParts.push('轉帳：戶名 '+(o.bankHolder||'—')+'／'+(o.bank||'—')+'／帳號 '+(o.bankAcct||'—'));
-    if(o.ctbcHolder||o.ctbcAcct) bankParts.push('中信ATM：戶名 '+(o.ctbcHolder||'—')+'／帳號 '+(o.ctbcAcct||'—'));
     $('a-bank').innerHTML = bankParts.length ? esc(bankParts.join('<br>')) : '（尚未於基本資料中心填寫銀行帳戶）';
     var contact=[o.tel?('電話：'+o.tel):'', o.addr?('地址：'+o.addr):''].filter(Boolean).join('<br>');
     $('a-contact').innerHTML = contact || '（尚未填寫電話／地址）';
