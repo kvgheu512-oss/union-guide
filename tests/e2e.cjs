@@ -132,6 +132,18 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     await p.click('#saveBtn').catch(() => {}); await p.waitForTimeout(200);
     const list = await p.textContent('#list').catch(() => ''); list.includes('測試案件X') ? ok('案件加入列表') : bad('cases', '列表沒出現新案件'); });
 
+  await T('roster 八折名單篩選：只留籌備期(115/8/30前)入會者', async p => { await go(p, 'roster.html');
+    await p.evaluate(() => { localStorage.setItem('roster_members_v1', JSON.stringify([
+      { id: 'p1', name: '籌備期甲', status: 'active', join: '2026-07-15' },
+      { id: 'p2', name: '成立後乙', status: 'active', join: '2026-09-10' },
+      { id: 'p3', name: '剛好成立日丙', status: 'active', join: '2026-08-30' }
+    ])); });
+    await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
+    await p.click('button.chip[data-f="fee80"]'); await p.waitForTimeout(200);
+    const t = await p.textContent('#list');
+    (t.includes('籌備期甲') && !t.includes('成立後乙') && !t.includes('剛好成立日丙'))
+      ? ok('八折名單只留成立大會前入會者') : bad('roster-fee80', t.replace(/\s+/g, ' ').slice(0, 200)); });
+
   console.log('\n========== D. 流暢/導覽測試 ==========');
   await T('返回鈕 index→leavepay→返回', async p => { await go(p, 'index.html'); await p.goto(BASE + 'leavepay.html', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(200);
     await p.click('#ebnBack'); await p.waitForTimeout(400);
