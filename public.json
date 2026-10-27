@@ -9,8 +9,8 @@
     "addrPublic": false,
     "tel": "",
     "email": "kvgheu512@gmail.com",
-    "bank": "",
-    "bankAcct": "",
+    "bank": "郵局",
+    "bankAcct": "00417480050141",
     "docWord": "高總工",
     "docYear": "115",
     "docSeq": "1",
@@ -39,7 +39,7 @@
     "goal": 30
   },
   "phase": "official",
-  "updated": "2026-10-21",
+  "updated": "2026-10-27",
   "cadres": {
     "chair": "楊淯涵",
     "fin": "蔣雅竹",
