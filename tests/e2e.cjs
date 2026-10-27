@@ -469,6 +469,12 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const removed = await p.$$eval('.item .nm', els => !els.some(e => e.textContent.includes('測試贈品')));
     (added && removed) ? ok('自訂項目新增後出現、刪除後消失') : bad('swag-custom', added + ' ' + removed); });
 
+  await T('pay.html 複製帳號鈕點擊後顯示已複製', async p => { await go(p, 'pay.html'); await p.waitForTimeout(400);
+    const acctBefore = await p.textContent('#bankAcctVal');
+    await p.click('#copyAcctBtn'); await p.waitForTimeout(150);
+    const btnTxt = await p.textContent('#copyAcctBtn');
+    (acctBefore.indexOf('尚未公布') < 0 && btnTxt.includes('已複製')) ? ok('帳號已帶入且複製鈕回饋正常') : bad('pay-copy', 'acct=' + acctBefore + ' btn=' + btnTxt); });
+
   console.log('\n================= 總結 =================');
   console.log('PASS: ' + pass + '   FAIL: ' + fail);
   if (fails.length) { console.log('--- 失敗項目 ---'); fails.forEach(f => console.log(' • ' + f)); }

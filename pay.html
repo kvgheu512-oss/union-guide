@@ -50,7 +50,7 @@
     <div class="note" style="margin-top:0;margin-bottom:.6rem">轉帳或 ATM 存款時，<b>備註／附言請填「繳費代碼」</b>（4 碼數字，總務發給您的）；不知道代碼填<b>姓名</b>也可以，總務會人工核對入帳。</div>
     <div class="info-row"><span class="info-key">轉帳戶名</span><span class="info-val" data-org-text="bankHolder">（尚未公布，請洽總務）</span></div>
     <div class="info-row"><span class="info-key">金融機構／分行</span><span class="info-val" data-org-text="bank">（尚未公布，請洽總務）</span></div>
-    <div class="info-row"><span class="info-key">帳號</span><span class="info-val" data-org-text="bankAcct">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">帳號</span><span style="display:flex;align-items:center;gap:8px"><span class="info-val" id="bankAcctVal" data-org-text="bankAcct">（尚未公布，請洽總務）</span><button type="button" id="copyAcctBtn" style="flex-shrink:0;font-size:12px;padding:3px 8px;border:1px solid var(--border);background:#fff;color:var(--ac-deep);border-radius:8px;cursor:pointer">📋 複製</button></span></div>
   </div>
 
   <div class="card">
@@ -78,6 +78,21 @@
   }
   document.addEventListener("ebnorg:public",apply);
   window.addEventListener("load",apply);
+})();
+// 複製帳號
+(function(){
+  var btn=document.getElementById("copyAcctBtn"); if(!btn) return;
+  btn.addEventListener("click",function(){
+    var acct=(document.getElementById("bankAcctVal").textContent||"").trim();
+    if(!acct || acct.indexOf("尚未公布")>=0) return;
+    function done(){ var old=btn.textContent; btn.textContent="✅ 已複製"; setTimeout(function(){ btn.textContent=old; },1600); }
+    if(navigator.clipboard){ navigator.clipboard.writeText(acct).then(done,function(){ fallbackCopy(acct); done(); }); }
+    else { fallbackCopy(acct); done(); }
+  });
+  function fallbackCopy(t){
+    var ta=document.createElement("textarea"); ta.value=t; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); }catch(e){} document.body.removeChild(ta);
+  }
 })();
 </script>
 <script src="common.js" defer></script>
