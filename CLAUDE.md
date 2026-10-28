@@ -52,14 +52,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-08-21
+最後更新：2026-10-28
 
 最近 commits：
-  71c6c0b 自動更新 CLAUDE.md 最近進度（Stop hook）
-  c5edae6 自動更新 CLAUDE.md 最近進度（Stop hook）
-  8043d06 自動更新 CLAUDE.md 最近進度（Stop hook）
-  71d848f 補齊CLAUDE.md本session工作紀要：手冊同步會長版、章程刪第十七條重編條號、案由七八十已定案二六九仍懸案、新功能、兩隻bug-hunt分支未合併等待辦事項
-  4cb3688 自動更新 CLAUDE.md 最近進度（Stop hook）
+  3def127 補CLAUDE.md本session工作紀要：法規清單/附錄①②已通過/章程換理監事會核定47條版
+  5d650ea 章程換成理監事會核定最終版（47條），全站條號與費額連動修正
+  d9e0700 相關法規清單補上團體協約法、職業安全衛生法
+  f077efc 章程附錄①②確認同日(8/30)成立大會一併通過，拿掉草案標籤
+  5674ba9 章程頁拿掉下載Word/PDF與網頁輸出PDF按鈕，不開放下載
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
