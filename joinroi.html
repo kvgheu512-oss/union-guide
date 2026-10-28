@@ -61,7 +61,7 @@
     </div>
 
     <div class="law">
-      📖 依據：企業工會經常會費<b>不低於月薪 0.5%</b>（工會法 §28）；平日加班費<b>前 2 小時加給 1/3</b>（勞基法 §24）；加班時數有爭議時<b>由雇主舉證</b>（勞動事件法 §38）；特休未休<b>應折發工資</b>（勞基法 §38）。
+      📖 依據：本會現行章程（第33條）經常會費為固定每月250元；平日加班費<b>前 2 小時加給 1/3</b>（勞基法 §24）；加班時數有爭議時<b>由雇主舉證</b>（勞動事件法 §38）；特休未休<b>應折發工資</b>（勞基法 §38）。
     </div>
     <div class="note">⚠️ 這是<b>粗略估算、僅供參考</b>，不是承諾金額。實際可追回多少，要看出勤紀錄、班表與個案事實，並依勞檢或法院認定。加班費以保守的「平日前 2 小時費率」概算、追溯以 5 年計。</div>
 
@@ -90,14 +90,14 @@
     var ot=nn("otHr");
     var ann=nn("annual");
     var hourly=sal/240, daily=sal/30;
-    var feeYear=sal*0.005*12;
+    var feeYear=250*12;  // 現行章程第33條：經常會費為固定金額（每月250元），與月薪無關
     var otYear=ot*52*hourly*(4/3);
     var otClaim=otYear*5;            // 5 年時效概算
     var unused=ann*daily;
     var potential=otClaim+unused;
     var ratio=feeYear>0?potential/feeYear:0;
     document.getElementById("out").innerHTML=
-      '<div class="row fee"><span class="k">一年會費（月薪 0.5%×12）</span><span class="v">'+nt(feeYear)+'</span></div>'+
+      '<div class="row fee"><span class="k">一年會費（每月250元×12）</span><span class="v">'+nt(feeYear)+'</span></div>'+
       '<div class="row"><span class="k">加班費可追回（估·5 年）</span><span class="v">'+nt(otClaim)+'</span></div>'+
       '<div class="row"><span class="k">特休未休折發工資</span><span class="v">'+nt(unused)+'</span></div>'+
       '<div class="row"><span class="k"><b>可能拿回合計</b></span><span class="v">'+nt(potential)+'</span></div>';

@@ -58,10 +58,10 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
     const w = await p.$eval('#sign-fill', e => e.style.width); (w && w !== '0px' && w !== '') ? ok('進度條寬度=' + w) : bad('signbar', 'width ' + w); });
   await T('meet 連結未設定狀態正確', async p => { await go(p, 'meet.html');
     const t = await p.textContent('#join-prep'); (t.includes('LINE') || t.includes('尚未') || t.includes('開會議')) ? ok('按鈕顯示待設定提示') : bad('meet', 'btn=' + t); });
-  await T('charter.html 通過日期已寫死成立大會真實日期(不再印出【○】)', async p => {
+  await T('charter.html 為理監事會核定最新版(47條,無未填佔位符)', async p => {
     await p.goto(BASE + 'charter.html', { waitUntil: 'domcontentloaded' });
     const t = await p.textContent('.doc');
-    (t.includes('中華民國115年8月30日成立大會通過') && !t.includes('【○】')) ? ok('通過日期顯示115/8/30，無未填佔位符') : bad('charter-date', t.slice(t.indexOf('本章程經中華民國') - 5, t.indexOf('本章程經中華民國') + 40)); });
+    (t.includes('第四十七條') && t.includes('理監事會核定') && !t.includes('【○】')) ? ok('47條內容齊全，無未填佔位符') : bad('charter-date', t.slice(0, 80)); });
 
   await T('草稿恢復提示條改貼頂部，不會蓋住表單底部送出鈕', async p => {
     await p.setViewportSize({ width: 375, height: 812 });
