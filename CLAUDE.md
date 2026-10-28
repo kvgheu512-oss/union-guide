@@ -55,11 +55,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-10-28
 
 最近 commits：
+  5c82661 手冊附件二章程同步為理監事會核定版（47條），標題去草案字樣
+  9083871 自動更新 CLAUDE.md 最近進度（Stop hook）
   4feb08c 自動更新 CLAUDE.md 最近進度（Stop hook）
   4e5c9ca 自動更新 CLAUDE.md 最近進度（Stop hook）
   ca2657a 自動更新 CLAUDE.md 最近進度（Stop hook）
-  becefbb 章程頁刪除附錄③成立大會議事程序草案（含填空表單），原④改為③
-  77076f5 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
