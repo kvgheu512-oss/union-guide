@@ -122,9 +122,13 @@
       </div>
       <span style="margin-left:auto;font-size:20px;">→</span>
     </a>
-    <p style="font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--border);border-radius:12px;padding:.7rem .85rem;margin-bottom:.4rem;line-height:1.75;">
-      依章程第16條，本會置<b>理事五人（含理事長）、監事一人</b>。分工：理事長、法規（小巫）、文宣（妍妍）、總務（蔣雅竹）、組訓（依婷）、監事（黃敏）。找自己的區塊辦事；標「建置中」的工具陸續加入。
-    </p>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:.7rem .85rem;margin-bottom:.4rem;">
+      <div style="font-size:12.5px;color:var(--ink-soft);line-height:1.75;margin-bottom:.4rem">依章程第16條，本會置<b>理事五人（含理事長）、監事一人</b>。對外一律稱「理事長／理事／監事」；下表是<b>內部分工</b>，忘了自己在哪一組看這裡。找自己的區塊辦事；標「建置中」的工具陸續加入。</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px;line-height:1.5">
+        <tr style="color:var(--ink-soft);font-size:11.5px"><td style="padding:.2rem .4rem">姓名</td><td style="padding:.2rem .4rem">法定職稱</td><td style="padding:.2rem .4rem">內部分工</td><td style="padding:.2rem .4rem">負責</td></tr>
+        <tr><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700;color:var(--navy)"><span data-cadre="chair"></span></td><td style="padding:.35rem .4rem;border-top:1px solid var(--border)">理事長</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700">理事長</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);color:var(--ink-soft)">綜理會務 · 對外代表 · 召集會議 · 團體協商</td></tr><tr><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700;color:var(--navy)"><span data-cadre="fin"></span></td><td style="padding:.35rem .4rem;border-top:1px solid var(--border)">理事</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700">總務</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);color:var(--ink-soft)">年度預算 · 收支記帳 · 決算報稅</td></tr><tr><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700;color:var(--navy)"><span data-cadre="doc"></span></td><td style="padding:.35rem .4rem;border-top:1px solid var(--border)">理事</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700">法規</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);color:var(--ink-soft)">會議文件 · 行政紀錄 · 法規事務 · 會員服務</td></tr><tr><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700;color:var(--navy)"><span data-cadre="wel"></span></td><td style="padding:.35rem .4rem;border-top:1px solid var(--border)">理事</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700">文宣</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);color:var(--ink-soft)">活動規劃 · 福利宣傳 · 教育訓練</td></tr><tr><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700;color:var(--navy)"><span data-cadre="org"></span></td><td style="padding:.35rem .4rem;border-top:1px solid var(--border)">理事</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700">組訓</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);color:var(--ink-soft)">會員招募 · 會員名冊 · 組織訓練</td></tr><tr><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700;color:var(--navy)"><span data-cadre="sup"></span></td><td style="padding:.35rem .4rem;border-top:1px solid var(--border)">監事</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);font-weight:700">監事</td><td style="padding:.35rem .4rem;border-top:1px solid var(--border);color:var(--ink-soft)">監察會務 · 財務稽核 · 監察意見書</td></tr>
+      </table>
+    </div>
 
     <div style="position:relative;margin-bottom:.7rem;">
       <input id="tileSearch" type="text" placeholder="🔍 打關鍵字找工具（例如：收據、簽到、公文）" style="width:100%;box-sizing:border-box;padding:.65rem .9rem;border:1px solid var(--border);border-radius:12px;font-size:14px;background:#fff;">
@@ -698,6 +702,7 @@ document.addEventListener('DOMContentLoaded', function(){
     fillName('name-wel','wel');
     fillName('name-org','org');
     fillName('name-sup','sup');
+    document.querySelectorAll('[data-cadre]').forEach(function(el){ if(window.EBNOrg) el.textContent=EBNOrg.cadreName(el.getAttribute('data-cadre'))||''; });
   }
   syncNames();
   document.addEventListener('ebnorg:public', syncNames);

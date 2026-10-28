@@ -401,7 +401,7 @@ const bad = (n, d) => { fail++; fails.push(n + ' — ' + d); console.log('  ❌ 
   await T('union.html 理事長/文宣/監事卡片會隨改名同步（原本只有總務/法規/組訓會動）', async p => {
     await p.goto(BASE + 'union.html', { waitUntil: 'domcontentloaded' });
     await p.evaluate(() => { localStorage.clear(); localStorage.setItem('union_panel_unlocked', '1');
-      localStorage.setItem('ebn_cadres_v1', JSON.stringify({ chair: '測試理事長', wel: '測試文宣', sup: '測試監事' })); });
+      localStorage.setItem('ebn_cadres_v2', JSON.stringify({ chair: '測試理事長', wel: '測試文宣', sup: '測試監事' })); });
     await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(300);
     const chair = await p.textContent('#name-chair').catch(() => null);
     const wel = await p.textContent('#name-wel').catch(() => null);

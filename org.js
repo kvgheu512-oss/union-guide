@@ -43,7 +43,7 @@
   var PUB = "public.json", _pub = null, _pubLoaded = false;
 
   // 幹部名單（大會選出後／會員輪動時，可在「基本資料中心」改名，改一次→發布→全站同步）
-  var CKEY = "ebn_cadres_v1";
+  var CKEY = "ebn_cadres_v2"; // v1 草稿已廢棄：舊草稿殘留莊瑋聆/陳依婷等舊名，會蓋掉已發布名單
   var CADRE_ROLES = [
     ["chair", "理事長"], ["fin", "總務"], ["doc", "法規"], ["wel", "文宣"], ["org", "組訓"], ["sup", "監事"]
   ];
