@@ -415,7 +415,7 @@
     <section class="section official-only" id="cadres-pub">
       <div class="section-header"><div class="section-num green">4</div><div class="section-title">工會幹部</div></div>
       <div class="card">
-        <div class="cadre-grid" id="cadre-pub-grid"></div>
+        <p style="font-size:15px;font-weight:700;color:var(--green-deep);line-height:1.7;margin:0">本會置「五理一監」：理事 5 人（含理事長）、監事 1 人。</p>
         <p style="font-size:12.5px;color:var(--ink-soft);margin-top:.75rem;line-height:1.7">有問題歡迎在 LINE 群找幹部，或進入幹部專區。</p>
       </div>
     </section>
@@ -775,16 +775,6 @@ function applyPhase(phase){
   var badge=document.getElementById('prepBadge');
   if(badge){ badge.textContent='🎖 正式成立'; badge.style.background='#FFF6D6'; badge.style.color='#7A5800'; }
   var robots=document.querySelector('meta[name="robots"]'); if(robots) robots.remove();
-  // 填幹部名冊
-  var grid=document.getElementById('cadre-pub-grid');
-  if(grid && window.EBNOrg){
-    // 對外只標示法定職稱（理事長／理事／監事），不露出內部分工（總務／法規／文宣／組訓）
-    var PUB_TITLE={chair:'理事長', fin:'理事', doc:'理事', wel:'理事', org:'理事', sup:'監事'};
-    var c=EBNOrg.cadres(), roles=EBNOrg.CADRE_ROLES;
-    grid.innerHTML=roles.filter(function(r){return c[r[0]];}).map(function(r){
-      return '<div class="cadre-item"><div class="cr">'+(PUB_TITLE[r[0]]||r[1])+'</div><div class="cn">'+c[r[0]]+'</div></div>';
-    }).join('');
-  }
 }
 // 加入 cta-join-off / cta-join-off2 的點擊處理
 function goJoinOfficial(){
@@ -814,7 +804,7 @@ window.addEventListener("load", function(){
     if(official()){
       return [
         { title:"歡迎！我帶你看一遍", text:"這是工會的入口頁。30 秒帶你看：工會現況、加入方式、幹部、有問題怎麼問。" },
-        { sel:"#cadres-pub", title:"幹部名單", text:"工會已正式成立，這裡看得到目前的理監事與幹部。" },
+        { sel:"#cadres-pub", title:"幹部名單", text:"工會已正式成立，本會置五理一監；幹部名單與分工在幹部專區。" },
         { sel:"#cta-join-off", title:"想加入就按這裡", text:"按下去可以線上填<b>電子入會申請書</b>（含電子簽名），或加 Line 群組請幹部協助。" },
         { sel:"#bot-in", title:"有問題問小幫手", text:"打字問我，例如「約用可以加入嗎」，會給你答案。" },
         { title:"好了！", text:"想算加班費、看保障，往下滑都有。隨時點上面的 🎬 導覽再看一次。" }

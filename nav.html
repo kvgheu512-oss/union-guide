@@ -164,11 +164,11 @@
   <div id="s-cadre" hidden>
     <button class="back-btn" onclick="goBack('s-who')">‹ 返回</button>
     <p class="step-title">🛡️ 我是哪位幹部？</p>
-    <a class="card" href="voiceguide.html?for=cadre" style="display:flex;align-items:center;gap:10px;border-left:6px solid #5B3B8C;background:linear-gradient(180deg,#F6F3FB,#fff);margin-bottom:12px;">
-      <span class="ci">🎧</span><div><div class="ct" style="color:#3F2A63">用聽的！幹部專屬語音導覽</div><div class="cd">選你的職務，1 分鐘聽懂你負責什麼、有哪些工具</div></div><span class="ca">→</span>
-    </a>
-    <div class="cadre-grid" id="cadre-grid"></div>
-    <p class="mem-note" style="margin-top:.5rem;">選人後記住，下次直接顯示你的工具。</p>
+    <div class="card" style="display:block;text-align:center;border-left:6px solid var(--navy);">
+      <div class="ct" style="font-size:16px;margin-bottom:.35rem">本會置「五理一監」</div>
+      <div class="cd" style="line-height:1.7">理事 5 人（含理事長）、監事 1 人。<br>幹部名單與內部分工，請到幹部功能表看；在那裡點自己那一列，就會帶你回來看自己的工具。</div>
+    </div>
+    <a class="card" href="union.html#roster" style="display:flex;align-items:center;gap:10px;"><span class="ci">📋</span><div><div class="ct">到幹部功能表看名單與分工</div><div class="cd">找到自己 → 點「我的工具」</div></div><span class="ca">→</span></a>
   </div>
 
   <!-- ══ Step 3：幹部個人工具 ══ -->
@@ -296,6 +296,9 @@ function goMember(){
 var NAV_GATE_PW_HASH="1621267407177439";
 function cyrb53Nav(s,seed){seed=seed||0;s=s||"";var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(var i=0,c;i<s.length;i++){c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return""+(4294967296*(2097151&h2)+(h1>>>0));}
 function openCadreAfterAuth(){
+  // 從幹部功能表「我的工具」帶 ?person=key 過來：直接進該幹部畫面
+  var qp=(location.search.match(/[?&]person=([a-z]+)/)||[])[1];
+  if(qp && CADRES.some(function(x){return x.key===qp;})){ buildCadreGrid(); choosePerson(qp); return; }
   // 這台裝置如果已經記得你是哪位幹部，解鎖後直接進你的個人畫面，不用再選一次
   var prevPerson=null;
   try{ var pd=JSON.parse(localStorage.getItem(NAV_KEY)||'null'); if(pd&&pd.role==='cadre'&&pd.person) prevPerson=pd.person; }catch(e){}
@@ -337,6 +340,7 @@ var LEGAL_TITLE={chair:'理事長',fin:'理事',doc:'理事',wel:'理事',org:'�
 function cname(c){ try{ return (window.EBNOrg && EBNOrg.cadreName(c.key)) || c.name; }catch(e){ return c.name; } }
 function buildCadreGrid(){
   var g = document.getElementById('cadre-grid');
+  if(!g) return; // 選人頁已改成「五理一監」說明，名單與選人移到幹部功能表
   g.innerHTML='';
   CADRES.forEach(function(c){
     var btn = document.createElement('button');
@@ -466,8 +470,9 @@ function clearMem(){
 window.addEventListener('DOMContentLoaded', function(){
   show('s-who');
   var p; try{ p = JSON.parse(localStorage.getItem(NAV_KEY)||'null'); }catch(e){ p=null; }
-  if(!p) return;
   var unlocked=false; try{ unlocked = localStorage.getItem('union_panel_unlocked')==='1'; }catch(e){}
+  if(/[?&]person=[a-z]+/.test(location.search) && unlocked){ openCadreAfterAuth(); return; }
+  if(!p) return;
 
   // 私人裝置：這台記得你是誰、也已經解鎖過 → 不用選、不用按繼續，直接進你的畫面
   if(p.role==='member'){ goMember(); return; }
@@ -478,7 +483,7 @@ window.addEventListener('DOMContentLoaded', function(){
   if(p.role==='cadre' && p.person){
     // 還沒在這台裝置解鎖過：一樣要先輸入通行碼，通過後 openCadreAfterAuth() 會自動接回這個人
     var c=CADRES.find(function(x){return x.key===p.person;});
-    label='幹部 · '+(c?cname(c):'') ; go=goCadre;
+    label='幹部'; go=goCadre;
   }
   else if(p.role==='cadre'){ label='幹部'; go=goCadre; }
   if(!go) return;

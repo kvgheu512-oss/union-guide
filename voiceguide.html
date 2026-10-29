@@ -238,11 +238,9 @@
   $("stop").addEventListener("click",function(){ stopped=true; playingAll=false; cur=-1; try{speechSynthesis.cancel();}catch(e){} highlight(); $("now").textContent="⏹ 已停止"; });
 
   function buildPickList(){
-    var roleKeys=["chair","fin","doc","wel","org","sup"];
-    var items=roleKeys.filter(function(k){ return ROLES[k]; }).map(function(k){ return [k,ROLES[k].role,ROLES[k].name]; });
-    $("list").innerHTML='<div class="cat">選你的職務 👇</div>'+items.map(function(r){
-      return '<a class="sec" href="?role='+r[0]+'" style="text-decoration:none;color:inherit"><span class="pi">🎧</span><div class="nm">'+r[1]+'　<span style="color:#777;font-weight:400;font-size:12.5px">'+r[2]+'</span></div><div class="meta">約 1 分 ▶</div></a>';
-    }).join("");
+    // 名單與職務選擇已移到幹部功能表（那裡每一列有「語音導覽」鈕）；這裡只留五理一監說明
+    $("list").innerHTML='<div class="cat">本會置「五理一監」</div>'
+      +'<a class="sec" href="union.html#roster" style="text-decoration:none;color:inherit"><span class="pi">📋</span><div class="nm">理事 5 人（含理事長）、監事 1 人<br><span style="color:#777;font-weight:400;font-size:12.5px">到幹部功能表找自己那一列，點「🎧 語音」</span></div><div class="meta">前往 ▶</div></a>';
   }
   if(PICK){
     buildPickList();
