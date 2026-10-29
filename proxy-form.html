@@ -83,7 +83,7 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
       </div>
       <div>
         <label>服務單位</label>
-        <input id="f-dept" placeholder="例：內科護理站">
+        <input id="f-dept" placeholder="打單位代號或名稱快選，例：W55、加護、血液">
       </div>
     </div>
 
@@ -156,6 +156,8 @@ input:focus,select:focus{outline:none;border-color:var(--navy);}
 </main>
 
 <script src="esign.js"></script>
+<script src="units.js"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){ if(window.EBNUnits) EBNUnits.attach(document.getElementById("f-dept")); });</script>
 <script src="org.js" defer></script>
 <script>
 (function(){

@@ -6,7 +6,7 @@ importScripts("./version.js");
 const CACHE = "ebn-" + self.__BUILD;
 const SHELL = [
   "./evidence.html", "./search.html", "./lawyer.html", "./share.html",
-  "./finance.html", "./finance-law.js", "./law-tips.js", "./common.js", "./mask.js", "./common.css", "./version.js", "./tw-area.js", "./tw-zip5-renwu.js", "./seclock.js", "./org.js", "./org.html", "./tour.js", "./gongwu.html", "./qingjia.html", "./joinroi.html", "./official-forms.html", "./founding.html", "./zhizai.html", "./shouzheng.html", "./gongfang.html", "./leavepay.html", "./charter.html", "./workplan.html", "./budget-draft.html", "./receipt.html", "./union.html", "./cases.html", "./fanben.html", "./jiaban.html", "./jianshi.html", "./plan.html", "./roster.html", "./meeting.html", "./gongwen.html", "./activity.html", "./swag.html", "./meet.html", "./index.html", "./nav.html", "./mailmerge.html", "./wenhao.html", "./receipt-batch.html", "./huizhi.html", "./dilei.html", "./voiceguide.html", "./buzhu.html", "./help.html", "./challenge.html", "./checklist.html", "./id-mark.html", "./lottery.html", "./privacy.html", "./quotes.html", "./roster-sync.html", "./tax-lawbook.html",
+  "./finance.html", "./finance-law.js", "./law-tips.js", "./common.js", "./mask.js", "./units.js", "./common.css", "./version.js", "./tw-area.js", "./tw-zip5-renwu.js", "./seclock.js", "./org.js", "./org.html", "./tour.js", "./gongwu.html", "./qingjia.html", "./joinroi.html", "./official-forms.html", "./founding.html", "./zhizai.html", "./shouzheng.html", "./gongfang.html", "./leavepay.html", "./charter.html", "./workplan.html", "./budget-draft.html", "./receipt.html", "./union.html", "./cases.html", "./fanben.html", "./jiaban.html", "./jianshi.html", "./plan.html", "./roster.html", "./meeting.html", "./gongwen.html", "./activity.html", "./swag.html", "./meet.html", "./index.html", "./nav.html", "./mailmerge.html", "./wenhao.html", "./receipt-batch.html", "./huizhi.html", "./dilei.html", "./voiceguide.html", "./buzhu.html", "./help.html", "./challenge.html", "./checklist.html", "./id-mark.html", "./lottery.html", "./privacy.html", "./quotes.html", "./roster-sync.html", "./tax-lawbook.html",
   "./icon-evidence.png", "./icon-search.png", "./icon-lawyer.png",
   "./evidence.webmanifest", "./search.webmanifest", "./lawyer.webmanifest", "./finance.webmanifest", "./receipt.webmanifest", "./jianshi.webmanifest", "./plan.webmanifest", "./roster.webmanifest", "./meeting.webmanifest", "./gongwen.webmanifest", "./activity.webmanifest",
   "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js",
@@ -46,7 +46,7 @@ self.addEventListener("fetch", e => {
   // 所以「.html 全部」都算網頁、一律網路優先，不再只看 navigate/document。
   const fresh = req.mode === "navigate" || req.destination === "document"
     || /\.html$/.test(url.pathname)
-    || /(^|\/)(version|common|mask|law-tips|finance-law)\.js$/.test(url.pathname)
+    || /(^|\/)(version|common|mask|units|law-tips|finance-law)\.js$/.test(url.pathname)
     || /(^|\/)common\.css$/.test(url.pathname);
   // ⚠️ 防禦：部分內建瀏覽器（LINE等App內嵌WebView）的 Cache Storage API 可能整個不可用或會拋例外；
   // 一旦 caches.match/caches.open 出錯又沒接住，respondWith 拿到的 Promise 會 reject，
