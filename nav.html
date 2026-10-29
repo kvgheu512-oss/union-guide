@@ -21,7 +21,7 @@
   .step-title{font-family:'Noto Serif TC',serif;font-size:19px;font-weight:700;color:var(--navy);margin-bottom:1.1rem;text-align:center;}
 
   /* ─── 大按鈕：誰 ─── */
-  .who-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:.5rem;}
+  .who-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:.5rem;}
   .who-btn{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:1.5rem 1rem 1.2rem;text-align:center;cursor:pointer;font-family:'Noto Serif TC',serif;font-weight:700;font-size:16px;color:var(--ink);transition:border-color .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent;}
   .who-btn:active{transform:scale(.97);}
   .who-btn .emoji{font-size:46px;display:block;margin-bottom:8px;}
@@ -112,11 +112,6 @@
         <span class="emoji">👤</span>
         我是會員
         <span class="sub">或想了解、加入工會</span>
-      </button>
-      <button class="who-btn c" onclick="goCadre()">
-        <span class="emoji">🛡️</span>
-        我是幹部
-        <span class="sub">找自己負責的工具</span>
       </button>
     </div>
     <div style="text-align:center;margin-top:1.4rem;">
@@ -476,8 +471,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
   // 私人裝置：這台記得你是誰、也已經解鎖過 → 不用選、不用按繼續，直接進你的畫面
   if(p.role==='member'){ goMember(); return; }
-  if(p.role==='cadre' && p.person && unlocked){ buildCadreGrid(); choosePerson(p.person); return; }
-  if(p.role==='cadre' && !p.person && unlocked){ openCadreAfterAuth(); return; }
+  if(p.role==='cadre'){ return; }   // 導覽已不提供「我是幹部」入口（幹部請從幹部功能表進來）
 
   var label='', go=null;
   if(p.role==='cadre' && p.person){
