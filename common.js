@@ -315,3 +315,6 @@
     if(document.readyState!=="loading") document.body.appendChild(img);
   }catch(e){}
 })();
+
+/* 理監事姓名顯示打碼：邏輯在 mask.js（手冊等不載入 common.js 的頁面直接引用 mask.js） */
+(function(){ if(!window.EBNMask && !document.querySelector('script[src^="mask.js"]')){ var s=document.createElement("script"); s.src="mask.js"; document.head.appendChild(s); } })();

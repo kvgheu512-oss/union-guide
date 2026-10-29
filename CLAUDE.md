@@ -32,6 +32,13 @@
 - `org.js` 是幹部/組織資料單一真相源：`CADRE_DEFAULTS`（內建值）＋`localStorage ebn_cadres_v1`（草稿）＋`public.json cadres`（已發布）三層合併，**草稿優先**（跟 `get()`／`candidates()` 同邏輯）——8/21 修正：原本寫成「已發布優先」，導致 org.html 改名存檔當下會被 buildPublic() 用的舊 `_pub` 蓋掉、改名等於白改，已改成草稿覆蓋已發布。使用者瀏覽器 localStorage 草稿裡如果還殘留舊的 fin2/doc2 key，不會出錯，就只是沒有任何程式碼再讀取它，屬於無害孤兒資料。
 - `voiceguide.html` 語音腳本裡的名字**不改**（腳本已個人化如「楊淯涵，你是理事長」）；只有 ROLES[key].name（標題顯示）會由 syncNames() 自動更新。
 
+## 理監事姓名打碼（10/29，使用者要求「全部打馬賽克，資料不動」）
+- `mask.js` 只改**畫面文字**：楊淯涵→楊○涵、黃敏→黃○、單獨名字（淯涵）→○涵；`common.js` 會自動載入它，不載入 common.js 的 `shouce/prep2/prep3/qiejieshu.html` 另外直接引用。
+- **資料完全不動**（public.json／org.js／輸入框 value／`<pre>` 範本／`<option>` 的 value 都是真名），公文等產文件功能不受影響；列印時（beforeprint）自動還原真名。
+- 看真名：網址加 `?names=show`（記在 localStorage）；改回 `?names=hide`。
+- **新增理監事或改名時，要把名字加進 `mask.js` 的 FULL／GIVEN 清單**，否則新名字不會被打碼。
+- 限制：輸入框裡的預填值（如 meeting 主席欄）仍是真名；任何靠「讀畫面文字」來產 Word／複製的功能，可能複製到打碼版（`<pre>` 與輸入框除外）。
+
 ## 深層實測（凡大功能必做）
 - 測試要用 `elementFromPoint` 確認元素真實可點（不被遮擋），不能只看 DOM 存在。
 - 幹部導覽說明框不能擋住示範內容：改用瞬間捲動＋說明框貼螢幕遠側。
