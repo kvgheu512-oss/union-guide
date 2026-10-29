@@ -62,11 +62,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-10-29
 
 最近 commits：
+  2927e23 章程頁刪除「附錄：相關辦法」整區（入退會辦法、勞方代表選舉辦法、入會申請書範本）
+  3005e2e 自動更新 CLAUDE.md 最近進度（Stop hook）
   12770a8 自動更新 CLAUDE.md 最近進度（Stop hook）
   fe6472d 互動導覽拿掉「我是幹部」入口（只留會員）
   45cecbd 自動更新 CLAUDE.md 最近進度（Stop hook）
-  11f0fec 自動更新 CLAUDE.md 最近進度（Stop hook）
-  44af0c5 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
