@@ -62,11 +62,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-10-29
 
 最近 commits：
+  fe6472d 互動導覽拿掉「我是幹部」入口（只留會員）
+  45cecbd 自動更新 CLAUDE.md 最近進度（Stop hook）
   11f0fec 自動更新 CLAUDE.md 最近進度（Stop hook）
   44af0c5 自動更新 CLAUDE.md 最近進度（Stop hook）
   e2a82e2 首頁與導覽只留「五理一監」，名單與選人移到幹部功能表（每列加我的工具/語音鈕）
-  4178e36 自動更新 CLAUDE.md 最近進度（Stop hook）
-  7db86af 全站理監事姓名畫面打碼（只改顯示、資料不動、列印還原真名）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
