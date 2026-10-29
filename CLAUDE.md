@@ -59,14 +59,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-10-28
+最後更新：2026-10-29
 
 最近 commits：
+  7db86af 全站理監事姓名畫面打碼（只改顯示、資料不動、列印還原真名）
+  9e9d4cb 自動更新 CLAUDE.md 最近進度（Stop hook）
   22b749c 幹部選人頁改標法定職稱、修舊草稿蓋掉名單；幹部功能表加內部分工一覽
   eaf84ae 自動更新 CLAUDE.md 最近進度（Stop hook）
   d99aa82 自動更新 CLAUDE.md 最近進度（Stop hook）
-  a020416 CLAUDE.md 記錄：章程第17條浮動制經使用者確認為正式版，手冊附件二已同步
-  a4143fc 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
