@@ -20,13 +20,15 @@
     ['長照機構／日照中心','日照中心（長照機構）'],
     ['長照機構／','長照機構／（選了再接著打單位名稱）'],
     ['護理部／尊榮病房','尊榮病房（護理部）'],['護理部／癌症中心','癌症中心（護理部）'],
+    ['重症醫學部',''],
     ['急診部（ER）',''],['骨科部',''],['泌尿外科',''],['放射腫瘤科',''],['健檢中心',''],['門診（OPD）',''],['總務室','']
   ];
   var ITEMS=NURSE.map(function(u){ return {v:'護理部／'+u[0], label:(u[0]===u[1]?u[0]:u[0]+'　'+u[1]), key:('護理部 '+u[0]+' '+u[1]).toLowerCase()}; })
     .concat(OTHER.map(function(u){ return {v:u[0], label:(u[1]||u[0]), key:(u[0]+' '+u[1]).toLowerCase()}; }));
 
-  function attach(input){
+  function attach(input,opts){
     if(!input || input._unitsAttached) return; input._unitsAttached=true;
+    opts=opts||{}; var LIST=opts.items?opts.items.map(function(s){ return {v:s,label:s,key:s.toLowerCase()}; }):ITEMS;
     var wrap=document.createElement('div'); wrap.style.cssText='position:relative';
     input.parentNode.insertBefore(wrap,input); wrap.appendChild(input);
     var box=document.createElement('div');
@@ -34,13 +36,13 @@
     wrap.appendChild(box);
     input.setAttribute('autocomplete','off');
     var shown=[], hi=-1, keep=false;
-    function render(){
-      var q=input.value.trim().toLowerCase().replace(/^護理部[／\/]?/,'');
-      shown=ITEMS.filter(function(it){ return !q || it.key.indexOf(q)>=0 || it.v.toLowerCase().indexOf(q)>=0; });
+    function render(all){
+      var q=all===true?'':input.value.trim().toLowerCase().replace(/^護理部[／\/]?/,'');
+      shown=LIST.filter(function(it){ return !q || it.key.indexOf(q)>=0 || it.v.toLowerCase().indexOf(q)>=0; });
       var raw=input.value.trim();
       // 清單裡沒有的單位：永遠留兩條路給少數單位自己輸入
-      if(raw && !ITEMS.some(function(it){ return it.v.toLowerCase().replace(/^護理部／/,'')===raw.toLowerCase().replace(/^護理部／/,''); })) shown.push({v:raw, label:'✏️ 直接使用我打的「'+raw+'」', custom:true});
-      shown.push({v:'其他／', label:'其他（找不到我的單位，選了再接著打）'});
+      if(raw && !LIST.some(function(it){ return it.v.toLowerCase().replace(/^護理部／/,'')===raw.toLowerCase().replace(/^護理部／/,''); })) shown.push({v:raw, label:'✏️ 直接使用我打的「'+raw+'」', custom:true});
+      if(!opts.items) shown.push({v:'其他／', label:'其他（找不到我的單位，選了再接著打）'});
       box.innerHTML=''; hi=-1;
       shown.forEach(function(it,i){
         var d=document.createElement('div'); d.textContent=it.label; d.dataset.i=i;
@@ -57,7 +59,7 @@
       input.dispatchEvent(new Event('input',{bubbles:true})); input.dispatchEvent(new Event('change',{bubbles:true}));
     }
     function mark(){ Array.prototype.forEach.call(box.children,function(c,i){ c.style.background=i===hi?'#E8F1FB':''; if(i===hi) c.scrollIntoView({block:'nearest'}); }); }
-    input.addEventListener('focus',function(){ if(!keep) render(); });
+    input.addEventListener('focus',function(){ if(!keep) render(!!opts.items); });
     input.addEventListener('input',render);
     input.addEventListener('keydown',function(e){
       if(box.style.display==='none') return;

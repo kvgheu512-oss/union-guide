@@ -258,6 +258,8 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
 
   // 單位：打一個字就能快選（清單見 units.js）
   if(window.EBNUnits) EBNUnits.attach(document.getElementById('f-dept'));
+  // 職稱：常用選項快選（可直接改打其他職稱）
+  if(window.EBNUnits) EBNUnits.attach(document.getElementById('f-title'),{items:['契約護理師','契約專科護理師','公職護理師']});
 
   // 簽名板
   var canvas=document.getElementById('signCanvas');
