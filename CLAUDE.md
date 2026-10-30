@@ -62,11 +62,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-10-30
 
 最近 commits：
+  e44e441 刪除舊版章程草稿檔（入會費欄為空白【○○○】），避免被誤用
+  ac37a2c 自動更新 CLAUDE.md 最近進度（Stop hook）
   f6afdd9 自動更新 CLAUDE.md 最近進度（Stop hook）
   0b30c7a 清理：章程頁無用的3個地址資料腳本、重複的根目錄圖示（assets/ 已有同檔）、無人引用的 tw-streets-qishan.js
   dd20697 自動更新 CLAUDE.md 最近進度（Stop hook）
-  efb26bc 自動更新 CLAUDE.md 最近進度（Stop hook）
-  61f1f0f 首頁導覽列把繳費方式往前移；繳費頁最上方加「要繳多少」（入會費/經常會費/第一次合計）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
