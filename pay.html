@@ -32,7 +32,7 @@
 
   <div class="card">
     <h2>① 現金繳納（115 年 9 月～12 月）</h2>
-    <div style="font-size:14.5px;line-height:1.9">請將入會費與當月會費，<b>當面交給總務</b>（<span id="fin-names">總務幹部</span>），總務會<b>當場開立收據</b>並登錄您的會費紀錄。</div>
+    <div style="font-size:14.5px;line-height:1.9">請將入會費與當月會費，<b>當面交給總務</b>，總務會<b>當場開立收據</b>並登錄您的會費紀錄。</div>
     <div class="note">請保留收據作為繳費憑證；如不方便當面繳交，請先與總務約時間。</div>
   </div>
 
@@ -51,16 +51,6 @@
 <div id="verBadge"></div>
 <script src="org.js" defer></script>
 <script>
-// 總務姓名由幹部名單自動帶入
-(function(){
-  function apply(){
-    if(!window.EBNOrg) return;
-    var fin=EBNOrg.cadreName("fin");
-    if(fin && fin!=="（出缺）") document.getElementById("fin-names").textContent="總務："+fin;
-  }
-  document.addEventListener("ebnorg:public",apply);
-  window.addEventListener("load",apply);
-})();
 // 複製帳號
 (function(){
   var btn=document.getElementById("copyAcctBtn"); if(!btn) return;
