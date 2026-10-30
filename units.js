@@ -37,7 +37,10 @@
     function render(){
       var q=input.value.trim().toLowerCase().replace(/^護理部[／\/]?/,'');
       shown=ITEMS.filter(function(it){ return !q || it.key.indexOf(q)>=0 || it.v.toLowerCase().indexOf(q)>=0; });
-      if(!shown.length){ box.style.display='none'; return; }
+      var raw=input.value.trim();
+      // 清單裡沒有的單位：永遠留兩條路給少數單位自己輸入
+      if(raw && !ITEMS.some(function(it){ return it.v.toLowerCase().replace(/^護理部／/,'')===raw.toLowerCase().replace(/^護理部／/,''); })) shown.push({v:raw, label:'✏️ 直接使用我打的「'+raw+'」', custom:true});
+      shown.push({v:'其他／', label:'其他（找不到我的單位，選了再接著打）'});
       box.innerHTML=''; hi=-1;
       shown.forEach(function(it,i){
         var d=document.createElement('div'); d.textContent=it.label; d.dataset.i=i;
@@ -48,6 +51,7 @@
     }
     function pick(i){
       var it=shown[i]; if(!it) return;
+      if(it.custom){ box.style.display='none'; return; }
       input.value=it.v; box.style.display='none';
       if(/[／\/]$/.test(it.v)){ keep=true; input.focus(); try{ input.setSelectionRange(it.v.length,it.v.length); }catch(e){} keep=false; }   // 選到「長照機構／」這類前綴：游標留在後面讓人接著打
       input.dispatchEvent(new Event('input',{bubbles:true})); input.dispatchEvent(new Event('change',{bubbles:true}));
