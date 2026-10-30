@@ -33,11 +33,16 @@
 - `voiceguide.html` 語音腳本裡的名字**不改**（腳本已個人化如「楊淯涵，你是理事長」）；只有 ROLES[key].name（標題顯示）會由 syncNames() 自動更新。
 
 ## 理監事姓名打碼（10/29，使用者要求「全部打馬賽克，資料不動」）
-- `mask.js` 只改**畫面文字**：楊淯涵→楊○涵、黃敏→黃○、單獨名字（淯涵）→○涵；`common.js` 會自動載入它，不載入 common.js 的 `shouce/prep2/prep3/qiejieshu.html` 另外直接引用。
+- `mask.js` 只改**畫面文字**：楊淯涵→楊○涵、黃敏→黃○、單獨名字（淯涵）→○涵；`common.js` 會自動載入它，不載入 common.js 的 `shouce/qiejieshu.html`（prep2/prep3 已刪除）另外直接引用。
 - **資料完全不動**（public.json／org.js／輸入框 value／`<pre>` 範本／`<option>` 的 value 都是真名），公文等產文件功能不受影響；列印時（beforeprint）自動還原真名。
 - 看真名：網址加 `?names=show`（記在 localStorage）；改回 `?names=hide`。
 - **新增理監事或改名時，要把名字加進 `mask.js` 的 FULL／GIVEN 清單**，否則新名字不會被打碼。
 - 限制：輸入框裡的預填值（如 meeting 主席欄）仍是真名；任何靠「讀畫面文字」來產 Word／複製的功能，可能複製到打碼版（`<pre>` 與輸入框除外）。
+
+## 已刪除的籌備會會議文件（10/30，使用者指示「所有籌備會議記錄通通刪掉」）
+- 已刪：`prep2.html`（第二次籌備會會議紀錄）、`prep3.html`（第三次籌備會通知暨議程）、第一次籌備委員會會議紀錄 .docx，`archive.html` 的「籌備委員會會議」區塊也已拿掉。
+- **這是使用者明確的刪除決定，不要看到舊紀錄裡提到 prep2/prep3 就想補回來。** 需要還原時可從 git 歷史取回。
+- 沒動：`shouce.html` 大會手冊裡的「籌備期間工作報告」與籌備會收支（那是會長核定的大會手冊內容，不是會議紀錄）。下面各 session 紀要裡提到 prep2/prep3 的段落是歷史紀錄，已過期。
 
 ## 深層實測（凡大功能必做）
 - 測試要用 `elementFromPoint` 確認元素真實可點（不被遮擋），不能只看 DOM 存在。
