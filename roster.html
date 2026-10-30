@@ -193,7 +193,7 @@
         <label>單位／科別</label>
         <input id="f-dept" placeholder="打單位代號或名稱快選，例：W55、加護、血液">
       </div>
-      <div><label>職稱</label><input id="f-title" placeholder="例：護理師"></div>
+      <div><label>職稱</label><input id="f-title" placeholder="點選或自己輸入（例：護理師、醫檢師、藥師）"></div>
       <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:13.5px;color:#7B5A00;background:var(--amber-light);border:1px solid #F0DBA8;border-radius:10px;padding:.5rem .7rem;margin-top:.4rem"><input type="checkbox" id="f-pubofficial" style="width:auto"> 此人為<b>公職人員</b>（勾選後自動鎖定為「贊助會員」，避免觸法）</label>
       <div class="grid2">
         <div><label>會員身分</label>
@@ -601,17 +601,10 @@ function applyPubOfficialLock(){
   const on=$('f-pubofficial').checked, sel=$('f-type');
   if(on) sel.value='sponsor';
   sel.disabled=on;
-  suggestTitle();
 }
 $('f-pubofficial').addEventListener('change',applyPubOfficialLock);
-/* 會員身分連動職稱：正式會員→契約護理師、贊助會員→公職護理師（職稱是空的或還是預設值才會帶，已手動改過的不覆蓋） */
-function suggestTitle(){
-  const t=$('f-title'), cur=t.value.trim();
-  if(cur===''||cur==='護理師'||cur==='契約護理師'||cur==='公職護理師'){
-    t.value=$('f-type').value==='sponsor'?'公職護理師':'契約護理師';
-  }
-}
-$('f-type').addEventListener('change',suggestTitle);
+/* 職稱快選：只放職稱本身（公職／契約看「會員身分」），也可自己輸入 */
+if(window.EBNUnits) EBNUnits.attach($('f-title'),{items:EBNUnits.TITLES});
 /* 信箱常用結尾一鍵帶入：取 @ 前面的帳號，接上所點的網域（已有 @ 則取代後面） */
 (function(){ var box=$('mailchips'); if(!box) return;
   box.addEventListener('click',function(e){ var b=e.target.closest('[data-dom]'); if(!b) return; e.preventDefault();

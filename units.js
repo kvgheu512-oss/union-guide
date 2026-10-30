@@ -73,5 +73,7 @@
     document.addEventListener('pointerdown',function(e){ if(!wrap.contains(e.target)) box.style.display='none'; });
     input.addEventListener('blur',function(){ setTimeout(function(){ box.style.display='none'; },150); });
   }
-  window.EBNUnits={attach:attach,items:ITEMS};
+  // 職稱快選（只放職稱本身；公職／契約由「會員身分」決定，不放進職稱）。清單外的職稱可直接自己打。
+  var TITLES=['護理師','專科護理師','醫檢師','藥師','放射師','物理治療師','職能治療師','呼吸治療師','營養師','臨床心理師','語言治療師','社工師'];
+  window.EBNUnits={attach:attach,items:ITEMS,TITLES:TITLES};
 })();
