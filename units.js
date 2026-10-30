@@ -18,7 +18,7 @@
   // 單位表以外、原本表單就有的選項（保留，避免舊資料對不上）
   var OTHER=[
     ['長照機構／日照中心','日照中心（長照機構）'],
-    ['長照機構',''],
+    ['長照機構／','長照機構／（選了再接著打單位名稱）'],
     ['護理部／尊榮病房','尊榮病房（護理部）'],['護理部／癌症中心','癌症中心（護理部）'],
     ['急診部（ER）',''],['骨科部',''],['泌尿外科',''],['放射腫瘤科',''],['健檢中心',''],['門診（OPD）',''],['總務室','']
   ];
@@ -33,7 +33,7 @@
     box.style.cssText='display:none;position:absolute;left:0;right:0;top:100%;z-index:50;max-height:240px;overflow-y:auto;background:#fff;border:1.5px solid #C9D3DD;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.18);margin-top:2px;-webkit-overflow-scrolling:touch';
     wrap.appendChild(box);
     input.setAttribute('autocomplete','off');
-    var shown=[], hi=-1;
+    var shown=[], hi=-1, keep=false;
     function render(){
       var q=input.value.trim().toLowerCase().replace(/^護理部[／\/]?/,'');
       shown=ITEMS.filter(function(it){ return !q || it.key.indexOf(q)>=0 || it.v.toLowerCase().indexOf(q)>=0; });
@@ -49,10 +49,11 @@
     function pick(i){
       var it=shown[i]; if(!it) return;
       input.value=it.v; box.style.display='none';
+      if(/[／\/]$/.test(it.v)){ keep=true; input.focus(); try{ input.setSelectionRange(it.v.length,it.v.length); }catch(e){} keep=false; }   // 選到「長照機構／」這類前綴：游標留在後面讓人接著打
       input.dispatchEvent(new Event('input',{bubbles:true})); input.dispatchEvent(new Event('change',{bubbles:true}));
     }
     function mark(){ Array.prototype.forEach.call(box.children,function(c,i){ c.style.background=i===hi?'#E8F1FB':''; if(i===hi) c.scrollIntoView({block:'nearest'}); }); }
-    input.addEventListener('focus',render);
+    input.addEventListener('focus',function(){ if(!keep) render(); });
     input.addEventListener('input',render);
     input.addEventListener('keydown',function(e){
       if(box.style.display==='none') return;
