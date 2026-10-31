@@ -67,11 +67,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-10-31
 
 最近 commits：
+  75d7a78 快取修正：網頁更新時繞過瀏覽器 HTTP 快取，避免改完後最多10分鐘仍看到舊內容
+  b0bd55e 自動更新 CLAUDE.md 最近進度（Stop hook）
   19c0d04 自動更新 CLAUDE.md 最近進度（Stop hook）
   3f235c4 繳費頁「現金繳納」標題拿掉日期
   1d2bd37 自動更新 CLAUDE.md 最近進度（Stop hook）
-  b7ce51d 刪除所有籌備會會議文件（第一次紀錄docx、第二次紀錄prep2、第三次通知prep3）及檔案庫連結
-  4f07396 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
