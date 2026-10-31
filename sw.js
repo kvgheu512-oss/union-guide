@@ -57,7 +57,9 @@ self.addEventListener("fetch", e => {
       let cached = null;
       try { cached = await caches.match(req); } catch (_) { cached = null; }
 
-      const net = fetch(req).then(r => {
+      // cache:"no-cache"＝每次都向伺服器確認有沒有新版，不吃瀏覽器自己的 HTTP 快取
+      // （GitHub Pages 預設讓檔案快取約10分鐘，否則剛改完網頁、10分鐘內仍看到舊內容）
+      const net = fetch(req, { cache: "no-cache" }).then(r => {
         try { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)).catch(() => {}); } catch (_) {}
         return r;
       });
