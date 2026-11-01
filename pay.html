@@ -33,16 +33,18 @@
   <div class="card">
     <h2>💰 要繳多少？</h2>
     <div class="info-row"><span class="info-key">入會費</span><span class="info-val">1,250 元（入會時繳一次）</span></div>
-    <div class="info-row"><span class="info-key">經常會費</span><span class="info-val">每月 250 元，一年 3,000 元</span></div>
-    <div class="info-row" style="background:#F0F8F3;border-radius:8px;padding:.5rem .6rem;margin-top:.4rem"><span class="info-key" style="color:var(--green);font-weight:700">第一次入會要繳</span><span class="info-val" style="color:var(--green)">1,250 ＋ 3,000 ＝ 4,250 元</span></div>
-    <div class="info-row"><span class="info-key">之後每年</span><span class="info-val">3,000 元</span></div>
-    <div style="background:#FFFDF3;border:1px dashed #D9B84A;border-radius:10px;padding:.7rem .85rem;margin-top:.7rem;font-size:13.5px;line-height:1.85">
-      <b style="color:#7A5600">📖 舉例：</b>小美今天入會。<br>
-      • 第一次：入會費 1,250 ＋ 一年經常會費 3,000 ＝ <b>4,250 元</b>（一次繳清）。<br>
-      • 之後：每年繳經常會費 <b>3,000 元</b>就好，入會費不用再繳。<br>
-      <span style="color:var(--ink-soft)">換算：一個月 250 元，平均一天不到 9 元。</span>
+    <div class="info-row"><span class="info-key">經常會費</span><span class="info-val">每月 250 元，全年 3,000 元</span></div>
+    <div class="info-row"><span class="info-key">之後每年</span><span class="info-val">3,000 元（全年）</span></div>
+    <div class="note">目前繳費以<b>「年繳」</b>為主：入會時一次繳「入會費」加「<b>入會當月起到當年 12 月底</b>的經常會費」（每月 250 元，入會當月也算一個月）；<b>次年起每年繳一次全年 3,000 元</b>。經常會費為固定金額，依章程第 33 條。下面兩種繳法，入會費和經常會費都適用。</div>
+
+    <div style="background:#FFFDF3;border:1px solid #D9B84A;border-radius:12px;padding:.85rem .95rem;margin-top:.8rem">
+      <b style="color:#7A5600;font-size:14.5px">🧮 填入入會日期，算出你第一次要繳多少</b>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:.55rem;flex-wrap:wrap">
+        <label for="joinDate" style="font-size:13.5px;color:var(--ink-mid)">預計入會日期</label>
+        <input type="date" id="joinDate" style="font-size:16px;padding:.4rem .55rem;border:1.5px solid #C9D3DD;border-radius:8px;background:#fff">
+      </div>
+      <div id="joinCalc" style="margin-top:.7rem;font-size:14px;line-height:1.9"></div>
     </div>
-    <div class="note">目前繳費以<b>「年繳」</b>為主：入會時一次繳「入會費」加「一整年的經常會費」（250 元 × 12 個月）。經常會費每月 250 元，為固定金額，依章程第 33 條。下面兩種繳法，入會費和經常會費都適用。</div>
   </div>
 
   <div class="card">
@@ -69,6 +71,31 @@
 </main>
 
 <div id="verBadge"></div>
+<script>
+// 入會日期試算：入會費 1,250 ＋ 入會當月起到 12 月底的經常會費（每月 250，入會當月也算）
+(function(){
+  var FEE=1250, MONTHLY=250;
+  var inp=document.getElementById("joinDate"), out=document.getElementById("joinCalc");
+  if(!inp||!out) return;
+  function fmt(n){ return n.toLocaleString("en-US"); }
+  function pad(n){ return (n<10?"0":"")+n; }
+  var d=new Date(); inp.value=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+  function calc(){
+    var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(inp.value||"");
+    if(!m){ out.innerHTML='<span style="color:var(--ink-soft)">請選一個入會日期。</span>'; return; }
+    var y=+m[1], mo=+m[2], day=+m[3], months=13-mo, dues=months*MONTHLY, total=FEE+dues;
+    var roc=y-1911;
+    var rng=(months===1)?(mo+" 月"):(mo+"～12 月");
+    out.innerHTML=
+      '你在 <b>民國 '+roc+' 年 '+mo+' 月 '+day+' 日</b>入會：<br>'+
+      '• 入會費：<b>'+fmt(FEE)+' 元</b><br>'+
+      '• 經常會費：'+rng+'共 '+months+' 個月 × '+MONTHLY+' ＝ <b>'+fmt(dues)+' 元</b><br>'+
+      '<div style="margin-top:.35rem;padding:.5rem .65rem;background:#F0F8F3;border-radius:8px;color:var(--green,#0F5C36)"><b>第一次共要繳：'+fmt(FEE)+' ＋ '+fmt(dues)+' ＝ '+fmt(total)+' 元</b></div>'+
+      '<span style="color:var(--ink-soft);font-size:12.5px">之後從隔年起，每年繳一次全年經常會費 3,000 元（入會費不用再繳）。</span>';
+  }
+  inp.addEventListener("input",calc); inp.addEventListener("change",calc); calc();
+})();
+</script>
 <script src="org.js" defer></script>
 <script>
 // 複製帳號
