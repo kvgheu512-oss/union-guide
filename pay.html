@@ -96,13 +96,12 @@
       '<div style="margin-top:.35rem;padding:.5rem .65rem;background:#F0F8F3;border-radius:8px;color:var(--green,#0F5C36)"><b>第一次共要繳：'+fmt(FEE)+' ＋ '+fmt(dues)+' ＝ '+fmt(total)+' 元</b></div>'+
       '<span style="color:var(--ink-soft);font-size:12.5px">之後從隔年起，每年繳一次全年經常會費 3,000 元（入會費不用再繳）。</span>'+
       (mo>=11 ? '<div style="margin-top:.6rem;padding:.65rem .75rem;background:#EEF6FF;border:1px solid #BBD6F2;border-radius:10px;font-size:13.5px;line-height:1.8;color:#1A3A6B">'+
-        '<b>💡 年底入會的小提醒</b><br>'+
-        '想省事的話，可以順便把<b>隔年全年的會費（3,000 元）</b>一次繳清：<br>'+
+        '<b>🎁 年底入會，合併繳隔年會費有優惠</b><br>'+
+        '想省事又划算的話，可以順便把<b>隔年全年的會費（3,000 元）</b>一次繳清：<br>'+
         '① 一次搞定，明年不用再記得繳<br>'+
         '② 不會因為忘了繳，讓會籍中斷（章程規定連續一年未繳會費，視同出會）<br>'+
-        '③ 少轉帳一次，總務對帳也輕鬆<br>'+
-        '<b>合併一次繳（標準金額）：'+fmt(FEE)+' ＋ '+fmt(dues)+' ＋ 3,000 ＝ '+fmt(total+3000)+' 元</b><br>'+
-        '<span style="font-size:12.5px;color:#4A5F7F">純屬自願。合併繳費的方式與最後金額，請洽總務。若日後退會，預繳的會費依章程退還出會後的月份。</span></div>' : '');
+        '<b style="color:#D32F2F">合併一次繳（標準金額）：'+fmt(FEE)+' ＋ '+fmt(dues)+' ＋ 3,000 ＝ '+fmt(total+3000)+' 元</b><br>'+
+        '<b style="color:#D32F2F">👉 合併繳費另有優惠，實際金額請洽總務。</b></div>' : '');
   }
   inp.addEventListener("input",calc); inp.addEventListener("change",calc); calc();
 })();
