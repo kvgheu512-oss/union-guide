@@ -93,7 +93,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
 
     <div class="row2">
       <div>
-        <label>身分證字號</label>
+        <label>身分證字號 <span style="color:red">*</span></label>
         <input id="f-idno" placeholder="A123456789" inputmode="text" autocapitalize="characters" autocomplete="off" maxlength="10">
       </div>
       <div>
@@ -102,7 +102,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
       </div>
     </div>
 
-    <label>通訊地址</label>
+    <label>通訊地址 <span style="color:red">*</span></label>
     <input id="f-addr" placeholder="收信地址" autocomplete="street-address">
 
     <div class="row2">
@@ -270,7 +270,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
   btnClear.addEventListener('click',function(){ pad.clear(); hint.style.display='flex'; signWrap.style.borderColor=''; });
 
   // 必填欄位即時標色
-  ['f-name','f-empid'].forEach(function(id){
+  ['f-name','f-idno','f-addr','f-empid'].forEach(function(id){
     var el=document.getElementById(id);
     el.addEventListener('blur',function(){ el.style.borderColor=el.value.trim()?'var(--green)':'#E53935'; });
     el.addEventListener('input',function(){ if(el.value.trim()) el.style.borderColor='var(--green)'; });
@@ -298,10 +298,12 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     var empid=document.getElementById('f-empid').value.trim();
 
     // 必填驗證
-    var ok=true;
-    if(!name){ document.getElementById('f-name').style.borderColor='#E53935'; ok=false; }
-    if(!empid){ document.getElementById('f-empid').style.borderColor='#E53935'; ok=false; }
-    if(!ok){ toast('❌ 請填寫姓名和員工編號','#E53935'); document.getElementById('f-name').focus(); return; }
+    var ok=true, miss=[];
+    [['f-name','姓名'],['f-idno','身分證字號'],['f-addr','通訊地址'],['f-empid','員工編號']].forEach(function(p){
+      var el=document.getElementById(p[0]);
+      if(!el.value.trim()){ el.style.borderColor='#E53935'; ok=false; miss.push(p[1]); }
+    });
+    if(!ok){ toast('❌ 請填寫：'+miss.join('、'),'#E53935'); var first=document.getElementById(['f-name','f-idno','f-addr','f-empid'].filter(function(i){return !document.getElementById(i).value.trim();})[0]); first.focus(); first.scrollIntoView({block:'center'}); return; }
 
     // 簽名驗證
     if(pad.isEmpty()){ toast('❌ 請先在下方簽名','#E53935'); signWrap.style.borderColor='#E53935'; signWrap.scrollIntoView({behavior:'smooth',block:'center'}); return; }
