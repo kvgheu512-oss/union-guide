@@ -66,6 +66,17 @@
       <div><label>經常會費月數</label><input id="months" type="number" inputmode="numeric" min="1" max="36" value="12"></div>
       <div><label>期間說明（印在收據上）</label><input id="period" placeholder="例：115年11月～12月＋116年全年" autocomplete="off"></div>
     </div>
+    <label class="chk" style="margin-top:.9rem;padding:.55rem .65rem;background:#FFF8E5;border:1px solid #EAD67A;border-radius:10px"><input type="checkbox" id="disc"> <b>🎁 套用優惠（折扣）</b></label>
+    <div id="discBox" style="display:none;margin-top:.4rem;padding:.65rem .75rem;border:1px dashed #D9B84A;border-radius:10px;background:#FFFDF5">
+      <div class="row2">
+        <div><label style="margin-top:0">優惠名稱（印在收據上）</label><input id="discName" value="年底合併繳優惠" autocomplete="off"></div>
+        <div><label style="margin-top:0">折數（9＝9 折，8.5＝85 折）</label><input id="discRate" type="number" inputmode="decimal" step="0.5" min="1" max="10" value="9"></div>
+      </div>
+      <label>折扣範圍</label>
+      <select id="discScope"><option value="dues">只打經常會費</option><option value="fee">只打入會費</option><option value="all">入會費＋經常會費都打</option></select>
+      <div id="discInfo" style="margin-top:.55rem;font-size:13.5px;color:#7A5600"></div>
+      <div class="note" style="margin-top:.3rem">收據上只會印「優惠名稱」和折扣金額，不印折數算法。</div>
+    </div>
     <label>實收金額（元）<span style="color:var(--ink-soft)">　依上面項目自動算，有調整可手改</span></label>
     <input id="amt" type="number" inputmode="numeric" min="0">
     <div class="row2">
@@ -116,7 +127,17 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
   function nextNo(){ var y=new Date().getFullYear()-1911, n=0; try{ var s=JSON.parse(localStorage.getItem(NOKEY)||"{}"); if(s.y===y) n=s.n||0; }catch(e){} return {y:y,n:n+1}; }
   function fillNo(){ var x=nextNo(); $("no").value=x.y+"-"+pad(x.n,3); }
   function bumpNo(){ var m=/^(\d+)-(\d+)$/.exec($("no").value.trim()); if(!m) return; try{ localStorage.setItem(NOKEY,JSON.stringify({y:+m[1],n:+m[2]})); }catch(e){} }
-  function calc(){ var t=0; if($("fee").checked) t+=FEE; if($("dues").checked) t+=MONTHLY*Math.max(0,+$("months").value||0); $("amt").value=t; }
+  function discount(){   // 回傳 {disc, name}；沒套用時 disc=0
+    if(!$("disc").checked) return {disc:0,name:""};
+    var fee=$("fee").checked?FEE:0, dues=$("dues").checked?MONTHLY*Math.max(0,+$("months").value||0):0;
+    var v=+$("discRate").value||10, r=v<=10?v/10:v/100; if(r<=0||r>1) r=1;
+    var s=$("discScope").value, base=s==="fee"?fee:(s==="dues"?dues:fee+dues);
+    return {disc:Math.round(base*(1-r)), name:($("discName").value.trim()||"優惠折扣")};
+  }
+  function calc(){ var t=0; if($("fee").checked) t+=FEE; if($("dues").checked) t+=MONTHLY*Math.max(0,+$("months").value||0);
+    var d=discount(); t-=d.disc; $("amt").value=Math.max(0,t);
+    $("discBox").style.display=$("disc").checked?"block":"none";
+    $("discInfo").textContent=d.disc>0?("→ 折扣 −"+d.disc.toLocaleString("en-US")+" 元，實收 "+Math.max(0,t).toLocaleString("en-US")+" 元"):""; }
   var D="零壹貳參肆伍陸柒捌玖";
   function cnBig(n){ n=Math.floor(n); if(n<=0) return "零元整"; var u=["","拾","佰","仟"], out="", s=String(n), len=s.length, wan=Math.floor(n/10000), low=n%10000;
     function sec(v){ var r="",z=false,str=pad(v,4); for(var i=0;i<4;i++){ var d=+str[i], p=3-i; if(d===0){ if(r&&!z) z=true; } else { if(z){ r+="零"; z=false; } r+=D[d]+u[p]; } } return r; }
@@ -128,7 +149,8 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     var no=$("no").value.trim(), date=rocDate($("date").value), who=$("name").value.trim()||"（未填）", amt=Math.max(0,+$("amt").value||0);
     var items=[]; if($("fee").checked) items.push(["入會費","入會時繳一次",FEE]);
     if($("dues").checked){ var mo=Math.max(0,+$("months").value||0); items.push(["經常會費",($("period").value.trim()||(mo+" 個月"))+"（每月 "+MONTHLY+" 元 × "+mo+"）",MONTHLY*mo]); }
-    var sum=items.reduce(function(a,b){return a+b[2];},0);
+    var sum=items.reduce(function(a,b){return a+b[2];},0), dc=discount();
+    if(dc.disc>0){ items.push(["優惠折扣",dc.name,-dc.disc]); sum-=dc.disc; }
     if(amt!==sum) items.push(["調整","依實收金額",amt-sum]);
     var method=$("method").value, agent=$("agent").value.trim(), remark=$("remark").value.trim();
     try{ await document.fonts.load("700 40px 'Noto Sans TC'"); await document.fonts.load("400 30px 'Noto Sans TC'"); await document.fonts.load("700 56px 'Noto Serif TC'"); }catch(e){}
@@ -247,7 +269,7 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     lastCanvas.toBlob(function(b){ var f=new File([b],fname(),{type:"image/png"});
       if(navigator.canShare&&navigator.canShare({files:[f]})){ navigator.share({files:[f],title:"電子收據"}).catch(function(){}); }
       else alert("這個瀏覽器無法直接分享，請按「下載圖片」後再傳給會員。"); },"image/png"); });
-  ["fee","dues","months"].forEach(function(id){ $(id).addEventListener("input",calc); $(id).addEventListener("change",calc); });
+  ["fee","dues","months","disc","discRate","discScope","discName"].forEach(function(id){ $(id).addEventListener("input",calc); $(id).addEventListener("change",calc); });
   $("date").value=today(); fillNo(); calc(); renderSeals();
   function rocYM(y,m){ return (y-1911)+"年"+m+"月"; }
   function applyPrefill(){
