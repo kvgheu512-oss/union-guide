@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<title>🖼 電子收據（圖片）｜高榮企業工會</title>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>
+ :root{--navy:#1A3A6B;--green:#0F5C36;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F4F6FA;--card:#fff;--border:#D8E0EC}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7}
+ .header{background:linear-gradient(160deg,#1A3A6B,#122A4F);color:#fff;padding:1.6rem 1.25rem 1.3rem;text-align:center}
+ .header h1{font-family:'Noto Serif TC',serif;font-size:20px} .header p{font-size:12.5px;opacity:.9;margin-top:5px}
+ main{max-width:560px;margin:0 auto;padding:1rem 1rem 4rem}
+ .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1rem}
+ .card h2{font-family:'Noto Serif TC',serif;font-size:16px;color:var(--navy);margin-bottom:.6rem}
+ label{display:block;font-size:13px;color:var(--ink-mid);margin:.6rem 0 .2rem}
+ input,select{width:100%;font-size:16px;padding:.55rem .65rem;border:1.5px solid #C9D3DD;border-radius:9px;background:#fff;font-family:inherit}
+ .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ .chk{display:flex;align-items:center;gap:8px;margin:.5rem 0;font-size:15px}.chk input{width:20px;height:20px}
+ .btn{display:block;width:100%;padding:.8rem;font-size:16px;font-weight:700;border:0;border-radius:11px;color:#fff;background:var(--navy);cursor:pointer;margin-top:.8rem}
+ .btn.g{background:var(--green)} .btn.o{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+ .note{font-size:12.5px;color:var(--ink-soft);line-height:1.75;margin-top:.5rem}
+ #out{display:none} #out img{width:100%;border:1px solid var(--border);border-radius:10px;background:#fff}
+  #gate{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,#1A3A6B 0%,#122A4F 100%);display:none;align-items:center;justify-content:center;padding:1.5rem;}
+  #gate.show{display:flex;}
+  .gate-box{background:#fff;border-radius:16px;max-width:380px;width:100%;padding:2rem 1.5rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+  .gate-box h2{font-family:'Noto Serif TC',serif;color:var(--navy);font-size:20px;margin-bottom:6px;}
+  .gate-box p{font-size:13px;color:var(--ink-soft);margin-bottom:1.25rem;}
+  .gate-box input{width:100%;padding:.8rem 1rem;font-size:16px;border:1.5px solid #ddd;border-radius:10px;margin-bottom:10px;text-align:center;}
+  .gate-box input:focus{outline:none;border-color:var(--navy);}
+  .gate-box button{width:100%;padding:.8rem;font-size:15px;color:#fff;background:var(--navy);border:none;border-radius:10px;cursor:pointer;}
+  .gate-err{color:#C0392B;font-size:13px;min-height:18px;margin-top:8px;}
+ html.u #app{display:block!important}html.u #gate{display:none!important}
+</style>
+<script>try{if(localStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="union.html" data-nohelp>
+
+<div id="gate">
+  <div class="gate-box">
+    <h2>電子收據</h2>
+    <p>本頁僅供工會幹部使用，請輸入幹部通行碼。</p>
+    <input id="gate-pw" type="password" inputmode="text" lang="en" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="幹部通行碼" enterkeyhint="go">
+    <button id="gate-go">進入</button>
+    <div class="gate-err" id="gate-err"></div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+<div class="header"><h1>🖼 電子收據（圖片）</h1><p>核對入帳、確認入會後開立 → 存成圖片傳給會員</p></div>
+<main>
+  <div class="card">
+    <h2>① 填寫收據內容</h2>
+    <div class="row2">
+      <div><label>收據編號</label><input id="no" inputmode="text"></div>
+      <div><label>日期</label><input id="date" type="date"></div>
+    </div>
+    <label>繳款人姓名</label><input id="name" placeholder="例：王小明" autocomplete="off">
+    <label style="margin-top:.8rem">繳費項目</label>
+    <label class="chk"><input type="checkbox" id="fee" checked> 入會費　1,250 元</label>
+    <label class="chk"><input type="checkbox" id="dues" checked> 經常會費　每月 250 元 × </label>
+    <div class="row2">
+      <div><label>經常會費月數</label><input id="months" type="number" inputmode="numeric" min="1" max="36" value="12"></div>
+      <div><label>期間說明（印在收據上）</label><input id="period" placeholder="例：115年11月～12月＋116年全年" autocomplete="off"></div>
+    </div>
+    <label>實收金額（元）<span style="color:var(--ink-soft)">　依上面項目自動算，有調整可手改</span></label>
+    <input id="amt" type="number" inputmode="numeric" min="0">
+    <div class="row2">
+      <div><label>繳費方式</label><select id="method"><option>郵局轉帳</option><option>無摺存款</option><option>現金</option></select></div>
+      <div><label>經手人（選填）</label><input id="agent" placeholder="簽名或姓名" autocomplete="off"></div>
+    </div>
+    <label>備註（選填）</label><input id="remark" placeholder="例：已核對 11/25 入帳" autocomplete="off">
+    <button class="btn" id="gen" type="button">產生收據圖片</button>
+    <div class="note">⚠️ 請先<b>核對入帳</b>、並確認申請書審核通過，再開立。收據只存在這台手機，網站不會上傳。</div>
+  </div>
+
+  <div class="card">
+    <h2>② 印章（只存在這台手機，不會上傳）</h2>
+    <div class="note" style="margin-top:0">請上傳<b>本會自己的印章圖片</b>（去背 PNG 最好）。印章圖片只存在這支手機的瀏覽器裡，<b>不會放到網站或網路上</b>，避免被盜用。</div>
+    <div id="seals"></div>
+  </div>
+
+  <div class="card" id="out">
+    <h2>③ 收據圖片</h2>
+    <img id="preview" alt="收據圖片預覽">
+    <button class="btn g" id="share" type="button">📤 分享給會員（LINE／相簿等）</button>
+    <button class="btn o" id="dl" type="button">⬇ 下載圖片</button>
+    <div class="note">長按圖片也可以另存。傳給會員後，請在名冊登記「已繳費」。</div>
+  </div>
+</main>
+</div>
+
+<script>
+const PW_HASH="1621267407177439", UNLOCK_KEY="union_panel_unlocked";
+function cyrb53(s,seed=0){ s=s||""; let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed; for(let i=0,c;i<s.length;i++){c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909); return ""+(4294967296*(2097151&h2)+(h1>>>0)); }
+const gate=document.getElementById('gate'),app=document.getElementById('app');
+function showApp(){ gate.classList.remove('show'); app.style.display='block'; }
+function showGate(){ gate.classList.add('show'); app.style.display='none'; setTimeout(()=>document.getElementById('gate-pw').focus(),100); }
+function tryUnlock(){ const v=document.getElementById('gate-pw').value.trim(); if(cyrb53(v)===PW_HASH){ try{localStorage.setItem(UNLOCK_KEY,'1');}catch(_){} showApp(); } else { document.getElementById('gate-err').textContent='通行碼不對，請再試一次或詢問負責幹部'; } }
+document.getElementById('gate-go').addEventListener('click',tryUnlock);
+document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
+try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }catch(e){ showGate(); }
+
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var FEE=1250, MONTHLY=250, NOKEY="ebn_rcpt_img_no_v1";
+  function pad(n,l){ n=String(n); while(n.length<l) n="0"+n; return n; }
+  function today(){ var d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1,2)+"-"+pad(d.getDate(),2); }
+  function rocDate(s){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||""); return m? ("民國 "+(+m[1]-1911)+" 年 "+(+m[2])+" 月 "+(+m[3])+" 日"):""; }
+  function orgName(){ try{ var o=window.EBNOrg&&EBNOrg.get(); return (o&&o.fullName)||"高雄榮民總醫院企業工會"; }catch(e){ return "高雄榮民總醫院企業工會"; } }
+  function nextNo(){ var y=new Date().getFullYear()-1911, n=0; try{ var s=JSON.parse(localStorage.getItem(NOKEY)||"{}"); if(s.y===y) n=s.n||0; }catch(e){} return {y:y,n:n+1}; }
+  function fillNo(){ var x=nextNo(); $("no").value=x.y+"-"+pad(x.n,3); }
+  function bumpNo(){ var m=/^(\d+)-(\d+)$/.exec($("no").value.trim()); if(!m) return; try{ localStorage.setItem(NOKEY,JSON.stringify({y:+m[1],n:+m[2]})); }catch(e){} }
+  function calc(){ var t=0; if($("fee").checked) t+=FEE; if($("dues").checked) t+=MONTHLY*Math.max(0,+$("months").value||0); $("amt").value=t; }
+  var D="零壹貳參肆伍陸柒捌玖";
+  function cnBig(n){ n=Math.floor(n); if(n<=0) return "零元整"; var u=["","拾","佰","仟"], out="", s=String(n), len=s.length, wan=Math.floor(n/10000), low=n%10000;
+    function sec(v){ var r="",z=false,str=pad(v,4); for(var i=0;i<4;i++){ var d=+str[i], p=3-i; if(d===0){ if(r&&!z) z=true; } else { if(z){ r+="零"; z=false; } r+=D[d]+u[p]; } } return r; }
+    if(wan>0) out+=sec(wan)+"萬"; if(low>0){ if(wan>0&&low<1000) out+="零"; out+=sec(low); } return out+"元整"; }
+  function wrap(ctx,text,maxW){ var lines=[],line=""; for(var ch of String(text)){ if(ctx.measureText(line+ch).width>maxW){ lines.push(line); line=ch; } else line+=ch; } if(line) lines.push(line); return lines; }
+  function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+  async function draw(){
+    var no=$("no").value.trim(), date=rocDate($("date").value), who=$("name").value.trim()||"（未填）", amt=Math.max(0,+$("amt").value||0);
+    var items=[]; if($("fee").checked) items.push(["入會費","入會時繳一次",FEE]);
+    if($("dues").checked){ var mo=Math.max(0,+$("months").value||0); items.push(["經常會費",($("period").value.trim()||(mo+" 個月"))+"（每月 "+MONTHLY+" 元 × "+mo+"）",MONTHLY*mo]); }
+    var sum=items.reduce(function(a,b){return a+b[2];},0);
+    if(amt!==sum) items.push(["調整","依實收金額",amt-sum]);
+    var method=$("method").value, agent=$("agent").value.trim(), remark=$("remark").value.trim();
+    try{ await document.fonts.load("700 40px 'Noto Sans TC'"); await document.fonts.load("400 30px 'Noto Sans TC'"); await document.fonts.load("700 56px 'Noto Serif TC'"); }catch(e){}
+    var W=1080, P=70, cv=document.createElement("canvas"), ctx=cv.getContext("2d");
+    var SANS="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif", SERIF="'Noto Serif TC','Noto Sans TC',serif";
+    // 先估高度：用暫時 canvas 量文字
+    ctx.font="400 30px "+SANS; var remarkLines=remark?wrap(ctx,remark,W-2*P-40):[];
+    var itemLines=items.map(function(it){ return wrap(ctx,it[1],520); });
+    var H=3200;
+    cv.width=W; cv.height=H; ctx=cv.getContext("2d");
+    ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
+    var g=ctx.createLinearGradient(0,0,W,260); g.addColorStop(0,"#1A3A6B"); g.addColorStop(1,"#122A4F"); ctx.fillStyle=g; ctx.fillRect(0,0,W,250);
+    var logo=await loadImg("assets/union-logo.png");
+    if(logo){ ctx.fillStyle="#fff"; rr(ctx,P,40,170,170,22); ctx.fill(); ctx.drawImage(logo,P+10,50,150,150); }
+    var cx=logo?(P+170+W-P)/2:W/2;
+    ctx.fillStyle="#fff"; ctx.textAlign="center"; ctx.font="700 40px "+SERIF; ctx.fillText(orgName(),cx,100);
+    ctx.font="700 66px "+SERIF; ctx.fillText("電 子 收 據",cx,190);
+    // 已確認章
+    ctx.save(); ctx.translate(W-200,330); ctx.rotate(-0.18); ctx.strokeStyle="#C0392B"; ctx.lineWidth=6; rr(ctx,-130,-48,260,96,14); ctx.stroke();
+    ctx.fillStyle="#C0392B"; ctx.font="700 34px "+SANS; ctx.fillText("已核對入帳",0,-4); ctx.font="700 26px "+SANS; ctx.fillText("入會確認",0,32); ctx.restore();
+    ctx.textAlign="left"; ctx.fillStyle="#222"; var y=330;
+    function kv(k,v){ ctx.font="400 28px "+SANS; ctx.fillStyle="#777"; ctx.fillText(k,P,y); ctx.font="700 34px "+SANS; ctx.fillStyle="#1A1A1A"; ctx.fillText(v,P+190,y); y+=62; }
+    if(taxId()) kv("統一編號",taxId());
+    kv("收據編號",no||"—"); kv("日　　期",date||"—"); kv("繳款人",who); kv("繳費方式",method);
+    y+=10; ctx.strokeStyle="#D8E0EC"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(P,y); ctx.lineTo(W-P,y); ctx.stroke(); y+=52;
+    ctx.font="700 28px "+SANS; ctx.fillStyle="#1A3A6B"; ctx.fillText("項目",P,y); ctx.fillText("說明",P+240,y); ctx.textAlign="right"; ctx.fillText("金額",W-P,y); ctx.textAlign="left"; y+=26;
+    ctx.beginPath(); ctx.moveTo(P,y); ctx.lineTo(W-P,y); ctx.stroke(); y+=48;
+    items.forEach(function(it,i){ var ls=itemLines[i]; ctx.font="700 32px "+SANS; ctx.fillStyle="#1A1A1A"; ctx.fillText(it[0],P,y);
+      ctx.font="400 28px "+SANS; ctx.fillStyle="#444"; ls.forEach(function(l,j){ ctx.fillText(l,P+240,y+j*42); });
+      ctx.font="700 32px "+SANS; ctx.fillStyle="#1A1A1A"; ctx.textAlign="right"; ctx.fillText((it[2]<0?"-":"")+"NT$ "+Math.abs(it[2]).toLocaleString("en-US"),W-P,y); ctx.textAlign="left";
+      y+=Math.max(1,ls.length)*42+34; });
+    ctx.beginPath(); ctx.moveTo(P,y-14); ctx.lineTo(W-P,y-14); ctx.stroke(); y+=40;
+    ctx.fillStyle="#F0F8F3"; rr(ctx,P,y-34,W-2*P,150,16); ctx.fill();
+    ctx.fillStyle="#0F5C36"; ctx.font="700 30px "+SANS; ctx.fillText("實收合計",P+28,y+14);
+    ctx.textAlign="right"; ctx.font="700 58px "+SANS; ctx.fillText("NT$ "+amt.toLocaleString("en-US"),W-P-28,y+22); ctx.textAlign="left";
+    ctx.font="700 38px "+SANS; ctx.fillStyle="#0F5C36"; ctx.fillText("新臺幣 "+cnBig(amt),P+28,y+88); y+=190;
+    if(remarkLines.length){ ctx.font="400 28px "+SANS; ctx.fillStyle="#777"; ctx.fillText("備註",P,y); ctx.font="400 30px "+SANS; ctx.fillStyle="#333"; remarkLines.forEach(function(l,j){ ctx.fillText(l,P+110,y+j*42); }); y+=remarkLines.length*42+30; }
+    if(agent){ ctx.font="400 28px "+SANS; ctx.fillStyle="#777"; ctx.fillText("經手人",P,y); ctx.font="700 34px "+SANS; ctx.fillStyle="#1A1A1A"; ctx.fillText(agent,P+190,y); y+=70; }
+    // 印章列
+    var simgs=await Promise.all(SEALS.map(function(s){ return loadImg(getSeal(s[0])); }));
+    y+=20; ctx.font="700 28px "+SANS; ctx.fillStyle="#1A3A6B"; ctx.textAlign="left"; ctx.fillText("核　章",P,y); y+=24;
+    var bw=Math.floor((W-2*P-2*24)/3), bh=230;
+    SEALS.forEach(function(s,i){ var bx=P+i*(bw+24);
+      ctx.strokeStyle="#D8E0EC"; ctx.lineWidth=2; rr(ctx,bx,y,bw,bh,14); ctx.stroke();
+      if(simgs[i]){ var im=simgs[i], sc=Math.min((bw-30)/im.width,(bh-30)/im.height); var dw=im.width*sc, dh=im.height*sc; ctx.drawImage(im,bx+(bw-dw)/2,y+(bh-dh)/2,dw,dh); }
+      ctx.textAlign="center"; ctx.font="400 26px "+SANS; ctx.fillStyle="#666"; ctx.fillText(s[1],bx+bw/2,y+bh+40); ctx.textAlign="left"; });
+    y+=bh+70;
+    var FH=y+60+110, out=document.createElement("canvas"); out.width=W; out.height=FH; var oc=out.getContext("2d");
+    oc.drawImage(cv,0,0,W,FH,0,0,W,FH);
+    oc.textAlign="center"; oc.font="400 24px "+SANS; oc.fillStyle="#999";
+    oc.fillText("本收據為電子收據，由本會核對入帳並確認入會後開立。",W/2,FH-66);
+    oc.fillText("請保留此圖作為繳費憑證　"+orgName(),W/2,FH-30);
+    return out;
+  }
+
+  var SEALS=[["chair","理事長章"],["fin","總務章"],["union","工會章"]], SKEY="ebn_seal_";
+  function getSeal(k){ try{ return localStorage.getItem(SKEY+k)||""; }catch(e){ return ""; } }
+  function renderSeals(){
+    var box=$("seals"); box.innerHTML="";
+    SEALS.forEach(function(s){
+      var has=!!getSeal(s[0]), row=document.createElement("div");
+      row.style.cssText="display:flex;align-items:center;gap:10px;margin-top:.7rem;flex-wrap:wrap";
+      row.innerHTML='<div style="width:64px;height:64px;border:1.5px '+(has?'solid #C9D3DD':'dashed #C9D3DD')+';border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff">'+(has?'<img src="'+getSeal(s[0])+'" style="max-width:100%;max-height:100%">':'<span style="font-size:11px;color:#aaa">未上傳</span>')+'</div>'+
+        '<div style="flex:1;min-width:150px"><b>'+s[1]+'</b><br><span style="font-size:12px;color:var(--ink-soft)">'+(has?'已存在這台手機':'尚未上傳')+'</span></div>'+
+        '<label style="margin:0;display:inline-block;padding:.45rem .8rem;border:1.5px solid var(--navy);border-radius:9px;color:var(--navy);font-weight:700;cursor:pointer;font-size:13.5px">'+(has?'更換':'上傳')+'<input type="file" accept="image/*" style="display:none"></label>'+
+        (has?'<button type="button" style="border:0;background:none;color:#C0392B;font-size:13px;cursor:pointer">清除</button>':'');
+      var inp=row.querySelector("input"), clr=row.querySelector("button");
+      inp.addEventListener("change",function(){ var f=inp.files&&inp.files[0]; if(!f) return; if(f.size>1500000){ alert("圖片太大（超過 1.5MB），請先縮小再上傳。"); return; }
+        var r=new FileReader(); r.onload=function(){ try{ localStorage.setItem(SKEY+s[0],r.result); }catch(e){ alert("存不進這支手機，請換較小的圖片。"); } renderSeals(); }; r.readAsDataURL(f); });
+      if(clr) clr.addEventListener("click",function(){ try{ localStorage.removeItem(SKEY+s[0]); }catch(e){} renderSeals(); });
+      box.appendChild(row);
+    });
+  }
+  function loadImg(src){ return new Promise(function(res){ if(!src){ res(null); return; } var i=new Image(); i.onload=function(){ res(i); }; i.onerror=function(){ res(null); }; i.src=src; }); }
+  function taxId(){ try{ var o=window.EBNOrg&&EBNOrg.get(); return (o&&o.taxId)||""; }catch(e){ return ""; } }
+  var lastCanvas=null;
+  $("gen").addEventListener("click",async function(){
+    if(!$("name").value.trim()){ alert("請先填繳款人姓名"); $("name").focus(); return; }
+    var miss=SEALS.filter(function(s){return !getSeal(s[0]);}).map(function(s){return s[1];});
+    if(miss.length && !confirm("還沒上傳："+miss.join("、")+"。\n沒蓋章的收據不完整，確定要先產生嗎？")) return;
+    var cv=await draw(); lastCanvas=cv; $("preview").src=cv.toDataURL("image/png"); $("out").style.display="block"; bumpNo();
+    setTimeout(function(){ $("out").scrollIntoView({behavior:"smooth"}); },80);
+  });
+  function fname(){ return "收據_"+($("no").value.trim()||"電子")+"_"+($("name").value.trim()||"會員")+".png"; }
+  $("dl").addEventListener("click",function(){ if(!lastCanvas) return; var a=document.createElement("a"); a.href=lastCanvas.toDataURL("image/png"); a.download=fname(); document.body.appendChild(a); a.click(); a.remove(); });
+  $("share").addEventListener("click",function(){ if(!lastCanvas) return;
+    lastCanvas.toBlob(function(b){ var f=new File([b],fname(),{type:"image/png"});
+      if(navigator.canShare&&navigator.canShare({files:[f]})){ navigator.share({files:[f],title:"電子收據"}).catch(function(){}); }
+      else alert("這個瀏覽器無法直接分享，請按「下載圖片」後再傳給會員。"); },"image/png"); });
+  ["fee","dues","months"].forEach(function(id){ $(id).addEventListener("input",calc); $(id).addEventListener("change",calc); });
+  $("date").value=today(); fillNo(); calc(); renderSeals();
+})();
+</script>
+<script src="org.js" defer></script>
+<script src="common.js" defer></script>
+</body></html>
