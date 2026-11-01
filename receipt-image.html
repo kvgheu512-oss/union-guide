@@ -167,10 +167,8 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     var W=1080, P=92, cv=document.createElement("canvas"); cv.width=W; cv.height=3400; var ctx=cv.getContext("2d");
     var SANS="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif", SERIF="'Noto Serif TC','Noto Sans TC',serif";
     var NAVY="#1A3A6B", LINE="#C9D3DD", LBL="#F3F6FA";
-    var logo=await loadImg("assets/union-logo.png");
+    var logo=await loadImg("assets/union-logo.png"), wm=await loadImg("assets/union-shield-wm.png");
     // 底色＋雙層外框
-    ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,3400);
-    if(logo){ ctx.globalAlpha=0.05; ctx.drawImage(logo,W/2-300,620,600,600); ctx.globalAlpha=1; }   // 浮水印
     // 標頭
     var g=ctx.createLinearGradient(0,0,W,260); g.addColorStop(0,"#1A3A6B"); g.addColorStop(1,"#122A4F"); ctx.fillStyle=g; ctx.fillRect(40,40,W-80,226);
     ctx.fillStyle="#C9A227"; ctx.fillRect(40,266,W-80,6);
@@ -192,7 +190,7 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     // 項目表
     ctx.fillStyle=NAVY; ctx.fillRect(X,y,TW,64); ctx.fillStyle="#fff"; ctx.font="700 27px "+SANS; ctx.textAlign="left"; ctx.fillText("項目",X+24,y+42); ctx.fillText("說明",X+250,y+42); ctx.textAlign="right"; ctx.fillText("金額",X+TW-24,y+42); y+=64;
     ctx.textAlign="left"; ctx.font="400 27px "+SANS;
-    items.forEach(function(it,i){ var ls=wrap(ctx,it[1],440), rh2=Math.max(1,ls.length)*40+36;
+    items.forEach(function(it,i){ var ls=wrap(ctx,it[1],480), rh2=Math.max(1,ls.length)*40+36;
       if(i%2===1){ ctx.fillStyle="#FAFBFD"; ctx.fillRect(X,y,TW,rh2); }
       ctx.strokeStyle=LINE; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X,y+rh2); ctx.lineTo(X+TW,y+rh2); ctx.stroke();
       ctx.fillStyle="#1A1A1A"; ctx.font="700 30px "+SANS; ctx.textAlign="left"; ctx.fillText(it[0],X+24,y+rh2/2+10);
@@ -210,15 +208,22 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     if(agent){ ctx.textAlign="left"; ctx.font="400 26px "+SANS; ctx.fillStyle="#777"; ctx.fillText("經手人",X,y+28); ctx.font="700 30px "+SANS; ctx.fillStyle="#1A1A1A"; ctx.fillText(agent,X+120,y+28); y+=60; }
     // 核章區：理事長／總務（較小）＋ 工會官印（較大）
     var simgs=await Promise.all(SEALS.map(function(s){ return loadImg(getSeal(s[0])); }));
-    y+=28; ctx.textAlign="left"; ctx.fillStyle=NAVY; ctx.font="700 27px "+SANS; ctx.fillText("核　章",X,y); ctx.strokeStyle=LINE; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X+110,y-9); ctx.lineTo(X+TW,y-9); ctx.stroke(); y+=22;
-    var BOX={chair:200,fin:200,union:330}, GAP=26, colW=[240,240,TW-480-2*GAP], areaH=340, baseY=y+areaH;
-    var cx0=X;
+    y+=28; ctx.textAlign="left"; ctx.fillStyle=NAVY; ctx.font="700 27px "+SANS; ctx.fillText("核　章",X,y); ctx.strokeStyle="#C9A227"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X+110,y-9); ctx.lineTo(X+TW,y-9); ctx.stroke(); y+=34;
+    var BOX={chair:190,fin:190,union:320}, GAP=24, XI=X+28, TWI=TW-56, colW=[224,224,TWI-448-2*GAP], areaH=320, baseY=y+areaH+14, panelTop=y-4;
+    ctx.strokeStyle=LINE; ctx.lineWidth=2; rr(ctx,X,panelTop,TW,baseY+84-panelTop,18); ctx.stroke();
+    var cx0=XI;
     SEALS.forEach(function(s,i){ var w=colW[i], bx=cx0, box=BOX[s[0]], sc=sealScale(s[0])/100;
       if(simgs[i]){ var im=simgs[i], f=Math.min(box/im.width,box/im.height)*sc, dw=im.width*f, dh=im.height*f; ctx.drawImage(im,bx+(w-dw)/2,baseY-dh-12,dw,dh); }
-      ctx.strokeStyle="#8A97A8"; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(bx+10,baseY); ctx.lineTo(bx+w-10,baseY); ctx.stroke();
-      ctx.textAlign="center"; ctx.font="400 26px "+SANS; ctx.fillStyle="#555"; ctx.fillText(s[1].replace("章",""),bx+w/2,baseY+40);
+      ctx.strokeStyle="#8A97A8"; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(bx+8,baseY); ctx.lineTo(bx+w-8,baseY); ctx.stroke();
+      ctx.textAlign="center"; ctx.font="400 26px "+SANS; ctx.fillStyle="#555"; ctx.fillText(s[1].replace("章",""),bx+w/2,baseY+42);
       cx0+=w+GAP; });
-    y=baseY+60+30;
+    y=baseY+84+34;
+    // 浮水印：只放盾牌（不放文字，避免雜亂），畫在內容「後面」，位置在核章區的空白處
+    var FH0=y+140;
+    ctx.save(); ctx.globalCompositeOperation="destination-over";
+    if(wm){ var ww=340, wh=ww*wm.height/wm.width; ctx.globalAlpha=0.13; ctx.drawImage(wm,(W-ww)/2,baseY-150-wh/2,ww,wh); ctx.globalAlpha=1; }
+    ctx.restore();
+    ctx.save(); ctx.globalCompositeOperation="destination-over"; ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,3400); ctx.restore();
     // 頁尾（裁成實際高度）
     var FH=y+140, out=document.createElement("canvas"); out.width=W; out.height=FH; var oc=out.getContext("2d");
     oc.drawImage(cv,0,0,W,FH,0,0,W,FH);
