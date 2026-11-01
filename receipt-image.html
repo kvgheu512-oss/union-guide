@@ -158,14 +158,14 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
   async function draw(){
     var no=$("no").value.trim(), date=rocDate($("date").value), who=$("name").value.trim()||"（未填）", amt=Math.max(0,+$("amt").value||0);
     var items=[]; if($("fee").checked) items.push(["入會費","入會時繳一次",FEE]);
-    if($("dues").checked){ var mo=Math.max(0,+$("months").value||0); items.push(["經常會費",($("period").value.trim()||(mo+" 個月"))+"（每月 "+MONTHLY+" 元 × "+mo+"）",MONTHLY*mo]); }
+    if($("dues").checked){ var mo=Math.max(0,+$("months").value||0); items.push(["經常會費",($("period").value.trim()||(mo+" 個月"))+"\n每月 "+MONTHLY+" 元 × "+mo+" 個月",MONTHLY*mo]); }
     var sum=items.reduce(function(a,b){return a+b[2];},0), dc=discount();
     if(dc.disc>0){ items.push(["優惠折扣",dc.name,-dc.disc]); sum-=dc.disc; }
     if(amt!==sum) items.push(["調整","依實收金額",amt-sum]);
     var method=$("method").value, agent=$("agent").value.trim(), remark=$("remark").value.trim();
     try{ await document.fonts.load("700 40px 'Noto Sans TC'"); await document.fonts.load("400 30px 'Noto Sans TC'"); await document.fonts.load("700 56px 'Noto Serif TC'"); }catch(e){}
     var W=1080, P=92, cv=document.createElement("canvas"); cv.width=W; cv.height=3400; var ctx=cv.getContext("2d");
-    var SANS="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif", SERIF="'Noto Serif TC','Noto Sans TC',serif";
+    var NUM="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif", KAI="'標楷體','DFKai-SB','BiauKai','Kaiti TC','KaiTi','STKaiti','AR PL UKai TW','Noto Serif TC',serif", SANS=KAI, SERIF=KAI;
     var NAVY="#1A3A6B", LINE="#C9D3DD", LBL="#F3F6FA";
     var logo=await loadImg("assets/union-logo.png"), wm=await loadImg("assets/union-shield-wm.png");
     // 底色＋雙層外框
@@ -182,7 +182,7 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
       ctx.fillStyle=LBL; ctx.fillRect(x,yy,150,h); ctx.strokeStyle=LINE; ctx.lineWidth=2; ctx.strokeRect(x,yy,w,h);
       ctx.beginPath(); ctx.moveTo(x+150,yy); ctx.lineTo(x+150,yy+h); ctx.stroke();
       ctx.textAlign="left"; ctx.fillStyle="#666"; ctx.font="400 26px "+SANS; ctx.fillText(label,x+18,yy+h/2+9);
-      ctx.fillStyle=opt.color||"#1A1A1A"; ctx.font=(opt.size?"700 "+opt.size+"px ":"700 31px ")+SANS; ctx.fillText(val,x+170,yy+h/2+11); }
+      ctx.fillStyle=opt.color||"#1A1A1A"; ctx.font=(opt.size?"700 "+opt.size+"px ":"700 31px ")+(/^[\d\-\.,\s]+$/.test(val)?NUM:KAI); ctx.fillText(val,x+170,yy+h/2+11); }
     cell(X,y,c1,rh,"統一編號",taxId()||"—"); cell(X+c1,y,TW-c1,rh,"收據編號",no||"—",{color:"#C0392B"}); y+=rh;
     cell(X,y,c1,rh,"收據日期",date||"—",{size:27}); cell(X+c1,y,TW-c1,rh,"繳費方式",method); y+=rh;
     cell(X,y,TW,rh+10,"繳款人",who,{size:38}); 
@@ -190,19 +190,27 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     // 項目表
     ctx.fillStyle=NAVY; ctx.fillRect(X,y,TW,64); ctx.fillStyle="#fff"; ctx.font="700 27px "+SANS; ctx.textAlign="left"; ctx.fillText("項目",X+24,y+42); ctx.fillText("說明",X+250,y+42); ctx.textAlign="right"; ctx.fillText("金額",X+TW-24,y+42); y+=64;
     ctx.textAlign="left"; ctx.font="400 27px "+SANS;
-    items.forEach(function(it,i){ var ls=wrap(ctx,it[1],480), rh2=Math.max(1,ls.length)*40+36;
+    items.forEach(function(it,i){ var ls=[]; String(it[1]).split("\n").forEach(function(seg){ wrap(ctx,seg,480).forEach(function(l){ ls.push(l); }); }); var rh2=Math.max(1,ls.length)*40+36;
       if(i%2===1){ ctx.fillStyle="#FAFBFD"; ctx.fillRect(X,y,TW,rh2); }
       ctx.strokeStyle=LINE; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X,y+rh2); ctx.lineTo(X+TW,y+rh2); ctx.stroke();
       ctx.fillStyle="#1A1A1A"; ctx.font="700 30px "+SANS; ctx.textAlign="left"; ctx.fillText(it[0],X+24,y+rh2/2+10);
       ctx.fillStyle="#444"; ctx.font="400 26px "+SANS; ls.forEach(function(l,j){ ctx.fillText(l,X+250,y+(rh2-ls.length*40)/2+30+j*40); });
-      ctx.fillStyle="#1A1A1A"; ctx.font="700 30px "+SANS; ctx.textAlign="right"; ctx.fillText((it[2]<0?"-":"")+"NT$ "+Math.abs(it[2]).toLocaleString("en-US"),X+TW-24,y+rh2/2+10); y+=rh2; });
+      ctx.fillStyle="#1A1A1A"; ctx.font="700 30px "+NUM; ctx.textAlign="right"; ctx.fillText((it[2]<0?"-":"")+"NT$ "+Math.abs(it[2]).toLocaleString("en-US"),X+TW-24,y+rh2/2+10); y+=rh2; });
     y+=34;
-    // 合計
-    ctx.fillStyle="#EEF7F1"; rr(ctx,X,y,TW,176,16); ctx.fill(); ctx.strokeStyle="#9CCFAF"; ctx.lineWidth=2; rr(ctx,X,y,TW,176,16); ctx.stroke();
-    ctx.textAlign="left"; ctx.fillStyle="#0F5C36"; ctx.font="700 29px "+SANS; ctx.fillText("實收合計",X+30,y+52);
-    ctx.textAlign="right"; ctx.font="700 66px "+SANS; ctx.fillText("NT$ "+amt.toLocaleString("en-US"),X+TW-30,y+66);
-    ctx.textAlign="left"; ctx.font="400 25px "+SANS; ctx.fillStyle="#2E6B47"; ctx.fillText("新臺幣（大寫）",X+30,y+112);
-    ctx.font="700 42px "+SANS; ctx.fillStyle="#0F5C36"; ctx.fillText(cnBig(amt),X+30,y+158); y+=176+40;
+    // 合計：上排「實收金額 NT$」，下排「新臺幣 大寫 元整」（標楷體、字距放開，一眼看得清楚）
+    var bh=250, bx=X, by=y;
+    ctx.fillStyle="#F4FAF6"; rr(ctx,bx,by,TW,bh,18); ctx.fill(); ctx.strokeStyle="#7FBF97"; ctx.lineWidth=2.5; rr(ctx,bx,by,TW,bh,18); ctx.stroke();
+    ctx.textAlign="left"; ctx.fillStyle="#0F5C36"; ctx.font="700 32px "+KAI; ctx.fillText("實收金額",bx+34,by+78);
+    ctx.textAlign="right"; ctx.font="700 70px "+NUM; ctx.fillText("NT$ "+amt.toLocaleString("en-US"),bx+TW-34,by+84);
+    ctx.setLineDash([3,7]); ctx.strokeStyle="#7FBF97"; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(bx+30,by+112); ctx.lineTo(bx+TW-30,by+112); ctx.stroke(); ctx.setLineDash([]);
+    ctx.textAlign="left"; ctx.fillStyle="#2E6B47"; ctx.font="700 30px "+KAI; ctx.fillText("新臺幣",bx+34,by+196);
+    var big=cnBig(amt), body=big.replace(/元整$/,""), full=body+"元整", sp=16, fs=58, tw0=0;
+    ctx.font="700 "+fs+"px "+KAI; for(var q=0;q<full.length;q++){ tw0+=ctx.measureText(full[q]).width+sp; } tw0-=sp;
+    var areaL=bx+34+110, areaW=bx+TW-34-areaL; if(tw0>areaW){ fs=Math.floor(fs*areaW/tw0); sp=Math.floor(sp*areaW/tw0); ctx.font="700 "+fs+"px "+KAI; tw0=0; for(var q2=0;q2<full.length;q2++){ tw0+=ctx.measureText(full[q2]).width+sp; } tw0-=sp; }
+    var sx=areaL+(areaW-tw0)/2; ctx.fillStyle="#0F5C36"; ctx.textAlign="left";
+    for(var q3=0;q3<full.length;q3++){ ctx.fillText(full[q3],sx,by+200); sx+=ctx.measureText(full[q3]).width+sp; }
+    ctx.strokeStyle="#C9A227"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(areaL+(areaW-tw0)/2-8,by+216); ctx.lineTo(areaL+(areaW+tw0)/2+8,by+216); ctx.stroke();
+    y+=bh+40;
     // 備註／經手人
     if(remark){ ctx.textAlign="left"; ctx.font="400 26px "+SANS; ctx.fillStyle="#777"; ctx.fillText("備註",X,y+28); ctx.font="400 28px "+SANS; ctx.fillStyle="#333"; wrap(ctx,remark,TW-110).forEach(function(l,j){ ctx.fillText(l,X+100,y+28+j*40); }); y+=wrap(ctx,remark,TW-110).length*40+26; }
     if(agent){ ctx.textAlign="left"; ctx.font="400 26px "+SANS; ctx.fillStyle="#777"; ctx.fillText("經手人",X,y+28); ctx.font="700 30px "+SANS; ctx.fillStyle="#1A1A1A"; ctx.fillText(agent,X+120,y+28); y+=60; }
