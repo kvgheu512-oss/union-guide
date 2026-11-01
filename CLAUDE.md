@@ -64,14 +64,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-10-31
+最後更新：2026-11-01
 
 最近 commits：
+  a2da7ed 繳費頁「要繳多少」改為以年繳為主（入會費1250＋經常會費一年3000＝4250）
+  32addf3 自動更新 CLAUDE.md 最近進度（Stop hook）
   a331c82 幹部功能表拿掉「會費115年9~12月先收現金…」那句
   eaa6abf 自動更新 CLAUDE.md 最近進度（Stop hook）
   6a6a643 繳費頁頁首黃色提示拿掉日期
-  376b23d 自動更新 CLAUDE.md 最近進度（Stop hook）
-  75d7a78 快取修正：網頁更新時繞過瀏覽器 HTTP 快取，避免改完後最多10分鐘仍看到舊內容
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
