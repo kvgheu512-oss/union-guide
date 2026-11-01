@@ -78,11 +78,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-11-01
 
 最近 commits：
+  8006127 繳費頁新增快速取得鈕：轉傳 LINE／分享／複製全部資訊／轉帳資訊 QR code；版本 2026110133
+  ddcb446 自動更新 CLAUDE.md 最近進度（Stop hook）
   cd2e56d 修正繳費頁轉帳資訊顯示「尚未公布」：本機空白草稿不再蓋掉已發布的戶名／帳號
   10f4523 自動更新 CLAUDE.md 最近進度（Stop hook）
   6b1ddbc 自動更新 CLAUDE.md 最近進度（Stop hook）
-  e7fdf93 自動更新 CLAUDE.md 最近進度（Stop hook）
-  50725ef 計畫與預算改為「各年度」：理事長選年度編列（切換/新增年度/複製其他年度）、發布合併保留其他年度、公開頁依年度分頁；sw 不快取 yearplans.json
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
