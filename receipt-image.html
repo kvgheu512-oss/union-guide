@@ -54,6 +54,7 @@
 
 <div id="app" style="display:none">
 <div class="header"><h1>🖼 電子收據（圖片）</h1><p>核對入帳、確認入會後開立 → 存成圖片傳給會員</p></div>
+<div id="net" style="text-align:center;font-size:12.5px;padding:.35rem 1rem;background:#EAF6EE;color:#0F5C36"></div>
 <main>
   <div class="card">
     <h2>① 填寫收據內容</h2>
@@ -112,6 +113,13 @@
     <button class="btn o" id="dl" type="button">⬇ 下載圖片</button>
     <div class="note">長按圖片也可以另存。寄出後，請在名冊登記「會費已繳至」。</div>
   </div>
+  <div class="card" id="logCard" style="display:none">
+    <h2>④ 已開收據紀錄（只存在這支手機）</h2>
+    <div id="logList" style="font-size:13.5px;line-height:1.8"></div>
+    <div class="btns"><button class="btn o" id="logCsv" type="button" style="margin-top:.6rem">⬇ 匯出紀錄（CSV）</button></div>
+    <div class="note">斷網時照常可以開收據、存圖；紀錄會留在這裡，方便事後對帳、補寄。</div>
+  </div>
+
 </main>
 </div>
 
@@ -132,7 +140,13 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
   function pad(n,l){ n=String(n); while(n.length<l) n="0"+n; return n; }
   function today(){ var d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1,2)+"-"+pad(d.getDate(),2); }
   function rocDate(s){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||""); return m? ("民國 "+(+m[1]-1911)+" 年 "+(+m[2])+" 月 "+(+m[3])+" 日"):""; }
-  function orgName(){ try{ var o=window.EBNOrg&&EBNOrg.get(); return (o&&o.fullName)||"高雄榮民總醫院企業工會"; }catch(e){ return "高雄榮民總醫院企業工會"; } }
+  var OKEY="ebn_org_cache_v1";
+  function orgInfo(){ var o={}; try{ o=(window.EBNOrg&&EBNOrg.get())||{}; }catch(e){}
+    var c={}; try{ c=JSON.parse(localStorage.getItem(OKEY)||"{}"); }catch(e){}
+    var r={fullName:o.fullName||c.fullName||"高雄榮民總醫院企業工會", taxId:o.taxId||c.taxId||"62897945"};   // 沒網路時用上次記下的；再不行用預設
+    if(o.fullName||o.taxId){ try{ localStorage.setItem(OKEY,JSON.stringify(r)); }catch(e){} }
+    return r; }
+  function orgName(){ return orgInfo().fullName; }
   function nextNo(){ var y=new Date().getFullYear()-1911, n=0; try{ var s=JSON.parse(localStorage.getItem(NOKEY)||"{}"); if(s.y===y) n=s.n||0; }catch(e){} return {y:y,n:n+1}; }
   function fillNo(){ var x=nextNo(); $("no").value=x.y+"-"+pad(x.n,3); }
   function bumpNo(){ var m=/^(\d+)-(\d+)$/.exec($("no").value.trim()); if(!m) return; try{ localStorage.setItem(NOKEY,JSON.stringify({y:+m[1],n:+m[2]})); }catch(e){} }
@@ -277,13 +291,13 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
       r.readAsText(f); });
   }
   function loadImg(src){ return new Promise(function(res){ if(!src){ res(null); return; } var i=new Image(); i.onload=function(){ res(i); }; i.onerror=function(){ res(null); }; i.src=src; }); }
-  function taxId(){ try{ var o=window.EBNOrg&&EBNOrg.get(); return (o&&o.taxId)||""; }catch(e){ return ""; } }
+  function taxId(){ return orgInfo().taxId; }
   var lastCanvas=null;
   $("gen").addEventListener("click",async function(){
     if(!$("name").value.trim()){ alert("請先填繳款人姓名"); $("name").focus(); return; }
     var miss=SEALS.filter(function(s){return !getSeal(s[0]);}).map(function(s){return s[1];});
     if(miss.length && !confirm("還沒上傳："+miss.join("、")+"。\n沒蓋章的收據不完整，確定要先產生嗎？")) return;
-    var cv=await draw(); lastCanvas=cv; $("preview").src=cv.toDataURL("image/png"); $("out").style.display="block"; bumpNo();
+    var cv=await draw(); lastCanvas=cv; addLog({no:$("no").value.trim(),date:$("date").value,name:$("name").value.trim(),amt:+$("amt").value||0,method:$("method").value,ts:new Date().toLocaleString("zh-TW")}); $("preview").src=cv.toDataURL("image/png"); $("out").style.display="block"; bumpNo();
     setTimeout(function(){ $("out").scrollIntoView({behavior:"smooth"}); },80);
   });
   function fname(){ return "收據_"+($("no").value.trim()||"電子")+"_"+($("name").value.trim()||"會員")+".png"; }
@@ -301,6 +315,19 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
       calc(); }); }
   bindChips("rateChips","discRate"); bindChips("nameChips","discName");
   $("date").value=today(); fillNo(); calc(); renderSeals();
+  function netState(){ var on=navigator.onLine!==false, el=$("net"); el.style.background=on?"#EAF6EE":"#FFF3E8"; el.style.color=on?"#0F5C36":"#7A3B00";
+    el.innerHTML=on?"📶 目前有網路　（沒網路時也能開收據：印章與資料都在這支手機）":"✈️ 目前沒有網路　仍可開收據、存成圖片；等有網路再寄給會員"; }
+  window.addEventListener("online",netState); window.addEventListener("offline",netState); netState();
+  var LKEY="ebn_rcpt_log_v1";
+  function getLog(){ try{ return JSON.parse(localStorage.getItem(LKEY)||"[]"); }catch(e){ return []; } }
+  function addLog(r){ var a=getLog(); a.unshift(r); a=a.slice(0,300); try{ localStorage.setItem(LKEY,JSON.stringify(a)); }catch(e){} renderLog(); }
+  function renderLog(){ var a=getLog(); $("logCard").style.display=a.length?"block":"none"; if(!a.length) return;
+    $("logList").innerHTML=a.slice(0,8).map(function(r){ return '<div style="display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #EEF1F4;padding:.25rem 0"><span>'+r.no+'　'+r.name+'</span><span style="white-space:nowrap">NT$ '+Number(r.amt).toLocaleString("en-US")+'　<span style="color:var(--ink-soft)">'+r.date+'</span></span></div>'; }).join("")+(a.length>8?'<div class="note">只顯示最近 8 筆，共 '+a.length+' 筆，完整請匯出。</div>':""); }
+  $("logCsv").addEventListener("click",function(){ var a=getLog(); var rows=[["收據編號","日期","繳款人","金額","繳費方式","開立時間"]].concat(a.map(function(r){ return [r.no,r.date,r.name,r.amt,r.method,r.ts]; }));
+    var csv="\ufeff"+rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(","); }).join("\n");
+    var l=document.createElement("a"); l.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); l.download="電子收據紀錄.csv"; document.body.appendChild(l); l.click(); l.remove(); });
+  renderLog();
+
   function rocYM(y,m){ return (y-1911)+"年"+m+"月"; }
   function applyPrefill(){
     var raw=null; try{ raw=sessionStorage.getItem("ebn_rcpt_prefill"); sessionStorage.removeItem("ebn_rcpt_prefill"); }catch(e){}
