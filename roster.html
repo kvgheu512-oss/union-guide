@@ -492,12 +492,17 @@ function render(){
         ${m.phone?`<span class="pill" style="background:#EEF1F4;color:#444">📞 ${esc(m.phone)}</span>`:''}
         ${m.payCode?`<span class="pill" style="background:#EAF0FA;color:#1A3A6B">💳 繳費代碼 ${esc(m.payCode)}</span>`:''}
       </div>
-      <div class="m-act">${approve}<button data-act="edit" data-id="${m.id}">✏️ 編輯</button><button class="del" data-act="del" data-id="${m.id}">🗑 刪除</button></div>
+      <div class="m-act">${approve}${m.status==='active'?`<button data-act="receipt" data-id="${m.id}">🧾 電子收據</button>`:''}<button data-act="edit" data-id="${m.id}">✏️ 編輯</button><button class="del" data-act="del" data-id="${m.id}">🗑 刪除</button></div>
       </div>
     </div>`;
   }).join('');
 }
 
+/* 開立電子收據：把這位會員的資料帶到 receipt-image.html（只放在這個分頁的暫存，不寫進網址） */
+function openReceipt(m){
+  try{ sessionStorage.setItem('ebn_rcpt_prefill',JSON.stringify({name:m.name||'',email:getEmail(m),join:m.join||'',feeTo:m.feeTo||'',type:m.type||''})); }catch(_){}
+  location.href='receipt-image.html?auto=1';
+}
 $('list').addEventListener('click',e=>{
   const el=e.target.closest('[data-act]'); if(!el) return;
   const m=members.find(x=>x.id===el.dataset.id); if(!m) return;
@@ -513,6 +518,8 @@ $('list').addEventListener('click',e=>{
       save(); render(); toast('已退回待審');
     });
   }
+  if(a==='approve' && confirm('已核准「'+(m.name||'')+'」入會。\n要現在開立電子收據（圖片）並用 Email 寄給會員嗎？')) openReceipt(m);
+  else if(a==='receipt') openReceipt(m);
   else if(a==='edit') openForm(m);
   else if(a==='del'){ if(confirm('刪除會員「'+(m.name||'')+'」？\n（刪除後可從下方「♻️ 最近刪除」復原，不用重打）')){
     const removed=members.find(x=>x.id===m.id);

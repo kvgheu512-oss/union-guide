@@ -58,6 +58,7 @@
       <div><label>日期</label><input id="date" type="date"></div>
     </div>
     <label>繳款人姓名</label><input id="name" placeholder="例：王小明" autocomplete="off">
+    <label>會員 Email（要寄收據才需要）</label><input id="mail" type="email" inputmode="email" placeholder="例：name@gmail.com" autocomplete="off" autocapitalize="off" spellcheck="false">
     <label style="margin-top:.8rem">繳費項目</label>
     <label class="chk"><input type="checkbox" id="fee" checked> 入會費　1,250 元</label>
     <label class="chk"><input type="checkbox" id="dues" checked> 經常會費　每月 250 元 × </label>
@@ -85,9 +86,11 @@
   <div class="card" id="out">
     <h2>③ 收據圖片</h2>
     <img id="preview" alt="收據圖片預覽">
+    <button class="btn" id="mailbtn" type="button" style="background:#B7860B">✉️ 用 Email 寄給會員</button>
+    <div class="note" style="margin-top:.3rem">按下去會先<b>下載收據圖片</b>、再開啟寄信畫面（收件人、主旨、內文已填好）。<b>請把剛下載的圖片「附加」到信件裡再寄出。</b>（網頁無法替你自動附加檔案。）</div>
     <button class="btn g" id="share" type="button">📤 分享給會員（LINE／相簿等）</button>
     <button class="btn o" id="dl" type="button">⬇ 下載圖片</button>
-    <div class="note">長按圖片也可以另存。傳給會員後，請在名冊登記「已繳費」。</div>
+    <div class="note">長按圖片也可以另存。寄出後，請在名冊登記「會費已繳至」。</div>
   </div>
 </main>
 </div>
@@ -96,7 +99,7 @@
 const PW_HASH="1621267407177439", UNLOCK_KEY="union_panel_unlocked";
 function cyrb53(s,seed=0){ s=s||""; let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed; for(let i=0,c;i<s.length;i++){c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909); return ""+(4294967296*(2097151&h2)+(h1>>>0)); }
 const gate=document.getElementById('gate'),app=document.getElementById('app');
-function showApp(){ gate.classList.remove('show'); app.style.display='block'; }
+function showApp(){ gate.classList.remove('show'); app.style.display='block'; try{ window.dispatchEvent(new Event('ebn-unlocked')); }catch(e){} }
 function showGate(){ gate.classList.add('show'); app.style.display='none'; setTimeout(()=>document.getElementById('gate-pw').focus(),100); }
 function tryUnlock(){ const v=document.getElementById('gate-pw').value.trim(); if(cyrb53(v)===PW_HASH){ try{localStorage.setItem(UNLOCK_KEY,'1');}catch(_){} showApp(); } else { document.getElementById('gate-err').textContent='通行碼不對，請再試一次或詢問負責幹部'; } }
 document.getElementById('gate-go').addEventListener('click',tryUnlock);
@@ -217,6 +220,28 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
       else alert("這個瀏覽器無法直接分享，請按「下載圖片」後再傳給會員。"); },"image/png"); });
   ["fee","dues","months"].forEach(function(id){ $(id).addEventListener("input",calc); $(id).addEventListener("change",calc); });
   $("date").value=today(); fillNo(); calc(); renderSeals();
+  function rocYM(y,m){ return (y-1911)+"年"+m+"月"; }
+  function applyPrefill(){
+    var raw=null; try{ raw=sessionStorage.getItem("ebn_rcpt_prefill"); sessionStorage.removeItem("ebn_rcpt_prefill"); }catch(e){}
+    if(!raw) return false; var d; try{ d=JSON.parse(raw); }catch(e){ return false; }
+    if(d.name) $("name").value=d.name; if(d.email) $("mail").value=d.email;
+    var jm=/^(\d{4})-(\d{2})/.exec(d.join||""), fm=/^(\d{4})-(\d{2})/.exec(d.feeTo||"");
+    if(jm){ var jy=+jm[1], jmo=+jm[2], ey=jy, emo=12; if(fm){ ey=+fm[1]; emo=+fm[2]; }
+      var mo=(ey-jy)*12+emo-jmo+1; if(mo<1) mo=1; $("months").value=mo; $("period").value=rocYM(jy,jmo)+"～"+rocYM(ey,emo); calc(); }
+    return true;
+  }
+  function mailBody(){ var amt=+$("amt").value||0;
+    return "您好：\n\n感謝您加入"+orgName()+"。附上您的電子收據（收據編號 "+$("no").value.trim()+"，金額 NT$ "+amt.toLocaleString("en-US")+"），請見附件圖片。\n如有任何疑問，歡迎直接回覆這封信。\n\n"+orgName(); }
+  $("mailbtn").addEventListener("click",function(){
+    if(!lastCanvas) return; var to=$("mail").value.trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)){ alert("請先在上面填會員的 Email（格式要正確）。"); $("mail").focus(); return; }
+    $("dl").click();
+    setTimeout(function(){ location.href="mailto:"+encodeURIComponent(to).replace("%40","@")+"?subject="+encodeURIComponent("【"+orgName()+"】電子收據 "+$("no").value.trim())+"&body="+encodeURIComponent(mailBody()); },400);
+  });
+  function boot(){ if(boot.done) return; boot.done=true; var pre=applyPrefill(); if(pre && /[?&]auto=1/.test(location.search)) setTimeout(function(){ $("gen").click(); },300); }
+  window.addEventListener("ebn-unlocked",boot);
+  if(app.style.display==="block") boot();
+
 })();
 </script>
 <script src="org.js" defer></script>
