@@ -78,11 +78,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-11-01
 
 最近 commits：
+  cd2e56d 修正繳費頁轉帳資訊顯示「尚未公布」：本機空白草稿不再蓋掉已發布的戶名／帳號
+  10f4523 自動更新 CLAUDE.md 最近進度（Stop hook）
   6b1ddbc 自動更新 CLAUDE.md 最近進度（Stop hook）
   e7fdf93 自動更新 CLAUDE.md 最近進度（Stop hook）
   50725ef 計畫與預算改為「各年度」：理事長選年度編列（切換/新增年度/複製其他年度）、發布合併保留其他年度、公開頁依年度分頁；sw 不快取 yearplans.json
-  ef32a7b 自動更新 CLAUDE.md 最近進度（Stop hook）
-  95fd06f 理事長可編輯並發布2027年度工作計畫與預算（新增/修改/刪除、自動合計、預覽、發布檔）；工作計畫補上7項監事監察事項
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
