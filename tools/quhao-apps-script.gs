@@ -9,6 +9,7 @@
         SECRET_KEY   設一組你自訂的通行碼（例如一串英數字，越長越好，不要用「1234」這種）
         SEED_PREP    現在籌備期文號流水號的「下一個」號碼（例如你目前發到115002，這裡就填 3）
         SEED_MAIN    正式文號流水號的「下一個」號碼（還沒開始發正式文就填 1）
+        SEED_RCPT    （選填）電子收據編號的「下一個」號碼，不填就從 1 開始；收據編號會變成 115-001、115-002…
       （這兩個 SEED 只在第一次「還沒有任何紀錄」時當起始值用，之後由試算表自己算，不用再改）
    4. 右上角「部署」→「新增部署作業」→類型選「網頁應用程式」：
         執行身份：我（你的帳號）
@@ -69,16 +70,17 @@ function computeSeq(props, series) {
     var vals = sh.getRange(2, 4, last - 1, 1).getValues(); // D欄=序列
     for (var i = 0; i < vals.length; i++) if (vals[i][0] === series) count++;
   }
-  var seed = parseInt(props.getProperty(series === "prep" ? "SEED_PREP" : "SEED_MAIN"), 10) || 1;
+  var seedKey = series === "prep" ? "SEED_PREP" : (series === "rcpt" ? "SEED_RCPT" : "SEED_MAIN");
+  var seed = parseInt(props.getProperty(seedKey), 10) || 1;
   return seed + count;
 }
 
 function doPeek(props) {
-  return { ok: true, seqPrep: computeSeq(props, "prep"), seqMain: computeSeq(props, "main") };
+  return { ok: true, seqPrep: computeSeq(props, "prep"), seqMain: computeSeq(props, "main"), seqRcpt: computeSeq(props, "rcpt") };
 }
 
 function doNext(props, p) {
-  var series = p.series === "prep" ? "prep" : "main";
+  var series = p.series === "prep" ? "prep" : (p.series === "rcpt" ? "rcpt" : "main");
   var word = p.word || "（字別）";
   var year = p.year || "";
   var subject = p.subject || "";
@@ -88,7 +90,7 @@ function doNext(props, p) {
   try {
     var seq = computeSeq(props, series);
     var n = String(seq); while (n.length < 3) n = "0" + n;
-    var no = word + "字第" + year + n + "號";
+    var no = (series === "rcpt") ? (year + "-" + n) : (word + "字第" + year + n + "號");   // 收據編號：115-001
     var date = Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy-MM-dd");
     getSheet().appendRow([no, date, subject, series]);
     return { ok: true, no: no };

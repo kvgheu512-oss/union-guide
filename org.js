@@ -196,8 +196,10 @@
       "&subject=" + encodeURIComponent(subject || ""));
   }
   function quhaoGetLog(limit) { return quhaoCall("action=log&limit=" + (limit || 50)); }
+  // 電子收據編號：跟公文共用同一個雲端計數服務，但獨立一條序列（series=rcpt），編號格式「115-001」
+  function quhaoReceipt(year, note) { return quhaoCall("action=next&series=rcpt&year=" + encodeURIComponent(year || "") + "&subject=" + encodeURIComponent(note || "")); }
 
-  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, getInLog: getInLog, setInLog: setInLog, addIncoming: addIncoming, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, hasPublicData: hasPublicData, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY, candidates: candidates, setCandidates: setCandidates, CANDKEY: CANDKEY, fmtNo: fmtNo, localDateStr: localDateStr, quhao: { enabled: quhaoEnabled, peek: quhaoPeek, next: quhaoNext, log: quhaoGetLog } };
+  window.EBNOrg = { get: get, set: set, fill: fill, peekDocNo: peekDocNo, nextDocNo: nextDocNo, getLog: getLog, setLog: setLog, getInLog: getInLog, setInLog: setInLog, addIncoming: addIncoming, publicData: publicData, publicAddr: publicAddr, publicLoaded: publicLoaded, hasPublicData: hasPublicData, loadPublic: loadPublic, buildPublic: buildPublic, FIELDS: FIELDS, KEY: KEY, LOG: LOG, PUB: PUB, cadres: cadres, setCadres: setCadres, cadreName: cadreName, CADRE_ROLES: CADRE_ROLES, CADRE_DEFAULTS: CADRE_DEFAULTS, CKEY: CKEY, candidates: candidates, setCandidates: setCandidates, CANDKEY: CANDKEY, fmtNo: fmtNo, localDateStr: localDateStr, quhao: { receipt: quhaoReceipt, enabled: quhaoEnabled, peek: quhaoPeek, next: quhaoNext, log: quhaoGetLog } };
   // 先用本機草稿即時填一次（不必等網路）；public.json 載到後再填一次（公告版蓋上來）
   function init() { fill(); loadPublic(function () { fill(); try { document.dispatchEvent(new CustomEvent("ebnorg:public")); } catch (e) {} }); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();

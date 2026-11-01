@@ -55,6 +55,7 @@
 <div id="app" style="display:none">
 <div class="header"><h1>🖼 電子收據（圖片）</h1><p>核對入帳、確認入會後開立 → 存成圖片傳給會員</p></div>
 <div id="net" style="text-align:center;font-size:12.5px;padding:.35rem 1rem;background:#EAF6EE;color:#0F5C36"></div>
+<div id="noStat" style="text-align:center;font-size:12.5px;padding:.35rem 1rem;background:#FFF3E8;color:#7A3B00;line-height:1.6"></div>
 <main>
   <div class="card">
     <h2>① 填寫收據內容</h2>
@@ -297,7 +298,8 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     if(!$("name").value.trim()){ alert("請先填繳款人姓名"); $("name").focus(); return; }
     var miss=SEALS.filter(function(s){return !getSeal(s[0]);}).map(function(s){return s[1];});
     if(miss.length && !confirm("還沒上傳："+miss.join("、")+"。\n沒蓋章的收據不完整，確定要先產生嗎？")) return;
-    var cv=await draw(); lastCanvas=cv; addLog({no:$("no").value.trim(),date:$("date").value,name:$("name").value.trim(),amt:+$("amt").value||0,method:$("method").value,ts:new Date().toLocaleString("zh-TW")}); $("preview").src=cv.toDataURL("image/png"); $("out").style.display="block"; bumpNo();
+    if(!(await ensureNo())) return;
+    var cv=await draw(); lastCanvas=cv; addLog({no:$("no").value.trim(),date:$("date").value,name:$("name").value.trim(),amt:+$("amt").value||0,method:$("method").value,ts:new Date().toLocaleString("zh-TW")}); $("preview").src=cv.toDataURL("image/png"); $("out").style.display="block"; if(!cloudOn()) bumpNo();
     setTimeout(function(){ $("out").scrollIntoView({behavior:"smooth"}); },80);
   });
   function fname(){ return "收據_"+($("no").value.trim()||"電子")+"_"+($("name").value.trim()||"會員")+".png"; }
@@ -315,6 +317,27 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
       calc(); }); }
   bindChips("rateChips","discRate"); bindChips("nameChips","discName");
   $("date").value=today(); fillNo(); calc(); renderSeals();
+  // ---- 編號：雲端共用（多台手機／電腦不撞號）；沒網路用「離線暫號」；沒設定雲端才用本機編號 ----
+  var issuedNo="", DKEY="ebn_rcpt_dev_v1", OFFKEY="ebn_rcpt_off_v1";
+  function cloudOn(){ try{ return !!(window.EBNOrg&&EBNOrg.quhao&&EBNOrg.quhao.enabled()); }catch(e){ return false; } }
+  function devTag(){ var d=""; try{ d=localStorage.getItem(DKEY)||""; if(!d){ d=Math.random().toString(36).slice(2,5).toUpperCase(); localStorage.setItem(DKEY,d); } }catch(e){ d="X"+Math.floor(Math.random()*9); } return d; }
+  function offNo(){ var y=new Date().getFullYear()-1911, n=0; try{ var s=JSON.parse(localStorage.getItem(OFFKEY)||"{}"); if(s.y===y) n=s.n||0; n++; localStorage.setItem(OFFKEY,JSON.stringify({y:y,n:n})); }catch(e){ n=Math.floor(Math.random()*900)+100; } return y+"-OFF-"+devTag()+"-"+pad(n,3); }
+  function noStatus(){ var el=$("noStat"); if(!el) return;
+    if(cloudOn()){ el.style.background="#EAF6EE"; el.style.color="#0F5C36"; el.innerHTML="☁️ <b>雲端共用編號已啟用</b>：手機和電腦都在同一組號碼上累加，不會撞號。編號在按「產生收據圖片」時自動取得。"; }
+    else { el.style.background="#FFF3E8"; el.style.color="#7A3B00"; el.innerHTML="⚠️ <b>目前是本機編號</b>：多台手機／電腦各自編號，<b>會撞號</b>。要共用編號，請到 <a href=\"org.html\" style=\"color:#7A3B00;font-weight:700\">工會基本資料中心</a> 填「雲端取號服務網址」（每台裝置都要填同一個）。"; }
+    if(cloudOn() && !issuedNo){ $("no").value=""; $("no").placeholder="按「產生」時自動取號"; } }
+  async function ensureNo(){
+    if(issuedNo && $("no").value.trim()===issuedNo) return true;      // 同一張收據重新產生，沿用原編號，不重複取號
+    if(!cloudOn()){ if(!$("no").value.trim()) fillNo(); issuedNo=$("no").value.trim(); return true; }
+    var y=new Date().getFullYear()-1911, amt=+$("amt").value||0;
+    try{ var pk=await EBNOrg.quhao.peek(); if(!pk||pk.seqRcpt==null) throw new Error("雲端取號程式還沒更新到收據版本，為避免佔用公文文號，已停止取號");   // 舊版程式不認得收據序列，會誤拿公文號
+      var j=await EBNOrg.quhao.receipt(y,"NT$"+amt+" "+$("method").value); if(!/^\d+-\d{3,}$/.test(j.no||"")) throw new Error("取到的編號格式不對（"+j.no+"）"); $("no").value=j.no; issuedNo=j.no; return true; }
+    catch(e){
+      if(!confirm("連不上雲端取號（"+(e&&e.message||"網路問題")+"）。\n\n要先用「離線暫號」開這張收據嗎？\n暫號長得像 115-OFF-XXX-001，保證不會跟別人撞號；連上網路後請跟總務對帳補登。")) return false;
+      var n=offNo(); $("no").value=n; issuedNo=n; return true; } }
+  $("name").addEventListener("input",function(){ if(issuedNo){ issuedNo=""; if(!cloudOn()) fillNo(); noStatus(); } });   // 換繳款人＝新的一張，下次要取新號
+  window.addEventListener("load",noStatus); document.addEventListener("ebnorg:public",noStatus);
+
   function netState(){ var on=navigator.onLine!==false, el=$("net"); el.style.background=on?"#EAF6EE":"#FFF3E8"; el.style.color=on?"#0F5C36":"#7A3B00";
     el.innerHTML=on?"📶 目前有網路　（沒網路時也能開收據：印章與資料都在這支手機）":"✈️ 目前沒有網路　仍可開收據、存成圖片；等有網路再寄給會員"; }
   window.addEventListener("online",netState); window.addEventListener("offline",netState); netState();
