@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#C0392B">
+<title>🖋 理事長印章與簽名｜高榮企業工會</title>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>
+ :root{--navy:#1A3A6B;--red:#C0392B;--green:#0F5C36;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F7F5F2;--card:#fff;--border:#E3DED6}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7}
+ .header{background:linear-gradient(160deg,#C0392B,#8E2A1F);color:#fff;padding:1.6rem 1.25rem 1.3rem;text-align:center}
+ .header h1{font-family:'Noto Serif TC',serif;font-size:20px} .header p{font-size:12.5px;opacity:.92;margin-top:5px}
+ main{max-width:600px;margin:0 auto;padding:1rem 1rem 4rem}
+ .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1rem}
+ .card h2{font-family:'Noto Serif TC',serif;font-size:16px;color:#8E2A1F;margin-bottom:.5rem}
+ .note{font-size:12.5px;color:var(--ink-soft);line-height:1.75;margin-top:.5rem}
+ .btn{display:inline-block;padding:.6rem 1rem;font-size:15px;font-weight:700;border:1.5px solid var(--navy);border-radius:10px;color:var(--navy);background:#fff;cursor:pointer;font-family:inherit}
+ .btn.p{background:var(--navy);color:#fff} .btn.g{background:var(--green);border-color:var(--green);color:#fff} .btn.r{border-color:var(--red);color:var(--red)}
+ .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:.6rem}
+ .slot{display:flex;align-items:center;gap:12px;padding:.7rem .75rem;border:1px solid var(--border);border-radius:12px;background:#FBFAF8;margin-top:.7rem}
+ .thumb{width:84px;height:84px;flex:0 0 auto;border:1.5px dashed #CFC8BC;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+ .thumb img{max-width:100%;max-height:100%}
+ #pad{width:100%;height:170px;border:1.5px solid #CFC8BC;border-radius:12px;background:#fff;display:block}
+ #stage{display:none;margin-top:.8rem}
+ #doc{width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff;display:block}
+ label.chk{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:.5rem} label.chk input{width:18px;height:18px}
+  #gate{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,#1A3A6B 0%,#122A4F 100%);display:none;align-items:center;justify-content:center;padding:1.5rem;}
+  #gate.show{display:flex;}
+  .gate-box{background:#fff;border-radius:16px;max-width:380px;width:100%;padding:2rem 1.5rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+  .gate-box h2{font-family:'Noto Serif TC',serif;color:var(--navy);font-size:20px;margin-bottom:6px;}
+  .gate-box p{font-size:13px;color:var(--ink-soft);margin-bottom:1.25rem;}
+  .gate-box input{width:100%;padding:.8rem 1rem;font-size:16px;border:1.5px solid #ddd;border-radius:10px;margin-bottom:10px;text-align:center;}
+  .gate-box input:focus{outline:none;border-color:var(--navy);}
+  .gate-box button{width:100%;padding:.8rem;font-size:15px;color:#fff;background:var(--navy);border:none;border-radius:10px;cursor:pointer;}
+  .gate-err{color:#C0392B;font-size:13px;min-height:18px;margin-top:8px;}
+ html.u #app{display:block!important}html.u #gate{display:none!important}
+</style>
+<script>try{if(localStorage.getItem('union_panel_unlocked')==='1')document.documentElement.classList.add('u');}catch(e){}</script>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="union.html" data-nohelp>
+
+<div id="gate">
+  <div class="gate-box">
+    <h2>理事長印章與簽名</h2>
+    <p>本頁僅供工會幹部使用，請輸入幹部通行碼。</p>
+    <input id="gate-pw" type="password" inputmode="text" lang="en" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="幹部通行碼" enterkeyhint="go">
+    <button id="gate-go">進入</button>
+    <div class="gate-err" id="gate-err"></div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+<div class="header"><h1>🖋 理事長印章與簽名</h1><p>上傳私章、手寫簽名，直接蓋在文件上，少跑腿、少列印</p></div>
+<main>
+  <div class="card">
+    <h2>① 我的私章與簽名（只存在這支手機）</h2>
+    <div class="note" style="margin-top:0">印章與簽名<b>只存在這支手機的瀏覽器</b>，不會上傳到網站或網路。換手機要重新上傳。</div>
+
+    <div class="slot">
+      <div class="thumb" id="sealThumb"><span style="font-size:12px;color:#aaa">未上傳</span></div>
+      <div style="flex:1;min-width:0"><b>私章</b><br><span id="sealState" style="font-size:12.5px"></span>
+        <label class="chk"><input type="checkbox" id="rmBg" checked> 去除白底（拍照或掃描的印章請勾選）</label></div>
+    </div>
+    <div class="btns"><label class="btn">📷 上傳／拍照私章<input type="file" id="sealFile" accept="image/*" style="display:none"></label><button class="btn r" id="sealClr" type="button">清除私章</button></div>
+
+    <div class="slot" style="margin-top:1rem">
+      <div class="thumb" id="sigThumb"><span style="font-size:12px;color:#aaa">未建立</span></div>
+      <div style="flex:1;min-width:0"><b>手寫簽名</b><br><span id="sigState" style="font-size:12.5px"></span></div>
+    </div>
+    <div style="margin-top:.6rem"><canvas id="pad"></canvas></div>
+    <div class="btns"><button class="btn" id="padClr" type="button">重寫</button><button class="btn p" id="padSave" type="button">儲存成我的簽名</button><button class="btn r" id="sigClr" type="button">刪除已存簽名</button></div>
+    <div class="note">用手指或觸控筆在上面簽名，按「儲存」就可以重複使用。</div>
+  </div>
+
+  <div class="card">
+    <h2>② 蓋在文件上</h2>
+    <div class="note" style="margin-top:0">把要簽的文件<b>拍照、截圖或掃描成圖片</b>，選進來後，按下面按鈕加上私章、簽名或日期，<b>手指拖曳調位置</b>，最後存成圖片傳出去。</div>
+    <div class="btns"><label class="btn p">📄 選擇文件圖片<input type="file" id="docFile" accept="image/*" style="display:none"></label></div>
+    <div id="stage">
+      <div class="btns" style="margin-top:.2rem">
+        <button class="btn" id="addSeal" type="button">＋ 蓋私章</button>
+        <button class="btn" id="addSig" type="button">＋ 簽名</button>
+        <button class="btn" id="addDate" type="button">＋ 日期</button>
+        <button class="btn r" id="delSel" type="button">刪除選取</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin:.6rem 0 .4rem"><span style="font-size:13px;color:var(--ink-mid);flex:0 0 auto">選取項目大小</span><input type="range" id="sz" min="4" max="70" value="20" style="flex:1"><b id="szv" style="width:42px;text-align:right;font-size:13px"></b></div>
+      <canvas id="doc"></canvas>
+      <div class="btns"><button class="btn g" id="exp" type="button">⬇ 存成圖片</button><button class="btn p" id="shr" type="button">📤 分享</button></div>
+      <div class="note">點一下印章／簽名可選取，拖曳移動；點空白處取消選取（這時可以上下捲動頁面）。</div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:5px solid #B7860B">
+    <h2>用在哪裡、不能用在哪裡</h2>
+    <div style="font-size:13.5px;line-height:1.85">適合：<b>內部會務文件</b>（簽呈、會議紀錄、通知、收據等），省去列印、手簽、再掃描。<br>
+    不一定被接受：<b>對外公文、金融機構或政府機關要求的文件</b>。圖片式的印章簽名<b>不等於</b>電子簽章法的正式電子簽章（那要用憑證）；是否收件，<b>以受文單位規定為準</b>。</div>
+  </div>
+</main>
+</div>
+
+<script src="esign.js"></script>
+<script>
+const PW_HASH="1621267407177439", UNLOCK_KEY="union_panel_unlocked";
+function cyrb53(s,seed=0){ s=s||""; let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed; for(let i=0,c;i<s.length;i++){c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909); return ""+(4294967296*(2097151&h2)+(h1>>>0)); }
+const gate=document.getElementById('gate'),app=document.getElementById('app');
+function showApp(){ gate.classList.remove('show'); app.style.display='block'; try{ window.dispatchEvent(new Event('ebn-unlocked')); }catch(e){} }
+function showGate(){ gate.classList.add('show'); app.style.display='none'; setTimeout(()=>document.getElementById('gate-pw').focus(),100); }
+function tryUnlock(){ const v=document.getElementById('gate-pw').value.trim(); if(cyrb53(v)===PW_HASH){ try{localStorage.setItem(UNLOCK_KEY,'1');}catch(_){} showApp(); } else { document.getElementById('gate-err').textContent='通行碼不對，請再試一次或詢問負責幹部'; } }
+document.getElementById('gate-go').addEventListener('click',tryUnlock);
+document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
+try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }catch(e){ showGate(); }
+
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var SEAL_KEY="ebn_seal_chair", SIG_KEY="ebn_sig_chair";   // 私章與電子收據共用同一把 key
+  var KAI="'標楷體','DFKai-SB','BiauKai','Kaiti TC','KaiTi','STKaiti','Noto Serif TC',serif";
+  function get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }
+  function put(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ alert("存不進這支手機（空間不足），請換較小的圖片。"); return false; } }
+  function del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+  function loadImg(src){ return new Promise(function(res){ if(!src){res(null);return;} var i=new Image(); i.onload=function(){res(i);}; i.onerror=function(){res(null);}; i.src=src; }); }
+
+  function renderSlots(){
+    var s=get(SEAL_KEY), g=get(SIG_KEY);
+    $("sealThumb").innerHTML=s?'<img src="'+s+'">':'<span style="font-size:12px;color:#aaa">未上傳</span>';
+    $("sealState").innerHTML=s?'<span style="color:#0F5C36">✓ 已存在這支手機</span>':'<span style="color:#C0392B">尚未上傳</span>';
+    $("sigThumb").innerHTML=g?'<img src="'+g+'">':'<span style="font-size:12px;color:#aaa">未建立</span>';
+    $("sigState").innerHTML=g?'<span style="color:#0F5C36">✓ 已儲存</span>':'<span style="color:#C0392B">尚未建立</span>';
+  }
+  // 去白底：把接近白色的像素變透明，顏色保留（拍照的紅印章最常用）
+  function removeWhite(img,maxW){ var sc=Math.min(1,maxW/img.width), w=Math.round(img.width*sc), h=Math.round(img.height*sc), c=document.createElement("canvas"); c.width=w; c.height=h; var x=c.getContext("2d"); x.drawImage(img,0,0,w,h);
+    var d=x.getImageData(0,0,w,h), p=d.data; for(var i=0;i<p.length;i+=4){ var mn=Math.min(p[i],p[i+1],p[i+2]); if(mn>=235) p[i+3]=0; else p[i+3]=Math.min(255,Math.round((255-mn)*2.1)); }
+    x.putImageData(d,0,0); return c.toDataURL("image/png"); }
+  $("sealFile").addEventListener("change",function(){ var f=this.files&&this.files[0]; if(!f) return; var r=new FileReader();
+    r.onload=async function(){ var img=await loadImg(r.result); if(!img){ alert("這個檔案讀不出來，請換一張圖片。"); return; }
+      var out=$("rmBg").checked?removeWhite(img,700):r.result; if(out.length>1800000){ alert("圖片太大，請先縮小再上傳。"); return; } if(put(SEAL_KEY,out)) renderSlots(); };
+    r.readAsDataURL(f); this.value=""; });
+  $("sealClr").addEventListener("click",function(){ del(SEAL_KEY); renderSlots(); });
+
+  var pad=EBNSign.create($("pad"));
+  $("padClr").addEventListener("click",function(){ pad.clear(); });
+  $("padSave").addEventListener("click",function(){ if(pad.isEmpty()){ alert("請先在上面簽名。"); return; } if(put(SIG_KEY,pad.toDataURL())){ renderSlots(); pad.clear(); } });
+  $("sigClr").addEventListener("click",function(){ del(SIG_KEY); renderSlots(); });
+  renderSlots();
+
+  // ---- 蓋章工具 ----
+  var cv=$("doc"), ctx=cv.getContext("2d"), base=null, items=[], sel=-1;
+  function rocToday(){ var d=new Date(); return "中華民國"+(d.getFullYear()-1911)+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日"; }
+  function box(it){ if(it.type==="date"){ ctx.font="700 "+Math.round(it.w/9)+"px "+KAI; return {w:ctx.measureText(it.text).width,h:Math.round(it.w/9)*1.3}; } return {w:it.w,h:it.w*it.img.height/it.img.width}; }
+  function redraw(show){ if(!base) return; ctx.clearRect(0,0,cv.width,cv.height); ctx.drawImage(base,0,0,cv.width,cv.height);
+    items.forEach(function(it,i){ var b=box(it);
+      if(it.type==="date"){ ctx.fillStyle="#C0392B"; ctx.textBaseline="top"; ctx.font="700 "+Math.round(it.w/9)+"px "+KAI; ctx.fillText(it.text,it.x,it.y); }
+      else ctx.drawImage(it.img,it.x,it.y,b.w,b.h);
+      if(show!==false && i===sel){ ctx.save(); ctx.strokeStyle="#1A73E8"; ctx.lineWidth=Math.max(2,cv.width/400); ctx.setLineDash([10,8]); ctx.strokeRect(it.x-4,it.y-4,b.w+8,b.h+8); ctx.restore(); } });
+    cv.style.touchAction=(sel>=0)?"none":"auto"; }
+  function addItem(type){ if(!base){ alert("請先選擇文件圖片。"); return; }
+    var go=function(img){ var w=Math.round(cv.width*(type==="date"?0.42:(type==="seal"?0.16:0.28))); items.push({type:type,img:img,text:type==="date"?rocToday():"",w:w,x:Math.round(cv.width*0.55),y:Math.round(cv.height*0.75)}); sel=items.length-1; syncSz(); redraw(); };
+    if(type==="date"){ go(null); return; }
+    loadImg(get(type==="seal"?SEAL_KEY:SIG_KEY)).then(function(img){ if(!img){ alert(type==="seal"?"還沒上傳私章，請先在上面上傳。":"還沒儲存簽名，請先在上面簽名並儲存。"); return; } go(img); }); }
+  function syncSz(){ if(sel<0){ $("szv").textContent=""; return; } var p=Math.round(items[sel].w/cv.width*100); $("sz").value=p; $("szv").textContent=p+"%"; }
+  $("docFile").addEventListener("change",function(){ var f=this.files&&this.files[0]; if(!f) return; var r=new FileReader();
+    r.onload=async function(){ var img=await loadImg(r.result); if(!img){ alert("這個檔案讀不出來，請選圖片（拍照或截圖）。"); return; }
+      var sc=Math.min(1,1600/img.width); cv.width=Math.round(img.width*sc); cv.height=Math.round(img.height*sc); base=img; items=[]; sel=-1; $("stage").style.display="block"; redraw(); $("stage").scrollIntoView({behavior:"smooth"}); };
+    r.readAsDataURL(f); this.value=""; });
+  $("addSeal").addEventListener("click",function(){ addItem("seal"); });
+  $("addSig").addEventListener("click",function(){ addItem("sig"); });
+  $("addDate").addEventListener("click",function(){ addItem("date"); });
+  $("delSel").addEventListener("click",function(){ if(sel<0) return; items.splice(sel,1); sel=-1; syncSz(); redraw(); });
+  $("sz").addEventListener("input",function(){ if(sel<0) return; items[sel].w=Math.round(cv.width*(+$("sz").value)/100); $("szv").textContent=$("sz").value+"%"; redraw(); });
+  // 拖曳
+  var drag=null;
+  function pt(e){ var r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*cv.width/r.width, y:(e.clientY-r.top)*cv.height/r.height}; }
+  cv.addEventListener("pointerdown",function(e){ if(!base) return; var p=pt(e), hit=-1;
+    for(var i=items.length-1;i>=0;i--){ var b=box(items[i]); if(p.x>=items[i].x-10&&p.x<=items[i].x+b.w+10&&p.y>=items[i].y-10&&p.y<=items[i].y+b.h+10){ hit=i; break; } }
+    sel=hit; syncSz(); redraw();
+    if(hit>=0){ e.preventDefault(); drag={dx:p.x-items[hit].x,dy:p.y-items[hit].y}; try{ cv.setPointerCapture(e.pointerId); }catch(_){} } });
+  cv.addEventListener("pointermove",function(e){ if(!drag||sel<0) return; e.preventDefault(); var p=pt(e); items[sel].x=Math.round(p.x-drag.dx); items[sel].y=Math.round(p.y-drag.dy); redraw(); });
+  ["pointerup","pointercancel"].forEach(function(n){ cv.addEventListener(n,function(){ drag=null; }); });
+  function blob(cb){ redraw(false); cv.toBlob(function(b){ redraw(); cb(b); },"image/png"); }
+  function fname(){ var d=new Date(); return "已蓋章文件_"+d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.getDate()).slice(-2)+".png"; }
+  $("exp").addEventListener("click",function(){ if(!base) return; blob(function(b){ var a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=fname(); document.body.appendChild(a); a.click(); a.remove(); }); });
+  $("shr").addEventListener("click",function(){ if(!base) return; blob(function(b){ var f=new File([b],fname(),{type:"image/png"}); if(navigator.canShare&&navigator.canShare({files:[f]})) navigator.share({files:[f],title:"已蓋章文件"}).catch(function(){}); else alert("這個瀏覽器無法直接分享，請按「存成圖片」再傳出去。"); }); });
+})();
+</script>
+<script src="common.js" defer></script>
+</body></html>
