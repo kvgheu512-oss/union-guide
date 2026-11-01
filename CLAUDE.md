@@ -73,11 +73,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-11-01
 
 最近 commits：
+  7a0625b 繳費頁試算：11、12月入會時顯示「年底入會小提醒」（建議合併繳隔年會費，三點好處，不提優惠）
+  352f5aa 自動更新 CLAUDE.md 最近進度（Stop hook）
   0cdf935 自動更新 CLAUDE.md 最近進度（Stop hook）
   3aca699 CLAUDE.md：記錄年底合併繳費9折優惠網站不呈現的指示
   4937cd2 自動更新 CLAUDE.md 最近進度（Stop hook）
-  8b9e466 入會步驟改為：填申請書→審核→繳費→成為會員；繳費頁提醒審核通過後再繳
-  9611671 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
