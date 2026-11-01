@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1A7A4A">
+<title>📅 2027 年度工作計畫與預算｜高榮企業工會</title>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>
+ :root{--ac:#1A7A4A;--deep:#0F5C36;--ink:#1A1A1A;--soft:#777;--mid:#444;--bg:#F7F6F3;--card:#fff;--border:#E6E0D6}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.75}
+ .header{background:linear-gradient(160deg,var(--ac),var(--deep));color:#fff;padding:1.7rem 1.25rem 1.3rem;text-align:center}
+ .header h1{font-family:'Noto Serif TC',serif;font-size:20px} .header p{font-size:12.5px;opacity:.92;margin-top:5px}
+ main{max-width:680px;margin:0 auto;padding:1rem 1rem 4rem}
+ .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1rem}
+ .card h2{font-family:'Noto Serif TC',serif;font-size:16.5px;color:var(--deep);margin-bottom:.6rem}
+ table{width:100%;border-collapse:collapse;font-size:13.5px}
+ th{background:#EEF6F1;color:var(--deep);text-align:left;padding:.45rem .5rem;font-size:12.5px} td{padding:.45rem .5rem;border-top:1px solid #EEE9E0;vertical-align:top}
+ td.n,th.n{text-align:right;white-space:nowrap}
+ .tot td{font-weight:700;background:#F7FBF8}
+ .badge{display:inline-block;font-size:12px;font-weight:700;padding:.15rem .6rem;border-radius:999px;background:#FFF3D6;color:#7A5600;margin-top:6px}
+ .note{font-size:12.5px;color:var(--soft);line-height:1.75;margin-top:.5rem}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body data-home="index.html">
+<div class="header"><h1>📅 2027 年度工作計畫與預算</h1><p>高雄榮民總醫院企業工會</p><div id="badge"></div></div>
+<main id="box"><div class="card"><div class="note" style="margin-top:0">載入中…</div></div></main>
+<script>
+(function(){
+  var box=document.getElementById("box");
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function num(n){ n=+n||0; return n.toLocaleString("en-US"); }
+  function sum(a){ return (a||[]).reduce(function(s,r){return s+(+r.amt||0);},0); }
+  function render(d){
+    if(!d||!d.published){ box.innerHTML='<div class="card"><h2>編製中</h2><div style="font-size:14px;line-height:1.9">2027 年度工作計畫與預算<b>還在編製中</b>，理事長與總務討論定案後，會公布在這裡。</div></div>'; return; }
+    var inc=sum(d.income), exp=sum(d.expense), h="";
+    document.getElementById("badge").innerHTML='<span class="badge">'+esc(d.status||"草案")+(d.updated?'　更新 '+esc(d.updated):'')+'</span>';
+    if(d.note) h+='<div class="card"><div style="font-size:14px;line-height:1.85">'+esc(d.note)+'</div></div>';
+    h+='<div class="card"><h2>壹、工作計畫</h2><table><tr><th>項目</th><th>類別</th><th>期程</th><th>負責</th><th class="n">預估經費</th></tr>'+
+      (d.plan||[]).map(function(r,i){ return '<tr><td>'+(i+1)+'. '+esc(r.item)+(r.remark?'<div class="note" style="margin-top:2px">'+esc(r.remark)+'</div>':'')+'</td><td>'+esc(r.cat)+'</td><td>'+esc(r.when)+'</td><td>'+esc(r.owner)+'</td><td class="n">'+(r.cost===""||r.cost==null?"—":num(r.cost))+'</td></tr>'; }).join("")+'</table></div>';
+    h+='<div class="card"><h2>貳、收入預算</h2><table><tr><th>項目</th><th>說明</th><th class="n">金額</th></tr>'+
+      (d.income||[]).map(function(r){ return '<tr><td>'+esc(r.item)+'</td><td>'+esc(r.desc)+'</td><td class="n">'+num(r.amt)+'</td></tr>'; }).join("")+'<tr class="tot"><td colspan="2">收入合計</td><td class="n">'+num(inc)+'</td></tr></table></div>';
+    h+='<div class="card"><h2>參、支出預算</h2><table><tr><th>項目</th><th>類別</th><th>說明</th><th class="n">金額</th></tr>'+
+      (d.expense||[]).map(function(r){ return '<tr><td>'+esc(r.item)+'</td><td>'+esc(r.cat)+'</td><td>'+esc(r.desc)+'</td><td class="n">'+num(r.amt)+'</td></tr>'; }).join("")+'<tr class="tot"><td colspan="3">支出合計</td><td class="n">'+num(exp)+'</td></tr></table></div>';
+    h+='<div class="card"><h2>肆、收支平衡</h2><table><tr><td>收入合計</td><td class="n">'+num(inc)+' 元</td></tr><tr><td>支出合計</td><td class="n">'+num(exp)+' 元</td></tr><tr class="tot"><td>預估結餘</td><td class="n">'+num(inc-exp)+' 元</td></tr></table><div class="note">本計畫與預算依章程提會員大會審議，監事審核；實際執行以會員大會通過版本為準。</div></div>';
+    box.innerHTML=h;
+  }
+  var qs=location.search;
+  if(/[?&]draft=1/.test(qs)){   // 理事長在自己手機預覽草稿（只讀這支手機的草稿，不是公開版）
+    var raw=null; try{ raw=localStorage.getItem("ebn_plan2027_draft_v1"); }catch(e){}
+    var d=null; try{ d=JSON.parse(raw||"null"); }catch(e){}
+    if(d){ d.published=true; d.status=(d.status||"草案")+"（這是你手機上的預覽，尚未公開）"; } render(d);
+  } else {
+    fetch("plan2027.json",{cache:"no-store"}).then(function(r){ return r.ok?r.json():null; }).then(render).catch(function(){ render(null); });
+  }
+})();
+</script>
+<script src="common.js" defer></script>
+</body></html>
