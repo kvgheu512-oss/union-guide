@@ -56,6 +56,17 @@
     <div class="info-row"><span class="info-key">轉帳戶名</span><span class="info-val" data-org-text="bankHolder">（尚未公布，請洽總務）</span></div>
     <div class="info-row"><span class="info-key">金融機構／分行</span><span class="info-val" data-org-text="bank">（尚未公布，請洽總務）</span></div>
     <div class="info-row"><span class="info-key">帳號</span><span style="display:flex;align-items:center;gap:8px"><span class="info-val" id="bankAcctVal" data-org-text="bankAcct">（尚未公布，請洽總務）</span><button type="button" id="copyAcctBtn" style="flex-shrink:0;font-size:12px;padding:3px 8px;border:1px solid var(--border);background:#fff;color:var(--ac-deep);border-radius:8px;cursor:pointer">📋 複製</button></span></div>
+    <div id="payQuick" style="margin-top:.8rem">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a id="payLine" href="#" target="_blank" rel="noopener" style="flex:1 1 140px;text-align:center;text-decoration:none;font-size:14.5px;font-weight:700;padding:10px 8px;border-radius:10px;background:#06C755;color:#fff">💬 轉傳到 LINE</a>
+        <button type="button" id="payShare" style="flex:1 1 140px;font-size:14.5px;font-weight:700;padding:10px 8px;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--ac-deep);cursor:pointer">📤 分享給朋友</button>
+        <button type="button" id="payCopyAll" style="flex:1 1 140px;font-size:14.5px;font-weight:700;padding:10px 8px;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--ac-deep);cursor:pointer">📋 複製全部資訊</button>
+      </div>
+      <div style="text-align:center;margin-top:.9rem">
+        <div id="payQR" style="display:inline-block;padding:8px;background:#fff;border:1px solid var(--border);border-radius:10px"></div>
+        <div style="font-size:12.5px;color:#666;line-height:1.7;margin-top:.4rem">用另一支手機掃描，可取得完整轉帳資訊文字（戶名／銀行／帳號）。<br>⚠️ 這不是銀行「掃碼自動付款」的 QR，掃完仍需自己開銀行或郵局 App 轉帳。</div>
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -124,5 +135,34 @@
   }
 })();
 </script>
+<script>
+// 快速分享：LINE／系統分享／複製全部／QR
+(function(){
+  function info(){
+    var o=(window.EBNOrg&&EBNOrg.get)?EBNOrg.get():{};
+    if(!o.bankAcct) return null;
+    return "【高雄榮總企業工會 會費轉帳資訊】\n戶名："+(o.bankHolder||"")+"\n金融機構："+(o.bank||"")+"\n帳號："+o.bankAcct+"\n⚠️ 備註請填「轉帳末4碼＋姓名」\n繳費說明："+location.origin+location.pathname;
+  }
+  function fb(t){var ta=document.createElement("textarea");ta.value=t;ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(ta);}
+  function flash(b,m){var o=b.textContent;b.textContent=m;setTimeout(function(){b.textContent=o},1600);}
+  function wire(){
+    var s=info(), line=document.getElementById("payLine");
+    if(!s){ document.getElementById("payQuick").style.display="none"; return; }
+    document.getElementById("payQuick").style.display="";
+    line.href="https://line.me/R/msg/text/?"+encodeURIComponent(s);
+    var box=document.getElementById("payQR"); box.innerHTML="";
+    function qr(){ if(window.QRCode) new QRCode(box,{text:s,width:176,height:176,correctLevel:QRCode.CorrectLevel.L}); else setTimeout(qr,400); }
+    qr();
+    var sh=document.getElementById("payShare");
+    sh.onclick=function(){ if(navigator.share) navigator.share({title:"工會會費轉帳資訊",text:s}).catch(function(){}); else { fb(s); flash(sh,"✅ 已複製，可貼上傳送"); } };
+    var ca=document.getElementById("payCopyAll");
+    ca.onclick=function(){ if(navigator.clipboard) navigator.clipboard.writeText(s).then(function(){flash(ca,"✅ 已複製")},function(){fb(s);flash(ca,"✅ 已複製")}); else {fb(s);flash(ca,"✅ 已複製");} };
+  }
+  document.getElementById("payQuick").style.display="none";
+  var n=0,iv=setInterval(function(){ if(info()||++n>40){clearInterval(iv);wire();} },250);
+  document.addEventListener("ebnorg:public",wire);
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js" async></script>
 <script src="common.js" defer></script>
 </body></html>
