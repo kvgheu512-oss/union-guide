@@ -67,11 +67,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-11-01
 
 最近 commits：
+  3e15feb 首頁「如何正式入會」改為4步驟（資格、填申請書、繳費、理事會審查），金額與繳費頁一致
+  dffb634 自動更新 CLAUDE.md 最近進度（Stop hook）
   202e06d 首頁頁尾加一行不顯眼的「會員退會請 email 聯繫工會」
   843042e 自動更新 CLAUDE.md 最近進度（Stop hook）
   a2da7ed 繳費頁「要繳多少」改為以年繳為主（入會費1250＋經常會費一年3000＝4250）
-  32addf3 自動更新 CLAUDE.md 最近進度（Stop hook）
-  a331c82 幹部功能表拿掉「會費115年9~12月先收現金…」那句
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
