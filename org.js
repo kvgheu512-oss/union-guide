@@ -69,7 +69,17 @@
 
   function draft() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   // get()＝已發布的 org ＋ 本機草稿（草稿優先，讓正在編輯的人看到自己最新的）
-  function get() { return Object.assign({}, (_pub && _pub.org) || {}, draft()); }
+  // 本機草稿優先，但「空白」不能蓋掉已發布的值——否則手機上只要存過一次空白欄位（例如公告資料還沒載入就按了儲存），
+  // 繳費頁的轉帳戶名／帳號就會永遠顯示「尚未公布」，即使網站上其實已經公布了。
+  function get() {
+    var pub = (_pub && _pub.org) || {}, d = draft(), m = Object.assign({}, pub);
+    Object.keys(d).forEach(function (k) {
+      var v = d[k];
+      if (v !== "" && v != null) m[k] = v;
+      else if (!(k in pub)) m[k] = v;
+    });
+    return m;
+  }
   function set(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
   function publicData() { return _pub || {}; }
   // 給「公開頁面」顯示會址專用：addrPublic 沒勾＝回傳空字串。org-addr 可能是理事長住家，
