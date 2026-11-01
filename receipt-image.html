@@ -21,6 +21,10 @@
  .btn{display:block;width:100%;padding:.8rem;font-size:16px;font-weight:700;border:0;border-radius:11px;color:#fff;background:var(--navy);cursor:pointer;margin-top:.8rem}
  .btn.g{background:var(--green)} .btn.o{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
  .note{font-size:12.5px;color:var(--ink-soft);line-height:1.75;margin-top:.5rem}
+ .dlbl{font-size:13.5px;font-weight:700;color:#444;margin-bottom:.35rem}
+ .chips{display:flex;flex-wrap:wrap;gap:8px}
+ .cb{padding:.55rem .95rem;border:1.5px solid #D9B84A;border-radius:999px;background:#fff;color:#7A5600;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+ .cb.on{background:#B7860B;color:#fff;border-color:#B7860B}
  #out{display:none} #out img{width:100%;border:1px solid var(--border);border-radius:10px;background:#fff}
   #gate{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,#1A3A6B 0%,#122A4F 100%);display:none;align-items:center;justify-content:center;padding:1.5rem;}
   #gate.show{display:flex;}
@@ -67,14 +71,20 @@
       <div><label>期間說明（印在收據上）</label><input id="period" placeholder="例：115年11月～12月＋116年全年" autocomplete="off"></div>
     </div>
     <label class="chk" style="margin-top:.9rem;padding:.55rem .65rem;background:#FFF8E5;border:1px solid #EAD67A;border-radius:10px"><input type="checkbox" id="disc"> <b>🎁 套用優惠（折扣）</b></label>
-    <div id="discBox" style="display:none;margin-top:.4rem;padding:.65rem .75rem;border:1px dashed #D9B84A;border-radius:10px;background:#FFFDF5">
-      <div class="row2">
-        <div><label style="margin-top:0">優惠名稱（印在收據上）</label><input id="discName" value="入會費優惠" autocomplete="off"></div>
-        <div><label style="margin-top:0">折數（9＝9 折，8.5＝85 折）</label><input id="discRate" type="number" inputmode="decimal" step="0.5" min="1" max="10" value="9"></div>
+    <div id="discBox" style="display:none;margin-top:.4rem;padding:.8rem .85rem;border:1px dashed #D9B84A;border-radius:12px;background:#FFFDF5">
+      <div style="font-size:13px;color:#7A5600;margin-bottom:.45rem"><b>只能折「入會費」</b>（經常會費不能打折）。請先勾上面的「入會費」。</div>
+      <div class="dlbl">① 打幾折？</div>
+      <div class="chips" id="rateChips">
+        <button type="button" class="cb on" data-v="9">9 折</button><button type="button" class="cb" data-v="8.5">85 折</button><button type="button" class="cb" data-v="8">8 折</button><button type="button" class="cb" data-v="7">7 折</button><button type="button" class="cb" data-v="custom">其他</button>
       </div>
-      <div style="margin-top:.6rem;padding:.5rem .65rem;background:#F3F6FA;border-radius:8px;font-size:13px;color:#444">折扣對象：<b>只限入會費</b>（經常會費不能打折）</div>
-      <div id="discInfo" style="margin-top:.55rem;font-size:13.5px;color:#7A5600"></div>
-      <div class="note" style="margin-top:.3rem">收據上只會印「優惠名稱」和折扣金額，不印折數算法。要先勾選上面的「入會費」才有折扣可算。</div>
+      <input id="discRate" type="number" inputmode="decimal" step="0.5" min="1" max="10" value="9" placeholder="輸入折數，例：9＝9折、8.5＝85折" style="display:none;margin-top:.5rem">
+      <div class="dlbl" style="margin-top:.8rem">② 收據上寫什麼優惠名稱？</div>
+      <div class="chips" id="nameChips">
+        <button type="button" class="cb on" data-v="年底合併繳優惠">年底合併繳優惠</button><button type="button" class="cb" data-v="入會費優惠">入會費優惠</button><button type="button" class="cb" data-v="custom">其他</button>
+      </div>
+      <input id="discName" value="年底合併繳優惠" placeholder="輸入優惠名稱" autocomplete="off" style="display:none;margin-top:.5rem">
+      <div id="discInfo" style="margin-top:.85rem"></div>
+      <div class="note" style="margin-top:.3rem">收據上只會印優惠名稱和折扣金額，不印折數。</div>
     </div>
     <label>實收金額（元）<span style="color:var(--ink-soft)">　依上面項目自動算，有調整可手改</span></label>
     <input id="amt" type="number" inputmode="numeric" min="0">
@@ -129,12 +139,15 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
   function discount(){   // 優惠只能打在入會費上；回傳 {disc, name}，沒套用時 disc=0
     if(!$("disc").checked || !$("fee").checked) return {disc:0,name:""};
     var v=+$("discRate").value||10, r=v<=10?v/10:v/100; if(r<=0||r>1) r=1;
-    return {disc:Math.round(FEE*(1-r)), name:($("discName").value.trim()||"入會費優惠")};
+    return {disc:Math.round(FEE*(1-r)), name:($("discName").value.trim()||"入會費優惠"), rate:v};
   }
   function calc(){ var t=0; if($("fee").checked) t+=FEE; if($("dues").checked) t+=MONTHLY*Math.max(0,+$("months").value||0);
     var d=discount(); t-=d.disc; $("amt").value=Math.max(0,t);
     $("discBox").style.display=$("disc").checked?"block":"none";
-    $("discInfo").textContent=d.disc>0?("→ 折扣 −"+d.disc.toLocaleString("en-US")+" 元，實收 "+Math.max(0,t).toLocaleString("en-US")+" 元"):""; }
+    var tot=Math.max(0,t);
+    $("discInfo").innerHTML=!$("disc").checked?"":(!$("fee").checked?'<div style="padding:.6rem .75rem;background:#FDECEA;border-radius:10px;color:#C0392B;font-size:14px">⚠️ 還沒勾「入會費」，沒有折扣可算。</div>':
+      '<div style="padding:.7rem .8rem;background:#fff;border:1.5px solid #0F5C36;border-radius:10px;line-height:1.9"><div style="font-size:14px;color:#444">入會費 <b>1,250</b> 元 → 折後 <b style="color:#0F5C36">'+(FEE-d.disc).toLocaleString("en-US")+'</b> 元　<span style="color:#C0392B">（優惠 −'+d.disc.toLocaleString("en-US")+' 元）</span></div><div style="font-size:16px;font-weight:700;color:#0F5C36">這張收據實收：'+tot.toLocaleString("en-US")+' 元</div></div>');
+  }
   var D="零壹貳參肆伍陸柒捌玖";
   function cnBig(n){ n=Math.floor(n); if(n<=0) return "零元整"; var u=["","拾","佰","仟"], out="", s=String(n), len=s.length, wan=Math.floor(n/10000), low=n%10000;
     function sec(v){ var r="",z=false,str=pad(v,4); for(var i=0;i<4;i++){ var d=+str[i], p=3-i; if(d===0){ if(r&&!z) z=true; } else { if(z){ r+="零"; z=false; } r+=D[d]+u[p]; } } return r; }
@@ -267,6 +280,13 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
       if(navigator.canShare&&navigator.canShare({files:[f]})){ navigator.share({files:[f],title:"電子收據"}).catch(function(){}); }
       else alert("這個瀏覽器無法直接分享，請按「下載圖片」後再傳給會員。"); },"image/png"); });
   ["fee","dues","months","disc","discRate","discName"].forEach(function(id){ $(id).addEventListener("input",calc); $(id).addEventListener("change",calc); });
+  function bindChips(boxId,inputId){ var box=$(boxId), inp=$(inputId);
+    box.addEventListener("click",function(e){ var b=e.target.closest(".cb"); if(!b) return;
+      Array.prototype.forEach.call(box.querySelectorAll(".cb"),function(x){ x.classList.toggle("on",x===b); });
+      var v=b.getAttribute("data-v");
+      if(v==="custom"){ inp.style.display="block"; inp.focus(); } else { inp.style.display="none"; inp.value=v; }
+      calc(); }); }
+  bindChips("rateChips","discRate"); bindChips("nameChips","discName");
   $("date").value=today(); fillNo(); calc(); renderSeals();
   function rocYM(y,m){ return (y-1911)+"年"+m+"月"; }
   function applyPrefill(){
