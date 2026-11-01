@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1A7A4A">
+<title>💝 捐款支持｜高榮企業工會</title>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>
+ :root{--ac:#1A7A4A;--ac-deep:#0F5C36;--ink:#1A1A1A;--ink-soft:#777;--ink-mid:#444;--bg:#F7F6F3;--card:#fff;--border:#E6E1D8;--gold-light:#FEF9E7;}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.8}
+ .header{background:linear-gradient(160deg,var(--ac),var(--ac-deep));color:#fff;padding:1.8rem 1.25rem 1.4rem;text-align:center}
+ .header h1{font-family:'Noto Serif TC',serif;font-size:20px} .header p{font-size:12.5px;opacity:.92;margin-top:6px}
+ main{max-width:600px;margin:0 auto;padding:1.1rem 1.05rem 4rem}
+ .topnote{background:var(--gold-light);border:1px solid #EAD67A;border-radius:10px;padding:.8rem .95rem;font-size:13px;color:#5C4000;margin-bottom:1rem;line-height:1.8}
+ .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.05rem 1.15rem;margin-bottom:1rem;border-top:4px solid var(--ac)}
+ .card h2{font-family:'Noto Serif TC',serif;color:var(--ac-deep);font-size:16px;margin-bottom:.6rem}
+ .info-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #F2EFE9;font-size:14.5px}
+ .info-row:last-child{border-bottom:none;padding-bottom:0}
+ .info-row:first-child{padding-top:0}
+ .info-key{color:var(--ink-soft);flex-shrink:0}
+ .info-val{font-weight:700;text-align:right;word-break:break-all}
+ .note{font-size:12.5px;color:var(--ink-soft);line-height:1.75;margin-top:.9rem}
+ .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.2rem;line-height:1.8}
+</style>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+
+<div class="header"><h1>💝 捐款支持</h1><p>單次捐款：贊助會員與各界人士，歡迎支持本會運作</p></div>
+<main>
+  <div class="topnote">📌 捐款<b>自願、金額不限</b>，不需入會也可以捐。捐款<b>不會改變會員身分</b>，也不會因此取得表決或選舉權利。</div>
+
+  <div class="card">
+    <h2>① 怎麼捐？</h2>
+    <div style="font-size:14.5px;line-height:1.9"><b>現金：</b>當面交給總務，總務會開立收據。<br><b>轉帳／ATM 存款：</b>轉入下方本會帳戶。</div>
+    <div class="note" style="margin-top:.6rem;margin-bottom:.6rem">轉帳時，<b style="color:#C0392B">備註／附言請填「捐款＋轉帳末 4 碼＋姓名」</b>，總務才能對帳。</div>
+    <div class="info-row"><span class="info-key">轉帳戶名</span><span class="info-val" data-org-text="bankHolder">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">金融機構／分行</span><span class="info-val" data-org-text="bank">（尚未公布，請洽總務）</span></div>
+    <div class="info-row"><span class="info-key">帳號</span><span style="display:flex;align-items:center;gap:8px"><span class="info-val" id="bankAcctVal" data-org-text="bankAcct">（尚未公布，請洽總務）</span><button type="button" id="copyAcctBtn" style="flex-shrink:0;font-size:12px;padding:3px 8px;border:1px solid #C9D3DD;border-radius:6px;background:#fff;cursor:pointer">📋 複製</button></span></div>
+  </div>
+
+  <div class="card">
+    <h2>② 需要收據、或想報稅，請準備這些</h2>
+    <div class="info-row"><span class="info-key">個人</span><span class="info-val" style="text-align:right">姓名、身分證字號、通訊地址、聯絡電話</span></div>
+    <div class="info-row"><span class="info-key">公司行號</span><span class="info-val" style="text-align:right">公司全名、統一編號、負責人、通訊地址、聯絡電話</span></div>
+    <div class="info-row"><span class="info-key">匿名捐款</span><span class="info-val" style="text-align:right">不需要提供任何資料</span></div>
+    <div class="note"><b>什麼時候給：</b>捐款時直接告訴總務，或當面交給總務；只有在你<b>要收據</b>時才需要提供。<br>
+    <b style="color:#C0392B">請不要把身分證字號貼在網頁、社群或公開群組。</b>本網站不會收集、也不會儲存你的身分證字號。</div>
+  </div>
+
+  <div class="card" style="border-left:5px solid #B7860B">
+    <h2>③ 捐款可以抵稅嗎？先看這裡</h2>
+    <div style="font-size:14px;line-height:1.85">捐款能不能在報稅時列舉扣除，要看<b>本會是否符合所得稅法規定的受贈資格</b>，以及你的申報方式。<b>本會目前尚未確認可以開立「可抵稅」的捐贈收據。</b>如果你捐款是為了抵稅，<b>請先詢問總務再捐</b>，一般的收據不等於可以抵稅。</div>
+    <div class="note">稅務認定以國稅局公告與你的申報規定為準；本頁不是稅務意見。</div>
+  </div>
+
+  <div class="note">🔐 本頁帳戶資訊為工會公開收款資料，非個人資料。<br><a href="pay.html" style="color:var(--ac-deep);font-weight:700">← 會員入會費與經常會費繳費方式</a></div>
+  <div class="foot">高雄榮民總醫院企業工會</div>
+</main>
+
+<div id="verBadge"></div>
+<script src="org.js" defer></script>
+<script>
+// 複製帳號
+(function(){
+  var btn=document.getElementById("copyAcctBtn"); if(!btn) return;
+  btn.addEventListener("click",function(){
+    var acct=(document.getElementById("bankAcctVal").textContent||"").trim();
+    if(!acct || acct.indexOf("尚未公布")>=0) return;
+    function done(){ var old=btn.textContent; btn.textContent="✅ 已複製"; setTimeout(function(){ btn.textContent=old; },1600); }
+    if(navigator.clipboard){ navigator.clipboard.writeText(acct).then(done,function(){ fallbackCopy(acct); done(); }); }
+    else { fallbackCopy(acct); done(); }
+  });
+  function fallbackCopy(t){
+    var ta=document.createElement("textarea"); ta.value=t; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); }catch(e){} document.body.removeChild(ta);
+  }
+})();
+</script>
+<script src="common.js" defer></script>
+</body></html>
