@@ -156,9 +156,6 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     cell(X,y,c1,rh,"統一編號",taxId()||"—"); cell(X+c1,y,TW-c1,rh,"收據編號",no||"—",{color:"#C0392B"}); y+=rh;
     cell(X,y,c1,rh,"收據日期",date||"—",{size:27}); cell(X+c1,y,TW-c1,rh,"繳費方式",method); y+=rh;
     cell(X,y,TW,rh+10,"繳款人",who,{size:38}); 
-    // 已核對入帳章（蓋在繳款人列右側）
-    ctx.save(); ctx.translate(W-P-150,y+(rh+10)/2); ctx.rotate(-0.12); ctx.strokeStyle="#C0392B"; ctx.lineWidth=5; rr(ctx,-120,-36,240,72,12); ctx.stroke();
-    ctx.fillStyle="#C0392B"; ctx.textAlign="center"; ctx.font="700 28px "+SANS; ctx.fillText("已核對入帳",0,-2); ctx.font="700 21px "+SANS; ctx.fillText("入會確認",0,25); ctx.restore();
     y+=rh+10+40;
     // 項目表
     ctx.fillStyle=NAVY; ctx.fillRect(X,y,TW,64); ctx.fillStyle="#fff"; ctx.font="700 27px "+SANS; ctx.textAlign="left"; ctx.fillText("項目",X+24,y+42); ctx.fillText("說明",X+250,y+42); ctx.textAlign="right"; ctx.fillText("金額",X+TW-24,y+42); y+=64;
