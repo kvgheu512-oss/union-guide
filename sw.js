@@ -6,7 +6,7 @@ importScripts("./version.js");
 const CACHE = "ebn-" + self.__BUILD;
 const SHELL = [
   "./evidence.html", "./search.html", "./lawyer.html", "./share.html",
-  "./finance.html", "./finance-law.js", "./law-tips.js", "./common.js", "./mask.js", "./units.js", "./esign.js", "./receipt-image.html", "./plan2027.html", "./plan2027-edit.html", "./chair-seal.html", "./pay.html", "./assets/union-logo.png", "./assets/union-shield-wm.png", "./common.css", "./version.js", "./tw-area.js", "./tw-zip5-renwu.js", "./seclock.js", "./org.js", "./org.html", "./tour.js", "./gongwu.html", "./qingjia.html", "./joinroi.html", "./official-forms.html", "./founding.html", "./zhizai.html", "./shouzheng.html", "./gongfang.html", "./leavepay.html", "./charter.html", "./workplan.html", "./budget-draft.html", "./receipt.html", "./union.html", "./cases.html", "./fanben.html", "./jiaban.html", "./jianshi.html", "./plan.html", "./roster.html", "./meeting.html", "./gongwen.html", "./activity.html", "./swag.html", "./meet.html", "./index.html", "./nav.html", "./mailmerge.html", "./wenhao.html", "./receipt-batch.html", "./huizhi.html", "./dilei.html", "./voiceguide.html", "./buzhu.html", "./help.html", "./challenge.html", "./checklist.html", "./id-mark.html", "./lottery.html", "./privacy.html", "./quotes.html", "./roster-sync.html", "./tax-lawbook.html",
+  "./finance.html", "./finance-law.js", "./law-tips.js", "./common.js", "./mask.js", "./units.js", "./esign.js", "./receipt-image.html", "./yearplan.html", "./yearplan-edit.html", "./chair-seal.html", "./pay.html", "./assets/union-logo.png", "./assets/union-shield-wm.png", "./common.css", "./version.js", "./tw-area.js", "./tw-zip5-renwu.js", "./seclock.js", "./org.js", "./org.html", "./tour.js", "./gongwu.html", "./qingjia.html", "./joinroi.html", "./official-forms.html", "./founding.html", "./zhizai.html", "./shouzheng.html", "./gongfang.html", "./leavepay.html", "./charter.html", "./workplan.html", "./budget-draft.html", "./receipt.html", "./union.html", "./cases.html", "./fanben.html", "./jiaban.html", "./jianshi.html", "./plan.html", "./roster.html", "./meeting.html", "./gongwen.html", "./activity.html", "./swag.html", "./meet.html", "./index.html", "./nav.html", "./mailmerge.html", "./wenhao.html", "./receipt-batch.html", "./huizhi.html", "./dilei.html", "./voiceguide.html", "./buzhu.html", "./help.html", "./challenge.html", "./checklist.html", "./id-mark.html", "./lottery.html", "./privacy.html", "./quotes.html", "./roster-sync.html", "./tax-lawbook.html",
   "./icon-evidence.png", "./icon-search.png", "./icon-lawyer.png",
   "./evidence.webmanifest", "./search.webmanifest", "./lawyer.webmanifest", "./finance.webmanifest", "./receipt.webmanifest", "./jianshi.webmanifest", "./plan.webmanifest", "./roster.webmanifest", "./meeting.webmanifest", "./gongwen.webmanifest", "./activity.webmanifest",
   "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js",
@@ -36,7 +36,7 @@ self.addEventListener("fetch", e => {
   //    每次都會拿到同一個舊號碼、計數器不動。只有下方 SHELL 裡的兩個 CDN 字型/函式庫例外。
   if (url.origin !== self.location.origin && !/(^|\.)cdn\.jsdelivr\.net$/.test(url.hostname)) return;
   // 版本檔／法規檔：完全不攔，永遠走網路拿最新
-  if (/(^|\/)(ver\.txt|laws\.json|laws-extra\.json|public\.json|lottery-freq\.json)$/.test(url.pathname)) return;
+  if (/(^|\/)(ver\.txt|laws\.json|laws-extra\.json|public\.json|lottery-freq\.json|yearplans\.json)$/.test(url.pathname)) return;
 
   // 網頁與「核心程式碼」：網路優先 ＋「逾時退快取」。先抓網路（快就用最新、改了立刻看得到）；
   // 但網路超過 ~1.2 秒就先秒開快取版（避免 4G 慢時整頁卡 3-5 秒），網路回來仍背景更新快取。

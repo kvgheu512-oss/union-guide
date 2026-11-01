@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#C0392B">
-<title>✏️ 2027 年度計畫與預算編輯｜高榮企業工會</title>
+<title>✏️ 年度計畫與預算編輯｜高榮企業工會</title>
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <style>
  :root{--navy:#1A3A6B;--red:#C0392B;--green:#0F5C36;--ink:#1A1A1A;--soft:#777;--mid:#444;--bg:#F7F5F2;--card:#fff;--border:#E3DED6}
@@ -41,14 +41,22 @@
 </head>
 <body data-home="union.html" data-nohelp>
 
-<div id="gate"><div class="gate-box"><h2>2027 計畫與預算編輯</h2><p>本頁僅供工會幹部使用，請輸入幹部通行碼。</p>
+<div id="gate"><div class="gate-box"><h2>年度計畫與預算編輯</h2><p>本頁僅供工會幹部使用，請輸入幹部通行碼。</p>
 <input id="gate-pw" type="password" inputmode="text" lang="en" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="幹部通行碼" enterkeyhint="go"><button id="gate-go">進入</button><div class="gate-err" id="gate-err"></div></div></div>
 
 <div id="app" style="display:none">
-<div class="header"><h1>✏️ 2027 年度工作計畫與預算</h1><p>理事長編輯（可與總務討論）　新增・修改・刪除・發布</p></div>
+<div class="header"><h1 id="hTitle">✏️ 年度工作計畫與預算</h1><p>理事長編輯（可與總務討論）　選年度・新增・修改・刪除・發布</p></div>
 <main>
+  <div class="card" style="border-left:5px solid #C0392B">
+    <h2>選擇要編列的年度</h2>
+    <div class="g2"><div><label>年度（西元）</label><select id="year"></select></div>
+      <div><label>&nbsp;</label><button class="btn p" id="addYear" type="button" style="width:100%">＋ 新增其他年度</button></div></div>
+    <div class="tools"><button class="btn" id="copyYear" type="button">📋 從其他年度複製過來</button></div>
+    <div class="note">每個年度各自獨立：可以先編 2027，也可以回頭看 2026 或往後編 2028。切換年度時，剛才的內容已自動存好。</div>
+  </div>
+
   <div class="card">
-    <h2>① 基本設定</h2>
+    <h2>① 這個年度的基本設定</h2>
     <div class="g2"><div><label>目前狀態（公開頁會顯示）</label><select id="status"><option>草案</option><option>草案（已送理監事會討論）</option><option>已提會員大會審議</option><option>會員大會通過</option></select></div>
       <div><label>更新日期</label><input id="updated" type="date"></div></div>
     <label>給大家的說明（選填，顯示在公開頁最上面）</label><textarea id="note" rows="2" placeholder="例：本計畫為理事長與總務討論之草案，歡迎會員提供意見。"></textarea>
@@ -64,15 +72,15 @@
   <div class="card"><h2>④ 支出預算</h2><div id="expBox"></div><button class="btn p big" id="addExp" type="button">＋ 新增支出項目</button><div class="sum" id="expSum"></div></div>
 
   <div class="card"><div class="sum" id="balSum" style="margin-top:0"></div>
-    <div class="tools"><a class="btn" href="plan2027.html?draft=1" target="_blank" style="text-decoration:none">👁 預覽（只有你看得到）</a></div></div>
+    <div class="tools"><a class="btn" id="prevLink" href="yearplan.html?draft=1" target="_blank" style="text-decoration:none">👁 預覽（只有你看得到）</a></div></div>
 
   <div class="card" style="border-left:5px solid #B7860B"><h2>⑤ 發布到工會網站</h2>
-    <div class="note" style="margin-top:0;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.55rem .7rem;color:#5C4000">先把上面都改好，按「產生發布檔」，再把產生的內容<b>貼給 Claude（或交給網站維護者）上線</b>。網站更新後，<b>所有人</b>都能在「2027 年度工作計畫與預算」頁看到。之後要改，改完再發布一次即可。<br>（網站沒有後端，所以要靠這一步「上線」。）</div>
+    <div class="note" style="margin-top:0;background:#FEF9E7;border:1px solid #EAD67A;border-radius:8px;padding:.55rem .7rem;color:#5C4000">先把上面都改好，按「產生發布檔」，再把產生的內容<b>貼給 Claude（或交給網站維護者）上線</b>。網站更新後，<b>所有人</b>都能在「年度工作計畫與預算」頁看到。之後要改，改完再發布一次即可。<br>（網站沒有後端，所以要靠這一步「上線」。）</div>
     <button class="btn p big" id="pubBtn" type="button">📢 產生發布檔</button>
     <textarea id="pubOut" readonly style="display:none;margin-top:.6rem;min-height:150px;font-size:12px;font-family:monospace;background:#0A111C;color:#D7E2EF"></textarea>
-    <button class="btn g big" id="pubCopy" type="button" style="display:none">📋 複製（貼給 Claude 說「發布 2027 計畫預算」）</button>
-    <button class="btn big" id="pubDl" type="button" style="display:none">⬇ 下載 plan2027.json</button>
-    <button class="btn r big" id="unpub" type="button">🚫 要「撤下」已發布的內容（產生撤下檔）</button>
+    <button class="btn g big" id="pubCopy" type="button" style="display:none">📋 複製（貼給 Claude 說「發布年度計畫預算」）</button>
+    <button class="btn big" id="pubDl" type="button" style="display:none">⬇ 下載 yearplans.json</button>
+    <button class="btn r big" id="unpub" type="button">🚫 撤下「這個年度」已發布的內容（產生撤下檔）</button>
   </div>
 </main>
 <div id="saved">已儲存</div>
@@ -90,27 +98,38 @@ document.getElementById('gate-pw').addEventListener('keydown',e=>{ if(e.key==='E
 try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }catch(e){ showGate(); }
 
 (function(){
-  var $=function(id){return document.getElementById(id);}, KEY="ebn_plan2027_draft_v1";
+  var $=function(id){return document.getElementById(id);}, KEY="ebn_yearplan_v2", OLD="ebn_plan2027_draft_v1";
   function esc(s){ return String(s==null?"":s).replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
   function today(){ var d=new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
-  var STARTER={status:"草案",updated:today(),note:"",
-    plan:[["召開理監事聯席會議","會務","每月","理事長",""],["召開年度會員大會","會務","第一季","理事長",""],["持續招募會員、維護會員名冊","組訓","全年","組訓",""],["辦理會員聯誼活動","福利","","文宣",""],["辦理幹部與會員教育訓練","教育","","文宣",""],["勞資溝通與團體協商準備","協商","","理事長",""],["財務稽核與年度決算審核","監察","每季","監事",""],["編製 2028 年度工作計畫與預算","總務","年底","總務",""]].map(function(r){return {item:r[0],cat:r[1],when:r[2],owner:r[3],cost:r[4],remark:""};}),
+  function starter(y){ return {status:"草案",updated:today(),note:"",
+    plan:[["召開理監事聯席會議","會務","每月","理事長",""],["召開年度會員大會","會務","第一季","理事長",""],["持續招募會員、維護會員名冊","組訓","全年","組訓",""],["辦理會員聯誼活動","福利","","文宣",""],["辦理幹部與會員教育訓練","教育","","文宣",""],["勞資溝通與團體協商準備","協商","","理事長",""],["財務稽核與年度決算審核","監察","每季","監事",""],["編製 "+(y+1)+" 年度工作計畫與預算","總務","年底","總務",""]].map(function(r){return {item:r[0],cat:r[1],when:r[2],owner:r[3],cost:r[4],remark:""};}),
     income:[["入會費","預估人數 × 1,250 元"],["經常會費","預估人數 × 3,000 元／年"],["其他收入",""]].map(function(r){return {item:r[0],desc:r[1],amt:""};}),
-    expense:[["會議費","理監事會、會員大會"],["辦公與文具","影印、文具、郵資"],["活動費","聯誼、教育訓練"],["法律與行政","法律諮詢、規費"],["其他",""]].map(function(r){return {item:r[0],cat:"",desc:r[1],amt:""};})};
-  var D; try{ D=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){ D=null; } if(!D) D=JSON.parse(JSON.stringify(STARTER));
-  var timer=null;
-  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(D)); }catch(e){} var s=$("saved"); s.style.opacity=1; clearTimeout(timer); timer=setTimeout(function(){ s.style.opacity=0; },1100); }
+    expense:[["會議費","理監事會、會員大會"],["辦公與文具","影印、文具、郵資"],["活動費","聯誼、教育訓練"],["法律與行政","法律諮詢、規費"],["其他",""]].map(function(r){return {item:r[0],cat:"",desc:r[1],amt:""};})}; }
+  var ALL; try{ ALL=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){ ALL=null; } if(!ALL) ALL={};
+  try{ var old=JSON.parse(localStorage.getItem(OLD)||"null"); if(old && !ALL["2027"]){ ALL["2027"]=old; } }catch(e){}   // 舊版只編 2027 的草稿，帶過來
+  var now=new Date(), Y=String(now.getMonth()>=8?now.getFullYear()+1:now.getFullYear());   // 9 月以後預設編「明年度」
+  var D, timer=null;
+  function load(){ if(!ALL[Y]) ALL[Y]=starter(+Y); D=ALL[Y]; }
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(ALL)); }catch(e){} var s=$("saved"); s.style.opacity=1; clearTimeout(timer); timer=setTimeout(function(){ s.style.opacity=0; },1100); }
+  function yearList(){ var s={}; for(var y=now.getFullYear()-1;y<=now.getFullYear()+4;y++) s[y]=1; Object.keys(ALL).forEach(function(y){ s[y]=1; }); s[Y]=1; return Object.keys(s).sort(); }
+  function renderYears(){ $("year").innerHTML=yearList().map(function(y){ return '<option value="'+y+'"'+(y===Y?' selected':'')+'>'+y+' 年度（民國 '+(y-1911)+' 年）'+(ALL[y]?' ✎':'')+'</option>'; }).join(""); $("hTitle").textContent="✏️ "+Y+" 年度工作計畫與預算"; $("prevLink").href="yearplan.html?draft=1&year="+Y; }
   function sum(a){ return a.reduce(function(s,r){return s+(+r.amt||0);},0); }
   function totals(){ var i=sum(D.income), e=sum(D.expense); $("incSum").textContent="收入合計："+i.toLocaleString("en-US")+" 元"; $("expSum").textContent="支出合計："+e.toLocaleString("en-US")+" 元"; $("balSum").textContent="預估結餘（收入－支出）："+(i-e).toLocaleString("en-US")+" 元"; }
   function tools(arr,i){ return '<div class="tools"><button class="btn" data-a="up" data-i="'+i+'" type="button">↑ 上移</button><button class="btn" data-a="dn" data-i="'+i+'" type="button">↓ 下移</button><button class="btn r" data-a="del" data-i="'+i+'" type="button">🗑 刪除</button></div>'; }
   function f(key,label,val,type,ph){ return '<div><label>'+label+'</label><input data-k="'+key+'" '+(type?'type="'+type+'" inputmode="numeric"':'')+' value="'+esc(val)+'" placeholder="'+(ph||"")+'"></div>'; }
   function render(){
-    $("status").value=D.status; $("updated").value=D.updated; $("note").value=D.note||"";
+    renderYears(); $("status").value=D.status; $("updated").value=D.updated; $("note").value=D.note||"";
     $("planBox").innerHTML=D.plan.map(function(r,i){ return '<div class="row" data-g="plan" data-i="'+i+'"><b style="font-size:13px;color:#8E2A1F">第 '+(i+1)+' 項</b>'+f("item","工作項目",r.item)+'<div class="g3">'+f("cat","類別",r.cat)+f("when","期程",r.when,"","例：每月")+f("owner","負責人",r.owner)+'</div>'+f("cost","預估經費（元，沒有就空白）",r.cost,"number")+f("remark","備註（要和總務討論的事可寫這裡）",r.remark)+tools(D.plan,i)+'</div>'; }).join("");
     $("incBox").innerHTML=D.income.map(function(r,i){ return '<div class="row" data-g="income" data-i="'+i+'">'+f("item","收入項目",r.item)+f("desc","說明",r.desc)+f("amt","金額（元）",r.amt,"number")+tools(D.income,i)+'</div>'; }).join("");
     $("expBox").innerHTML=D.expense.map(function(r,i){ return '<div class="row" data-g="expense" data-i="'+i+'">'+f("item","支出項目",r.item)+'<div class="g2">'+f("cat","類別",r.cat)+f("amt","金額（元）",r.amt,"number")+'</div>'+f("desc","說明",r.desc)+tools(D.expense,i)+'</div>'; }).join("");
     totals(); }
+  $("year").addEventListener("change",function(){ save(); Y=this.value; load(); $("pubOut").style.display="none"; $("pubCopy").style.display="none"; $("pubDl").style.display="none"; render(); window.scrollTo(0,0); });
+  $("addYear").addEventListener("click",function(){ var v=prompt("要新增哪一年度？請輸入西元年（例如 2029）"); if(!v) return; v=v.trim(); if(!/^20\d\d$/.test(v)){ alert("請輸入 4 位數的西元年，例如 2029。"); return; } save(); Y=v; load(); save(); render(); });
+  $("copyYear").addEventListener("click",function(){ var ys=Object.keys(ALL).filter(function(y){return y!==Y;}).sort(); if(!ys.length){ alert("還沒有其他年度的內容可以複製。"); return; }
+    var v=prompt("要把哪一年度的內容複製到 "+Y+" 年度？（會覆蓋現在這個年度的內容）\n可選：" + ys.join("、")); if(!v||!ALL[v.trim()]) return; if(!confirm("確定用 "+v.trim()+" 年度的內容，取代 "+Y+" 年度現在的內容？")) return;
+    ALL[Y]=JSON.parse(JSON.stringify(ALL[v.trim()])); ALL[Y].status="草案"; ALL[Y].updated=today(); load(); save(); render(); });
   document.addEventListener("input",function(e){ var t=e.target;
+    if(t.id==="year") return;
     if(t.id==="status"){ D.status=t.value; save(); return; } if(t.id==="updated"){ D.updated=t.value; save(); return; } if(t.id==="note"){ D.note=t.value; save(); return; }
     var row=t.closest&&t.closest(".row"); if(!row||!t.dataset.k) return; D[row.dataset.g][+row.dataset.i][t.dataset.k]=t.value; save(); if(t.dataset.k==="amt") totals(); });
   document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest("[data-a]"); if(!b) return; var row=b.closest(".row"), a=D[row.dataset.g], i=+b.dataset.i;
@@ -121,15 +140,20 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
   $("addPlan").addEventListener("click",function(){ D.plan.push({item:"",cat:"",when:"",owner:"",cost:"",remark:""}); save(); render(); });
   $("addInc").addEventListener("click",function(){ D.income.push({item:"",desc:"",amt:""}); save(); render(); });
   $("addExp").addEventListener("click",function(){ D.expense.push({item:"",cat:"",desc:"",amt:""}); save(); render(); });
-  function out(obj){ var txt=JSON.stringify(obj,null,2); $("pubOut").value=txt; $("pubOut").style.display="block"; $("pubCopy").style.display="block"; $("pubDl").style.display="block"; }
-  $("pubBtn").addEventListener("click",function(){ var c=JSON.parse(JSON.stringify(D)); c.published=true; c.year=2027;
+  function out(obj){ var txt=JSON.stringify(obj,null,2); $("pubOut").value=txt; $("pubOut").style.display="block"; $("pubCopy").style.display="block"; $("pubDl").style.display="block"; $("pubOut").scrollIntoView({behavior:"smooth"}); }
+  // 發布檔＝「網站上已發布的所有年度」合併這個年度的最新版（所以只動這個年度，其他年度原封不動）
+  function published(){ return fetch("yearplans.json",{cache:"no-store"}).then(function(r){ return r.ok?r.json():null; }).then(function(d){ return (d&&d.years)||{}; }).catch(function(){ return null; }); }
+  $("pubBtn").addEventListener("click",function(){ published().then(function(py){
+    if(py===null && !confirm("目前連不上網站，抓不到其他已發布的年度。\n如果直接產生，發布檔裡只會有「"+Y+" 年度」，上線後會蓋掉別的年度。\n\n確定還是要產生嗎？（建議等有網路再按）")) return;
+    var years=py||{}, c=JSON.parse(JSON.stringify(D)); c.published=true; c.year=+Y;
     c.plan.forEach(function(r){ if(r.cost!=="") r.cost=+r.cost||0; }); c.income.forEach(function(r){ r.amt=+r.amt||0; }); c.expense.forEach(function(r){ r.amt=+r.amt||0; });
     c.plan=c.plan.filter(function(r){return r.item.trim();}); c.income=c.income.filter(function(r){return r.item.trim();}); c.expense=c.expense.filter(function(r){return r.item.trim();});
-    out(c); $("pubOut").scrollIntoView({behavior:"smooth"}); });
-  $("unpub").addEventListener("click",function(){ if(confirm("這會產生「撤下檔」，貼給 Claude 後，公開頁會變回「編製中」。確定？")) out({published:false}); });
-  $("pubCopy").addEventListener("click",function(){ var ta=$("pubOut"); if(navigator.clipboard){ navigator.clipboard.writeText(ta.value).then(function(){ alert("已複製，貼給 Claude 說「發布 2027 計畫預算」即可。"); },function(){ ta.select(); }); } else { ta.select(); document.execCommand("copy"); } });
-  $("pubDl").addEventListener("click",function(){ var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([$("pubOut").value],{type:"application/json"})); a.download="plan2027.json"; document.body.appendChild(a); a.click(); a.remove(); });
-  render();
+    years[Y]=c; out({years:years}); }); });
+  $("unpub").addEventListener("click",function(){ if(!confirm("這會產生「撤下 "+Y+" 年度」的檔案，貼給 Claude 後，公開頁就看不到 "+Y+" 年度（其他年度不受影響）。確定？")) return;
+    published().then(function(py){ var years=py||{}; delete years[Y]; out({years:years}); }); });
+  $("pubCopy").addEventListener("click",function(){ var ta=$("pubOut"); if(navigator.clipboard){ navigator.clipboard.writeText(ta.value).then(function(){ alert("已複製，貼給 Claude 說「發布年度計畫預算」即可。"); },function(){ ta.select(); }); } else { ta.select(); document.execCommand("copy"); } });
+  $("pubDl").addEventListener("click",function(){ var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([$("pubOut").value],{type:"application/json"})); a.download="yearplans.json"; document.body.appendChild(a); a.click(); a.remove(); });
+  load(); render();
 })();
 </script>
 <script src="common.js" defer></script>

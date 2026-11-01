@@ -2,7 +2,7 @@
 <html lang="zh-TW"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1A7A4A">
-<title>📅 2027 年度工作計畫與預算｜高榮企業工會</title>
+<title>📅 年度工作計畫與預算｜高榮企業工會</title>
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <style>
  :root{--ac:#1A7A4A;--deep:#0F5C36;--ink:#1A1A1A;--soft:#777;--mid:#444;--bg:#F7F6F3;--card:#fff;--border:#E6E0D6}
@@ -19,12 +19,15 @@
  .tot td{font-weight:700;background:#F7FBF8}
  .badge{display:inline-block;font-size:12px;font-weight:700;padding:.15rem .6rem;border-radius:999px;background:#FFF3D6;color:#7A5600;margin-top:6px}
  .note{font-size:12.5px;color:var(--soft);line-height:1.75;margin-top:.5rem}
+ .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem}
+ .tab{padding:.5rem 1rem;border:1.5px solid var(--ac);border-radius:999px;background:#fff;color:var(--deep);font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+ .tab.on{background:var(--ac);color:#fff}
 </style>
 <link rel="stylesheet" href="common.css">
 </head>
 <body data-home="index.html">
-<div class="header"><h1>📅 2027 年度工作計畫與預算</h1><p>高雄榮民總醫院企業工會</p><div id="badge"></div></div>
-<main id="box"><div class="card"><div class="note" style="margin-top:0">載入中…</div></div></main>
+<div class="header"><h1 id="hTitle">📅 年度工作計畫與預算</h1><p>高雄榮民總醫院企業工會</p><div id="badge"></div></div>
+<main><div class="tabs" id="tabs"></div><div id="box"><div class="card"><div class="note" style="margin-top:0">載入中…</div></div></div></main>
 <script>
 (function(){
   var box=document.getElementById("box");
@@ -32,7 +35,7 @@
   function num(n){ n=+n||0; return n.toLocaleString("en-US"); }
   function sum(a){ return (a||[]).reduce(function(s,r){return s+(+r.amt||0);},0); }
   function render(d){
-    if(!d||!d.published){ box.innerHTML='<div class="card"><h2>編製中</h2><div style="font-size:14px;line-height:1.9">2027 年度工作計畫與預算<b>還在編製中</b>，理事長與總務討論定案後，會公布在這裡。</div></div>'; return; }
+    if(!d||!d.published){ box.innerHTML='<div class="card"><h2>編製中</h2><div style="font-size:14px;line-height:1.9">年度工作計畫與預算<b>還在編製中</b>，理事長與總務討論定案後，會公布在這裡。</div></div>'; return; }
     var inc=sum(d.income), exp=sum(d.expense), h="";
     document.getElementById("badge").innerHTML='<span class="badge">'+esc(d.status||"草案")+(d.updated?'　更新 '+esc(d.updated):'')+'</span>';
     if(d.note) h+='<div class="card"><div style="font-size:14px;line-height:1.85">'+esc(d.note)+'</div></div>';
@@ -45,13 +48,26 @@
     h+='<div class="card"><h2>肆、收支平衡</h2><table><tr><td>收入合計</td><td class="n">'+num(inc)+' 元</td></tr><tr><td>支出合計</td><td class="n">'+num(exp)+' 元</td></tr><tr class="tot"><td>預估結餘</td><td class="n">'+num(inc-exp)+' 元</td></tr></table><div class="note">本計畫與預算依章程提會員大會審議，監事審核；實際執行以會員大會通過版本為準。</div></div>';
     box.innerHTML=h;
   }
-  var qs=location.search;
-  if(/[?&]draft=1/.test(qs)){   // 理事長在自己手機預覽草稿（只讀這支手機的草稿，不是公開版）
-    var raw=null; try{ raw=localStorage.getItem("ebn_plan2027_draft_v1"); }catch(e){}
-    var d=null; try{ d=JSON.parse(raw||"null"); }catch(e){}
-    if(d){ d.published=true; d.status=(d.status||"草案")+"（這是你手機上的預覽，尚未公開）"; } render(d);
+  var YKEY="ebn_yearplan_v2";
+  function roc(y){ return "西元 "+y+" 年（民國 "+(y-1911)+" 年）"; }
+  function show(all,year){
+    var ys=Object.keys(all).sort().reverse();
+    document.getElementById("tabs").innerHTML=ys.map(function(y){ return '<button class="tab'+(y===String(year)?' on':'')+'" data-y="'+y+'" type="button">'+y+' 年度</button>'; }).join("");
+    document.getElementById("hTitle").textContent="📅 "+year+" 年度工作計畫與預算";
+    document.getElementById("badge").innerHTML="";
+    var d=all[year]; if(d) d.published=true; render(d);
+    Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(b){ b.addEventListener("click",function(){ show(all,b.dataset.y); }); });
+  }
+  function start(all){
+    var ys=Object.keys(all||{}).sort().reverse();
+    if(!ys.length){ document.getElementById("tabs").innerHTML=""; render(null); return; }
+    var want=(location.search.match(/[?&]year=(\d{4})/)||[])[1]; show(all,(want&&all[want])?want:ys[0]);
+  }
+  if(/[?&]draft=1/.test(location.search)){   // 理事長在自己手機預覽草稿（只讀這支手機的草稿，不是公開版）
+    var all=null; try{ all=JSON.parse(localStorage.getItem(YKEY)||"null"); }catch(e){}
+    all=all||{}; Object.keys(all).forEach(function(y){ all[y].status=(all[y].status||"草案")+"（你手機上的預覽，尚未公開）"; }); start(all);
   } else {
-    fetch("plan2027.json",{cache:"no-store"}).then(function(r){ return r.ok?r.json():null; }).then(render).catch(function(){ render(null); });
+    fetch("yearplans.json",{cache:"no-store"}).then(function(r){ return r.ok?r.json():null; }).then(function(d){ start((d&&d.years)||{}); }).catch(function(){ start({}); });
   }
 })();
 </script>
