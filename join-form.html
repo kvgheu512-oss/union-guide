@@ -122,7 +122,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
 
     <div class="row2">
       <div>
-        <label>手機</label>
+        <label>手機 <span style="color:red">*</span></label>
         <input id="f-phone" type="tel" placeholder="09xx-xxxxxx" inputmode="tel">
       </div>
       <div>
@@ -131,7 +131,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
       </div>
     </div>
 
-    <label>Email</label>
+    <label>Email <span style="color:red">*</span></label>
     <input id="f-email" type="email" placeholder="xxx@gmail.com" inputmode="email">
 
     <div class="hint" style="background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:.5rem .7rem;margin-top:.4rem;color:#7A5800">
@@ -270,7 +270,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
   btnClear.addEventListener('click',function(){ pad.clear(); hint.style.display='flex'; signWrap.style.borderColor=''; });
 
   // 必填欄位即時標色
-  ['f-name','f-idno','f-addr','f-empid'].forEach(function(id){
+  ['f-name','f-idno','f-addr','f-phone','f-email','f-empid'].forEach(function(id){
     var el=document.getElementById(id);
     el.addEventListener('blur',function(){ el.style.borderColor=el.value.trim()?'var(--green)':'#E53935'; });
     el.addEventListener('input',function(){ if(el.value.trim()) el.style.borderColor='var(--green)'; });
@@ -298,12 +298,34 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     var empid=document.getElementById('f-empid').value.trim();
 
     // 必填驗證
-    var ok=true, miss=[];
-    [['f-name','姓名'],['f-idno','身分證字號'],['f-addr','通訊地址'],['f-empid','員工編號']].forEach(function(p){
-      var el=document.getElementById(p[0]);
-      if(!el.value.trim()){ el.style.borderColor='#E53935'; ok=false; miss.push(p[1]); }
+    var FIELDS=[['f-name','姓名'],['f-idno','身分證字號'],['f-addr','通訊地址'],['f-phone','手機'],['f-email','Email'],['f-empid','員工編號']];
+    function idOk(s){
+      s=(s||'').toUpperCase();
+      if(!/^[A-Z][1-2A-D89]\d{8}$/.test(s)) return false;
+      var L='ABCDEFGHJKLMNPQRSTUVXYWZIO', n=L.indexOf(s[0])+10, d=s.slice(1).split('');
+      if(/[A-D]/.test(d[0])) d[0]=String('ABCD'.indexOf(d[0]));   // 舊式居留證第2碼為英文
+      d=d.map(Number);
+      var sum=Math.floor(n/10)+(n%10)*9;
+      for(var k=0;k<8;k++) sum+=d[k]*(8-k);
+      sum+=d[8];
+      return sum%10===0;
+    }
+    var bad={}, miss=[];
+    FIELDS.forEach(function(p){
+      var el=document.getElementById(p[0]), v=el.value.trim();
+      if(!v){ miss.push(p[1]); bad[p[0]]=1; return; }
+      if(p[0]==='f-idno' && !idOk(v)){ miss.push('身分證字號格式不正確（1個英文字母＋9個數字，請檢查是否打錯）'); bad[p[0]]=1; }
+      if(p[0]==='f-phone' && !/^09\d{8}$/.test(v.replace(/[-\s]/g,''))){ miss.push('手機格式不正確（需為09開頭共10碼）'); bad[p[0]]=1; }
+      if(p[0]==='f-email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){ miss.push('Email格式不正確'); bad[p[0]]=1; }
     });
-    if(!ok){ toast('❌ 請填寫：'+miss.join('、'),'#E53935'); var first=document.getElementById(['f-name','f-idno','f-addr','f-empid'].filter(function(i){return !document.getElementById(i).value.trim();})[0]); first.focus(); first.scrollIntoView({block:'center'}); return; }
+    FIELDS.forEach(function(p){ if(bad[p[0]]) document.getElementById(p[0]).style.borderColor='#E53935'; });
+    if(miss.length){
+      var firstId=FIELDS.filter(function(p){return bad[p[0]];})[0][0], first=document.getElementById(firstId);
+      var empties=miss.filter(function(m){return m.indexOf('格式')<0;});
+      toast('❌ '+(empties.length?'請填寫：'+empties.join('、')+(miss.length>empties.length?'；':''):'')+miss.filter(function(m){return m.indexOf('格式')>=0;}).join('；'),'#E53935');
+      first.focus(); first.scrollIntoView({block:'center'}); return;
+    }
+    document.getElementById('f-idno').value=document.getElementById('f-idno').value.trim().toUpperCase();
 
     // 簽名驗證
     if(pad.isEmpty()){ toast('❌ 請先在下方簽名','#E53935'); signWrap.style.borderColor='#E53935'; signWrap.scrollIntoView({behavior:'smooth',block:'center'}); return; }
