@@ -23,6 +23,16 @@
  .foot{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:1.2rem;line-height:1.8}
 </style>
 <link rel="stylesheet" href="common.css">
+<style>
+.remark-alert{border:3px solid #D32F2F;background:#FFF1F0;border-radius:14px;padding:.8rem .9rem;margin:0 0 .8rem;text-align:center;animation:raPulse 1.6s ease-in-out infinite}
+.remark-alert .ra-title{color:#D32F2F;font-weight:900;font-size:16px;margin-bottom:.4rem}
+.remark-alert .ra-body{display:flex;align-items:center;justify-content:center;gap:8px;font-size:21px;font-weight:900;color:#D32F2F;line-height:1.4}
+.remark-alert .ra-hand{display:inline-block;font-size:30px;animation:raHand .8s ease-in-out infinite}
+.remark-alert .ra-eg{margin-top:.45rem;font-size:13.5px;color:#7A1F1F;line-height:1.6}
+@keyframes raHand{0%,100%{transform:translateX(0)}50%{transform:translateX(9px)}}
+@keyframes raPulse{0%,100%{box-shadow:0 0 0 0 rgba(211,47,47,.45)}50%{box-shadow:0 0 0 8px rgba(211,47,47,0)}}
+@media (prefers-reduced-motion:reduce){.remark-alert,.remark-alert .ra-hand{animation:none}}
+</style>
 </head>
 <body>
 
@@ -52,7 +62,12 @@
 
   <div class="card">
     <h2>① 郵局轉帳／無摺存款（主要繳費方式）</h2>
-    <div class="note" style="margin-top:0;margin-bottom:.6rem"><b>轉帳：</b>備註／附言請填<b style="color:#C0392B">「轉帳末 4 碼＋姓名」</b>，總務會核對入帳。<b style="color:#C0392B">⚠️ 兩項都填，總務對帳才不會錯漏，很重要！</b><br><b>無法轉帳：</b>可以到郵局用<b>無摺存款</b>繳費，請在存款單備註欄寫上<b>姓名</b>，並告知總務你已繳費，方便對帳。</div>
+    <div class="remark-alert">
+      <div class="ra-title">⚠️ 轉帳一定要填「備註／附言」</div>
+      <div class="ra-body"><span class="ra-hand">👉</span><span class="ra-text">轉出帳號<b>後 5 碼</b> ＋ <b>全名</b></span></div>
+      <div class="ra-eg">例：<b>12345 王小美</b>　（兩項都要填，總務才對得到帳，漏填可能無法確認入會）</div>
+    </div>
+    <div class="note" style="margin-top:0;margin-bottom:.6rem"><b>無法轉帳：</b>可以到郵局用<b>無摺存款</b>繳費，請在存款單備註欄寫上<b>姓名</b>，並告知總務你已繳費，方便對帳。</div>
     <div class="info-row"><span class="info-key">轉帳戶名</span><span class="info-val" data-org-text="bankHolder">（尚未公布，請洽總務）</span></div>
     <div class="info-row"><span class="info-key">金融機構／分行</span><span class="info-val" data-org-text="bank">（尚未公布，請洽總務）</span></div>
     <div class="info-row"><span class="info-key">帳號</span><span style="display:flex;align-items:center;gap:8px"><span class="info-val" id="bankAcctVal" data-org-text="bankAcct">（尚未公布，請洽總務）</span><button type="button" id="copyAcctBtn" style="flex-shrink:0;font-size:12px;padding:3px 8px;border:1px solid var(--border);background:#fff;color:var(--ac-deep);border-radius:8px;cursor:pointer">📋 複製</button></span></div>
@@ -141,7 +156,7 @@
   function info(){
     var o=(window.EBNOrg&&EBNOrg.get)?EBNOrg.get():{};
     if(!o.bankAcct) return null;
-    return "【高雄榮總企業工會 會費轉帳資訊】\n戶名："+(o.bankHolder||"")+"\n金融機構："+(o.bank||"")+"\n帳號："+o.bankAcct+"\n⚠️ 備註請填「轉帳末4碼＋姓名」\n繳費說明："+location.origin+location.pathname;
+    return "【高雄榮總企業工會 會費轉帳資訊】\n戶名："+(o.bankHolder||"")+"\n金融機構："+(o.bank||"")+"\n帳號："+o.bankAcct+"\n⚠️ 備註請填「轉出帳號後5碼＋全名」(例：12345 王小美)\n繳費說明："+location.origin+location.pathname;
   }
   function fb(t){var ta=document.createElement("textarea");ta.value=t;ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(ta);}
   function flash(b,m){var o=b.textContent;b.textContent=m;setTimeout(function(){b.textContent=o},1600);}
