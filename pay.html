@@ -64,8 +64,8 @@
     <h2>① 郵局轉帳／無摺存款（主要繳費方式）</h2>
     <div class="remark-alert">
       <div class="ra-title">⚠️ 轉帳一定要填「備註／附言」</div>
-      <div class="ra-body"><span class="ra-hand">👉</span><span class="ra-text">轉出帳號<b>後 5 碼</b> ＋ <b>全名</b></span></div>
-      <div class="ra-eg">例：<b>12345 王小美</b>　（兩項都要填，總務才對得到帳，漏填可能無法確認入會）</div>
+      <div class="ra-body"><span class="ra-hand">👉</span><span class="ra-text">轉出帳號<b>後 5 碼</b> 或 <b>全名</b></span></div>
+      <div class="ra-eg">填<b>其中一項</b>即可，例：<b>12345</b> 或 <b>王小美</b>（總務靠這個核對入帳，沒填可能無法確認入會）</div>
     </div>
     <div class="note" style="margin-top:0;margin-bottom:.6rem"><b>無法轉帳：</b>可以到郵局用<b>無摺存款</b>繳費，請在存款單備註欄寫上<b>姓名</b>，並告知總務你已繳費，方便對帳。</div>
     <div class="info-row"><span class="info-key">轉帳戶名</span><span class="info-val" data-org-text="bankHolder">（尚未公布，請洽總務）</span></div>
@@ -156,7 +156,7 @@
   function info(){
     var o=(window.EBNOrg&&EBNOrg.get)?EBNOrg.get():{};
     if(!o.bankAcct) return null;
-    return "【高雄榮總企業工會 會費轉帳資訊】\n戶名："+(o.bankHolder||"")+"\n金融機構："+(o.bank||"")+"\n帳號："+o.bankAcct+"\n⚠️ 備註請填「轉出帳號後5碼＋全名」(例：12345 王小美)\n繳費說明："+location.origin+location.pathname;
+    return "【高雄榮總企業工會 會費轉帳資訊】\n戶名："+(o.bankHolder||"")+"\n金融機構："+(o.bank||"")+"\n帳號："+o.bankAcct+"\n⚠️ 備註請填「轉出帳號後5碼」或「全名」擇一(例：12345 或 王小美)\n繳費說明："+location.origin+location.pathname;
   }
   function fb(t){var ta=document.createElement("textarea");ta.value=t;ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(ta);}
   function flash(b,m){var o=b.textContent;b.textContent=m;setTimeout(function(){b.textContent=o},1600);}
