@@ -78,11 +78,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-11-03
 
 最近 commits：
+  b3009f1 自動更新 CLAUDE.md 最近進度（Stop hook）
   70cc9cc 自動更新 CLAUDE.md 最近進度（Stop hook）
   6921405 自動更新 CLAUDE.md 最近進度（Stop hook）
   2c31bee 首頁刪除「發起的同仁」行；常見問答（契約可否加入、主管可否加入）改與入會資格句一致；版本 2026110303
   7c95682 自動更新 CLAUDE.md 最近進度（Stop hook）
-  1aa588b 首頁「誰可以加入」兩張卡片改與入會資格句一致；版本 2026110302
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
