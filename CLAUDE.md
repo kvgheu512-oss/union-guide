@@ -75,14 +75,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-11-03
+最後更新：2026-11-04
 
 最近 commits：
+  7466394 首頁「你的保障」刪除「實務提醒：組織期間請保留紀錄」段落；版本 2026110401
+  8fa5a32 自動更新 CLAUDE.md 最近進度（Stop hook）
   4c8a6c2 首頁頁尾新增會員申訴表（Google 表單）連結；版本 2026110304
   aae49b6 自動更新 CLAUDE.md 最近進度（Stop hook）
   b8b2101 自動更新 CLAUDE.md 最近進度（Stop hook）
-  37fd091 自動更新 CLAUDE.md 最近進度（Stop hook）
-  e3b1ba0 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
