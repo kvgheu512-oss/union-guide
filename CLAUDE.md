@@ -78,11 +78,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-11-05
 
 最近 commits：
+  ab6385c 自動更新 CLAUDE.md 最近進度（Stop hook）
   295bcfc 入會申請書：職稱預設值改空白，並加紅色＊必填；版本 2026110501
   16acf90 自動更新 CLAUDE.md 最近進度（Stop hook）
   7466394 首頁「你的保障」刪除「實務提醒：組織期間請保留紀錄」段落；版本 2026110401
   8fa5a32 自動更新 CLAUDE.md 最近進度（Stop hook）
-  4c8a6c2 首頁頁尾新增會員申訴表（Google 表單）連結；版本 2026110304
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
