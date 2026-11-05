@@ -112,8 +112,8 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
         <div class="hint">約聘升正式員工後，填新工號即可</div>
       </div>
       <div>
-        <label>職稱</label>
-        <input id="f-title" placeholder="點選常用職稱，或自己輸入（例：護理師、醫檢師、藥師）" value="護理師">
+        <label>職稱 <span style="color:red">*</span></label>
+        <input id="f-title" placeholder="點選常用職稱，或自己輸入（例：護理師、醫檢師、藥師）">
       </div>
     </div>
 
@@ -270,7 +270,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
   btnClear.addEventListener('click',function(){ pad.clear(); hint.style.display='flex'; signWrap.style.borderColor=''; });
 
   // 必填欄位即時標色
-  ['f-name','f-idno','f-addr','f-phone','f-email','f-empid'].forEach(function(id){
+  ['f-name','f-idno','f-addr','f-title','f-phone','f-email','f-empid'].forEach(function(id){
     var el=document.getElementById(id);
     el.addEventListener('blur',function(){ el.style.borderColor=el.value.trim()?'var(--green)':'#E53935'; });
     el.addEventListener('input',function(){ if(el.value.trim()) el.style.borderColor='var(--green)'; });
@@ -298,7 +298,7 @@ input:focus,select:focus{outline:none;border-color:var(--green);}
     var empid=document.getElementById('f-empid').value.trim();
 
     // 必填驗證
-    var FIELDS=[['f-name','姓名'],['f-idno','身分證字號'],['f-addr','通訊地址'],['f-phone','手機'],['f-email','Email'],['f-empid','員工編號']];
+    var FIELDS=[['f-name','姓名'],['f-idno','身分證字號'],['f-addr','通訊地址'],['f-title','職稱'],['f-phone','手機'],['f-email','Email'],['f-empid','員工編號']];
     function idOk(s){
       s=(s||'').toUpperCase();
       if(!/^[A-Z][1-2A-D89]\d{8}$/.test(s)) return false;
