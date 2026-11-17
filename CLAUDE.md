@@ -75,14 +75,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-11-15
+最後更新：2026-11-17
 
 最近 commits：
+  517fbf0 自動更新 CLAUDE.md 最近進度（Stop hook）
   792224d 自動更新 CLAUDE.md 最近進度（Stop hook）
   b3a02bd 入會申請書最上方新增入會資格句與「繳款後1～2週注意信箱（含垃圾郵件）」提醒；版本 2026111501
   fb136a3 自動更新 CLAUDE.md 最近進度（Stop hook）
   29ede57 入會申請書：送出鈕上方與送出後各加紅色大框提醒「請先匯款，將經由理監事審核通知入會」；版本 2026111001
-  5287f25 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
