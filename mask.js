@@ -9,8 +9,8 @@
     try{ if(q){ localStorage.setItem(KEY,q[1]); mode=q[1]; } else mode=localStorage.getItem(KEY)||"hide"; }catch(e){ if(q) mode=q[1]; }
     if(mode==="show") return;
 
-    var FULL=["楊淯涵","巫佳容","黃淑姸","陳依婷","黃敏","蔣雅竹","莊瑋聆","葉柏宏"];
-    var GIVEN=["淯涵","佳容","淑姸","依婷","雅竹","瑋聆","柏宏"];
+    var FULL=["楊淯涵","巫佳容","黃淑姸","陳依婷","黃敏","蔣雅竹","莊瑋聆","葉柏宏","潘奕瑄"];
+    var GIVEN=["淯涵","佳容","淑姸","依婷","雅竹","瑋聆","柏宏","奕瑄"];
     function maskFull(n){ return n.length<=2 ? n.charAt(0)+"○" : n.charAt(0)+new Array(n.length-1).join("○")+n.charAt(n.length-1); }
     var MAP={}; FULL.forEach(function(n){ MAP[n]=maskFull(n); }); GIVEN.forEach(function(n){ MAP[n]="○"+n.charAt(n.length-1); });
     var RE=new RegExp(FULL.concat(GIVEN).join("|"),"g");

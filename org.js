@@ -43,11 +43,11 @@
   var PUB = "public.json", _pub = null, _pubLoaded = false;
 
   // 幹部名單（大會選出後／會員輪動時，可在「基本資料中心」改名，改一次→發布→全站同步）
-  var CKEY = "ebn_cadres_v2"; // v1 草稿已廢棄：舊草稿殘留莊瑋聆/陳依婷等舊名，會蓋掉已發布名單
+  var CKEY = "ebn_cadres_v3"; // v1／v2 草稿已廢棄：舊草稿殘留舊名（如總務蔣雅竹、監事黃敏），會蓋掉已發布名單
   var CADRE_ROLES = [
     ["chair", "理事長"], ["fin", "總務"], ["doc", "法規"], ["wel", "文宣"], ["org", "組訓"], ["sup", "監事"]
   ];
-  var CADRE_DEFAULTS = { chair: "楊淯涵", fin: "蔣雅竹", doc: "巫佳容", wel: "黃淑姸", org: "陳依婷", sup: "黃敏" };
+  var CADRE_DEFAULTS = { chair: "楊淯涵", fin: "潘奕瑄", doc: "巫佳容", wel: "黃淑姸", org: "陳依婷", sup: "莊瑋聆" };
   function cadreDraft() { try { return JSON.parse(localStorage.getItem(CKEY)) || {}; } catch (e) { return {}; } }
   // 跟 get()／candidates() 同邏輯：草稿優先於已發布，否則 org.html 改名存檔的當下，
   // 舊的已發布資料（buildPublic 用的 _pub）會蓋掉剛存的新草稿，改名等於白改。
