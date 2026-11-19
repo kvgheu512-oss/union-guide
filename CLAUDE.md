@@ -78,11 +78,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-11-19
 
 最近 commits：
+  60b9933 電子收據頁新增「批次開立收據＋批次寄信」（貼名單自動編號蓋章、ZIP 下載、透過工會 Gmail 小程式批次寄出）；新增 tools/receipt-mail-apps-script.gs；版本 2026111901
+  0cec398 自動更新 CLAUDE.md 最近進度（Stop hook）
   a754d1d 自動更新 CLAUDE.md 最近進度（Stop hook）
   6984159 自動更新 CLAUDE.md 最近進度（Stop hook）
   ccda5ab 測試檔幹部草稿金鑰同步改為 v3；版本 2026111802
-  8520b6f 人事異動：總務蔣雅竹→潘奕瑄、監事黃敏→莊瑋聆（org.js／public.json／打碼名單／幹部導覽／語音導覽／工作計畫／案件負責人）；幹部草稿金鑰升為 v3 以免舊草稿蓋掉新名；版本 2026111801
-  3c34874 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
