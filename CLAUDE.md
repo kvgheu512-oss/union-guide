@@ -78,11 +78,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-11-19
 
 最近 commits：
+  c1646ec 自動更新 CLAUDE.md 最近進度（Stop hook）
   60b9933 電子收據頁新增「批次開立收據＋批次寄信」（貼名單自動編號蓋章、ZIP 下載、透過工會 Gmail 小程式批次寄出）；新增 tools/receipt-mail-apps-script.gs；版本 2026111901
   0cec398 自動更新 CLAUDE.md 最近進度（Stop hook）
   a754d1d 自動更新 CLAUDE.md 最近進度（Stop hook）
   6984159 自動更新 CLAUDE.md 最近進度（Stop hook）
-  ccda5ab 測試檔幹部草稿金鑰同步改為 v3；版本 2026111802
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
