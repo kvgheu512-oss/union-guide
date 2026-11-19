@@ -121,6 +121,27 @@
     <div class="note">斷網時照常可以開收據、存圖；紀錄會留在這裡，方便事後對帳、補寄。</div>
   </div>
 
+  <div class="card" id="batchCard">
+    <h2>⑤ 批次開立收據＋批次寄信</h2>
+    <div class="note" style="margin-top:0">一次貼上整份名單，自動幫每個人開一張收據（編號自動往下排、蓋上你這支手機的印章），再一次寄給大家。收據圖片與名單只在這支手機和你自己的 Gmail 之間傳送。</div>
+    <label>貼上名單（每人一行）</label>
+    <textarea id="bList" rows="8" placeholder="姓名，Email，入會費，月數，繳費方式&#10;王小明，wang@gmail.com，含，12，郵局轉帳&#10;李小華，lee@gmail.com，含，2，現金&#10;&#10;（可直接從 Google 試算表複製貼上；後三欄可省略：入會費預設「含」、月數預設 12、方式預設「郵局轉帳」）" style="width:100%;font-size:14px;line-height:1.6"></textarea>
+    <div class="note">欄位順序：<b>姓名、Email、入會費（含／不含）、經常會費月數（0＝不收會費）、繳費方式</b>。用逗號或 Tab 分開都可以。金額會依 入會費 1,250 元、每月 250 元自動算。</div>
+    <button class="btn" id="bGen" type="button">🧾 批次產生收據</button>
+    <div id="bStat" class="note" style="margin-top:.5rem"></div>
+    <div id="bOut" style="margin-top:.6rem"></div>
+    <div class="btns" id="bBtns" style="display:none">
+      <button class="btn o" id="bZip" type="button">⬇ 全部下載（ZIP）</button>
+      <button class="btn" id="bSend" type="button" style="background:#B7860B">✉️ 批次寄信給有 Email 的會員</button>
+    </div>
+    <details style="margin-top:.9rem"><summary style="font-weight:700;cursor:pointer">⚙️ 寄信設定（第一次要設定一次）</summary>
+      <div class="note">網站本身不能寄信，要靠你們工會 Gmail 裡的一支小程式幫忙寄。設定步驟見畫面下方「怎麼設定」。</div>
+      <label>寄信程式網址（結尾是 /exec）</label><input id="bUrl" placeholder="https://script.google.com/macros/s/....../exec" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <label>寄信密碼（跟小程式裡設的一樣）</label><input id="bTok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="note">網址與密碼只存在這支手機。<b>不要把密碼貼到群組。</b></div>
+    </details>
+  </div>
+
 </main>
 </div>
 
@@ -369,12 +390,103 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     $("dl").click();
     setTimeout(function(){ location.href="mailto:"+encodeURIComponent(to).replace("%40","@")+"?subject="+encodeURIComponent("【"+orgName()+"】電子收據 "+$("no").value.trim())+"&body="+encodeURIComponent(mailBody()); },400);
   });
+
+  // ================= ⑤ 批次開立收據＋批次寄信 =================
+  var BATCH=[], BATCH_OFF=false, MURL="ebn_rcpt_mail_url", MTOK="ebn_rcpt_mail_tok";
+  try{ $("bUrl").value=localStorage.getItem(MURL)||""; $("bTok").value=localStorage.getItem(MTOK)||""; }catch(e){}
+  $("bUrl").addEventListener("change",function(){ try{ localStorage.setItem(MURL,$("bUrl").value.trim()); }catch(e){} });
+  $("bTok").addEventListener("change",function(){ try{ localStorage.setItem(MTOK,$("bTok").value); }catch(e){} });
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  function parseBatch(){
+    var rows=[], errs=[];
+    $("bList").value.split(/\r?\n/).forEach(function(line,i){
+      line=line.trim(); if(!line) return;
+      var c=line.split(/\t|,|，/).map(function(x){return x.trim();});
+      if(/^姓名/.test(c[0])) return;                       // 略過標題列
+      var name=c[0], mail=c[1]||"", feeS=c[2]||"", moS=c[3]||"", method=c[4]||"";
+      if(!name){ errs.push("第 "+(i+1)+" 行：沒有姓名"); return; }
+      if(mail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){ errs.push("第 "+(i+1)+" 行（"+name+"）：Email 格式不對「"+mail+"」"); return; }
+      var fee=!(/^(不含|否|n|no|0|否)$/i.test(feeS));
+      var mo=moS===""?12:parseInt(moS,10); if(isNaN(mo)||mo<0||mo>36){ errs.push("第 "+(i+1)+" 行（"+name+"）：月數要是 0～36 的數字「"+moS+"」"); return; }
+      if(!fee && mo===0){ errs.push("第 "+(i+1)+" 行（"+name+"）：入會費不含、月數又是 0，沒有任何收費項目"); return; }
+      var ok=["郵局轉帳","無摺存款","現金"]; if(method && ok.indexOf(method)<0){ errs.push("第 "+(i+1)+" 行（"+name+"）：繳費方式只能是 郵局轉帳／無摺存款／現金"); return; }
+      rows.push({name:name,mail:mail,fee:fee,mo:mo,method:method||"郵局轉帳"});
+    });
+    return {rows:rows,errs:errs};
+  }
+  async function batchNo(){
+    if(!cloudOn()){ fillNo(); var v=$("no").value; bumpNo(); issuedNo=v; return v; }
+    var y=new Date().getFullYear()-1911, amt=+$("amt").value||0;
+    if(!BATCH_OFF){
+      try{ var pk=await EBNOrg.quhao.peek(); if(!pk||pk.seqRcpt==null) throw new Error("雲端取號程式還沒更新到收據版本");
+        var j=await EBNOrg.quhao.receipt(y,"NT$"+amt+" "+$("method").value); if(!/^\d+-\d{3,}$/.test(j.no||"")) throw new Error("編號格式不對（"+j.no+"）");
+        $("no").value=j.no; issuedNo=j.no; return j.no; }
+      catch(e){ if(!confirm("連不上雲端取號（"+(e&&e.message||"網路問題")+"）。\n\n這一批要全部改用「離線暫號」嗎？（像 115-OFF-XXX-001，不會跟別人撞號，連上網路後請跟總務對帳補登）")) return null; BATCH_OFF=true; }
+    }
+    var n=offNo(); $("no").value=n; issuedNo=n; return n;
+  }
+  function toBlob(cv){ return new Promise(function(res){ cv.toBlob(function(b){ res(b); },"image/png"); }); }
+  function renderBatch(){
+    $("bOut").innerHTML=BATCH.map(function(r,i){
+      var st=r.sent==="ok"?'<span style="color:#0F5C36">✅ 已寄出</span>':r.sent==="fail"?'<span style="color:#C0392B">❌ 寄失敗：'+esc(r.err||"")+'</span>':r.sent==="unk"?'<span style="color:#7A3B00">📤 已送出請求（請查寄件匣確認）</span>':(r.mail?'<span style="color:#777">待寄</span>':'<span style="color:#C0392B">沒有 Email（只能下載／LINE 傳）</span>');
+      return '<div style="display:flex;gap:10px;align-items:center;border-bottom:1px solid #EEF1F4;padding:.45rem 0"><img src="'+r.url+'" style="width:56px;height:auto;border:1px solid #D8E0EC;border-radius:6px"><div style="flex:1;min-width:0;font-size:13.5px;line-height:1.6"><b>'+esc(r.no)+'</b>　'+esc(r.name)+'　NT$ '+r.amt.toLocaleString("en-US")+'<br><span style="font-size:12.5px;color:#666">'+esc(r.mail||"")+'</span><br>'+st+'</div><button type="button" class="btn o" data-i="'+i+'" style="width:auto;margin:0;padding:.35rem .6rem;font-size:12.5px">⬇</button></div>'; }).join("");
+    $("bBtns").style.display=BATCH.length?"flex":"none";
+    Array.prototype.forEach.call($("bOut").querySelectorAll("button[data-i]"),function(b){ b.addEventListener("click",function(){ var r=BATCH[+b.getAttribute("data-i")]; var a=document.createElement("a"); a.href=r.url; a.download="收據_"+r.no+"_"+r.name+".png"; document.body.appendChild(a); a.click(); a.remove(); }); });
+  }
+  $("bGen").addEventListener("click",async function(){
+    var ps=parseBatch();
+    if(ps.errs.length){ $("bStat").style.cssText="background:#FDECEA;color:#C0392B"; $("bStat").innerHTML="⚠️ 名單有問題，請修正後再按：<br>"+ps.errs.map(esc).join("<br>"); return; }
+    if(!ps.rows.length){ alert("請先貼上名單。"); return; }
+    var miss=SEALS.filter(function(s){return !getSeal(s[0]);}).map(function(s){return s[1];});
+    if(miss.length && !confirm("還沒上傳："+miss.join("、")+"。\n沒蓋章的收據不完整，確定要批次產生嗎？")) return;
+    if(!confirm("要幫 "+ps.rows.length+" 位開立收據嗎？\n\n⚠️ 請先確認：已核對入帳、申請書審核通過。開出去的收據編號會被占用，無法收回。")) return;
+    BATCH=[]; BATCH_OFF=false; $("bGen").disabled=true; $("bStat").style.cssText=""; 
+    for(var i=0;i<ps.rows.length;i++){
+      var r=ps.rows[i]; $("bStat").textContent="產生中… "+(i+1)+" / "+ps.rows.length+"（"+r.name+"）";
+      $("name").value=r.name; $("mail").value=r.mail; $("fee").checked=r.fee; $("dues").checked=r.mo>0; $("months").value=r.mo||12; $("period").value=""; $("method").value=r.method; $("disc").checked=false; $("remark").value=""; $("agent").value=""; calc();
+      var no=await batchNo(); if(no===null){ break; }
+      var cv=await draw(); var blob=await toBlob(cv), url=URL.createObjectURL(blob), amt=+$("amt").value||0;
+      var b64=cv.toDataURL("image/png").split(",")[1];
+      BATCH.push({no:no,name:r.name,mail:r.mail,amt:amt,method:r.method,blob:blob,url:url,b64:b64,sent:""});
+      addLog({no:no,date:$("date").value,name:r.name,amt:amt,method:r.method,ts:new Date().toLocaleString("zh-TW")});
+    }
+    $("bGen").disabled=false; $("bStat").style.cssText="background:#EAF6EE;color:#0F5C36"; $("bStat").textContent="✅ 已產生 "+BATCH.length+" 張收據（其中 "+BATCH.filter(function(x){return x.mail;}).length+" 位有 Email）。請先看過圖片確認無誤，再下載或寄出。"; renderBatch();
+  });
+  $("bZip").addEventListener("click",async function(){
+    if(!BATCH.length) return;
+    if(!window.JSZip){ alert("ZIP 工具載入失敗（可能沒網路）。請改用每一列右邊的 ⬇ 逐張下載。"); return; }
+    var z=new JSZip(); BATCH.forEach(function(r){ z.file("收據_"+r.no+"_"+r.name+".png",r.b64,{base64:true}); });
+    var blob=await z.generateAsync({type:"blob"}); var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="電子收據_"+$("date").value+".zip"; document.body.appendChild(a); a.click(); a.remove(); });
+  function sleep(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
+  $("bSend").addEventListener("click",async function(){
+    var url=$("bUrl").value.trim(), tok=$("bTok").value;
+    if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(url)){ alert("請先到上面「寄信設定」貼上寄信程式網址（結尾是 /exec）。"); return; }
+    if(!tok){ alert("請先到「寄信設定」填寄信密碼。"); return; }
+    try{ localStorage.setItem(MURL,url); localStorage.setItem(MTOK,tok); }catch(e){}
+    var todo=BATCH.filter(function(r){ return r.mail && r.sent!=="ok" && r.sent!=="unk"; });
+    if(!todo.length){ alert("沒有需要寄的（都已寄出，或沒有 Email）。"); return; }
+    if(!confirm("要用工會 Gmail 寄出 "+todo.length+" 封收據信嗎？\n\n寄出後無法收回。請先確認上面每張圖片都沒錯。")) return;
+    $("bSend").disabled=true;
+    for(var i=0;i<todo.length;i++){
+      var r=todo[i]; $("bStat").style.cssText=""; $("bStat").textContent="寄信中… "+(i+1)+" / "+todo.length+"（"+r.name+"）";
+      var payload={token:tok,to:r.mail,subject:"【"+orgName()+"】電子收據 "+r.no,
+        body:"您好：\n\n感謝您加入"+orgName()+"。附上您的電子收據（收據編號 "+r.no+"，金額 NT$ "+r.amt.toLocaleString("en-US")+"），請見附件圖片。\n如有任何疑問，歡迎直接回覆這封信。\n\n"+orgName(),
+        filename:"收據_"+r.no+"_"+r.name+".png",png:r.b64,no:r.no,name:r.name};
+      try{ var resp=await fetch(url,{method:"POST",body:JSON.stringify(payload)}); var j=await resp.json(); if(j&&j.ok){ r.sent="ok"; r.err=""; } else { r.sent="fail"; r.err=(j&&j.err)||"未知錯誤"; } }
+      catch(e){ r.sent="unk"; r.err=""; }
+      renderBatch(); await sleep(1200);
+    }
+    $("bSend").disabled=false; var okN=BATCH.filter(function(x){return x.sent==="ok";}).length, failN=BATCH.filter(function(x){return x.sent==="fail";}).length;
+    $("bStat").style.cssText="background:#EAF6EE;color:#0F5C36"; $("bStat").textContent="寄信完成：成功 "+okN+" 封"+(failN?"，失敗 "+failN+" 封（請看每列原因）":"")+"。標「已送出請求」的請到工會 Gmail 寄件匣確認。";
+  });
+
   function boot(){ if(boot.done) return; boot.done=true; var pre=applyPrefill(); if(pre && /[?&]auto=1/.test(location.search)) setTimeout(function(){ $("gen").click(); },300); }
   window.addEventListener("ebn-unlocked",boot);
   if(app.style.display==="block") boot();
 
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" async></script>
 <script src="org.js" defer></script>
 <script src="common.js" defer></script>
 </body></html>
