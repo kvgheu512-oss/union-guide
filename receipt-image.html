@@ -138,7 +138,9 @@
       <div class="note">網站本身不能寄信，要靠你們工會 Gmail 裡的一支小程式幫忙寄。設定步驟見畫面下方「怎麼設定」。</div>
       <label>寄信程式網址（結尾是 /exec）</label><input id="bUrl" placeholder="https://script.google.com/macros/s/....../exec" autocomplete="off" autocapitalize="off" spellcheck="false">
       <label>寄信密碼（跟小程式裡設的一樣）</label><input id="bTok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false">
-      <div class="note">網址與密碼只存在這支手機。<b>不要把密碼貼到群組。</b></div>
+      <button class="btn" id="bSave" type="button" style="background:#1A7A4A">💾 儲存寄信設定</button>
+      <div id="bSaveMsg" class="note" style="margin-top:.4rem"></div>
+      <div class="note">網址與密碼只存在這支手機。<b>不要把密碼貼到群組。</b>（輸入時其實就會自動儲存，按上面的按鈕可以確認有存好。）</div>
     </details>
   </div>
 
@@ -394,6 +396,13 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
   // ================= ⑤ 批次開立收據＋批次寄信 =================
   var BATCH=[], BATCH_OFF=false, MURL="ebn_rcpt_mail_url", MTOK="ebn_rcpt_mail_tok";
   try{ $("bUrl").value=localStorage.getItem(MURL)||""; $("bTok").value=localStorage.getItem(MTOK)||""; }catch(e){}
+  function saveMail(){ var u=$("bUrl").value.trim(), k=$("bTok").value, m=$("bSaveMsg");
+    try{ localStorage.setItem(MURL,u); localStorage.setItem(MTOK,k); }catch(e){ m.style.color="#C0392B"; m.textContent="❌ 這支手機存不進去（可能是無痕模式）"; return; }
+    if(!u||!k){ m.style.color="#C0392B"; m.textContent="⚠️ 已存，但網址或密碼還是空的，請兩個都填。"; return; }
+    if(/script\.googleusercontent\.com/.test(u)){ m.style.color="#C0392B"; m.innerHTML="❌ 這個網址不對（開頭是 script.googleusercontent.com）。請回到 Apps Script →「部署」→「管理部署作業」，複製「網頁應用程式」的網址，<b>開頭要是 https://script.google.com/macros/s/ ，結尾是 /exec</b>。"; return; }
+    if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(u)){ m.style.color="#C0392B"; m.innerHTML="❌ 網址格式不對：<b>開頭要是 https://script.google.com/macros/s/ ，結尾要是 /exec</b>（結尾是 /dev 也不行）。"; return; }
+    m.style.color="#0F5C36"; m.textContent="✅ 已儲存在這支手機。可以放心離開這一頁，設定還會在。"; }
+  $("bSave").addEventListener("click",saveMail); $("bUrl").addEventListener("input",saveMail); $("bTok").addEventListener("input",saveMail);
   $("bUrl").addEventListener("change",function(){ try{ localStorage.setItem(MURL,$("bUrl").value.trim()); }catch(e){} });
   $("bTok").addEventListener("change",function(){ try{ localStorage.setItem(MTOK,$("bTok").value); }catch(e){} });
   function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
