@@ -21,15 +21,32 @@ var TOKEN = "請換成你自己的密碼";
 var ORG_NAME = "高雄榮總企業工會";
 var MAX_PER_DAY = 90;   // 保守值，避免撞到 Gmail 上限
 
-function doGet() {
+function doGet(e) {
+  // 網址後面加 ?last=1 可以看「最近一次寄信的結果」（排查用，不含收件人資料）
+  if (e && e.parameter && e.parameter.last) {
+    var last = PropertiesService.getScriptProperties().getProperty("last") || JSON.stringify({ msg: "還沒有任何寄信紀錄" });
+    return ContentService.createTextOutput(last).setMimeType(ContentService.MimeType.JSON);
+  }
   return ContentService.createTextOutput(JSON.stringify({ ok: true, msg: "此服務只接受收據寄信 POST" })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function record(out) {
+  var t = Utilities.formatDate(new Date(), "Asia/Taipei", "MM/dd HH:mm:ss");
+  PropertiesService.getScriptProperties().setProperty("last", JSON.stringify({ time: t, ok: !!out.ok, err: out.err || "" }));
 }
 
 function doPost(e) {
   var out;
   try { out = send(JSON.parse(e.postData.contents)); }
   catch (err) { out = { ok: false, err: String(err && err.message || err) }; }
+  record(out);
   return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// 在編輯畫面手動測試用：函式選「測試寄信」→ 按「執行」，會寄一封測試信給你自己（也會順便完成寄信授權）
+function 測試寄信() {
+  var me = Session.getEffectiveUser().getEmail();
+  MailApp.sendEmail(me, "【測試】收據寄信程式", "如果你收到這封信，代表寄信功能與授權都正常。");
 }
 
 function send(b) {

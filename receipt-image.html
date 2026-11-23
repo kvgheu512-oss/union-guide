@@ -485,7 +485,7 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
         filename:"收據_"+r.no+"_"+r.name+".png",png:r.b64,no:r.no,name:r.name};
       var resp=null, txt="";
       try{ resp=await fetch(url,{method:"POST",body:JSON.stringify(payload)}); txt=await resp.text(); }
-      catch(e){ r.sent="unk"; r.err="連線被瀏覽器擋住或網路中斷（"+(e&&e.message||"")+"）"; renderBatch(); await sleep(1200); continue; }
+      catch(e){ r.sent="unk"; r.err="瀏覽器讀不到回應（"+(e&&e.message||"")+"）。請把寄信網址後面加上 ?last=1 開新分頁，看寄信程式實際收到什麼。"; renderBatch(); await sleep(1200); continue; }
       var j=null; try{ j=JSON.parse(txt); }catch(e){}
       if(j&&j.ok){ r.sent="ok"; r.err=""; }
       else if(j){ r.sent="fail"; r.err=j.err||"未知錯誤"; }
