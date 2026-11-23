@@ -78,11 +78,11 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 最後更新：2026-11-23
 
 最近 commits：
+  ed68e56 批次寄信：顯示真正的失敗原因（連線被擋／寄信程式回傳內容），並允許重寄「無法確認」的列；版本 2026112303
+  9e3c35c 自動更新 CLAUDE.md 最近進度（Stop hook）
   ff1c2b6 自動更新 CLAUDE.md 最近進度（Stop hook）
   30fddac 自動更新 CLAUDE.md 最近進度（Stop hook）
   3e5299a 自動更新 CLAUDE.md 最近進度（Stop hook）
-  cf0d103 自動更新 CLAUDE.md 最近進度（Stop hook）
-  16f8b2a 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
