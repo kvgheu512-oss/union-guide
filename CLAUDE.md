@@ -75,14 +75,14 @@ CDN（qrcodejs/pptxgenjs）被擋但正式站正常。本機用 `python3 -m http
 
 ## 📋 最近進度
 <!-- AUTO:START -->
-最後更新：2026-11-19
+最後更新：2026-11-23
 
 最近 commits：
+  fa32ce8 新增「總務工作台」新手引導頁（開工前檢查、5步驟、月數小工具、名單範本下載、進度打勾）；批次開收據加入重複姓名提醒；幹部導覽總務工具與功能表加入入口；版本 2026112301
+  5629a41 自動更新 CLAUDE.md 最近進度（Stop hook）
   abcc90d 自動更新 CLAUDE.md 最近進度（Stop hook）
   48a975a 自動更新 CLAUDE.md 最近進度（Stop hook）
   bf63b1b 自動更新 CLAUDE.md 最近進度（Stop hook）
-  27e8bf3 自動更新 CLAUDE.md 最近進度（Stop hook）
-  3d49145 自動更新 CLAUDE.md 最近進度（Stop hook）
 <!-- AUTO:END -->
 
 ### ⚖️ 法規鐵則（踩過的雷，別再犯）
