@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<script src="cadre-gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1A3A6B">
+<title>總務工作台（收錢→開收據→寄收據）｜高榮企業工會</title>
+<style>
+  :root{--navy:#1A3A6B;--navy-deep:#122A4F;--ink:#1A1A1A;--soft:#666;--bg:#F4F6FA;--card:#fff;--line:#D8E0EC;--green:#1A7A4A;--red:#C0392B;--gold:#FEF9E7;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.8;-webkit-text-size-adjust:100%}
+  .header{background:linear-gradient(160deg,#1A3A6B,#122A4F);color:#fff;padding:1.6rem 1.2rem 1.3rem;text-align:center}
+  .header h1{font-size:20px}.header p{font-size:13px;opacity:.92;margin-top:4px}
+  main{max-width:640px;margin:0 auto;padding:1rem 1rem 4rem}
+  .back{display:inline-block;margin:.8rem 0 0;font-size:14px;color:var(--navy);text-decoration:none}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.1rem 1.1rem;margin-bottom:1rem;border-top:4px solid var(--navy)}
+  .card h2{font-size:17px;color:var(--navy-deep);margin-bottom:.5rem}
+  .big{font-size:17px}
+  .note{font-size:13.5px;color:var(--soft);line-height:1.75;margin-top:.4rem}
+  .warn{background:#FDECEA;border:1px solid #F3C9C4;color:#7B1818;border-radius:10px;padding:.7rem .85rem;font-size:14.5px;margin:.6rem 0}
+  .tip{background:var(--gold);border:1px solid #EAD67A;color:#5C4000;border-radius:10px;padding:.7rem .85rem;font-size:14.5px;margin:.6rem 0}
+  .chk{display:flex;gap:10px;align-items:flex-start;padding:.6rem 0;border-bottom:1px dashed var(--line)}
+  .chk:last-child{border-bottom:0}
+  .dot{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;margin-top:2px}
+  .ok{background:var(--green)}.no{background:var(--red)}.mid{background:#B7860B}
+  .btn{display:block;width:100%;text-align:center;text-decoration:none;background:var(--navy);color:#fff;border:0;border-radius:12px;padding:.85rem;font-weight:700;font-size:16px;cursor:pointer;margin-top:.7rem}
+  .btn.g{background:var(--green)}.btn.o{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+  .num{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;align-items:center;justify-content:center;font-weight:700;margin-right:8px;flex:0 0 auto}
+  .step h2{display:flex;align-items:center}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;margin:.5rem 0}
+  th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+  th{background:#EAF0FA}
+  input[type=number],select{width:100%;padding:.6rem .7rem;font-size:16px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;background:#fff}
+  label{display:block;font-weight:700;font-size:14px;margin:.5rem 0 .2rem;color:var(--navy-deep)}
+  .res{background:#EAF6EE;border:1.5px solid #7FBF97;border-radius:12px;padding:.75rem .9rem;margin-top:.6rem;font-size:16px}
+  details{margin:.4rem 0} summary{cursor:pointer;font-weight:700;padding:.3rem 0}
+  .todo label{display:flex;gap:8px;font-weight:400;font-size:15px;margin:.3rem 0;color:var(--ink)}
+  .todo input{width:20px;height:20px;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="header"><h1>🧮 總務工作台</h1><p>會員繳錢之後：核對 → 開收據 → 用 Email 寄給會員</p></div>
+<main>
+  <a class="back" href="union.html">‹ 回幹部功能表</a>
+
+  <div class="card" style="margin-top:.8rem">
+    <h2>👋 先看這裡（第一次做的人）</h2>
+    <div class="big">整件事只有 5 步，<b>照順序做、一次做一步</b>就好。做錯也不用怕，開出去的收據都記得到，網站不會亂動你的資料。</div>
+    <div class="warn">⚠️ 最重要的一條規則：<b>先確認錢真的進了工會帳戶，才開收據。</b>沒有入帳的，不要開。</div>
+  </div>
+
+  <div class="card">
+    <h2>✅ 開工前檢查（全部打勾才能開始）</h2>
+    <div id="checks"></div>
+    <div class="note">如果有紅色 ✗，照後面的說明做，或請理事長／負責幹部幫你做一次就好。這些只要<b>設定一次</b>。</div>
+  </div>
+
+  <div class="card step">
+    <h2><span class="num">1</span>看有誰入帳</h2>
+    <div class="big">打開郵局 App（或存摺、網路郵局），看工會帳戶的<b>最近入帳明細</b>。</div>
+    <table>
+      <tr><th>工會帳戶</th><td id="acct">載入中…</td></tr>
+      <tr><th>怎麼認人</th><td>會員匯款時，備註要寫「<b>轉出帳號後 5 碼</b>」或「<b>全名</b>」其中一個。照這個對。</td></tr>
+    </table>
+    <div class="tip">在紙上或手機備忘錄，<b>抄下每一筆：姓名、金額、哪一天入帳</b>。下一步會用到。</div>
+    <div class="warn">金額對不起來、或認不出是誰：<b>先不要開</b>，把那一筆記起來，問負責幹部。</div>
+  </div>
+
+  <div class="card step">
+    <h2><span class="num">2</span>整理成名單（用試算表）</h2>
+    <div class="big">做一張簡單的表，<b>每個人一行</b>，一共 5 欄：</div>
+    <table>
+      <tr><th>欄位</th><th>怎麼填</th></tr>
+      <tr><td>① 姓名</td><td>會員姓名</td></tr>
+      <tr><td>② Email</td><td>從「入會申請」那張 Google 試算表複製。沒有 Email 就空著（之後用 LINE 傳圖片）</td></tr>
+      <tr><td>③ 入會費</td><td>第一次入會寫「<b>含</b>」；之前繳過寫「不含」</td></tr>
+      <tr><td>④ 月數</td><td>經常會費繳幾個月。用下面的小工具算</td></tr>
+      <tr><td>⑤ 繳費方式</td><td>郵局轉帳／無摺存款／現金</td></tr>
+    </table>
+    <button class="btn o" id="dlTpl" type="button">⬇ 下載空白名單範本（用 Excel 或 Google 試算表開）</button>
+
+    <h2 style="margin-top:1.1rem;font-size:15.5px">📐 小工具：這個人要繳幾個月？</h2>
+    <label>他是幾月入會？</label>
+    <select id="mm"></select>
+    <label style="display:flex;gap:8px;align-items:center;font-weight:400"><input type="checkbox" id="next" style="width:20px;height:20px"> 他同時也繳了「隔年整年」（多 12 個月）</label>
+    <div class="res" id="calcRes"></div>
+    <div class="note">規則：入會當月算起，到當年 12 月底。例如 11 月入會＝11、12 月＝2 個月。每月 250 元，入會費 1,250 元。</div>
+  </div>
+
+  <div class="card step">
+    <h2><span class="num">3</span>貼到批次收據，按「產生」</h2>
+    <div class="big">① 在試算表<b>選取那幾行（不含標題）→ 複製</b>。<br>② 打開下面的頁面，找到「⑤ 批次開立收據」，貼到名單框裡。<br>③ 按「<b>批次產生收據</b>」。</div>
+    <a class="btn g" href="receipt-image.html#batchCard">👉 前往：批次開立收據</a>
+    <div class="tip">產生後，<b>每一張圖都會顯示在下面</b>。請看過每一張：姓名、金額、章有沒有蓋好。</div>
+  </div>
+
+  <div class="card step">
+    <h2><span class="num">4</span>檢查沒問題，再寄出</h2>
+    <div class="big">在同一頁按「<b>✉️ 批次寄信給有 Email 的會員</b>」。系統會用工會 Gmail 一封一封寄，並附上收據圖片。</div>
+    <div class="warn">寄出後<b>收不回來</b>。所以寄之前，請再看一次圖片有沒有錯。</div>
+    <div class="note">沒有 Email 的會員：在那一列按右邊的「⬇」下載圖片，再用 LINE 傳給他。每天最多寄約 90 封，超過隔天再寄。</div>
+  </div>
+
+  <div class="card step">
+    <h2><span class="num">5</span>登記「已繳到什麼時候」</h2>
+    <div class="big">到會員名冊，找到這個人，在「<b>會費已繳至</b>」填上日期（例如繳 2 個月就是 12 月底），這樣之後才知道誰欠費。</div>
+    <a class="btn" href="roster.html">👉 前往：會員名冊</a>
+  </div>
+
+  <div class="card">
+    <h2>📝 這次的進度（打勾會記在這支手機）</h2>
+    <div class="todo" id="todo"></div>
+    <button class="btn o" id="todoClr" type="button" style="margin-top:.5rem">全部清除，開始新的一批</button>
+  </div>
+
+  <div class="card">
+    <h2>❓ 常見問題</h2>
+    <details><summary>寄錯人／金額寫錯怎麼辦？</summary><div class="note">先不要自己再亂寄。把「收據編號、誰、哪裡錯」告訴負責幹部，由他們決定是補寄還是作廢重開。</div></details>
+    <details><summary>同一個人會不會被開兩次？</summary><div class="note">系統會在你按「產生」時提醒「這個姓名之前開過」。看到提醒，先確認是不是真的要再開一張（例如他又補繳）。</div></details>
+    <details><summary>收據編號是怎麼來的？</summary><div class="note">系統自動編，從 115-001 往下加，不用自己打。<b>請只用同一支手機開收據</b>，不然編號會重複。</div></details>
+    <details><summary>寄信時出現失敗？</summary><div class="note">那一列會顯示原因。常見原因：Email 打錯、今天寄太多、寄信設定還沒做。請截圖給負責幹部。</div></details>
+    <details><summary>可以直接用 LINE 傳收據嗎？</summary><div class="note">可以。在收據那一列按「⬇」下載，再從相簿用 LINE 傳。</div></details>
+  </div>
+</main>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function has(k){ try{ return !!localStorage.getItem(k); }catch(e){ return false; } }
+  function item(state,title,detail,link){
+    var cls=state==="ok"?"ok":state==="mid"?"mid":"no", mark=state==="ok"?"✓":state==="mid"?"!":"✗";
+    return '<div class="chk"><div class="dot '+cls+'">'+mark+'</div><div><b>'+title+'</b><div class="note" style="margin-top:0">'+detail+'</div>'+(link||"")+'</div></div>';
+  }
+  function checks(){
+    var seals=[["chair","理事長章"],["fin","總務章"],["union","工會章"]], miss=seals.filter(function(s){return !has("ebn_seal_"+s[0]);}).map(function(s){return s[1];});
+    var mailOk=has("ebn_rcpt_mail_url")&&has("ebn_rcpt_mail_tok");
+    var cloud=false; try{ cloud=!!(window.EBNOrg&&EBNOrg.quhao&&EBNOrg.quhao.enabled()); }catch(e){}
+    var h="";
+    h+=item(!miss.length?"ok":"no","① 印章已放進這支手機",!miss.length?"理事長章、總務章、工會章都有了。":"還缺：<b>"+miss.join("、")+"</b>。請理事長用 LINE <b>私訊</b>傳「印章檔」給你，你到收據頁最下方按「匯入印章檔」。",!miss.length?"":'<a class="btn o" href="receipt-image.html" style="margin-top:.4rem;padding:.55rem">去收據頁匯入印章</a>');
+    h+=item(mailOk?"ok":"no","② 寄信設定已完成",mailOk?"已設定，可以批次寄信。":"還沒設定。這是<b>只做一次</b>的設定，請負責幹部幫你做（需要「寄信網址」和「寄信密碼」，貼在批次收據頁的『寄信設定』）。",mailOk?"":'<a class="btn o" href="receipt-image.html#batchCard" style="margin-top:.4rem;padding:.55rem">去貼寄信設定</a>');
+    h+=item(cloud?"ok":"mid","③ 收據編號方式",cloud?"雲端共用編號：多支手機也不會撞號。":"本機編號：<b>請只用這一支手機開收據</b>，編號才不會重複。（只有你一個人開收據，這樣就夠用。）","");
+    $("checks").innerHTML=h;
+  }
+  function bank(){ var o={}; try{ o=(window.EBNOrg&&EBNOrg.get&&EBNOrg.get())||{}; }catch(e){}
+    $("acct").innerHTML=o.bankAcct?("<b>"+(o.bank||"")+"</b><br>帳號 <b style='font-size:18px'>"+o.bankAcct+"</b><br>戶名 "+(o.bankHolder||"")):"（讀不到，請看繳費頁）"; }
+  var sel=$("mm"); for(var m=1;m<=12;m++){ var op=document.createElement("option"); op.value=m; op.textContent=m+" 月"; sel.appendChild(op); }
+  sel.value=String(new Date().getMonth()+1);
+  function calc(){ var m=+sel.value, mo=13-m+($("next").checked?12:0), amt=1250+250*mo;
+    $("calcRes").innerHTML="➡ 月數填 <b style='font-size:20px'>"+mo+"</b><br>（第一次入會）應收 入會費 1,250 ＋ "+mo+" 個月 × 250 ＝ <b style='font-size:20px'>"+amt.toLocaleString("en-US")+" 元</b><br><span style='font-size:13.5px;color:#666'>如果入會費之前繳過，就只有 "+(250*mo).toLocaleString("en-US")+" 元。</span>"; }
+  sel.addEventListener("change",calc); $("next").addEventListener("change",calc); calc();
+  $("dlTpl").addEventListener("click",function(){
+    var csv="﻿姓名,Email,入會費,月數,繳費方式\n"; var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"})); a.download="收據名單範本.csv"; document.body.appendChild(a); a.click(); a.remove(); });
+  var STEPS=["看過郵局入帳明細，抄下誰入帳","整理好名單（姓名、Email、入會費、月數、方式）","貼到批次收據，按「產生」，看過每一張","按「批次寄信」，並把沒 Email 的用 LINE 傳","到名冊登記「會費已繳至」"], TK="ebn_findesk_todo_v1", st={};
+  try{ st=JSON.parse(localStorage.getItem(TK)||"{}"); }catch(e){}
+  function drawTodo(){ $("todo").innerHTML=STEPS.map(function(s,i){ return '<label><input type="checkbox" data-i="'+i+'"'+(st[i]?" checked":"")+'> '+(i+1)+'. '+s+'</label>'; }).join("");
+    Array.prototype.forEach.call($("todo").querySelectorAll("input"),function(c){ c.addEventListener("change",function(){ st[c.getAttribute("data-i")]=c.checked; try{ localStorage.setItem(TK,JSON.stringify(st)); }catch(e){} }); }); }
+  $("todoClr").addEventListener("click",function(){ if(!confirm("要把進度全部清掉，開始新的一批嗎？")) return; st={}; try{ localStorage.removeItem(TK); }catch(e){} drawTodo(); });
+  drawTodo(); checks(); bank();
+  document.addEventListener("ebnorg:public",function(){ bank(); checks(); }); window.addEventListener("focus",checks);
+})();
+</script>
+<script src="org.js" defer></script>
+<script src="common.js" defer></script>
+</body></html>

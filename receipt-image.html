@@ -439,6 +439,8 @@ try{ if(localStorage.getItem(UNLOCK_KEY)==='1') showApp(); else showGate(); }cat
     if(!ps.rows.length){ alert("請先貼上名單。"); return; }
     var miss=SEALS.filter(function(s){return !getSeal(s[0]);}).map(function(s){return s[1];});
     if(miss.length && !confirm("還沒上傳："+miss.join("、")+"。\n沒蓋章的收據不完整，確定要批次產生嗎？")) return;
+    var prior=getLog().map(function(x){return x.name;}), dups=ps.rows.filter(function(x){ return prior.indexOf(x.name)>=0; }).map(function(x){return x.name;});
+    if(dups.length && !confirm("⚠️ 這幾位之前在這支手機已經開過收據：\n"+dups.join("、")+"\n\n如果是又補繳才要再開，按「確定」繼續；不確定請按「取消」，先問負責幹部。")) return;
     if(!confirm("要幫 "+ps.rows.length+" 位開立收據嗎？\n\n⚠️ 請先確認：已核對入帳、申請書審核通過。開出去的收據編號會被占用，無法收回。")) return;
     BATCH=[]; BATCH_OFF=false; $("bGen").disabled=true; $("bStat").style.cssText=""; 
     for(var i=0;i<ps.rows.length;i++){
